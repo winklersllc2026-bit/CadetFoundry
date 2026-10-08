@@ -36,15 +36,25 @@ def folder(pid: str) -> Path:
     return ROOT / pid
 
 
+ROLES = ("cadet", "guardian", "instructor")
+_OLD_ROLES = {"soldier": "cadet", "family": "guardian"}      # values written before roles existed
+
+
+def role_of(kind: str | None) -> str:
+    kind = _OLD_ROLES.get(kind or "", kind or "")
+    return kind if kind in ROLES else "cadet"
+
+
 def all_profiles() -> list[dict]:
-    return _index()["profiles"]
+    return [{**p, "kind": role_of(p.get("kind"))} for p in _index()["profiles"]]
 
 
 def get(pid: str) -> dict | None:
     return next((p for p in all_profiles() if p["id"] == pid), None)
 
 
-def create(name: str, kind: str = "soldier") -> dict:
+def create(name: str, kind: str = "cadet") -> dict:
+    """A new profile. Callers must check the Instructor PIN before creating an instructor (server.py does)."""
     name = " ".join((name or "").split())[:40]
     if not name:
         raise ValueError("Enter a name.")
@@ -55,7 +65,7 @@ def create(name: str, kind: str = "soldier") -> dict:
         if any(p["name"].lower() == name.lower() for p in idx["profiles"]):
             raise ValueError("There's already a profile with that name.")
         p = {"id": uuid.uuid4().hex[:12], "name": name, "created": time.strftime("%Y-%m-%d"),
-             "kind": "family" if kind == "family" else "soldier"}      # family: a spouse, parent, etc.
+             "kind": role_of(kind)}                     # cadet, guardian (parent) or instructor
         folder(p["id"]).mkdir(parents=True, exist_ok=True)
         idx["profiles"].append(p)
         _save(idx)
@@ -81,7 +91,7 @@ def set_kind(pid: str, kind: str) -> None:
         idx = _index()
         for p in idx["profiles"]:
             if p["id"] == pid:
-                p["kind"] = "family" if kind == "family" else "soldier"
+                p["kind"] = role_of(kind)
         _save(idx)
 
 

@@ -21,7 +21,7 @@ LINE_FILES = ("memory.jsonl", "log.jsonl", "letters.jsonl", "checkins.jsonl", "e
 VERSION = 1
 
 
-def export(kind: str = "soldier") -> dict:
+def export(kind: str = "cadet") -> dict:
     data = {"vanguard_backup": VERSION, "created": time.strftime("%Y-%m-%d %H:%M"), "kind": kind,
             "json": {f: store.read_json(f, None) for f in JSON_FILES},
             "lines": {f: store.read_lines(f) for f in LINE_FILES}}
@@ -65,6 +65,7 @@ def restore(data: dict) -> dict:
             store.write_lines(f, [r for r in rows if isinstance(r, dict)])
             restored.append(f)
     out = {"restored": restored, "from": data.get("created", "")}
-    if data.get("kind") in ("soldier", "family"):    # older backups don't say; the profile then keeps its own
-        out["kind"] = data["kind"]
+    kind = {"soldier": "cadet", "family": "guardian"}.get(data.get("kind"), data.get("kind"))
+    if kind in ("cadet", "guardian"):               # older backups don't say; the profile then keeps its own
+        out["kind"] = kind
     return out

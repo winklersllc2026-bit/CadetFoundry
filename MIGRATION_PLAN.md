@@ -92,8 +92,9 @@ remaining), commit, push.
 
 ## 6. Open questions for the owner
 
-1. Instructor visibility: is the program-key design in §4 acceptable, and which Cadet fields stay private from
-   the instructor (proposed: check-ins and anything the Cadet marks private)?
+1. ~~Instructor visibility~~ **Decided 2026-10-08: class records only.** The Instructor PIN unlocks schoolwork
+   records (lessons, quizzes, scenarios, reflections, fitness, service); private check-ins, chats, memories and
+   anything marked private stay sealed to the Cadet.
 2. Guardian profiles in the pilot: off (proposed) or on?
 3. Faith library: off and hidden in Vanguard (proposed), or available as an instructor opt-in?
 4. Which JROTC program for the pilot (Army JROTC assumed), and which curriculum documents may be used as sources?

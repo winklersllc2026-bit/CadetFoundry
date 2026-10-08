@@ -173,21 +173,21 @@ class SecurityTests(unittest.TestCase):
         self.assertNotIn("Dana", json.dumps(sealed))                        # nothing readable in the file
         from vanguard import backup as _backup
         backup_file = _backup.open_any(sealed, "blue river tank 42")
-        self.assertEqual(backup_file["kind"], "family")
+        self.assertEqual(backup_file["kind"], "guardian")
         e = self.login(evan["id"], "694028")
         self.assertEqual(self.req("POST", "/api/restore", {"file": sealed, "password": "wrong password!"},
                                   {"Cookie": e})[0], 400)                    # wrong password: refused
         s, _, out = self.req("POST", "/api/restore", {"file": sealed, "password": "blue river tank 42"}, {"Cookie": e})
-        self.assertEqual((s, json.loads(out)["kind"]), (200, "family"))
-        self.assertEqual(profiles.get(evan["id"])["kind"], "family")          # family tools come back
+        self.assertEqual((s, json.loads(out)["kind"]), (200, "guardian"))
+        self.assertEqual(profiles.get(evan["id"])["kind"], "guardian")          # family tools come back
         self.assertIn("Dana's note", self.req("GET", "/api/log", headers={"Cookie": e})[2].decode())
         # a backup made before this fix has no "kind": the profile keeps its own setting
         old = {k: v for k, v in backup_file.items() if k != "kind"}
         old["json"] = dict(old["json"], **{"config.json": {"online": True, "model": "evil"}})   # a doctored plain backup
         before = store.config()
-        profiles.set_kind(evan["id"], "soldier")
+        profiles.set_kind(evan["id"], "cadet")
         self.assertEqual(self.req("POST", "/api/restore", old, {"Cookie": e})[0], 200)
-        self.assertEqual(profiles.get(evan["id"])["kind"], "soldier")
+        self.assertEqual(profiles.get(evan["id"])["kind"], "cadet")
         self.assertEqual(store.config(), before)                              # device settings untouched
 
     def test_13_files_are_encrypted_on_disk_and_only_the_pin_opens_them(self):

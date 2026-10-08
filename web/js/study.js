@@ -534,7 +534,7 @@ async function showBct(st) {
   const ph = (i, now) => { const [name, a, b, what, items] = st.phases[i];
     return `<div style="margin:8px 0"><b>${esc(name)} Phase</b> <span class="faint">· weeks ${a}–${b}${now ? ' · you are here' : ''}</span>
       <div>${esc(what)}</div><ul style="margin:4px 0">${items.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>`; };
-  const fam = document.body.dataset.kind === 'family';
+  const fam = document.body.dataset.kind === 'guardian';
   let head;
   if (st.week === null) head = `<p class="faint">Enter the date your Basic Combat Training week 1 starts (from your orders or your recruiter) to see where you are.</p>`;
   else if (st.week === 0) head = `<p><b>${st.days_to_start} day${st.days_to_start === 1 ? '' : 's'}</b> until week 1.</p>`;

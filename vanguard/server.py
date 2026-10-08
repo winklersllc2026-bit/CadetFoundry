@@ -166,7 +166,7 @@ class Handler(BaseHTTPRequestHandler):
     def _get(self, r: str):
         q, app = self._query(), self.app
         if r == "/api/lock":
-            out = {"profiles": [{"id": p["id"], "name": p["name"], "kind": p.get("kind", "soldier"),
+            out = {"profiles": [{"id": p["id"], "name": p["name"], "kind": p["kind"],
                                  "has_pin": security.has_pin(p["id"]),
                                  "lockout": security.lockout_remaining(p["id"])} for p in profiles.all_profiles()],
                    "unlocked": bool(self._pid)}
@@ -182,7 +182,7 @@ class Handler(BaseHTTPRequestHandler):
                                "profile": store.profile(), "stages": store.STAGES, "log_kinds": store.LOG_KINDS,
                                "lan": app.lan, "voice": voice.available(),
                                "ai_mode": store.ai_mode(), "library_only": store.ai_mode() == "off",
-                               "kind": (profiles.get(self._pid) or {}).get("kind", "soldier")})
+                               "kind": (profiles.get(self._pid) or {}).get("kind", "cadet")})
         if r == "/api/topics":
             prog = app.brain.progress()
             return self._json([{"topic": t, "cards": [{"id": c.id, "title": c.title, "questions": len(c.quiz)} for c in cs],
@@ -314,7 +314,12 @@ class Handler(BaseHTTPRequestHandler):
             return self._json({"ok": True}, extra={"Set-Cookie": security.cookie_header(token)})
         if r == "/api/profiles/create":
             try:
-                p = profiles.create(str(b.get("name", "")), str(b.get("kind", "soldier")))
+                kind = profiles.role_of(str(b.get("kind", "cadet")))
+                if kind == "instructor":                 # only the Instructor PIN can make an instructor
+                    err = security.check_admin(str(b.get("admin", ""))[:32])
+                    if err:
+                        return self._json({"ok": False, "error": err}, 403)
+                p = profiles.create(str(b.get("name", "")), kind)
             except ValueError as e:
                 return self._json({"ok": False, "error": str(e)}, 400)
             pin, code = str(b.get("pin", "")), None
@@ -417,7 +422,7 @@ class Handler(BaseHTTPRequestHandler):
                               {"error": "No AI model is available to draft — you can still write the letter yourself."})
         if r == "/api/backup":                           # always encrypted with the Soldier's backup password
             try:
-                sealed = backup.export_sealed((profiles.get(self._pid) or {}).get("kind", "soldier"),
+                sealed = backup.export_sealed((profiles.get(self._pid) or {}).get("kind", "cadet"),
                                               str(b.get("password", ""))[:200])
             except ValueError as e:
                 return self._json({"error": str(e)}, 400)
@@ -425,7 +430,8 @@ class Handler(BaseHTTPRequestHandler):
         if r == "/api/restore":
             try:
                 out = backup.restore(backup.open_any(b.get("file", b), str(b.get("password", ""))[:200]))
-                if "kind" in out:
+                # a backup can make a profile a cadet or guardian again -- never an instructor
+                if out.get("kind") in ("cadet", "guardian") and profiles.get(self._pid)["kind"] != "instructor":
                     profiles.set_kind(self._pid, out["kind"])
                 return self._json(out)
             except ValueError as e:
@@ -559,7 +565,7 @@ class Handler(BaseHTTPRequestHandler):
         self._deny(404, "Not found.")
 
     def _chat(self, message: str):
-        family = (profiles.get(self._pid) or {}).get("kind") == "family"
+        family = (profiles.get(self._pid) or {}).get("kind") == "guardian"
         return self._stream(self.app.brain.chat(message[:4000], family))
 
     def _stream(self, events):

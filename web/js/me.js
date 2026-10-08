@@ -94,7 +94,7 @@ loaders.me = async () => {
   const stageOpts = ['', ...STATUS.stages].map(s => `<option ${p.stage === s ? 'selected' : ''}>${esc(s)}</option>`).join('');
   $('#meBody').innerHTML = `<h2>Me</h2>
     <div class="card"><div class="row" style="justify-content:space-between">
-      <div><div class="faint">Profile on this device</div><div id="profName" style="font-size:20px;font-weight:700">${STATUS.kind === 'family' ? '👪' : '👤'} ${esc(lock.current.name)}
+      <div><div class="faint">Profile on this device</div><div id="profName" style="font-size:20px;font-weight:700">${STATUS.kind === 'guardian' ? '👪' : STATUS.kind === 'instructor' ? '🎓' : '👤'} ${esc(lock.current.name)}
         <button class="btn small" id="renameProf" aria-label="Rename this profile" style="margin-left:6px">✎ Rename</button></div></div>
       <div class="row" style="gap:6px"><button class="btn small" id="switchProf">⇄ Switch profile</button><button class="btn small" id="addProf">+ Add profile</button><button class="btn small danger" id="delProf">Delete profile</button></div></div>
       <p class="faint">Each Soldier on this device has their own profile — their logbook, letters and progress can't be seen from anyone else's.</p></div>

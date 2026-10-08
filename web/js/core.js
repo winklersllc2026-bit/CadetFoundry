@@ -41,7 +41,7 @@ async function showLock(msg) {
     d.innerHTML = `<div class="card" style="width:100%;max-width:380px;text-align:center">
         <div style="font-size:28px">✦</div><h2>Who's using Vanguard?</h2>
         <div style="display:grid;gap:8px;margin:12px 0">${s.profiles.map(p =>
-          `<button class="btn" data-p="${esc(p.id)}" style="text-align:left">${p.kind === 'family' ? '👪' : '👤'} ${esc(p.name)} ${p.has_pin ? '<span class="faint">🔒</span>' : ''}</button>`).join('')}</div>
+          `<button class="btn" data-p="${esc(p.id)}" style="text-align:left">${p.kind === 'guardian' ? '👪' : '👤'} ${esc(p.name)} ${p.has_pin ? '<span class="faint">🔒</span>' : ''}</button>`).join('')}</div>
         <button class="btn small" id="newProf">+ New profile</button>
         <p class="faint">${esc(msg || '')}</p></div>`;
     d.querySelectorAll('[data-p]').forEach(b => b.onclick = () => {
@@ -89,7 +89,7 @@ async function showLock(msg) {
         <h2>${s.profiles.length ? 'New profile' : 'Welcome to Vanguard'}</h2>
         <p class="faint">Your logbook, letters and progress stay in your own profile on this device.</p>
         <label>Your name</label><input id="npName" maxlength="40" autocomplete="off">
-        <label>This profile is for</label><select id="npKind"><option value="soldier">A Cadet</option><option value="family">A parent or guardian</option></select>
+        <label>This profile is for</label><select id="npKind"><option value="cadet">A Cadet</option><option value="guardian">A parent or guardian</option></select>
         <label>PIN (6–12 digits)${s.profiles.length ? '' : ' — recommended'}</label>
         <input id="npPin" type="password" inputmode="numeric" maxlength="12" autocomplete="off" placeholder="${s.profiles.length ? 'Strongly recommended on a shared device' : 'Optional'}">
         <p class="faint">With a PIN, your files are encrypted on this device. You'll get a <b>recovery code</b> in case you ever forget it.</p>
@@ -199,7 +199,7 @@ const FAMILY_SUGGEST = ['How does basic training work?', 'What do Army ranks mea
   'What is the Soldier and Family Readiness Group?', 'Where can military families get help?'];
 async function refreshStatus() {
   STATUS = await api('/api/status');
-  if ((document.body.dataset.kind = STATUS.kind || 'soldier') === 'family') {          // family member's profile
+  if ((document.body.dataset.kind = STATUS.kind || 'cadet') === 'guardian') {          // family member's profile
     $('#suggest').innerHTML = FAMILY_SUGGEST.map(q => `<button>${esc(q)}</button>`).join('');
     const hi = document.querySelector('#thread .msg.ai p');
     if (hi) hi.textContent = "I'm Vanguard — here to help you understand Army life and support your Soldier. Ask me anything. Everything stays on this device.";

@@ -403,9 +403,11 @@ class LibraryTests(unittest.TestCase):
 
     def test_family_profile_changes_who_vanguard_talks_to(self):
         from unittest import mock
-        p = profiles.create(f"family-test-{uuid.uuid4().hex[:8]}", "family")
-        self.assertEqual(profiles.get(p["id"])["kind"], "family")
-        self.assertEqual(profiles.create(f"odd-{uuid.uuid4().hex[:8]}", "hacker")["kind"], "soldier")
+        p = profiles.create(f"family-test-{uuid.uuid4().hex[:8]}", "family")              # old value still works
+        self.assertEqual(profiles.get(p["id"])["kind"], "guardian")
+        odd = profiles.create(f"odd-{uuid.uuid4().hex[:8]}", "hacker")
+        self.addCleanup(profiles.delete, odd["id"])
+        self.assertEqual(odd["kind"], "cadet")
         tok = store.use_profile(profiles.folder(p["id"]))
         self.addCleanup(store.reset_profile, tok)
         seen = []

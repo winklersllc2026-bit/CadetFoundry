@@ -16,7 +16,7 @@ const NAME_CHECK = v => v.trim().split(/\s+/).length > 4 || /\d/.test(v) ? 'Just
 
 function intakeQuestions(p, kind, faith) {
   const name = p.name ? `, ${p.name.split(' ')[0]}` : '';
-  if (kind === 'family') return [
+  if (kind === 'guardian') return [
     { f: 'name', q: `Welcome to Vanguard${name}. I'll ask a few quick questions to set things up. First — what should I call you?`, chips: p.name ? [p.name] : [], check: NAME_CHECK },
     { f: 'stage', q: 'Where is your Soldier in their Army journey right now?', chips: STATUS.stages },
     { f: 'goals', q: 'What would help you most right now? (for example: understanding Army terms, writing letters, getting ready for a PCS)' },
@@ -105,7 +105,7 @@ const intake = {
     };
   },
   adminPin() {
-    if (this.lock.admin_set || STATUS.kind === 'family') return this.finish();
+    if (this.lock.admin_set || STATUS.kind === 'guardian') return this.finish();
     const box = addMsg('ai', md("One more for whoever looks after this computer: a **Instructor PIN**. It's needed to install Vanguard updates, and it's separate from your own PIN. If this is your own device, set one now."));
     box.insertAdjacentHTML('beforeend', `<div class="row" style="margin-top:8px">
       <input id="inAdm" type="password" inputmode="numeric" maxlength="12" placeholder="Admin PIN (6–12 digits)" style="flex:1" autocomplete="new-password">
