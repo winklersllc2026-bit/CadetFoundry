@@ -1,9 +1,9 @@
-// recruit.winklers-llc.com — Joshua's page for Cursiv Recruit builds.
-// Password: set the Worker secret RECRUIT_PAGE_PASSWORD to require one for every request
-// (npx wrangler secret put RECRUIT_PAGE_PASSWORD). Delete it to make the page open to anyone with the
-// address (npx wrangler secret delete RECRUIT_PAGE_PASSWORD). Search engines are told not to list it either way.
+// vanguard.winklers-llc.com — Joshua's page for Vanguard builds.
+// Password: set the Worker secret VANGUARD_PAGE_PASSWORD to require one for every request
+// (npx wrangler secret put VANGUARD_PAGE_PASSWORD). Delete it to make the page open to anyone with the
+// address (npx wrangler secret delete VANGUARD_PAGE_PASSWORD). Search engines are told not to list it either way.
 
-const REALM = 'Cursiv Recruit (private)';
+const REALM = 'Vanguard (private)';
 
 function unauthorized(msg = 'Password required') {
   return new Response(msg, {
@@ -23,7 +23,7 @@ function same(a, b) {
 
 export default {
   async fetch(request, env) {
-    const secret = env.RECRUIT_PAGE_PASSWORD;
+    const secret = env.VANGUARD_PAGE_PASSWORD;
     if (secret) {
       const auth = request.headers.get('Authorization') || '';
       if (!auth.startsWith('Basic ')) return unauthorized();

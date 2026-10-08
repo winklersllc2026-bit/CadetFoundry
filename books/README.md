@@ -9,7 +9,7 @@ Filled once by `python tools/fetch_books.py` on a computer with internet; read i
   (National Archives transcriptions, archives.gov) and the Federalist Papers.
 - **Classics:** The Art of War, On War, Meditations, Grant's Memoirs, The Red Badge of Courage,
   Franklin's Autobiography, Lincoln's Speeches & Letters — public domain, from Project Gutenberg. Each file
-  keeps its Project Gutenberg license; Recruit only hides it while showing the book.
+  keeps its Project Gutenberg license; Vanguard only hides it while showing the book.
 
 Books are for reading. Ask answers only from the official library (`library/`), never from these books.
 `catalog.json` records where each file came from and its SHA-256.

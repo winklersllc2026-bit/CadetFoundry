@@ -150,7 +150,7 @@ async function jobsExplorer(q = '', area = '') {
       <div class="card" style="margin-top:12px"><div class="faint">${esc(j.area)} — ${esc(j.group)}</div>
         <h2>${j.code ? esc(j.code) + ' · ' : ''}${esc(j.title)}</h2><p>${esc(j.summary)}</p>
         <p class="faint">Source: goarmy.com (${esc(j.url)})</p></div>
-      <div class="row"><button class="btn primary" id="askJob">Ask Recruit about this job</button></div>`;
+      <div class="row"><button class="btn primary" id="askJob">Ask Vanguard about this job</button></div>`;
     $('#backJobs').onclick = () => jobsExplorer(q, area);
     $('#askJob').onclick = () => { document.querySelector('[data-v=ask]').click(); send(`Tell me about the Army job ${j.code} ${j.title}. What does the training look like and what should I know?`); };
   });
@@ -162,10 +162,10 @@ studyBody.addEventListener('click', async e => {
     const card = await api('/api/card?id=' + encodeURIComponent(c.dataset.card));
     studyBody.innerHTML = `<button class="btn small" id="backStudy">← Study</button>
       <div class="card" style="margin-top:12px"><h2>${esc(card.title)}</h2><div class="faint">Source: ${esc(card.source)}</div>
-      ${card.verified === false ? '<div class="faint" style="color:var(--tan);margin-top:6px">⚠️ Recruit couldn\'t check this card against the current manual — confirm it with your cadre.</div>' : ''}
+      ${card.verified === false ? '<div class="faint" style="color:var(--tan);margin-top:6px">⚠️ Vanguard couldn\'t check this card against the current manual — confirm it with your cadre.</div>' : ''}
       <div class="cardbody" style="margin-top:10px">${md(card.body)}</div></div>
       <div class="row"><button class="btn primary" data-quiz="${esc(card.id)}">Quiz me on this</button>
-      <button class="btn" id="askAbout">Ask Recruit about it</button></div>`;
+      <button class="btn" id="askAbout">Ask Vanguard about it</button></div>`;
     $('#backStudy').onclick = loaders.study;
     $('#askAbout').onclick = () => { document.querySelector('[data-v=ask]').click(); send('Help me understand: ' + card.title); };
   }
@@ -325,7 +325,7 @@ function nineLine() {
   $('#backStudy').onclick = loaders.study; $('#nineNext').onclick = nineLine;
   const stopClock = drillClock($('#clock')); let timed = false;
   if (STATUS.voice && navigator.mediaDevices) {
-    // Say the whole request like on the radio; Recruit listens for radio words only (on this device).
+    // Say the whole request like on the radio; Vanguard listens for radio words only (on this device).
     const say = document.createElement('div');
     say.className = 'card';
     say.innerHTML = `<div class="row" style="justify-content:space-between"><div><b>🎤 Say it on the radio</b>
@@ -551,7 +551,7 @@ async function showBct(st) {
 }
 
 // ── BOARD PREP ──
-// A 🎤 button that fills a text box using Recruit's own offline recognizer (only when voice is installed).
+// A 🎤 button that fills a text box using Vanguard's own offline recognizer (only when voice is installed).
 function micInto(btn, box) {
   if (!(STATUS.voice && navigator.mediaDevices)) { btn.hidden = true; return; }
   btn.onclick = async () => {
@@ -681,7 +681,7 @@ const POCKET = [
     <li><b>Personal Courage</b> — Face fear, danger or adversity (physical or moral).</li></ul>`, 'U.S. Army, army.mil/values'],
 ];
 function pocketCards() {
-  const cards = POCKET.map(([t, body, src]) => `<div class="pc"><h4>${t}</h4>${body}<div class="src">Source: ${src} · Cursiv Recruit study aid</div></div>`).join('');
+  const cards = POCKET.map(([t, body, src]) => `<div class="pc"><h4>${t}</h4>${body}<div class="src">Source: ${src} · Vanguard study aid</div></div>`).join('');
   studyBody.innerHTML = `<button class="btn small" id="backStudy">← Study</button>
     <div class="card" style="margin-top:12px"><h3>🖨️ Pocket cards</h3>
       <p class="faint">Prints on one letter page, black on white (even in night mode). Cut along the dashed lines. Only text checked against its official source is included.</p>

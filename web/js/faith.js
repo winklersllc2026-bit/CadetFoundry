@@ -16,7 +16,7 @@ loaders.faith = async () => {
     <div class="card"><label for="ftr">Text</label><select id="ftr">${opts}</select>
       <label for="fref">Look up a passage</label>
       <div class="row"><input id="fref" placeholder="e.g. John 3:16, Psalm 23, Gita 2:47, Quran 2:255" style="flex:1"><button class="btn primary" id="fgo">Read</button></div>
-      <div class="row" style="margin-top:8px"><button class="btn small" id="fcmp">Compare all translations</button><button class="btn small" id="fsearch">Search for words</button><button class="btn small" id="fask">Ask Recruit about it</button></div>
+      <div class="row" style="margin-top:8px"><button class="btn small" id="fcmp">Compare all translations</button><button class="btn small" id="fsearch">Search for words</button><button class="btn small" id="fask">Ask Vanguard about it</button></div>
       <div class="faint" style="margin-top:8px">Optional and personal. Installed: ${cat.installed.length} texts from ${new Set(cat.installed.map(t => t.tradition)).size} traditions. Public-domain translations.</div>
     </div><div id="fout"></div><div id="fplans"></div>`;
   const plans = await api('/api/faith/plans');

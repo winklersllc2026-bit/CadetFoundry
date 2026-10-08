@@ -1,11 +1,11 @@
 """
-Build recruit/data/aft_tables.json from the official Army Fitness Test score tables.
+Build vanguard/data/aft_tables.json from the official Army Fitness Test score tables.
 
     python tools/aft_tables.py AFT_Scoring_Scales_250601.pdf
 
 The PDF is published at army.mil (www.army.mil/e2/downloads/rv7/aft/), which blocks
 automated downloads -- save it from a browser. Needs `pdftotext` (poppler) on the
-setup machine only; Recruit itself reads the small JSON this writes.
+setup machine only; Vanguard itself reads the small JSON this writes.
 """
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-OUT = ROOT / "recruit" / "data" / "aft_tables.json"
+OUT = ROOT / "vanguard" / "data" / "aft_tables.json"
 
 AGES = ["17-21", "22-26", "27-31", "32-36", "37-41", "42-46", "47-51", "52-56", "57-61", "62+"]
 # id, heading text in the PDF, unit, higher_is_better

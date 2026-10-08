@@ -1,5 +1,5 @@
 """
-Install offline voice input for Recruit (needs internet once).
+Install offline voice input for Vanguard (needs internet once).
 
     python tools/install_voice.py
 
@@ -29,7 +29,7 @@ def main() -> int:
         print(f"Model already installed in {DEST}")
         return 0
     print("Downloading the small English model (~40 MB) …")
-    with urllib.request.urlopen(urllib.request.Request(MODEL_URL, headers={"User-Agent": "Cursiv-Recruit"}), timeout=300) as resp:
+    with urllib.request.urlopen(urllib.request.Request(MODEL_URL, headers={"User-Agent": "Vanguard"}), timeout=300) as resp:
         data = resp.read()
     z = zipfile.ZipFile(io.BytesIO(data))
     top = z.namelist()[0].split("/")[0]
@@ -43,7 +43,7 @@ def main() -> int:
             continue
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_bytes(z.read(name))
-    print(f"Voice input installed. Restart Recruit; a 🎤 button appears next to Send.")
+    print(f"Voice input installed. Restart Vanguard; a 🎤 button appears next to Send.")
     return 0
 
 

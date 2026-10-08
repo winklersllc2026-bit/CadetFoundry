@@ -27,9 +27,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "faith"
 sys.path.insert(0, str(ROOT))
-from recruit.faith import BOOKS  # noqa: E402
+from vanguard.faith import BOOKS  # noqa: E402
 
-UA = {"User-Agent": "Cursiv-Recruit faith installer"}
+UA = {"User-Agent": "Vanguard faith installer"}
 
 CATALOG = [
     # id, name, tradition, kind, source

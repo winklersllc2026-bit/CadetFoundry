@@ -39,7 +39,7 @@ async function showLock(msg) {
   const go = () => location.replace('/');
   const pick = () => {
     d.innerHTML = `<div class="card" style="width:100%;max-width:380px;text-align:center">
-        <div style="font-size:28px">✦</div><h2>Who's using Recruit?</h2>
+        <div style="font-size:28px">✦</div><h2>Who's using Vanguard?</h2>
         <div style="display:grid;gap:8px;margin:12px 0">${s.profiles.map(p =>
           `<button class="btn" data-p="${esc(p.id)}" style="text-align:left">${p.kind === 'family' ? '👪' : '👤'} ${esc(p.name)} ${p.has_pin ? '<span class="faint">🔒</span>' : ''}</button>`).join('')}</div>
         <button class="btn small" id="newProf">+ New profile</button>
@@ -86,7 +86,7 @@ async function showLock(msg) {
   };
   const newProfile = () => {
     d.innerHTML = `<form class="card" id="newForm" style="width:100%;max-width:380px">
-        <h2>${s.profiles.length ? 'New profile' : 'Welcome to Recruit'}</h2>
+        <h2>${s.profiles.length ? 'New profile' : 'Welcome to Vanguard'}</h2>
         <p class="faint">Your logbook, letters and progress stay in your own profile on this device.</p>
         <label>Your name</label><input id="npName" maxlength="40" autocomplete="off">
         <label>This profile is for</label><select id="npKind"><option value="soldier">A Soldier (or future Soldier)</option><option value="family">A family member — spouse, parent, loved one</option></select>
@@ -150,9 +150,9 @@ function md(text) {
   const btn = $('#textBtn');
   const apply = big => { document.documentElement.dataset.text = big ? 'large' : ''; btn.setAttribute('aria-pressed', String(big)); btn.textContent = big ? 'A−' : 'A+'; };
   let big = false;
-  try { big = localStorage.getItem('recruit-text') === 'large'; } catch (e) {}
+  try { big = localStorage.getItem('vanguard-text') === 'large'; } catch (e) {}
   apply(big);
-  btn.onclick = () => { big = !big; apply(big); try { localStorage.setItem('recruit-text', big ? 'large' : ''); } catch (e) {} };
+  btn.onclick = () => { big = !big; apply(big); try { localStorage.setItem('vanguard-text', big ? 'large' : ''); } catch (e) {} };
 })();
 
 // Icon-only buttons (✕, 🔊, 🎤 …) get a spoken name for screen readers from their title.
@@ -172,11 +172,11 @@ new MutationObserver(() => {
     meta.content = red ? '#000000' : '#0f120e';
   };
   let red = false;
-  try { red = localStorage.getItem('recruit-mode') === 'red'; } catch (e) {}
+  try { red = localStorage.getItem('vanguard-mode') === 'red'; } catch (e) {}
   apply(red);
   btn.onclick = () => {
     red = !red; apply(red);
-    try { localStorage.setItem('recruit-mode', red ? 'red' : ''); } catch (e) {}
+    try { localStorage.setItem('vanguard-mode', red ? 'red' : ''); } catch (e) {}
   };
 })();
 
@@ -198,7 +198,7 @@ async function refreshStatus() {
   if ((document.body.dataset.kind = STATUS.kind || 'soldier') === 'family') {          // family member's profile
     $('#suggest').innerHTML = FAMILY_SUGGEST.map(q => `<button>${esc(q)}</button>`).join('');
     const hi = document.querySelector('#thread .msg.ai p');
-    if (hi) hi.textContent = "I'm Recruit — here to help you understand Army life and support your Soldier. Ask me anything. Everything stays on this device.";
+    if (hi) hi.textContent = "I'm Vanguard — here to help you understand Army life and support your Soldier. Ask me anything. Everything stays on this device.";
   }
   const e = STATUS.engine, el = $('#engine');
   const online = e.online_enabled && e.online_keys.length;

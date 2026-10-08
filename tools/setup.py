@@ -1,5 +1,5 @@
 """
-One-time setup for a Recruit device (needs internet once; afterwards everything runs offline).
+One-time setup for a Vanguard device (needs internet once; afterwards everything runs offline).
 
     python tools/setup.py            asks a few yes/no questions (Enter = the suggested answer)
     python tools/setup.py --yes      everything, no questions
@@ -7,7 +7,7 @@ One-time setup for a Recruit device (needs internet once; afterwards everything 
 
 Steps: faith texts -> official library -> offline voice -> offline AI (Ollama + a small model)
 -> desktop shortcut -> self-check. Each step can fail without stopping the others; a summary
-at the end says what worked. install-recruit.bat (Windows) and install-recruit.sh (Linux) run this.
+at the end says what worked. install-vanguard.bat (Windows) and install-vanguard.sh (Linux) run this.
 """
 from __future__ import annotations
 
@@ -118,23 +118,23 @@ def ai(model: str) -> bool:
 def shortcut() -> bool:
     if WINDOWS:
         # The real Desktop folder (it may be moved into OneDrive), the app's icon, and a minimized server window.
-        target, icon = ROOT / "start-recruit.bat", ROOT / "web" / "icon.ico"
+        target, icon = ROOT / "start-vanguard.bat", ROOT / "web" / "icon.ico"
         ps = ("$d=[Environment]::GetFolderPath('Desktop');"
-              "$s=(New-Object -ComObject WScript.Shell).CreateShortcut((Join-Path $d 'Cursiv Recruit.lnk'));"
+              "$s=(New-Object -ComObject WScript.Shell).CreateShortcut((Join-Path $d 'Vanguard.lnk'));"
               f"$s.TargetPath='{target}';$s.WorkingDirectory='{ROOT}';$s.IconLocation='{icon},0';"
-              "$s.WindowStyle=7;$s.Description='Cursiv Recruit';$s.Save()")
+              "$s.WindowStyle=7;$s.Description='Vanguard';$s.Save()")
         return run(["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", ps])
     apps = Path.home() / ".local" / "share" / "applications"
     apps.mkdir(parents=True, exist_ok=True)
-    entry = apps / "cursiv-recruit.desktop"
-    entry.write_text("[Desktop Entry]\nType=Application\nName=Cursiv Recruit\nComment=Offline study companion\n"
-                     f"Exec=sh \"{ROOT / 'start-recruit.sh'}\"\nPath={ROOT}\nIcon={ROOT / 'web' / 'icon.svg'}\nTerminal=false\n", encoding="utf-8")
+    entry = apps / "vanguard.desktop"
+    entry.write_text("[Desktop Entry]\nType=Application\nName=Vanguard\nComment=Offline study companion\n"
+                     f"Exec=sh \"{ROOT / 'start-vanguard.sh'}\"\nPath={ROOT}\nIcon={ROOT / 'web' / 'icon.svg'}\nTerminal=false\n", encoding="utf-8")
     print(f"  Added {entry} (shows in the app menu)")
     return True
 
 
 def self_check() -> bool:
-    code = ("import sys; sys.path.insert(0, '.'); from recruit.knowledge import Library; "
+    code = ("import sys; sys.path.insert(0, '.'); from vanguard.knowledge import Library; "
             "s = Library().stats(); print(f\"  {s['cards']} study cards, {len(s['documents'])} library documents, "
             "{s['passages']} passages\")")
     return py("-c", code)
@@ -151,10 +151,10 @@ def encryption() -> bool:
 
 def main(argv: list[str]) -> int:
     if sys.version_info < (3, 10):
-        print("Recruit needs Python 3.10 or newer.")
+        print("Vanguard needs Python 3.10 or newer.")
         return 1
     yes = "--yes" in argv or "-y" in argv
-    print("Cursiv Recruit setup — needs internet once. Afterwards the device can stay offline.\n")
+    print("Vanguard setup — needs internet once. Afterwards the device can stay offline.\n")
     plan = [("Encryption (cryptography)", encryption)]          # always: PINs encrypt each Soldier's files
     if ask("Download the faith library (public-domain scriptures, ~32 MB)?", True, yes):
         plan.append(("Faith library", faith))
@@ -162,13 +162,13 @@ def main(argv: list[str]) -> int:
         plan.append(("Official library", library))
     if ask("Download the free books (Army history, founding documents, classics, ~7 MB)?", True, yes):
         plan.append(("Books", books))
-    if "--no-voice" not in argv and ask("Install offline voice (talk to Recruit, ~40 MB)?", True, yes):
+    if "--no-voice" not in argv and ask("Install offline voice (talk to Vanguard, ~40 MB)?", True, yes):
         plan.append(("Offline voice", voice))
     if "--no-ai" not in argv and ask("Install the offline AI (Ollama + a small model, ~2 GB)?", True, yes):
         model = MODELS["small"] if ("--model=1.5b" in argv or (not yes and not ask(
             "  Use the recommended 3B model? (say no only on a very old or slow device)", True, yes))) else MODELS["medium"]
         plan.append((f"Offline AI ({model})", lambda: ai(model)))
-    if "--no-shortcut" not in argv and ask("Add a Cursiv Recruit shortcut?", True, yes):
+    if "--no-shortcut" not in argv and ask("Add a Vanguard shortcut?", True, yes):
         plan.append(("Shortcut", shortcut))
     plan.append(("Self-check", self_check))
     results = []
@@ -183,7 +183,7 @@ def main(argv: list[str]) -> int:
     print("\nSummary")
     for name, ok in results:
         print(f"  {'✓' if ok else '✗'} {name}")
-    print("\nStart Recruit with the shortcut, start-recruit.bat (Windows) or sh start-recruit.sh (Linux).")
+    print("\nStart Vanguard with the shortcut, start-vanguard.bat (Windows) or sh start-vanguard.sh (Linux).")
     print("Then set a PIN — it encrypts your files — and write down your recovery code. See SECURITY.md.")
     return 0 if all(ok for _n, ok in results) else 1
 

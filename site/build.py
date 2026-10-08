@@ -1,5 +1,5 @@
 """
-Build the private page for recruit.winklers-llc.com.
+Build the private page for vanguard.winklers-llc.com.
 
     python site/build.py            build site/dist (page + Windows installer + download zip)
     python site/build.py --deploy   build, then publish with wrangler
@@ -24,14 +24,14 @@ ROOT = Path(__file__).resolve().parent.parent
 SITE = ROOT / "site"
 DIST = SITE / "dist"
 sys.path.insert(0, str(ROOT))
-from recruit import __version__  # noqa: E402
+from vanguard import __version__  # noqa: E402
 
-REPO = "https://github.com/winklersllc2026-bit/Cursiv-Recruit"
-LATEST = "Cursiv-Recruit-Setup-latest.exe"            # uploaded with every release (python site/build.py --release)
+REPO = "https://github.com/winklersllc2026-bit/Vanguard"
+LATEST = "Vanguard-Setup-latest.exe"            # uploaded with every release (python site/build.py --release)
 LATEST_URL = f"{REPO}/releases/latest/download/{LATEST}"
 
-INCLUDE_DIRS = ["recruit", "web", "tools", "tests", "faith", "library", "books"]
-INCLUDE_FILES = ["run.py", "start-recruit.bat", "start-recruit.sh", "install-recruit.bat", "install-recruit.sh", "README.md", "LIBRARY.md", "SECURITY.md"]
+INCLUDE_DIRS = ["vanguard", "web", "tools", "tests", "faith", "library", "books"]
+INCLUDE_FILES = ["run.py", "start-vanguard.bat", "start-vanguard.sh", "install-vanguard.bat", "install-vanguard.sh", "README.md", "LIBRARY.md", "SECURITY.md"]
 
 ROADMAP = [
     (True, "Ask: library-grounded chat that names its sources"),
@@ -60,7 +60,7 @@ ROADMAP = [
     (True, "Daily 10 with streaks · land-nav grid practice"),
     (True, "Daily check-in · tactical breathing coach · faith reading plans"),
     (True, "Leave tracker (2.5 days/month, 10 U.S.C. § 701) · budget planner"),
-    (True, "Kiosk mode (start-recruit.bat --kiosk)"),
+    (True, "Kiosk mode (start-vanguard.bat --kiosk)"),
     (True, "Board prep: AGSU uniform check (DA PAM 670-1), mock board graded against the cards, Soldier's Creed recitation"),
     (True, "Board topics from AR 600-20 (Apr 2026): chain of command, NCO support channel, open door, discipline, EO, harassment, complaints"),
     (True, "Board topics: SHARP (AR 600-52, Feb 2025) and counseling (ATP 6-22.1, Feb 2024); FM 6-22 added to the library"),
@@ -72,10 +72,10 @@ ROADMAP = [
     (True, "2026 pay tables: enlisted, warrant, officer O-1 to O-10, prior-enlisted O-1E to O-3E and BAS (copied from dfas.mil → tools/pay_paste.py)"),
     (True, "LES decoder: all 78 blocks in DFAS's own words, active duty and Reserve/Guard, searchable"),
     (True, "Multiple Soldiers per device: separate profiles, each with its own PIN, fully isolated"),
-    (True, "Offline voice: read-aloud with the computer's own voices; talk to Recruit with Vosk (tools/install_voice.py)"),
+    (True, "Offline voice: read-aloud with the computer's own voices; talk to Vanguard with Vosk (tools/install_voice.py)"),
     (True, "Exam mode: timed multiple-choice tests by topic with a score history"),
     (True, "Library tamper check (SHA-256, signed list) and signed offline updates from a USB stick"),
-    (False, "Publisher: run tools/sign.py keygen once and commit recruit/data/release_key.pub"),
+    (False, "Publisher: run tools/sign.py keygen once and commit vanguard/data/release_key.pub"),
     (False, "Idea (low priority): a Battle School-style strategy/decision game — see notes"),
     (True, "Tap any source under an answer to read the exact passage it came from"),
     (True, "Timed report drills with a personal best per Soldier"),
@@ -87,11 +87,11 @@ ROADMAP = [
     (True, "Trust in AI answers: 🤖 label on AI text, invented numbers flagged, AI can't forge the ✅ badge or make up links, library-only mode for locked-down devices"),
     (True, "AFT events card (no pull-ups) and checked answers for FM 7-22 vs the rifle manual (TC 3-22.9)"),
     (True, "First-run interview: a question is never saved as your name; read-aloud stops with a second tap"),
-    (True, "Windows installer (Setup.exe, Inno Setup like Cursiv): desktop + Start menu icon (7.62 round), Add/Remove Programs, keeps data on update/uninstall"),
+    (True, "Windows installer (Setup.exe, Inno Setup like Vanguard): desktop + Start menu icon (7.62 round), Add/Remove Programs, keeps data on update/uninstall"),
     (False, "Code-sign the installer so Windows doesn't show the 'Windows protected your PC' warning (needs a code-signing certificate)"),
-    (True, "First-run interview: Recruit asks about the Soldier (rank, age, height/weight, MOS, post, goals), fills the Me tab, requires a PIN"),
+    (True, "First-run interview: Vanguard asks about the Soldier (rank, age, height/weight, MOS, post, goals), fills the Me tab, requires a PIN"),
     (True, "Conversations: separate chats in a sidebar on the left (slides in on a phone), named after their first question"),
-    (True, "Answers: Army terms always given to the AI (no more made-up acronyms), 'How does this work?' explains Recruit, sources only when used"),
+    (True, "Answers: Army terms always given to the AI (no more made-up acronyms), 'How does this work?' explains Vanguard, sources only when used"),
     (True, "One-step install: Python inside the installer, no console window; offline AI and voice install from Me → Add-ons with a progress bar"),
     (True, "Board packet: print your profile, AFT history, exam scores and logbook on one page"),
     (True, "First-run tour of the five tabs (Me tab → Take the tour to see it again)"),
@@ -107,12 +107,12 @@ ROADMAP = [
     (True, "Backups keep a family member's profile type when restored on a new device"),
     (False, "Land nav card: marked unverified (TC 3-25.26 is CAC-only; no public manual covers it) — find a public source"),
     (True, "First aid card rebuilt from TC 3-21.76 (Sep 2025) ch. 15: TCCC phases and MARCH PAWS; old editions flagged wherever cited"),
-    (True, "Checked answers: when a question matches a study-card quiz question, Recruit shows the verified answer first, word for word"),
+    (True, "Checked answers: when a question matches a study-card quiz question, Vanguard shows the verified answer first, word for word"),
     (True, "Offline AI sticks to the source: checked cards first, answer rules last, no loops; 3B model is now the default"),
     (True, "Speed: word index makes library search 175x faster (138 ms to under 1 ms); the AI loads at startup, so the first answer starts in about half a second"),
     (True, "Search the manuals: instant results without AI, exact page, edition date and a warning on old editions"),
     (True, "Where am I in Basic? week-by-week timeline (goarmy.com's four phases); rename profiles; large text and bigger buttons"),
-    (True, "One-click setup: install-recruit.bat / .sh — Python, libraries, voice, offline AI, shortcut, self-check"),
+    (True, "One-click setup: install-vanguard.bat / .sh — Python, libraries, voice, offline AI, shortcut, self-check"),
 ]
 
 
@@ -128,15 +128,15 @@ def make_zip(dest: Path) -> int:
         for f in INCLUDE_FILES:
             if f.endswith(".bat"):                # Windows cmd needs CRLF, whatever machine builds the zip
                 text = (ROOT / f).read_text(encoding="utf-8").replace("\r\n", "\n").replace("\n", "\r\n")
-                z.writestr(f"Cursiv-Recruit/{f}", text)
+                z.writestr(f"Vanguard/{f}", text)
             else:
-                z.write(ROOT / f, f"Cursiv-Recruit/{f}")
+                z.write(ROOT / f, f"Vanguard/{f}")
         for d in INCLUDE_DIRS:
             for p in sorted((ROOT / d).rglob("*")):
                 if p.is_file() and "__pycache__" not in p.parts:
                     if d == "books" and p.suffix.lower() == ".pdf":
                         continue                  # the converted text ships; a saved source PDF stays on the build PC
-                    z.write(p, f"Cursiv-Recruit/{p.relative_to(ROOT).as_posix()}")
+                    z.write(p, f"Vanguard/{p.relative_to(ROOT).as_posix()}")
     return dest.stat().st_size
 
 
@@ -160,7 +160,7 @@ PYTHON_UNUSED = ("sqlite3.dll", "_sqlite3.pyd", "_elementtree.pyd", "_lzma.pyd",
 
 
 def bundle_python(app: Path) -> bool:
-    """Put Python 3.12 (embeddable) + the cryptography package in app/python. Recruit then runs as
+    """Put Python 3.12 (embeddable) + the cryptography package in app/python. Vanguard then runs as
     python\\pythonw.exe run.py -- no console window."""
     import io
     import urllib.request
@@ -182,7 +182,7 @@ def bundle_python(app: Path) -> bool:
     for name in PYTHON_UNUSED:
         (py / name).unlink(missing_ok=True)
     pth = next(py.glob("python3*._pth"))
-    # The app folder (..) holds run.py and recruit/; Lib\site-packages holds cryptography and add-ons.
+    # The app folder (..) holds run.py and vanguard/; Lib\site-packages holds cryptography and add-ons.
     pth.write_text(f"{pth.stem}.zip\r\n.\r\nLib\\site-packages\r\n..\r\nimport site\r\n", encoding="utf-8")
     r = subprocess.run([sys.executable, "-m", "pip", "install", "--quiet", "--disable-pip-version-check", "--no-compile",
                         "--target", str(py / "Lib" / "site-packages"), "--only-binary=:all:", "--platform", "win_amd64",
@@ -197,7 +197,7 @@ def bundle_python(app: Path) -> bool:
 
 
 def make_installer(zip_path: Path, dest: Path) -> bool:
-    """Cursiv-Recruit-Setup-<version>.exe (Inno Setup, like Cursiv's): copies the app and makes the icons.
+    """Vanguard-Setup-<version>.exe (Inno Setup, like Vanguard's): copies the app and makes the icons.
     Setup (Python, libraries, AI) runs only from the checkbox on its last page."""
     exe = iscc()
     if not exe:
@@ -207,8 +207,8 @@ def make_installer(zip_path: Path, dest: Path) -> bool:
     shutil.rmtree(stage, ignore_errors=True)
     with zipfile.ZipFile(zip_path) as z:
         z.extractall(stage)
-    shutil.rmtree(stage / "Cursiv-Recruit" / "tests", ignore_errors=True)    # not needed on a Soldier's device
-    if not bundle_python(stage / "Cursiv-Recruit"):
+    shutil.rmtree(stage / "Vanguard" / "tests", ignore_errors=True)    # not needed on a Soldier's device
+    if not bundle_python(stage / "Vanguard"):
         shutil.rmtree(stage, ignore_errors=True)
         print("No installer built.")
         return False
@@ -216,7 +216,7 @@ def make_installer(zip_path: Path, dest: Path) -> bool:
     script = (SITE / "installer.iss").read_text(encoding="utf-8")
     for k, v in {"@VERSION@": __version__, "@VIVERSION@": ".".join(map(str, nums[:4])), "@OUTDIR@": str(dest.parent),
                  "@OUTNAME@": dest.stem, "@ICON@": str(ROOT / "web" / "icon.ico"),
-                 "@STAGE@": str(stage / "Cursiv-Recruit")}.items():
+                 "@STAGE@": str(stage / "Vanguard")}.items():
         script = script.replace(k, v)
     iss = stage / "installer.iss"
     iss.write_text(script, encoding="utf-8-sig")
@@ -235,17 +235,17 @@ def page(zip_name: str, size: int, commit: str, history: list[tuple[str, str, st
                    for h, d, s in history)
     road = "".join(f"<li class='{'done' if done else ''}'>{'✅' if done else '⬜'} {esc(t)}</li>" for done, t in ROADMAP)
     if setup:
-        download = (f'<p><a class="btn" href="/{esc(setup[0])}">⬇ Download Cursiv Recruit {esc(__version__)} for Windows</a></p>'
+        download = (f'<p><a class="btn" href="/{esc(setup[0])}">⬇ Download Vanguard {esc(__version__)} for Windows</a></p>'
                     f'<p class="faint">Or from GitHub (sign in first — the repo is private): <a href="{LATEST_URL}" style="color:var(--tan)">newest release</a></p>'
                     f'<p class="faint">{setup[1] / 2**20:.1f} MB installer. SHA-256: <span class="mono" style="word-break:break-all">{esc(setup[2])}</span></p>'
                     f'<p class="faint">Other ways: <a href="/{esc(zip_name)}" style="color:var(--tan)">zip of the same files</a> '
                     f'({size / 2**20:.1f} MB) for Linux, a USB stick, or a signed update.</p>')
     else:
-        download = (f'<p><a class="btn" href="/{esc(zip_name)}">⬇ Download Cursiv Recruit {esc(__version__)}</a></p>'
+        download = (f'<p><a class="btn" href="/{esc(zip_name)}">⬇ Download Vanguard {esc(__version__)}</a></p>'
                     f'<p class="faint">{size / 2**20:.1f} MB zip — the app plus the faith library.</p>')
     return f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow"><title>Cursiv Recruit — builds</title><link rel="icon" href="/icon.svg" type="image/svg+xml">
+<meta name="robots" content="noindex, nofollow"><title>Vanguard — builds</title><link rel="icon" href="/icon.svg" type="image/svg+xml">
 <style>
 :root {{ --bg:#0f120e; --card:#1a2017; --line:rgba(220,210,180,.12); --text:#ece6d6; --muted:#a7a08c; --tan:#cdb57c; }}
 * {{ box-sizing:border-box; }} body {{ margin:0; background:var(--bg); color:var(--text); font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif; }}
@@ -258,7 +258,7 @@ h1 {{ margin:0 0 4px; font-size:28px; }} h2 {{ font-size:19px; margin:0 0 10px; 
 ol, ul {{ padding-left:20px; }} li {{ margin:6px 0; }} ul.road {{ list-style:none; padding:0; }} ul.road li.done {{ color:var(--muted); }}
 code {{ font-family:ui-monospace,Consolas,monospace; background:rgba(0,0,0,.35); padding:2px 6px; border-radius:6px; font-size:14px; }}
 </style></head><body><div class="wrap">
-<h1>✦ Cursiv Recruit</h1>
+<h1>✦ Vanguard</h1>
 <p class="sub">Private build page — not shared. Version <b>{esc(__version__)}</b> · built {time.strftime('%Y-%m-%d %H:%M')} · commit <span class="mono">{esc(commit or 'local')}</span></p>
 
 <div class="card"><h2>Download</h2>
@@ -266,18 +266,18 @@ code {{ font-family:ui-monospace,Consolas,monospace; background:rgba(0,0,0,.35);
 <p class="faint">Zip SHA-256: <span class="mono" style="word-break:break-all">{esc(sha)}</span><br>Check on Windows: <code>certutil -hashfile FILE SHA256</code></p></div>
 
 <div class="card"><h2>Set up a device (Windows laptop or tablet)</h2><ol>
-<li>Download and open <b>Cursiv-Recruit-Setup</b>. If Windows says <i>"Windows protected your PC"</i> (the installer isn't code-signed yet), click <b>More info → Run anyway</b>.</li>
-<li>Click through the installer — no admin rights, no extra downloads. Python and the full library are inside. It puts a <b>Cursiv Recruit</b> icon on the desktop and in the Start menu, then starts Recruit.</li>
-<li>Recruit asks a few questions about you and has you set a PIN. That's it — it works offline from here.</li>
-<li>Optional: <b>Me → Add-ons</b> installs the offline AI (about 2 GB) or voice, with a progress bar. Each needs internet once. To close Recruit: <b>Me → Quit Recruit</b>.</li>
-</ol><p class="faint">Updating: run the newer installer — profiles and logbooks are kept. Uninstall from Windows Settings → Apps; Soldiers' data in <code>%USERPROFILE%\\.cursiv-recruit</code> is kept unless you delete it.<br>
-Zip instead: unzip, double-click <code>install-recruit.bat</code>. Linux / Raspberry Pi: unzip, <code>sh install-recruit.sh</code>, then <code>sh start-recruit.sh</code>.</p></div>
+<li>Download and open <b>Vanguard-Setup</b>. If Windows says <i>"Windows protected your PC"</i> (the installer isn't code-signed yet), click <b>More info → Run anyway</b>.</li>
+<li>Click through the installer — no admin rights, no extra downloads. Python and the full library are inside. It puts a <b>Vanguard</b> icon on the desktop and in the Start menu, then starts Vanguard.</li>
+<li>Vanguard asks a few questions about you and has you set a PIN. That's it — it works offline from here.</li>
+<li>Optional: <b>Me → Add-ons</b> installs the offline AI (about 2 GB) or voice, with a progress bar. Each needs internet once. To close Vanguard: <b>Me → Quit Vanguard</b>.</li>
+</ol><p class="faint">Updating: run the newer installer — profiles and logbooks are kept. Uninstall from Windows Settings → Apps; Soldiers' data in <code>%USERPROFILE%\\.vanguard</code> is kept unless you delete it.<br>
+Zip instead: unzip, double-click <code>install-vanguard.bat</code>. Linux / Raspberry Pi: unzip, <code>sh install-vanguard.sh</code>, then <code>sh start-vanguard.sh</code>.</p></div>
 
 <div class="card"><h2>Roadmap</h2><ul class="road">{road}</ul></div>
 
 <div class="card"><h2>Build history</h2><ul>{rows or '<li class="faint">No commits yet.</li>'}</ul></div>
 
-<p class="faint">Code: github.com/winklersllc2026-bit/Cursiv-Recruit (private).</p>
+<p class="faint">Code: github.com/winklersllc2026-bit/Vanguard (private).</p>
 </div></body></html>"""
 
 
@@ -287,7 +287,7 @@ def main() -> int:
         old.unlink()
     if not (ROOT / "faith" / "catalog.json").exists():
         print("Note: faith library not installed — run python tools/fetch_faith.py first to include it.")
-    zip_name = f"Cursiv-Recruit-{__version__}.zip"
+    zip_name = f"Vanguard-{__version__}.zip"
     size = make_zip(DIST / zip_name)
     commit = git("rev-parse", "--short", "HEAD")
     history = []
@@ -295,7 +295,7 @@ def main() -> int:
         h, d, s = (line.split("|", 2) + ["", ""])[:3]
         history.append((h, d, s))
     sha = hashlib.sha256((DIST / zip_name).read_bytes()).hexdigest()
-    setup_name, setup = f"Cursiv-Recruit-Setup-{__version__}.exe", None
+    setup_name, setup = f"Vanguard-Setup-{__version__}.exe", None
     if make_installer(DIST / zip_name, DIST / setup_name):
         data = (DIST / setup_name).read_bytes()
         setup = (setup_name, len(data), hashlib.sha256(data).hexdigest())
@@ -307,7 +307,7 @@ def main() -> int:
     (DIST / "index.html").write_text(page(zip_name, size, commit, history, sha, setup), encoding="utf-8")
     (DIST / "robots.txt").write_text("User-agent: *\nDisallow: /\n", encoding="utf-8")
     print(f"Built {DIST}: index.html + {zip_name} ({size / 2**20:.1f} MB)")
-    key = Path.home() / ".cursiv-recruit-release" / "release_key.pem"     # tools/sign.py keygen puts it here
+    key = Path.home() / ".vanguard-release" / "release_key.pem"     # tools/sign.py keygen puts it here
     if key.exists():
         sys.path.insert(0, str(ROOT / "tools"))
         import sign
@@ -315,14 +315,14 @@ def main() -> int:
               "— copy it next to the zip on the USB stick for Me → Install an update")
     else:
         print("Not signed (no release key). Devices only install signed updates — see tools/sign.py.")
-    if "--release" in sys.argv:                 # like Cursiv: the installer as a plain GitHub release download
-        setup_exe = DIST / f"Cursiv-Recruit-Setup-{__version__}.exe"
+    if "--release" in sys.argv:                 # like Vanguard: the installer as a plain GitHub release download
+        setup_exe = DIST / f"Vanguard-Setup-{__version__}.exe"
         if setup_exe.exists():                    # a fixed name, so the page's button always gets the newest one
             shutil.copy(setup_exe, DIST / LATEST)
-        files = [str(p) for p in sorted(DIST.glob("Cursiv-Recruit*")) if p.suffix in (".exe", ".zip", ".sig")]
+        files = [str(p) for p in sorted(DIST.glob("Vanguard*")) if p.suffix in (".exe", ".zip", ".sig")]
         tag = f"v{__version__}"
-        notes = "Windows: download Cursiv-Recruit-Setup and run it (More info -> Run anyway). Linux: the zip."
-        r = subprocess.run(["gh", "release", "create", tag, *files, "--title", f"Cursiv Recruit {__version__}",
+        notes = "Windows: download Vanguard-Setup and run it (More info -> Run anyway). Linux: the zip."
+        r = subprocess.run(["gh", "release", "create", tag, *files, "--title", f"Vanguard {__version__}",
                             "--notes", notes, "--target", "main"], cwd=ROOT)
         if r.returncode != 0:                     # release already there: replace its files
             r = subprocess.run(["gh", "release", "upload", tag, *files, "--clobber"], cwd=ROOT)

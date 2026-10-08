@@ -1,5 +1,5 @@
 'use strict';
-// First-run interview: before handing over the chat, Recruit asks the Soldier about themselves one question at a
+// First-run interview: before handing over the chat, Vanguard asks the Soldier about themselves one question at a
 // time and fills in the Me tab as they answer. Scripted (no AI), so it is the same every time and works offline.
 // Ends with a required PIN, the recovery code, an optional device admin PIN, then the tour.
 
@@ -7,7 +7,7 @@ const HW_PUSHBACK = "You're a Soldier — height and weight are part of the job,
   'Every Soldier is weighed and measured. I use it to tailor your fitness plan, and it stays on this device, locked by your PIN.';
 const SKIPPY = /^\s*(skip|pass|no|nope|why\??|prefer not.*|rather not.*|none of your business|n\/a|idk|i don'?t want to.*)\s*[.!]?\s*$/i;
 // A new Soldier may type a real question instead of an answer ("can the Army pay for college"). It must never be
-// saved as their name or job; Recruit holds it and answers it right after setup. A question word alone isn't
+// saved as their name or job; Vanguard holds it and answers it right after setup. A question word alone isn't
 // enough ("Will Carter", "May Lee" are names), so it also needs a "?" or a sentence's worth of words.
 const QUESTION_START = /^\s*(can|could|what|what's|how|why|when|where|who|which|do|does|did|is|are|am|should|will|would|may|tell me|explain)\b/i;
 const isQuestion = t => /\?\s*$/.test(t) || (QUESTION_START.test(t) && t.trim().split(/\s+/).length >= 4);
@@ -17,12 +17,12 @@ const NAME_CHECK = v => v.trim().split(/\s+/).length > 4 || /\d/.test(v) ? 'Just
 function intakeQuestions(p, kind, faith) {
   const name = p.name ? `, ${p.name.split(' ')[0]}` : '';
   if (kind === 'family') return [
-    { f: 'name', q: `Welcome to Recruit${name}. I'll ask a few quick questions to set things up. First — what should I call you?`, chips: p.name ? [p.name] : [], check: NAME_CHECK },
+    { f: 'name', q: `Welcome to Vanguard${name}. I'll ask a few quick questions to set things up. First — what should I call you?`, chips: p.name ? [p.name] : [], check: NAME_CHECK },
     { f: 'stage', q: 'Where is your Soldier in their Army journey right now?', chips: STATUS.stages },
     { f: 'goals', q: 'What would help you most right now? (for example: understanding Army terms, writing letters, getting ready for a PCS)' },
   ];
   const qs = [
-    { f: 'name', q: `Welcome to Recruit${name}. Before we start, I'll ask you about yourself so I can help you the right way — it takes about two minutes. What's your first and last name?`, chips: p.name ? [p.name] : [], check: NAME_CHECK },
+    { f: 'name', q: `Welcome to Vanguard${name}. Before we start, I'll ask you about yourself so I can help you the right way — it takes about two minutes. What's your first and last name?`, chips: p.name ? [p.name] : [], check: NAME_CHECK },
     { f: 'rank', q: "What's your rank?", chips: ['Future Soldier (not shipped yet)', 'PV1', 'PV2', 'PFC', 'SPC', 'SGT'] },   // AR 600-20, table 1-1
     { f: 'age', q: 'How old are you?', check: NUM(16, 70, 'Just the number, like 19.') },
     { f: 'sex', q: 'Male or female? The Army Fitness Test is scored by age and sex.', chips: ['Male', 'Female'] },
@@ -88,7 +88,7 @@ const intake = {
   },
   pin() {
     if (this.lock.pin_set) return this.adminPin();
-    const box = addMsg('ai', md('Last step: **protect your profile with a PIN** (6–12 digits). It locks Recruit when you walk away and **encrypts your files** on this device. Nobody — not even the person who set up this device — can read them without it.'));
+    const box = addMsg('ai', md('Last step: **protect your profile with a PIN** (6–12 digits). It locks Vanguard when you walk away and **encrypts your files** on this device. Nobody — not even the person who set up this device — can read them without it.'));
     box.insertAdjacentHTML('beforeend', `<div class="row" style="margin-top:8px">
       <input id="inPin1" type="password" inputmode="numeric" maxlength="12" placeholder="New PIN" style="flex:1" autocomplete="new-password">
       <input id="inPin2" type="password" inputmode="numeric" maxlength="12" placeholder="Same PIN again" style="flex:1" autocomplete="new-password">
@@ -106,7 +106,7 @@ const intake = {
   },
   adminPin() {
     if (this.lock.admin_set || STATUS.kind === 'family') return this.finish();
-    const box = addMsg('ai', md("One more for whoever looks after this computer: a **device admin PIN**. It's needed to install Recruit updates, and it's separate from your own PIN. If this is your own device, set one now."));
+    const box = addMsg('ai', md("One more for whoever looks after this computer: a **device admin PIN**. It's needed to install Vanguard updates, and it's separate from your own PIN. If this is your own device, set one now."));
     box.insertAdjacentHTML('beforeend', `<div class="row" style="margin-top:8px">
       <input id="inAdm" type="password" inputmode="numeric" maxlength="12" placeholder="Admin PIN (6–12 digits)" style="flex:1" autocomplete="new-password">
       <button class="btn primary" type="button" id="inAdmGo">Set admin PIN</button><button class="btn small" type="button" id="inAdmSkip">Not my device — skip</button></div><p class="faint" id="inAdmMsg"></p>`);
@@ -124,7 +124,7 @@ const intake = {
     const facts = [p.rank && p.name ? `**${p.rank} ${p.name}**` : p.name && `**${p.name}**`, p.age && `${p.age} years old`,
       p.height && p.weight && `${heightText(p.height)}, ${p.weight} lb`, p.mos && `MOS ${p.mos}`, p.stage && p.stage, p.station && `at ${p.station}`].filter(Boolean);
     addMsg('ai', md(`You're set up${facts.length ? ': ' + facts.join(' · ') : ''}.\n\nYou can change any of this in the **Me** tab.${aiReady() ? '' : ' For full-sentence answers, add the **Offline AI** in **Me → Add-ons** (needs internet once).'} Now it's your turn — ask me anything about Army life, or tap a suggestion below.`));
-    $('#suggest').hidden = false; $('#msgIn').placeholder = 'Ask Recruit…';
+    $('#suggest').hidden = false; $('#msgIn').placeholder = 'Ask Vanguard…';
     thread.appendChild($('#suggest'));
     refreshStatus();
     let seen = '1';

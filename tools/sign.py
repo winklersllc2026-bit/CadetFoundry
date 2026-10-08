@@ -1,13 +1,13 @@
 """
-Release signing for Recruit updates and the library (run on the BUILD machine only).
+Release signing for Vanguard updates and the library (run on the BUILD machine only).
 
     python tools/sign.py keygen                 make your signing key (once)
-    python tools/sign.py sign site/dist/Cursiv-Recruit-0.9.0.zip     -> ...zip.sig
+    python tools/sign.py sign site/dist/Vanguard-0.9.0.zip     -> ...zip.sig
     python tools/sign.py library                fingerprint library/ and sign the list
 
-The private key is written OUTSIDE the project (default ~/.cursiv-recruit-release/release_key.pem) so it
+The private key is written OUTSIDE the project (default ~/.vanguard-release/release_key.pem) so it
 never ends up in git, a zip or a device. Back it up somewhere safe: without it you can't sign updates,
-and anyone who has it can. The public key goes into recruit/data/release_key.pub, which ships with the app.
+and anyone who has it can. The public key goes into vanguard/data/release_key.pub, which ships with the app.
 """
 from __future__ import annotations
 
@@ -18,9 +18,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-from recruit import integrity  # noqa: E402
+from vanguard import integrity  # noqa: E402
 
-DEFAULT_KEY = Path.home() / ".cursiv-recruit-release" / "release_key.pem"
+DEFAULT_KEY = Path.home() / ".vanguard-release" / "release_key.pem"
 
 
 def _arg(argv: list[str], flag: str, default: Path) -> Path:

@@ -1,0 +1,553 @@
+{
+ "source": "DFAS, How to read an active duty Army LES / How to read a Reserve and National Guard LES (dfas.mil, Pay & Entitlements > About Pay), DFAS Form 702",
+ "sections": [
+  {
+   "from": 1,
+   "to": 9,
+   "name": "Identification"
+  },
+  {
+   "from": 10,
+   "to": 24,
+   "name": "Pay summary"
+  },
+  {
+   "from": 25,
+   "to": 32,
+   "name": "Leave"
+  },
+  {
+   "from": 33,
+   "to": 38,
+   "name": "Federal taxes"
+  },
+  {
+   "from": 39,
+   "to": 43,
+   "name": "FICA (Social Security and Medicare)"
+  },
+  {
+   "from": 44,
+   "to": 49,
+   "name": "State taxes"
+  },
+  {
+   "from": 50,
+   "to": 62,
+   "name": "Pay data"
+  },
+  {
+   "from": 63,
+   "to": 75,
+   "name": "Thrift Savings Plan (TSP)"
+  },
+  {
+   "from": 76,
+   "to": 78,
+   "name": "Remarks and year to date"
+  }
+ ],
+ "fields": [
+  {
+   "n": 1,
+   "label": "NAME",
+   "section": "Identification",
+   "active": "The member's name in last, first, middle initial format."
+  },
+  {
+   "n": 2,
+   "label": "SOC. SEC. NO.",
+   "section": "Identification",
+   "active": "The member's Social Security Number.",
+   "note": "Your LES shows your Social Security Number. Don't post, text or share a photo of it."
+  },
+  {
+   "n": 3,
+   "label": "GRADE",
+   "section": "Identification",
+   "active": "The member's current pay grade."
+  },
+  {
+   "n": 4,
+   "label": "PAY DATE",
+   "section": "Identification",
+   "active": "The date the member entered active duty for pay purposes in YYMMDD format. This is synonymous with the Pay Entry Base Date (PEBD)."
+  },
+  {
+   "n": 5,
+   "label": "YRS SVC",
+   "section": "Identification",
+   "active": "In two digits, the actual years of creditable service."
+  },
+  {
+   "n": 6,
+   "label": "ETS",
+   "section": "Identification",
+   "active": "The Expiration Term of Service in YYMMDD format. This is synonymous with the Expiration of Active Obligated Service (EAOS)."
+  },
+  {
+   "n": 7,
+   "label": "BRANCH",
+   "section": "Identification",
+   "active": "The branch of service, i.e., Navy, Army, Air Force.",
+   "reserve": "This field reflects branch of service OR program which the service member is enrolled."
+  },
+  {
+   "n": 8,
+   "label": "ADSN/DSSN",
+   "section": "Identification",
+   "active": "The Disbursing Station Symbol Number used to identify each disbursing/finance office."
+  },
+  {
+   "n": 9,
+   "label": "PERIOD COVERED",
+   "section": "Identification",
+   "active": "This is the period covered by the individual LES. Normally it will be for one calendar month. If this is a separation LES, the separation date will appear in this field.",
+   "reserve": "This field will show the \"Check Date\" for Reserve or National Guard members."
+  },
+  {
+   "n": 10,
+   "label": "ENTITLEMENTS",
+   "section": "Pay summary",
+   "active": "In columnar style the names of the entitlements and allowances being paid. Space is allocated for fifteen entitlements and/or allowances. If more than fifteen are present the overflow will be printed in the remarks block. Any retroactive entitlements and/or allowances will be added to like entitlements and/or allowances."
+  },
+  {
+   "n": 11,
+   "label": "DEDUCTIONS",
+   "section": "Pay summary",
+   "active": "The description of the deductions are listed in columnar style. This includes items such as taxes, SGLI, Mid-month pay and dependent dental plan. Space is allocated for fifteen deductions. If more than fifteen are present the overflow will be printed in the remarks block. Any retroactive deductions will be added to like deductions.",
+   "reserve": "The description of the deductions is listed in columnar style. This includes items such as taxes, SGLI and dependent dental plan. Space is allocated for fifteen deductions. If more than fifteen are present the overflow will be printed in the remarks block. Any retroactive deductions will be added to like deductions."
+  },
+  {
+   "n": 12,
+   "label": "ALLOTMENTS",
+   "section": "Pay summary",
+   "active": "In columnar style the type of the actual allotments being deducted. This includes discretionary and non-discretionary allotments for savings and/or checking accounts, insurance, bonds, etc. Space is allocated for fifteen allotments. If a member has more than one of the same type of allotment, the only differentiation may be that of the dollar amount.",
+   "reserve": "Reservist and National Guard do not have allotments."
+  },
+  {
+   "n": 13,
+   "label": "AMT FWD",
+   "section": "Pay summary",
+   "active": "The amount of all unpaid pay and allowances due from the prior LES."
+  },
+  {
+   "n": 14,
+   "label": "TOT ENT",
+   "section": "Pay summary",
+   "active": "The figure from Field 20 that is the total of all entitlements and/or allowances listed."
+  },
+  {
+   "n": 15,
+   "label": "TOT DED",
+   "section": "Pay summary",
+   "active": "The figure from Field 21 that is the total of all deductions."
+  },
+  {
+   "n": 16,
+   "label": "TOT ALMT",
+   "section": "Pay summary",
+   "active": "The figure from Field 22 that is the total of all allotments.",
+   "reserve": "Reservist and National Guard do not have allotments."
+  },
+  {
+   "n": 17,
+   "label": "NET AMT",
+   "section": "Pay summary",
+   "active": "The dollar value of all unpaid pay and allowances, plus total entitlements and/or allowances, minus deductions and allotments due on the current LES.",
+   "reserve": "The dollar value of all unpaid pay and allowances, plus total entitlements and/or allowances, minus deductions due on the current LES."
+  },
+  {
+   "n": 18,
+   "label": "CR FWD",
+   "section": "Pay summary",
+   "active": "The dollar value of all unpaid pay and allowances due to reflect on the next LES as the +AMT FWD."
+  },
+  {
+   "n": 19,
+   "label": "EOM PAY",
+   "section": "Pay summary",
+   "active": "The actual amount of the payment to be paid to the member on End-of-Month payday.",
+   "reserve": "The actual amount of the payment to be paid to the member on that specific payday."
+  },
+  {
+   "n": 20,
+   "label": "TOTAL",
+   "section": "Pay summary",
+   "active": "The total amounts for the entitlements and/or allowances, deductions and allotments respectively.",
+   "reserve": "The total amounts for the entitlements and/or allowances, and deductions respectively."
+  },
+  {
+   "n": 21,
+   "label": "TOTAL",
+   "section": "Pay summary",
+   "active": "The total amounts for the entitlements and/or allowances, deductions and allotments respectively.",
+   "reserve": "The total amounts for the entitlements and/or allowances, and deductions respectively."
+  },
+  {
+   "n": 22,
+   "label": "TOTAL",
+   "section": "Pay summary",
+   "active": "The total amounts for the entitlements and/or allowances, deductions and allotments respectively.",
+   "reserve": "The total amounts for the entitlements and/or allowances, and deductions respectively."
+  },
+  {
+   "n": 23,
+   "label": "DIEMS",
+   "section": "Pay summary",
+   "active": "Date initially entered military service: This date is used SOLELY to indicate which retirement plan a member is under. For those members with a DIEMS date prior to September 8, 1980, they are under the FINAL PAY retirement plan. For those members with a DIEMS date of September 8, 1980 through July 31, 1986, they are under the HIGH-3 retirement plan. For those members with a DIEMS date of August 1, 1986 or later, they were initially under the REDUX retirement plan. This was changed by law in October 2000, when they were placed under the HIGH-3 plan, with the OPTION to return to the REDUX plan. In consideration of making this election, they become entitled to a $30,000 Career Service Bonus. The data in this block comes from PERSCOM. DFAS is not responsible for the accuracy of this data. If a member feels that the DIEMS date shown in this block is erroneous, they must see their local servicing Personnel Office for corrective action.",
+   "reserve": "Fields 23 and 24 are NOT used by Reserve and National Guard members.",
+   "note": "DFAS's guide was written before the Blended Retirement System. Soldiers who entered service on or after January 1, 2018 are under BRS (Summary of the Thrift Savings Plan, TSPBK08) — see the TSP calculator."
+  },
+  {
+   "n": 24,
+   "label": "RET PLAN",
+   "section": "Pay summary",
+   "active": "Type of retirement plan, i.e. Final Pay, High 3, REDUX; or CHOICE (CHOICE reflects members who have less than 15 years service and have not elected to go with REDUX or stay with their current retirement plan).",
+   "reserve": "Fields 23 and 24 are NOT used by Reserve and National Guard members.",
+   "note": "DFAS's guide was written before the Blended Retirement System; newer Soldiers will see BRS here."
+  },
+  {
+   "n": 25,
+   "label": "BF BAL",
+   "section": "Leave",
+   "active": "The brought forward leave balance. Balance may be at the beginning of the fiscal year, or when active duty began, or the day after the member was paid Lump Sum Leave (LSL)."
+  },
+  {
+   "n": 26,
+   "label": "ERND",
+   "section": "Leave",
+   "active": "The cumulative amount of leave earned in the current fiscal year or current term of enlistment if the member reenlisted/extended since the beginning of the fiscal year. Normally increases by 2.5 days each month.",
+   "note": "Track your own leave in Vanguard's leave tracker (2.5 days a month)."
+  },
+  {
+   "n": 27,
+   "label": "USED",
+   "section": "Leave",
+   "active": "The cumulative amount of leave used in the current fiscal year or current term of enlistment if member reenlisted/extended since the beginning of the fiscal year."
+  },
+  {
+   "n": 28,
+   "label": "CR BAL",
+   "section": "Leave",
+   "active": "The current leave balance as of the end of the period covered by the LES."
+  },
+  {
+   "n": 29,
+   "label": "ETS BAL",
+   "section": "Leave",
+   "active": "The projected leave balance to the member's Expiration Term of Service (ETS)."
+  },
+  {
+   "n": 30,
+   "label": "LV LOST",
+   "section": "Leave",
+   "active": "The number of days of leave that has been lost."
+  },
+  {
+   "n": 31,
+   "label": "LV PAID",
+   "section": "Leave",
+   "active": "The number of days of leave paid to date."
+  },
+  {
+   "n": 32,
+   "label": "USE/LOSE",
+   "section": "Leave",
+   "active": "The projected number of days of leave that will be lost if not taken in the current fiscal year on a monthly basis. The number of days of leave in this block will decrease with any leave usage."
+  },
+  {
+   "n": 33,
+   "label": "WAGE PERIOD",
+   "section": "Federal taxes",
+   "active": "The amount of money earned this LES period that is subject to Federal Income Tax Withholding (FITW)."
+  },
+  {
+   "n": 34,
+   "label": "WAGE YTD",
+   "section": "Federal taxes",
+   "active": "The money earned year-to-date that is subject to FITW."
+  },
+  {
+   "n": 35,
+   "label": "M/S",
+   "section": "Federal taxes",
+   "active": "The marital status used to compute the FITW."
+  },
+  {
+   "n": 36,
+   "label": "EX",
+   "section": "Federal taxes",
+   "active": "The number of exemptions used to compute the FITW."
+  },
+  {
+   "n": 37,
+   "label": "ADD'L TAX",
+   "section": "Federal taxes",
+   "active": "The member specified additional dollar amount to be withheld in addition to the amount computed by the Marital Status and Exemptions."
+  },
+  {
+   "n": 38,
+   "label": "TAX YTD",
+   "section": "Federal taxes",
+   "active": "The cumulative total of FITW withheld throughout the calendar year."
+  },
+  {
+   "n": 39,
+   "label": "WAGE PERIOD",
+   "section": "FICA (Social Security and Medicare)",
+   "active": "The amount of money earned this LES period that is subject to FICA."
+  },
+  {
+   "n": 40,
+   "label": "SOC WAGE YTD",
+   "section": "FICA (Social Security and Medicare)",
+   "active": "The wages earned year-to-date that are subject to FICA."
+  },
+  {
+   "n": 41,
+   "label": "SOC TAX YTD",
+   "section": "FICA (Social Security and Medicare)",
+   "active": "Cumulative total of FICA withheld throughout the calendar year."
+  },
+  {
+   "n": 42,
+   "label": "MED WAGE YTD",
+   "section": "FICA (Social Security and Medicare)",
+   "active": "The wages earned year-to-date that are subject to Medicare."
+  },
+  {
+   "n": 43,
+   "label": "MED TAX YTD",
+   "section": "FICA (Social Security and Medicare)",
+   "active": "Cumulative total of Medicare taxes paid year-to-date."
+  },
+  {
+   "n": 44,
+   "label": "ST",
+   "section": "State taxes",
+   "active": "The two digit postal abbreviation for the state the member elected."
+  },
+  {
+   "n": 45,
+   "label": "WAGE PERIOD",
+   "section": "State taxes",
+   "active": "The amount of money earned this LES period that is subject to State Income Tax Withholding (SITW)."
+  },
+  {
+   "n": 46,
+   "label": "WAGE YTD",
+   "section": "State taxes",
+   "active": "The money earned year-to-date that is subject to SITW."
+  },
+  {
+   "n": 47,
+   "label": "M/S",
+   "section": "State taxes",
+   "active": "The marital status used to compute the SITW."
+  },
+  {
+   "n": 48,
+   "label": "EX",
+   "section": "State taxes",
+   "active": "The number of exemptions used to compute the SITW."
+  },
+  {
+   "n": 49,
+   "label": "TAX YTD",
+   "section": "State taxes",
+   "active": "The cumulative total of SITW withheld throughout the calendar year."
+  },
+  {
+   "n": 50,
+   "label": "BAQ TYPE",
+   "section": "Pay data",
+   "active": "The type of Basic Allowance for Quarters being paid.",
+   "reserve": "The member's type of Basic Allowance for Quarters status. W/O DEP - Member without dependents; W DEP - Member with dependents; WDAGQT - Member with dependents assigned government quarters.",
+   "note": "DFAS's guide still uses the older names BAQ and VHA. They were replaced by BAH (Basic Allowance for Housing); blocks 50 to 58 hold your housing allowance information."
+  },
+  {
+   "n": 51,
+   "label": "BAQ DEPN",
+   "section": "Pay data",
+   "active": "A code that indicates the type of dependent. A - Spouse; C - Child; D - Parent; G - Grandfathered; I - Member married to member/own right; K - Ward of the court; L - Parents in Law; R - Own right; S - Student (age 21-22); T - Handicapped child over age 21; W - Member married to member, child under 21.",
+   "reserve": "Indicates the type of dependent: Spouse; Child; Parent; Grandfathered; Member married to member/own right; Ward of the court; Parents in Law; Own right; Student (age 21-22); Handicapped child over age 21; Member married to member, child under 21; No dependents; N/A."
+  },
+  {
+   "n": 52,
+   "label": "VHA ZIP",
+   "section": "Pay data",
+   "active": "The zip code used in the computation of Variable Housing Allowance (VHA) if entitlement exists.",
+   "note": "VHA is an older name — today this is your BAH (housing allowance) information."
+  },
+  {
+   "n": 53,
+   "label": "RENT AMT",
+   "section": "Pay data",
+   "active": "The amount of rent paid for housing if applicable."
+  },
+  {
+   "n": 54,
+   "label": "SHARE",
+   "section": "Pay data",
+   "active": "The number of people with which the member shares housing costs."
+  },
+  {
+   "n": 55,
+   "label": "STAT",
+   "section": "Pay data",
+   "active": "The VHA status; i.e., accompanied or unaccompanied.",
+   "note": "VHA is an older name — today this is your BAH (housing allowance) information."
+  },
+  {
+   "n": 56,
+   "label": "JFTR",
+   "section": "Pay data",
+   "active": "The Joint Federal Travel Regulation (JFTR) code based on the location of the member for Cost of Living Allowance (COLA) purposes."
+  },
+  {
+   "n": 57,
+   "label": "DEPNS",
+   "section": "Pay data",
+   "active": "The number of dependents the member has for VHA purposes.",
+   "reserve": "The number of dependents the member has for COLA purposes."
+  },
+  {
+   "n": 58,
+   "label": "2D JFTR",
+   "section": "Pay data",
+   "active": "The JFTR code based on the location of the member's dependents for COLA purposes."
+  },
+  {
+   "n": 59,
+   "label": "BAS TYPE",
+   "section": "Pay data",
+   "active": "An alpha code that indicates the type of Basic Allowance for Subsistence (BAS) the member is receiving, if applicable. This field will be blank for officers. B - Separate Rations; C - TDY/PCS/Proceed Time; H - Rations-in-kind not available; K - Rations under emergency conditions.",
+   "reserve": "STAND - Separate Rations; (blank) - Rations-in-kind not available; OFFIC - Officer Rations."
+  },
+  {
+   "n": 60,
+   "label": "CHARITY YTD",
+   "section": "Pay data",
+   "active": "The cumulative amount of charitable contributions for the calendar year."
+  },
+  {
+   "n": 61,
+   "label": "TPC",
+   "section": "Pay data",
+   "active": "This field is not used by the active component of any branch of service.",
+   "reserve": "This field is not used by the Active Component. Army Reserves and National Guard use this field to identify Training Program Codes. A - Normal pay status code for a regular service member on regular duty; C - Funeral Honors Duty; M - Annual training tours over 30 days; N - Death; O - Training for HPSP, ROTC, and Special ADT over 30 days; T - ADT over 29 days (School); U - Undergraduate pilot training, in-grade pilot, navigator, and advance flying training officers; X - Stipend Tour of HPIP participants or subsistence for ROTC participants; Z - Administrative and support training (exclusive of recruiting)."
+  },
+  {
+   "n": 62,
+   "label": "PACIDN",
+   "section": "Pay data",
+   "active": "The activity Unit Identification Code (UIC). This field is currently used by Army only.",
+   "reserve": "The activity Unit Identification Code (UIC)."
+  },
+  {
+   "n": 63,
+   "label": "BASE PAY RATE",
+   "section": "Thrift Savings Plan (TSP)",
+   "active": "The percentage of base pay elected for TSP contributions.",
+   "note": "The TSP calculator in Vanguard shows how your contribution percentage adds up with the BRS match."
+  },
+  {
+   "n": 64,
+   "label": "BASE PAY CURRENT",
+   "section": "Thrift Savings Plan (TSP)",
+   "active": "Reserved for future use.",
+   "reserve": "The amount of Base Pay withheld for TSP from current pay entitlement."
+  },
+  {
+   "n": 65,
+   "label": "SPECIAL PAY RATE",
+   "section": "Thrift Savings Plan (TSP)",
+   "active": "The percentage of Specialty Pay elected for TSP contribution."
+  },
+  {
+   "n": 66,
+   "label": "SPECIAL PAY CURRENT",
+   "section": "Thrift Savings Plan (TSP)",
+   "active": "Reserved for future use.",
+   "reserve": "The amount of Special Pay withheld for TSP from current pay entitlement."
+  },
+  {
+   "n": 67,
+   "label": "INCENTIVE PAY RATE",
+   "section": "Thrift Savings Plan (TSP)",
+   "active": "Percentage of Incentive Pay elected for TSP contribution.",
+   "reserve": "Percentage of Incentive Pay elected towards TSP contribution."
+  },
+  {
+   "n": 68,
+   "label": "INCENTIVE PAY CURRENT",
+   "section": "Thrift Savings Plan (TSP)",
+   "active": "Reserved for future use.",
+   "reserve": "The amount of Incentive Pay withheld for TSP from current pay entitlement."
+  },
+  {
+   "n": 69,
+   "label": "BONUS PAY RATE",
+   "section": "Thrift Savings Plan (TSP)",
+   "active": "The percentage of Bonus Pay elected towards TSP contribution."
+  },
+  {
+   "n": 70,
+   "label": "BONUS PAY CURRENT",
+   "section": "Thrift Savings Plan (TSP)",
+   "active": "Reserved for future use.",
+   "reserve": "The amount of Bonus Pay withheld for TSP from current pay entitlement."
+  },
+  {
+   "n": 71,
+   "label": "RESERVED",
+   "section": "Thrift Savings Plan (TSP)",
+   "active": "Reserved for future use."
+  },
+  {
+   "n": 72,
+   "label": "TSP YTD DEDUCTION",
+   "section": "Thrift Savings Plan (TSP)",
+   "active": "(TSP YEAR TO DATE DEDUCTION) Dollar amount of TSP contributions deducted for the year."
+  },
+  {
+   "n": 73,
+   "label": "DEFERRED",
+   "section": "Thrift Savings Plan (TSP)",
+   "active": "Total dollar amount of TSP contributions that are deferred for tax purposes.",
+   "reserve": "Dollar amount of pay elected to be deferred during the tax year."
+  },
+  {
+   "n": 74,
+   "label": "EXEMPT",
+   "section": "Thrift Savings Plan (TSP)",
+   "active": "Dollar amount of TSP contributions that are reported as tax exempt to the Internal Revenue Service (IRS)."
+  },
+  {
+   "n": 75,
+   "label": "RESERVED",
+   "section": "Thrift Savings Plan (TSP)",
+   "active": "Reserved for future use."
+  },
+  {
+   "n": 76,
+   "label": "REMARKS",
+   "section": "Remarks and year to date",
+   "active": "This area is used to provide you with general notices from varying levels of command, as well as the literal explanation of starts, stops, and changes to pay items in the entries within the \"ENTITLEMENTS\", \"DEDUCTIONS\", and \"ALLOTMENTS\" fields.",
+   "reserve": "Notices of starts, stops and changes to a member's pay items as well as general notices from varying levels of command may appear."
+  },
+  {
+   "n": 77,
+   "label": "YTD ENTITLE",
+   "section": "Remarks and year to date",
+   "active": "The cumulative total of all entitlements for the calendar year."
+  },
+  {
+   "n": 78,
+   "label": "YTD DEDUCT",
+   "section": "Remarks and year to date",
+   "active": "The cumulative total of all deductions for the calendar year."
+  }
+ ]
+}

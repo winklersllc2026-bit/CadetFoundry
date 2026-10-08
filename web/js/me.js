@@ -12,9 +12,9 @@ async function showAddons() {
       ${j.name === key && j.state ? `<div style="margin-top:6px">${j.state === 'error' ? `<span style="color:var(--red)">${esc(j.msg)}</span>`
         : `<div style="height:8px;background:var(--line);border-radius:4px;overflow:hidden"><div style="height:100%;width:${j.pct || 0}%;background:var(--tan)"></div></div>
            <div class="faint">${esc(j.state === 'done' ? j.msg : j.step)}</div>`}</div>` : ''}</div>`;
-  const html = `<h3>🧩 Add-ons</h3><p class="faint">Optional. Each needs internet once, then works offline. You can keep using Recruit while one installs.</p>
+  const html = `<h3>🧩 Add-ons</h3><p class="faint">Optional. Each needs internet once, then works offline. You can keep using Vanguard while one installs.</p>
     ${row('ai', 'Offline AI', 'answers in full sentences, simpler explanations, mock board grading', st.ai)}
-    ${row('voice', 'Voice', 'talk to Recruit with the 🎤 button', st.voice)}`;
+    ${row('voice', 'Voice', 'talk to Vanguard with the 🎤 button', st.voice)}`;
   let card = $('#addonsCard');
   if (!card) { $('#meBody').insertAdjacentHTML('beforeend', '<div class="card" id="addonsCard"></div>'); card = $('#addonsCard'); }
   card.innerHTML = html;
@@ -41,7 +41,7 @@ async function showIntegrity() {
     <p>${icon} ${esc(st.message)}</p>${list('Changed', st.changed)}${list('Missing', st.missing)}${list('New, not fingerprinted', st.added)}
     <div class="row"><button class="btn small" id="intCheck">Check again</button></div>
     <h4>Device admin PIN</h4>
-    <p class="faint">${adm ? 'Set. It is needed to install updates and reload the library. It is separate from every profile PIN.' : 'Not set. Installing updates needs a device admin PIN, so one profile can\'t change Recruit for everyone on a shared device. Whoever looks after this device should set it.'}</p>
+    <p class="faint">${adm ? 'Set. It is needed to install updates and reload the library. It is separate from every profile PIN.' : 'Not set. Installing updates needs a device admin PIN, so one profile can\'t change Vanguard for everyone on a shared device. Whoever looks after this device should set it.'}</p>
     <div class="row">${adm ? '<input id="admCur" type="password" inputmode="numeric" maxlength="12" placeholder="Current admin PIN" style="flex:1">' : ''}
       <input id="admNew" type="password" inputmode="numeric" maxlength="12" placeholder="New admin PIN (6–12 digits)" style="flex:1">
       <button class="btn small" id="admSave">${adm ? 'Change' : 'Set admin PIN'}</button></div><p class="faint" id="admMsg"></p>
@@ -51,7 +51,7 @@ async function showIntegrity() {
     <div class="row"><input id="libAdm" type="password" inputmode="numeric" maxlength="12" placeholder="Device admin PIN" style="flex:1" ${adm ? '' : 'disabled'}>
       <button class="btn small" id="libToggle" ${adm ? '' : 'disabled'}>${libOnly ? 'Turn off (allow AI)' : 'Turn on library-only'}</button></div>
     <p class="faint" id="libMsg">${adm ? '' : 'Set a device admin PIN above first.'}</p>
-    <p class="faint">Recruit ${esc(st.version)}. ${st.update_key ? 'Updates must be signed by the publisher.' : 'No release key on this copy — signed updates aren\'t set up yet.'}</p>
+    <p class="faint">Vanguard ${esc(st.version)}. ${st.update_key ? 'Updates must be signed by the publisher.' : 'No release key on this copy — signed updates aren\'t set up yet.'}</p>
     ${st.update_key ? `<details><summary>Install an update from a USB stick</summary>
       <label>Update file (.zip)</label><input type="file" id="updZip" accept=".zip">
       <label>Signature (.sig)</label><input type="file" id="updSig" accept=".sig">
@@ -72,7 +72,7 @@ async function showIntegrity() {
     $('#updMsg').textContent = 'Checking the signature…';
     const b64 = await new Promise(res => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.readAsDataURL(z); });
     const r = await api('/api/update', { zip: b64, sig: await g.text(), admin: $('#updAdmin').value });
-    $('#updMsg').innerHTML = r.ok ? `<b style="color:var(--green)">✓ Installed version ${esc(r.version)}</b> (was ${esc(r.current)}). Close Recruit and start it again to finish.`
+    $('#updMsg').innerHTML = r.ok ? `<b style="color:var(--green)">✓ Installed version ${esc(r.version)}</b> (was ${esc(r.current)}). Close Vanguard and start it again to finish.`
       : `<b style="color:var(--red)">Not installed.</b> ${esc(r.error || '')}`;
   };
 }
@@ -111,11 +111,11 @@ loaders.me = async () => {
       <div>${faithBoxes}</div>
       <div class="row" style="margin-top:10px"><button class="btn primary">Save</button><span class="faint" id="profSaved"></span></div>
     </form>
-    <div class="card"><h3>What Recruit remembers about you</h3>
-      ${mems.length ? mems.map(m => `<div class="row" style="justify-content:space-between;border-bottom:1px solid var(--line);padding:6px 0"><span>${esc(m.text)}</span><button class="btn small danger" data-forget="${esc(m.id)}">Forget</button></div>`).join('') : '<p class="faint">Nothing yet. Recruit learns as you talk, or add something:</p>'}
+    <div class="card"><h3>What Vanguard remembers about you</h3>
+      ${mems.length ? mems.map(m => `<div class="row" style="justify-content:space-between;border-bottom:1px solid var(--line);padding:6px 0"><span>${esc(m.text)}</span><button class="btn small danger" data-forget="${esc(m.id)}">Forget</button></div>`).join('') : '<p class="faint">Nothing yet. Vanguard learns as you talk, or add something:</p>'}
       <div class="row" style="margin-top:8px"><input id="memIn" placeholder="e.g. I'm working on my plank time" style="flex:1"><button class="btn small" id="memAdd">Add</button></div></div>
     <div class="card"><h3>Security</h3>
-      <p class="muted">${lock.pin_set ? `A PIN protects Recruit. It locks after <b>${lock.idle_minutes}</b> minutes without use.${lock.encrypted ? ' Your files are <b>encrypted</b> on this device.' : ''}` : 'No PIN set — anyone who picks up this device can open Recruit, and your files are not encrypted. Set a PIN of 6–12 digits.'}</p>
+      <p class="muted">${lock.pin_set ? `A PIN protects Vanguard. It locks after <b>${lock.idle_minutes}</b> minutes without use.${lock.encrypted ? ' Your files are <b>encrypted</b> on this device.' : ''}` : 'No PIN set — anyone who picks up this device can open Vanguard, and your files are not encrypted. Set a PIN of 6–12 digits.'}</p>
       <p class="faint">Your PIN and your <b>recovery code</b> are the only keys to your encrypted files. If you forget your PIN, use "Forgot PIN?" on the lock screen. Lost your code? Make a new one here (it replaces the old one).</p>
       <div class="row">
         ${lock.pin_set ? '<input id="pinCur" type="password" inputmode="numeric" maxlength="12" placeholder="Current PIN" style="flex:1">' : ''}
@@ -130,19 +130,19 @@ loaders.me = async () => {
     </div>
     <div class="card"><h3>About this device</h3>
       <p class="muted">${e.model ? `Offline AI model: <b>${esc(e.model)}</b>.` : 'No offline AI model installed — the library, study tools, faith library and logbook still work.'}</p>
-      <p class="muted">Library: ${lib.cards} study cards, ${lib.quiz_questions} quiz questions, ${lib.documents.length} official documents. Recruit works completely offline.</p>
-      <p class="muted">Voice: ${speech.ok ? `read-aloud ready (${esc(speech.voice.name)}, on this device)` : 'no offline voice found for read-aloud'}${STATUS.voice ? ' · 🎤 talk-to-Recruit installed' : ' · 🎤 talk-to-Recruit not installed (tools/install_voice.py)'}.</p>
+      <p class="muted">Library: ${lib.cards} study cards, ${lib.quiz_questions} quiz questions, ${lib.documents.length} official documents. Vanguard works completely offline.</p>
+      <p class="muted">Voice: ${speech.ok ? `read-aloud ready (${esc(speech.voice.name)}, on this device)` : 'no offline voice found for read-aloud'}${STATUS.voice ? ' · 🎤 talk-to-Vanguard installed' : ' · 🎤 talk-to-Vanguard not installed (tools/install_voice.py)'}.</p>
       ${speech.ok ? `<label style="color:var(--text)"><input type="checkbox" id="autoRead" ${speech.auto ? 'checked' : ''} style="width:auto"> Read every answer aloud automatically</label>` : ''}
-      <div class="row" style="margin-top:8px"><button class="btn small" id="quitApp">⏻ Quit Recruit</button><button class="btn small" id="tourAgain">Take the tour</button><button class="btn small" id="reloadLib">Reload library</button><button class="btn small danger" id="clearChat">Clear chat history</button></div>
+      <div class="row" style="margin-top:8px"><button class="btn small" id="quitApp">⏻ Quit Vanguard</button><button class="btn small" id="tourAgain">Take the tour</button><button class="btn small" id="reloadLib">Reload library</button><button class="btn small danger" id="clearChat">Clear chat history</button></div>
     </div>
     <div class="card"><h3>Backup and move to a new device</h3>
-      <p class="muted">Saves your profile, logbook, letters, address book, study progress and what Recruit remembers into one <b>encrypted</b> file. Device settings are never included.</p>
+      <p class="muted">Saves your profile, logbook, letters, address book, study progress and what Vanguard remembers into one <b>encrypted</b> file. Device settings are never included.</p>
       <label>Backup password (at least 10 characters — three or four words works well)</label>
       <input id="bkPass" type="password" autocomplete="new-password" maxlength="200" placeholder="Needed to open the backup later — write it down">
       <div class="row" style="margin-top:8px"><button class="btn small" id="bkSave">⬇ Download encrypted backup</button>
         <label class="btn small" style="margin:0;color:var(--text)">⬆ Restore from backup<input type="file" id="restoreFile" accept=".json,application/json" hidden></label></div>
       <p class="faint" id="restoreMsg">Restoring replaces what's on this device with the backup. Without the backup password, nobody can open the file.</p></div>
-    <p class="faint">Cursiv Recruit is a study aid, not an official Army source. Confirm standards with your chain of command. Everything you enter stays on this device — there is no tracking.</p>`;
+    <p class="faint">Vanguard is a study aid, not an official Army source. Confirm standards with your chain of command. Everything you enter stays on this device — there is no tracking.</p>`;
   $('#profForm').onsubmit = async ev => {
     ev.preventDefault();
     const data = Object.fromEntries(new FormData(ev.target));
@@ -199,7 +199,7 @@ loaders.me = async () => {
     if (!confirm('Replace everything on this device with this backup?')) { ev.target.value = ''; return; }
     let data; try { data = JSON.parse(await f.text()); } catch (e) { $('#restoreMsg').textContent = "That file couldn't be read."; return; }
     ev.target.value = '';
-    if (data.recruit_backup_sealed && !$('#bkPass').value) { $('#restoreMsg').textContent = 'Type the backup password first, then choose the file again.'; $('#bkPass').focus(); return; }
+    if (data.vanguard_backup_sealed && !$('#bkPass').value) { $('#restoreMsg').textContent = 'Type the backup password first, then choose the file again.'; $('#bkPass').focus(); return; }
     $('#restoreMsg').textContent = 'Opening the backup…';
     const r = await api('/api/restore', { file: data, password: $('#bkPass').value });
     $('#restoreMsg').textContent = r.error ? r.error : `Restored (${r.restored.length} parts, backup from ${r.from}).`;
@@ -218,9 +218,9 @@ loaders.me = async () => {
   if ($('#autoRead')) $('#autoRead').onchange = ev => speech.setAuto(ev.target.checked);
   $('#tourAgain').onclick = () => tour(lock.current.id);
   $('#quitApp').onclick = async () => {
-    if (!confirm('Close Recruit? Open it again any time from the desktop icon.')) return;
+    if (!confirm('Close Vanguard? Open it again any time from the desktop icon.')) return;
     await api('/api/quit', {});
-    document.body.innerHTML = '<div style="display:grid;place-items:center;height:100vh;padding:16px;text-align:center"><div><h2>Recruit is closed.</h2><p>Open it again from the <b>Cursiv Recruit</b> icon. You can close this tab.</p></div></div>';
+    document.body.innerHTML = '<div style="display:grid;place-items:center;height:100vh;padding:16px;text-align:center"><div><h2>Vanguard is closed.</h2><p>Open it again from the <b>Vanguard</b> icon. You can close this tab.</p></div></div>';
   };
   $('#reloadLib').onclick = async () => {
     const admin = (await api('/api/lock')).admin_set ? prompt('Device admin PIN:') : '';
@@ -237,7 +237,7 @@ const TOUR = [
   ['study', '📘 Study', 'Flashcards, quizzes and timed exams; report drills (9-line, SALUTE, LACE); board prep; printable pocket cards.'],
   ['faith', '🕊️ Faith', 'Your faith texts and reading plans — only if you want them.'],
   ['logbook', '📝 Log', 'Your logbook, letters home, daily check-in, leave and money, the AFT scorer and fitness plan, and a PCS checklist. Print a board packet from the logbook.'],
-  ['me', '👤 Me', 'Your profile, PIN and encrypted backup. Set a PIN — it locks Recruit and encrypts your files on this device.'],
+  ['me', '👤 Me', 'Your profile, PIN and encrypted backup. Set a PIN — it locks Vanguard and encrypts your files on this device.'],
 ];
 function tour(pid) {
   const done = () => { try { localStorage.setItem('tour:' + pid, '1'); } catch (e) { } };
@@ -253,7 +253,7 @@ function tour(pid) {
     if (b) b.style.outline = '3px solid var(--tan)';
     o.innerHTML = `<div class="card" role="dialog" aria-modal="true" aria-labelledby="tourH" style="max-width:420px;width:100%">
       <div class="faint">${i + 1} of ${TOUR.length}</div><h3 id="tourH">${name}</h3><p>${text}</p>
-      ${i === TOUR.length - 1 ? '<p class="faint">Everything stays on this device. Recruit is a study aid — confirm standards with your chain of command.</p>' : ''}
+      ${i === TOUR.length - 1 ? '<p class="faint">Everything stays on this device. Vanguard is a study aid — confirm standards with your chain of command.</p>' : ''}
       <div class="row"><button class="btn primary" id="tourNext">${i === TOUR.length - 1 ? 'Done' : 'Next'}</button>
       ${i < TOUR.length - 1 ? '<button class="btn small" id="tourSkip">Skip the tour</button>' : ''}</div></div>`;
     $('#tourNext').onclick = () => { i++; show(); };

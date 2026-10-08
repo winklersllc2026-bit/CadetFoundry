@@ -1,5 +1,5 @@
 """
-Build recruit/data/pay_tables.json from the official DFAS pay table pages.
+Build vanguard/data/pay_tables.json from the official DFAS pay table pages.
 
     python tools/pay_tables.py EM.html WO.html BAS.html [CO.html CO_FE.html]
 
@@ -8,7 +8,7 @@ DFAS blocks automated downloads, so save the pages from a browser (File > Save P
   https://www.dfas.mil/Military-Members/payentitlements/Pay-Tables/Basic-Pay/WO/   (warrant officers)
   https://www.dfas.mil/Military-Members/payentitlements/Pay-Tables/Basic-Pay/CO/   (officers, optional)
   https://www.dfas.mil/Military-Members/payentitlements/Pay-Tables/bas/            (BAS)
-Each table keeps the "Effective ..." date printed on its page, and Recruit shows it.
+Each table keeps the "Effective ..." date printed on its page, and Vanguard shows it.
 """
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ import sys
 from html.parser import HTMLParser
 from pathlib import Path
 
-OUT = Path(__file__).resolve().parent.parent / "recruit" / "data" / "pay_tables.json"
+OUT = Path(__file__).resolve().parent.parent / "vanguard" / "data" / "pay_tables.json"
 
 
 class _Tables(HTMLParser):
