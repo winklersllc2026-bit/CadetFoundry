@@ -62,6 +62,24 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
   `tools/sign.py`), `site/worker.js`, `site/wrangler.toml`. **Do not run `--release` or `--deploy` in the cloud.**
 - ~65 files / ~570 occurrences of "cursiv"/"recruit" (case-insensitive, excluding library/ and books/).
 
+## PROGRESS LOG (update this as you go)
+
+- 2026-10-08 desktop: Phase 0 docs done. Phase 1 steps done:
+  1. Rename: package `vanguard/`, `~/.vanguard`, `VANGUARD_*`, `vanguard_session`, `install/start-vanguard.*`;
+     `tests/test_brand.py` blocks the old name (planning docs temporarily allow-listed).
+  2. AI modes: `store.ai_mode()` off / library (default) / ai; `/api/admin/ai-mode` (Instructor PIN); Me tab radio
+     buttons; "device admin PIN" is "Instructor PIN" everywhere on screen. Version 0.1.0.
+  3. Navigation: Learn (study) / Lead / Train (logbook → fitness) / Serve / Progress tabs; Ask, Me, Instructor in the
+     header; `web/js/shell.js` holds Lead/Serve/Progress/Instructor pages; Serve → Explore Military Service works.
+     NOTE: the page CSP blocks inline `onclick` — always attach listeners in JS.
+- **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with
+  Instructor PIN, hiding the matching UI; (b) "Soldier" → "Cadet" in the AI persona (`vanguard/brain.py` PERSONA,
+  APP_HELP), welcome message and suggested questions in `web/index.html`, intake questions (`web/js/intake.js`),
+  safety wording for teenagers (school counselor / trusted adult + 988); (c) rewrite README, SECURITY, LIBRARY,
+  CLAUDE.md for Vanguard, then remove the planning docs from the brand-test allow-list (reword them);
+  (d) site: new landing page, /pilot, /security (`site/build.py`, `site/worker.js`, wrangler name `vanguard`);
+  (e) REPORT.md.
+
 ## PHASE 0 — DONE (2026-10-08, desktop session): ARCHITECTURE.md, REUSE_PLAN.md, MIGRATION_PLAN.md are committed. Skip to Phase 1.
 
 ## (Phase 0 original instructions, for reference)
