@@ -450,10 +450,25 @@ def config() -> dict:
     return read_json("config.json", {})
 
 
+AI_MODES = ("off", "library", "ai")
+
+
+def ai_mode() -> str:
+    """The instructor's AI setting: "off" (no AI writing at all), "library" (default: the AI may only explain what
+    the library holds, and says so when it holds nothing) or "ai" (broader explanations, labeled as AI)."""
+    c = config()
+    mode = c.get("ai_mode")
+    if mode in AI_MODES:
+        return mode
+    return "library"
+
+
 def save_config(data: dict) -> dict:
     c = config()
-    for k in ("model", "groq_key", "gemini_key", "online", "library_only"):
+    for k in ("model", "groq_key", "gemini_key", "online", "ai_mode"):
         if k in data:
             c[k] = data[k]
+    if c.get("ai_mode") not in AI_MODES:
+        c.pop("ai_mode", None)
     write_json("config.json", c)
     return c

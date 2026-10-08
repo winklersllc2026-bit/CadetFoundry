@@ -1,5 +1,5 @@
 'use strict';
-// Me tab: profile, security, admin PIN, library check and updates, backup; first-run tour. Loaded last.
+// Me tab: profile, security, Instructor PIN, library check and updates, backup; first-run tour. Loaded last.
 
 // ── ADD-ONS ── (offline AI and voice: installed from here with a progress bar; needs internet once)
 let addonTimer = null;
@@ -19,7 +19,7 @@ async function showAddons() {
   if (!card) { $('#meBody').insertAdjacentHTML('beforeend', '<div class="card" id="addonsCard"></div>'); card = $('#addonsCard'); }
   card.innerHTML = html;
   card.querySelectorAll('[data-addon]').forEach(b => b.onclick = async () => {
-    const admin = (await api('/api/lock')).admin_set ? prompt('Device admin PIN (installing changes this device):') : '';
+    const admin = (await api('/api/lock')).admin_set ? prompt('Instructor PIN (installing changes this device):') : '';
     if (admin === null) return;
     const r = await api('/api/addons/install', { name: b.dataset.addon, admin });
     if (r.error) alert(r.error);
@@ -33,34 +33,36 @@ async function showAddons() {
 // ── LIBRARY CHECK + SIGNED UPDATES (Me tab) ──
 async function showIntegrity() {
   const st = await api('/api/integrity'), adm = (await api('/api/lock')).admin_set;
-  const libOnly = !!(await api('/api/status')).library_only;
+  const aiMode = (await api('/api/status')).ai_mode || 'library';
   const icon = { ok: '✅', changed: '⚠️', bad_signature: '⛔', unrecorded: 'ℹ️' }[st.status] || 'ℹ️';
   const list = (t, xs) => xs && xs.length ? `<div class="faint">${t}: ${xs.slice(0, 8).map(esc).join(', ')}${xs.length > 8 ? ` and ${xs.length - 8} more` : ''}</div>` : '';
   const old = $('#integrityCard'); if (old) old.remove();
   $('#meBody').insertAdjacentHTML('beforeend', `<div class="card" id="integrityCard"><h3>🔒 Library check and updates</h3>
     <p>${icon} ${esc(st.message)}</p>${list('Changed', st.changed)}${list('Missing', st.missing)}${list('New, not fingerprinted', st.added)}
     <div class="row"><button class="btn small" id="intCheck">Check again</button></div>
-    <h4>Device admin PIN</h4>
-    <p class="faint">${adm ? 'Set. It is needed to install updates and reload the library. It is separate from every profile PIN.' : 'Not set. Installing updates needs a device admin PIN, so one profile can\'t change Vanguard for everyone on a shared device. Whoever looks after this device should set it.'}</p>
-    <div class="row">${adm ? '<input id="admCur" type="password" inputmode="numeric" maxlength="12" placeholder="Current admin PIN" style="flex:1">' : ''}
-      <input id="admNew" type="password" inputmode="numeric" maxlength="12" placeholder="New admin PIN (6–12 digits)" style="flex:1">
-      <button class="btn small" id="admSave">${adm ? 'Change' : 'Set admin PIN'}</button></div><p class="faint" id="admMsg"></p>
-    <h4>Library-only answers</h4>
-    <p class="faint">${libOnly ? '<b>On.</b> Ask answers only with ✅ checked answers and the exact text of the manuals — no AI writing, so nothing can be made up. Applies to every profile on this device.'
-      : '<b>Off.</b> The offline AI adds explanation in its own words; any sentence with a number or manual the sources don’t back up is removed. Turn this on to answer only from ✅ checked answers and the manuals — for official or locked-down devices.'}</p>
-    <div class="row"><input id="libAdm" type="password" inputmode="numeric" maxlength="12" placeholder="Device admin PIN" style="flex:1" ${adm ? '' : 'disabled'}>
-      <button class="btn small" id="libToggle" ${adm ? '' : 'disabled'}>${libOnly ? 'Turn off (allow AI)' : 'Turn on library-only'}</button></div>
-    <p class="faint" id="libMsg">${adm ? '' : 'Set a device admin PIN above first.'}</p>
+    <h4>Instructor PIN</h4>
+    <p class="faint">${adm ? 'Set. It is needed to install updates and reload the library. It is separate from every profile PIN.' : 'Not set. Installing updates needs an Instructor PIN, so one profile can\'t change Vanguard for everyone on a shared device. Whoever looks after this device should set it.'}</p>
+    <div class="row">${adm ? '<input id="admCur" type="password" inputmode="numeric" maxlength="12" placeholder="Current Instructor PIN" style="flex:1">' : ''}
+      <input id="admNew" type="password" inputmode="numeric" maxlength="12" placeholder="New Instructor PIN (6–12 digits)" style="flex:1">
+      <button class="btn small" id="admSave">${adm ? 'Change' : 'Set Instructor PIN'}</button></div><p class="faint" id="admMsg"></p>
+    <h4>AI setting</h4>
+    <p class="faint">Applies to every profile on this device. <b>Off:</b> no AI writing — ✅ checked answers and the exact library text only. <b>Library only</b> (recommended for class): the AI may only explain what the library holds, and says so when it holds nothing. <b>Library + AI:</b> broader explanations, always labeled as AI.</p>
+    <div class="row" role="radiogroup" aria-label="AI setting">${[['off', 'Off'], ['library', 'Library only'], ['ai', 'Library + AI']].map(([v, t]) =>
+      `<label style="margin-right:12px"><input type="radio" name="aiMode" value="${v}" ${aiMode === v ? 'checked' : ''} ${adm ? '' : 'disabled'}> ${t}</label>`).join('')}</div>
+    <div class="row"><input id="libAdm" type="password" inputmode="numeric" maxlength="12" placeholder="Instructor PIN" style="flex:1" ${adm ? '' : 'disabled'}>
+      <button class="btn small" id="aiSave" ${adm ? '' : 'disabled'}>Save AI setting</button></div>
+    <p class="faint" id="libMsg">${adm ? '' : 'Set an Instructor PIN above first.'}</p>
     <p class="faint">Vanguard ${esc(st.version)}. ${st.update_key ? 'Updates must be signed by the publisher.' : 'No release key on this copy — signed updates aren\'t set up yet.'}</p>
     ${st.update_key ? `<details><summary>Install an update from a USB stick</summary>
       <label>Update file (.zip)</label><input type="file" id="updZip" accept=".zip">
       <label>Signature (.sig)</label><input type="file" id="updSig" accept=".sig">
-      <label>Device admin PIN</label><input type="password" id="updAdmin" inputmode="numeric" maxlength="12">
+      <label>Instructor PIN</label><input type="password" id="updAdmin" inputmode="numeric" maxlength="12">
       <div class="row" style="margin-top:8px"><button class="btn primary" id="updGo">Check and install</button></div><p id="updMsg"></p></details>` : ''}</div>`);
   $('#intCheck').onclick = async () => { await api('/api/integrity/check', {}); showIntegrity(); };
-  $('#libToggle').onclick = async () => {
-    const r = await api('/api/admin/library-only', { admin: $('#libAdm').value, on: !libOnly });
-    if (r.ok) { STATUS.library_only = r.library_only; showIntegrity(); } else $('#libMsg').textContent = r.error;
+  $('#aiSave').onclick = async () => {
+    const pick = document.querySelector('input[name=aiMode]:checked');
+    const r = await api('/api/admin/ai-mode', { admin: $('#libAdm').value, mode: pick ? pick.value : 'library' });
+    if (r.ok) { STATUS.ai_mode = r.ai_mode; STATUS.library_only = r.ai_mode === 'off'; showIntegrity(); } else $('#libMsg').textContent = r.error;
   };
   $('#admSave').onclick = async () => {
     const r = await api('/api/admin/pin', { new: $('#admNew').value, current: $('#admCur') ? $('#admCur').value : '' });
@@ -223,7 +225,7 @@ loaders.me = async () => {
     document.body.innerHTML = '<div style="display:grid;place-items:center;height:100vh;padding:16px;text-align:center"><div><h2>Vanguard is closed.</h2><p>Open it again from the <b>Vanguard</b> icon. You can close this tab.</p></div></div>';
   };
   $('#reloadLib').onclick = async () => {
-    const admin = (await api('/api/lock')).admin_set ? prompt('Device admin PIN:') : '';
+    const admin = (await api('/api/lock')).admin_set ? prompt('Instructor PIN:') : '';
     if (admin === null) return;
     const r = await api('/api/library/reload', { admin });
     if (r.error) alert(r.error); else loaders.me();

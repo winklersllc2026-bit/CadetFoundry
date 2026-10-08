@@ -160,7 +160,7 @@ def _verify(pin: str, st: dict) -> bool:
     return hmac.compare_digest(h, st["hash"])
 
 
-# ── device admin PIN (for actions that change the whole device, not one profile) ──
+# ── Instructor PIN (for actions that change the whole device, not one profile) ──
 # Kept in the data folder, outside every profile, as a salted PBKDF2 hash. Installing an update needs it,
 # so one Soldier's profile PIN can't change the app for everyone on a shared device.
 
@@ -188,14 +188,14 @@ def admin_set() -> bool:
 
 
 def check_admin(pin: str) -> str | None:
-    """None if `pin` is the device admin PIN, else a plain reason. Wrong guesses are throttled."""
+    """None if `pin` is the Instructor PIN, else a plain reason. Wrong guesses are throttled."""
     with _lock:
         st = _admin()
         if not st.get("hash"):
-            return "Set a device admin PIN first (Me tab → Device admin PIN)."
+            return "Set an Instructor PIN first (Me → Instructor PIN)."
         wait = int(st.get("locked_until", 0) - time.time())
         if wait > 0:
-            return f"Too many wrong admin PINs. Try again in {wait} seconds."
+            return f"Too many wrong Instructor PINs. Try again in {wait} seconds."
         if _verify(str(pin or ""), st):
             if st.get("failures"):
                 st["failures"] = 0
@@ -207,7 +207,7 @@ def check_admin(pin: str) -> str | None:
         if fails >= 5:
             st["locked_until"] = time.time() + min(3600, 30 * 2 ** (fails - 5))
         _admin_save(st)
-        return "Wrong admin PIN."
+        return "Wrong Instructor PIN."
 
 
 def set_admin_pin(new: str, current: str = "") -> str | None:

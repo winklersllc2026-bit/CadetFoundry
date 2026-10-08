@@ -181,7 +181,7 @@ class Handler(BaseHTTPRequestHandler):
             return self._json({"engine": engine.status(), "library": app.library.stats(),
                                "profile": store.profile(), "stages": store.STAGES, "log_kinds": store.LOG_KINDS,
                                "lan": app.lan, "voice": voice.available(),
-                               "library_only": bool(store.config().get("library_only")),
+                               "ai_mode": store.ai_mode(), "library_only": store.ai_mode() == "off",
                                "kind": (profiles.get(self._pid) or {}).get("kind", "soldier")})
         if r == "/api/topics":
             prog = app.brain.progress()
@@ -477,13 +477,15 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(books.save_place(str(b.get("id", ""))[:40], int(b.get("ch", 0) or 0)))
             except (ValueError, TypeError) as e:
                 return self._json({"error": str(e)}, 400)
-        if r == "/api/admin/library-only":               # device-wide: answers without AI -> admin PIN
+        if r == "/api/admin/ai-mode":                    # device-wide AI setting -> Instructor PIN
             err = security.check_admin(str(b.get("admin", ""))[:32])
             if err:
                 return self._json({"error": err}, 403)
-            on = bool(b.get("on"))
-            store.save_config({"library_only": on})
-            return self._json({"ok": True, "library_only": on})
+            mode = str(b.get("mode", ""))
+            if mode not in store.AI_MODES:
+                return self._json({"error": "Choose off, library or ai."}, 400)
+            store.save_config({"ai_mode": mode})
+            return self._json({"ok": True, "ai_mode": mode})
         if r == "/api/admin/pin":
             err = security.set_admin_pin(str(b.get("new", "")), str(b.get("current", "")))
             return self._json({"ok": False, "error": err} if err else {"ok": True}, 400 if err else 200)
@@ -532,7 +534,7 @@ class Handler(BaseHTTPRequestHandler):
             return self._json({"ok": store.rename_chat(str(b.get("id", "")), str(b.get("title", ""))[:80])})
         if r == "/api/chats/delete":
             return self._json({"ok": store.delete_chat(str(b.get("id", "")))})
-        if r == "/api/addons/install":                   # offline AI / voice: changes the device -> admin PIN
+        if r == "/api/addons/install":                   # offline AI / voice: changes the device -> Instructor PIN
             err = security.admin_set() and security.check_admin(str(b.get("admin", "")))
             if err:
                 return self._json({"error": err}, 403)

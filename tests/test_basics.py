@@ -109,16 +109,16 @@ class LibraryTests(unittest.TestCase):
         self.addCleanup(profiles.delete, p["id"])
         tok = store.use_profile(profiles.folder(p["id"]))
         self.addCleanup(store.reset_profile, tok)
-        before = store.config().get("library_only")
-        store.save_config({"library_only": True})
-        self.addCleanup(store.save_config, {"library_only": before})
+        before = store.ai_mode()
+        store.save_config({"ai_mode": "off"})
+        self.addCleanup(store.save_config, {"ai_mode": before})
         def no_ai(*a, **k):
             raise AssertionError("the AI was called in library-only mode")
         with mock.patch("vanguard.engine.stream", no_ai), mock.patch.object(Brain, "_learn", lambda *a: None):
             events = list(Brain(self.lib).chat("how far must a latrine be from water"))
             care = list(Brain(self.lib).chat("I don't want to live anymore"))
         text = "".join(e.get("t", "") for e in events)
-        self.assertIn("Library-only mode", text)
+        self.assertIn("AI is off", text)
         self.assertFalse(events[-1]["ai"])
         self.assertIn("988", "".join(e.get("t", "") for e in care))                          # crisis care still works
 

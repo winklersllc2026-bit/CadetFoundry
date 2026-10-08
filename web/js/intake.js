@@ -1,7 +1,7 @@
 'use strict';
 // First-run interview: before handing over the chat, Vanguard asks the Soldier about themselves one question at a
 // time and fills in the Me tab as they answer. Scripted (no AI), so it is the same every time and works offline.
-// Ends with a required PIN, the recovery code, an optional device admin PIN, then the tour.
+// Ends with a required PIN, the recovery code, an optional Instructor PIN, then the tour.
 
 const HW_PUSHBACK = "You're a Soldier — height and weight are part of the job, and there's nothing to be ashamed of. " +
   'Every Soldier is weighed and measured. I use it to tailor your fitness plan, and it stays on this device, locked by your PIN.';
@@ -106,10 +106,10 @@ const intake = {
   },
   adminPin() {
     if (this.lock.admin_set || STATUS.kind === 'family') return this.finish();
-    const box = addMsg('ai', md("One more for whoever looks after this computer: a **device admin PIN**. It's needed to install Vanguard updates, and it's separate from your own PIN. If this is your own device, set one now."));
+    const box = addMsg('ai', md("One more for whoever looks after this computer: a **Instructor PIN**. It's needed to install Vanguard updates, and it's separate from your own PIN. If this is your own device, set one now."));
     box.insertAdjacentHTML('beforeend', `<div class="row" style="margin-top:8px">
       <input id="inAdm" type="password" inputmode="numeric" maxlength="12" placeholder="Admin PIN (6–12 digits)" style="flex:1" autocomplete="new-password">
-      <button class="btn primary" type="button" id="inAdmGo">Set admin PIN</button><button class="btn small" type="button" id="inAdmSkip">Not my device — skip</button></div><p class="faint" id="inAdmMsg"></p>`);
+      <button class="btn primary" type="button" id="inAdmGo">Set Instructor PIN</button><button class="btn small" type="button" id="inAdmSkip">Not my device — skip</button></div><p class="faint" id="inAdmMsg"></p>`);
     $('#inAdmGo').onclick = async () => {
       const r = await api('/api/admin/pin', { new: $('#inAdm').value });
       if (!r.ok) { $('#inAdmMsg').textContent = r.error; return; }

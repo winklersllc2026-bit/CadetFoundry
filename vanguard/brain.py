@@ -347,10 +347,12 @@ class Brain:
             yield {"t": first, "checked": checked}
         # Library-only mode (set by the device admin): no AI writing at all -- only checked answers and the
         # exact text of the manuals. Someone in crisis still gets the care response below.
-        library_only = bool(store.config().get("library_only"))
+        mode = store.ai_mode()
+        library_only = mode == "off"                     # AI Off: checked answers and quoted library text only
         # A factual question the library has nothing on: say so, don't guess. (Not for faith questions, which
         # answer from scripture, or questions about the Soldier's own log and profile.)
-        gap = (not check["care"] and not checked and not sources and bool(_FACTUAL.search(text))
+        # In Library-only mode (the default) that applies to every question, not only factual ones.
+        gap = (not check["care"] and not checked and not sources and (mode != "ai" and len(text.split()) >= 4 or bool(_FACTUAL.search(text)))
                and "## SCRIPTURE" not in msgs[0]["content"] and not re.search(r"\b(my|me|i)\b", text, re.I))
         given = "\n".join(m["content"] for m in msgs)
 
@@ -399,7 +401,7 @@ class Brain:
             if check["care"]:
                 fallback = safety.CARE_FALLBACK
             elif checked:                                # the checked answer above already answers it
-                fallback = ("*Library-only mode: this is the checked answer on its own. Open the Study tab to read the whole card.*"
+                fallback = ("*AI is off: this is the checked answer on its own. Open Learn to read the whole card.*"
                             if library_only else
                             "*The offline AI isn't running, so this is the checked answer on its own. Open the Study tab to read the whole card.*")
             else:
@@ -430,8 +432,8 @@ class Brain:
         answer = (answer or "").strip()[:4000]
         if not answer:
             return
-        if store.config().get("library_only"):
-            yield {"t": "Library-only mode is on, so Vanguard doesn't reword answers with AI on this device."}
+        if store.ai_mode() == "off":
+            yield {"t": "AI is turned off on this device, so Vanguard doesn't reword answers."}
             yield {"done": True}
             return
         msgs = [{"role": "system", "content": self._SIMPLER}, {"role": "user", "content": strip_markers(answer)}]
@@ -459,7 +461,7 @@ class Brain:
 
     def _offline_fallback(self, text: str, library_only: bool = False) -> str:
         said = self._library_says(text)
-        msg = ("**Library-only mode** — answers come straight from the manuals and study cards, with no AI. "
+        msg = ("**AI is off** — answers come straight from the library and study cards. "
                "Here's what the library says:\n\n" if library_only else
                "I can't reach an AI model right now (the local AI isn't running). "
                "Here's what the library says:\n\n")

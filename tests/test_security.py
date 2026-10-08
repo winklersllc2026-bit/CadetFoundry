@@ -296,7 +296,7 @@ class SecurityTests(unittest.TestCase):
         post = lambda r, b: self.req("POST", r, b, {"Cookie": cookie})
         s, _, raw = post("/api/update", {"zip": "", "sig": "", "admin": "482915"})
         self.assertEqual(s, 403)
-        self.assertIn("admin PIN first", json.loads(raw)["error"])
+        self.assertIn("Instructor PIN first", json.loads(raw)["error"])
         self.assertEqual(post("/api/admin/pin", {"new": "111111"})[0], 400)                # too easy
         self.assertEqual(post("/api/admin/pin", {"new": "905172"})[0], 200)
         self.assertNotIn(b"905172", path.read_bytes())                                       # stored as a hash only
@@ -305,12 +305,14 @@ class SecurityTests(unittest.TestCase):
         self.assertEqual(post("/api/library/reload", {})[0], 403)
         self.assertEqual(post("/api/library/reload", {"admin": "905172"})[0], 200)
         self.assertNotEqual(post("/api/update", {"zip": "", "sig": "", "admin": "905172"})[0], 403)  # passes the PIN gate
-        # library-only answers are a device setting: profile PIN refused, admin PIN accepted, shown in status
-        self.assertEqual(post("/api/admin/library-only", {"on": True, "admin": "482915"})[0], 403)
-        self.assertEqual(post("/api/admin/library-only", {"on": True, "admin": "905172"})[0], 200)
-        self.assertTrue(json.loads(self.req("GET", "/api/status", headers={"Cookie": cookie})[2])["library_only"])
-        self.assertEqual(post("/api/admin/library-only", {"on": False, "admin": "905172"})[0], 200)
-        self.assertFalse(store.config().get("library_only"))
+        # the AI mode is an instructor setting: profile PIN refused, Instructor PIN accepted, shown in status
+        self.assertEqual(store.ai_mode(), "library")                                         # default
+        self.assertEqual(post("/api/admin/ai-mode", {"mode": "off", "admin": "482915"})[0], 403)
+        self.assertEqual(post("/api/admin/ai-mode", {"mode": "sideways", "admin": "905172"})[0], 400)
+        self.assertEqual(post("/api/admin/ai-mode", {"mode": "off", "admin": "905172"})[0], 200)
+        self.assertEqual(json.loads(self.req("GET", "/api/status", headers={"Cookie": cookie})[2])["ai_mode"], "off")
+        self.assertEqual(post("/api/admin/ai-mode", {"mode": "library", "admin": "905172"})[0], 200)
+        self.assertEqual(store.ai_mode(), "library")
         try:
             for _ in range(5):
                 post("/api/update", {"admin": "123987"})

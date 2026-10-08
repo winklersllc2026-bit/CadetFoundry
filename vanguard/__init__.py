@@ -1,2 +1,2 @@
-"""Vanguard — an offline AI study companion and logbook for Soldiers."""
-__version__ = "0.16.0"
+"""Vanguard — leadership, learning and character -- an offline classroom companion for JROTC Cadets and instructors."""
+__version__ = "0.1.0"
