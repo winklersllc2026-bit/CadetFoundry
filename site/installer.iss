@@ -1,0 +1,89 @@
+; Cursiv Recruit — Windows installer, compiled by site/build.py with Inno Setup 6 or 7 (ISCC.exe).
+; One step: Python is inside (python\, added by build.py), Recruit starts with pythonw.exe so there is no console
+; window, and there's no setup script. Optional extras (offline AI, voice) install from inside Recruit (Me tab).
+; Per-user (no admin): %LOCALAPPDATA%\Programs\Cursiv Recruit. Soldiers' data lives in %USERPROFILE%\.cursiv-recruit
+; and is never touched by installing, updating or uninstalling. @NAMES@ are filled in by build.py.
+
+#define AppName "Cursiv Recruit"
+#define AppVer  "@VERSION@"
+
+[Setup]
+AppId={{6B0E2F3C-8C1D-4E57-9A3B-2D7F4C1E9A60}
+AppName={#AppName}
+AppVersion={#AppVer}
+AppVerName={#AppName} {#AppVer}
+AppPublisher=Winklers LLC
+AppPublisherURL=https://recruit.winklers-llc.com
+AppComments=Offline study companion and logbook for U.S. Army Soldiers. Works with no internet after setup.
+VersionInfoVersion=@VIVERSION@
+VersionInfoCompany=Winklers LLC
+VersionInfoDescription=Cursiv Recruit setup
+VersionInfoProductName={#AppName}
+DefaultDirName={autopf}\{#AppName}
+DefaultGroupName={#AppName}
+DisableProgramGroupPage=yes
+PrivilegesRequired=lowest
+OutputDir=@OUTDIR@
+OutputBaseFilename=@OUTNAME@
+SetupIconFile=@ICON@
+UninstallDisplayIcon={app}\web\icon.ico
+UninstallDisplayName={#AppName}
+Compression=lzma2
+SolidCompression=yes
+WizardStyle=modern
+ArchitecturesInstallIn64BitMode=x64compatible
+
+[Languages]
+Name: "english"; MessagesFile: "compiler:Default.isl"
+
+[Tasks]
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
+
+[InstallDelete]
+; Program folders are replaced on update so files removed in a new version don't linger (data lives elsewhere).
+Type: filesandordirs; Name: "{app}\recruit"
+Type: filesandordirs; Name: "{app}\web"
+Type: filesandordirs; Name: "{app}\tools"
+Type: filesandordirs; Name: "{app}\tests"
+Type: filesandordirs; Name: "{app}\python"
+
+[Files]
+Source: "@STAGE@\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+
+[UninstallDelete]
+; Add-ons downloaded later (voice model, voice package) live in the program folder too.
+Type: filesandordirs; Name: "{app}"
+
+[Icons]
+Name: "{autoprograms}\{#AppName}"; Filename: "{app}\python\pythonw.exe"; Parameters: """{app}\run.py"""; WorkingDir: "{app}"; IconFilename: "{app}\web\icon.ico"
+Name: "{autodesktop}\{#AppName}"; Filename: "{app}\python\pythonw.exe"; Parameters: """{app}\run.py"""; WorkingDir: "{app}"; IconFilename: "{app}\web\icon.ico"; Tasks: desktopicon
+
+[Run]
+Filename: "{app}\python\pythonw.exe"; Parameters: """{app}\run.py"""; WorkingDir: "{app}"; Description: "Start Cursiv Recruit"; Flags: postinstall nowait skipifsilent
+
+[Code]
+// A running Recruit (pythonw.exe run.py) writes its process id here; close it before files are replaced or removed.
+procedure StopRecruit();
+var
+  Pid: AnsiString;
+  Code: Integer;
+begin
+  if LoadStringFromFile(ExpandConstant('{%USERPROFILE}\.cursiv-recruit\recruit.pid'), Pid) and (Trim(Pid) <> '') then
+    Exec(ExpandConstant('{sys}\taskkill.exe'), '/F /FI "IMAGENAME eq pythonw.exe" /PID ' + Trim(Pid), '', SW_HIDE, ewWaitUntilTerminated, Code);
+end;
+
+function PrepareToInstall(var NeedsRestart: Boolean): String;
+begin
+  StopRecruit();
+  Result := '';
+end;
+
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+begin
+  if CurUninstallStep = usUninstall then
+    StopRecruit();
+  if (CurUninstallStep = usPostUninstall) and (not UninstallSilent) then
+    MsgBox('Cursiv Recruit was removed. Profiles, logbooks and letters are kept in ' +
+           ExpandConstant('{%USERPROFILE}') + '\.cursiv-recruit - delete that folder too if you want them gone.',
+           mbInformation, MB_OK);
+end;

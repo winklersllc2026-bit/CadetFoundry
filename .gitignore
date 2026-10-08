@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+# Downloaded by tools/fetch_faith.py (public domain, ~32 MB) — fetched at setup, not stored in git
+faith/*.tsv
+faith/catalog.json
+# Official documents the operator adds
+library/*
+!library/README.md
+# Build output
+dist/
+*.zip
+site/dist/
+site/.wrangler/
+# Offline voice model (tools/install_voice.py)
+voice-model/
+site/.stage/
+site/.cache/
+books/*
+!books/README.md

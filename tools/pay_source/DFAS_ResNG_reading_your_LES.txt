@@ -1,0 +1,98 @@
+How to read a Reserve and National Guard Leave and Earning Statement
+Source: DFAS, ResNG_reading_your_LES.pdf (dfas.mil, Military Members > Pay & Entitlements > About Pay), DFAS Form 702, Jan 02. Copied 2026-10-07.
+
+Your pay is your responsibility.
+This is a guide to help you understand your Leave and Earnings Statement (LES). The LES is a comprehensive statement of a member's leave and earnings showing your entitlements, deductions, allotments (fields not used for Reserve and National Guard members), leave information, tax withholding information, and Thrift Savings Plan (TSP) information. Your most recent LES can be found 24 hours a day on myPay.
+Verify and keep your LES each month. If your pay varies significantly and you don't understand why, or if you have any questions after reading this publication, consult with your disbursing/finance office.
+
+Fields 1 through 9 contain the identification portion of the LES.
+1 NAME: The member's name in last, first, middle initial format.
+2 SOC. SEC. NO.: The member's Social Security Number.
+3 GRADE: The member's current pay grade.
+4 PAY DATE: The date the member entered active duty for pay purposes in YYMMDD format. This is synonymous with the Pay Entry Base Date (PEBD).
+5 YRS SVC: In two digits, the actual years of creditable service.
+6 ETS: The Expiration Term of Service in YYMMDD format. This is synonymous with the Expiration of Active Obligated Service (EAOS).
+7 BRANCH: This field reflects branch of service OR program which the service member is enrolled.
+8 ADSN/DSSN: The Disbursing Station Symbol Number used to identify each disbursing/finance office.
+9 PERIOD COVERED: This field will show the "Check Date" for Reserve or National Guard members.
+
+Fields 10 through 22 contain the entitlements, deductions, allotments, their respective totals, a mathematical summary portion and date initially entered military service.
+10 ENTITLEMENTS: In columnar style the names of the entitlements and allowances being paid. Space is allocated for fifteen entitlements and/or allowances. If more than fifteen are present the overflow will be printed in the remarks block. Any retroactive entitlements and/or allowances will be added to like entitlements and/or allowances.
+11 DEDUCTIONS: The description of the deductions is listed in columnar style. This includes items such as taxes, SGLI and dependent dental plan. Space is allocated for fifteen deductions. If more than fifteen are present the overflow will be printed in the remarks block. Any retroactive deductions will be added to like deductions.
+12 ALLOTMENTS: Reservist and National Guard do not have allotments.
+13 AMT FWD: The amount of all unpaid pay and allowances due from the prior LES.
+14 TOT ENT: The figure from Field 20 that is the total of all entitlements and/or allowances listed.
+15 TOT DED: The figure from Field 21 that is the total of all deductions.
+16 TOT ALMT: Reservist and National Guard do not have allotments.
+17 NET AMT: The dollar value of all unpaid pay and allowances, plus total entitlements and/or allowances, minus deductions due on the current LES.
+18 CR FWD: The dollar value of all unpaid pay and allowances due to reflect on the next LES as the +AMT FWD.
+19 EOM PAY: The actual amount of the payment to be paid to the member on that specific payday.
+20 - 22 TOTAL: The total amounts for the entitlements and/or allowances, and deductions respectively.
+23 DIEMS: Fields 23 and 24 are NOT used by Reserve and National Guard members.
+24 RET PLAN: Fields 23 and 24 are NOT used by Reserve and National Guard members.
+
+Fields 25 through 32 contain leave information.
+25 BF BAL: The brought forward leave balance. Balance may be at the beginning of the fiscal year, or when active duty began, or the day after the member was paid Lump Sum Leave (LSL).
+26 ERND: The cumulative amount of leave earned in the current fiscal year or current term of enlistment if the member reenlisted/extended since the beginning of the fiscal year. Normally increases by 2.5 days each month.
+27 USED: The cumulative amount of leave used in the current fiscal year or current term of enlistment if member reenlisted/extended since the beginning of the fiscal year.
+28 CR BAL: The current leave balance as of the end of the period covered by the LES.
+29 ETS BAL: The projected leave balance to the member's Expiration Term of Service (ETS).
+30 LV LOST: The number of days of leave that has been lost.
+31 LV PAID: The number of days of leave paid to date.
+32 USE/LOSE: The projected number of days of leave that will be lost if not taken in the current fiscal year on a monthly basis. The number of days of leave in this block will decrease with any leave usage.
+
+Fields 33 through 38 contain Federal Tax withholding information.
+33 WAGE PERIOD: The amount of money earned this LES period that is subject to Federal Income Tax Withholding (FITW).
+34 WAGE YTD: The money earned year-to-date that is subject to FITW.
+35 M/S: The marital status used to compute the FITW.
+36 EX: The number of exemptions used to compute the FITW.
+37 ADD'L TAX: The member specified additional dollar amount to be withheld in addition to the amount computed by the Marital Status and Exemptions.
+38 TAX YTD: The cumulative total of FITW withheld throughout the calendar year.
+
+Fields 39 through 43 contain Federal Insurance Contributions Act (FICA) information.
+39 WAGE PERIOD: The amount of money earned this LES period that is subject to FICA.
+40 SOC WAGE YTD: The wages earned year-to-date that are subject to FICA.
+41 SOC TAX YTD: Cumulative total of FICA withheld throughout the calendar year.
+42 MED WAGE YTD: The wages earned year-to-date that are subject to Medicare.
+43 MED TAX YTD: Cumulative total of Medicare taxes paid year-to-date.
+
+Fields 44 through 49 contain State Tax information.
+44 ST: The two digit postal abbreviation for the state the member elected.
+45 WAGE PERIOD: The amount of money earned this LES period that is subject to State Income Tax Withholding (SITW).
+46 WAGE YTD: The money earned year-to-date that is subject to SITW.
+47 M/S: The marital status used to compute the SITW.
+48 EX: The number of exemptions used to compute the SITW.
+49 TAX YTD: The cumulative total of SITW withheld throughout the calendar year.
+
+Fields 50 through 62 contain additional Pay Data.
+50 BAQ TYPE: The member's type of Basic Allowance for Quarters status. W/O DEP - Member without dependents; W DEP - Member with dependents; WDAGQT - Member with dependents assigned government quarters.
+51 BAQ DEPN: Indicates the type of dependent: Spouse; Child; Parent; Grandfathered; Member married to member/own right; Ward of the court; Parents in Law; Own right; Student (age 21-22); Handicapped child over age 21; Member married to member, child under 21; No dependents; N/A.
+52 VHA ZIP: The zip code used in the computation of Variable Housing Allowance (VHA) if entitlement exists.
+53 RENT AMT: The amount of rent paid for housing if applicable.
+54 SHARE: The number of people with which the member shares housing costs.
+55 STAT: The VHA status; i.e., accompanied or unaccompanied.
+56 JFTR: The Joint Federal Travel Regulation (JFTR) code based on the location of the member for Cost of Living Allowance (COLA) purposes.
+57 DEPNS: The number of dependents the member has for COLA purposes.
+58 2D JFTR: The JFTR code based on the location of the member’s dependents for COLA purposes.
+59 BAS TYPE: STAND - Separate Rations; (blank) - Rations-in-kind not available; OFFIC - Officer Rations.
+60 CHARITY YTD: The cumulative amount of charitable contributions for the calendar year.
+61 TPC: This field is not used by the Active Component. Army Reserves and National Guard use this field to identify Training Program Codes. A - Normal pay status code for a regular service member on regular duty; C - Funeral Honors Duty; M - Annual training tours over 30 days; N - Death; O - Training for HPSP, ROTC, and Special ADT over 30 days; T - ADT over 29 days (School); U - Undergraduate pilot training, in-grade pilot, navigator, and advance flying training officers; X - Stipend Tour of HPIP participants or subsistence for ROTC participants; Z - Administrative and support training (exclusive of recruiting).
+62 PACIDN: The activity Unit Identification Code (UIC).
+
+Fields 63 through 75 contain Thrift Savings Plan (TSP) information/data.
+63 BASE PAY RATE: The percentage of base pay elected for TSP contributions.
+64 BASE PAY CURRENT: The amount of Base Pay withheld for TSP from current pay entitlement.
+65 SPECIAL PAY RATE: The percentage of Specialty Pay elected for TSP contribution.
+66 SPECIAL PAY CURRENT: The amount of Special Pay withheld for TSP from current pay entitlement.
+67 INCENTIVE PAY RATE: Percentage of Incentive Pay elected towards TSP contribution.
+68 INCENTIVE PAY CURRENT: The amount of Incentive Pay withheld for TSP from current pay entitlement.
+69 BONUS PAY RATE: The percentage of Bonus Pay elected towards TSP contribution.
+70 BONUS PAY CURRENT: The amount of Bonus Pay withheld for TSP from current pay entitlement.
+71 RESERVED: Reserved for future use.
+72 TSP YTD DEDUCTION: (TSP YEAR TO DATE DEDUCTION) Dollar amount of TSP contributions deducted for the year.
+73 DEFERRED: Dollar amount of pay elected to be deferred during the tax year.
+74 EXEMPT: Dollar amount of TSP contributions that are reported as tax exempt to the Internal Revenue Service (IRS).
+75 RESERVED: Reserved for future use.
+76 REMARKS: Notices of starts, stops and changes to a member's pay items as well as general notices from varying levels of command may appear.
+77 YTD ENTITLE: The cumulative total of all entitlements for the calendar year.
+78 YTD DEDUCT: The cumulative total of all deductions for the calendar year.

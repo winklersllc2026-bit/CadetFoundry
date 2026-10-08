@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f120e">
+<title>Cursiv Recruit</title>
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<style>
+:root {
+  --bg: #0f120e; --bg2: #151a13; --card: #1a2017; --card2: #212819;
+  --line: rgba(220, 210, 180, .10); --line2: rgba(220, 210, 180, .18);
+  --text: #ece6d6; --muted: #a7a08c; --faint: #6f6a5c;
+  --tan: #cdb57c; --tan2: #e6d29e; --olive: #6f8a4f; --green: #7fbf7a; --red: #e07a6a; --blue: #7fa7d9;
+  --r: 14px;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif;
+  --mono: ui-monospace, "Cascadia Code", Consolas, monospace;
+  --me: #2a3a22;
+}
+/* Red-light mode: red on black only, dim, to keep night vision (field / after lights out) */
+:root[data-mode="red"] {
+  --bg: #000; --bg2: #050000; --card: #0d0000; --card2: #140000;
+  --line: rgba(255, 40, 40, .16); --line2: rgba(255, 40, 40, .28);
+  --text: #e03030; --muted: #a02525; --faint: #6a1a1a;
+  --tan: #d42a2a; --tan2: #f03a3a; --olive: #7a1515; --green: #d42a2a; --red: #ff5050; --blue: #d42a2a;
+  --me: #2a0000;
+}
+:root[data-mode="red"] .ic, :root[data-mode="red"] .chip, :root[data-mode="red"] .brand .star,
+:root[data-mode="red"] .msg .body, :root[data-mode="red"] h2, :root[data-mode="red"] .faint,
+:root[data-mode="red"] #modeBtn, :root[data-mode="red"] .dot {
+  filter: grayscale(1) sepia(1) saturate(8) hue-rotate(-50deg) brightness(.75);
+}
+:root[data-mode="red"] .btn.primary { color: #000; }
+:root[data-mode="red"] input, :root[data-mode="red"] select, :root[data-mode="red"] textarea { color-scheme: dark; }
+#modeBtn, #textBtn { background: none; border: 1px solid var(--line2); border-radius: 999px; color: var(--muted); padding: 6px 12px; font-size: 14px; margin-left: 6px; min-height: 36px; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 var(--sans); display: flex; flex-direction: column; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: var(--tan2); }
+
+/* header + tabs */
+header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--bg2); }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: .06em; }
+.brand .star { color: var(--tan); font-size: 20px; }
+.brand small { color: var(--muted); font-weight: 500; letter-spacing: 0; }
+.engine { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--faint); display: inline-block; }
+.dot.ok { background: var(--green); } .dot.warn { background: var(--tan); }
+main { flex: 1; overflow: hidden; position: relative; }
+.view { position: absolute; inset: 0; overflow-y: auto; padding: 16px; display: none; }
+.view.on { display: block; }
+nav.tabs { display: grid; grid-template-columns: repeat(5, 1fr); border-top: 1px solid var(--line); background: var(--bg2); padding-bottom: env(safe-area-inset-bottom); }
+nav.tabs button { background: none; border: 0; padding: 10px 0 12px; color: var(--muted); font-size: 13px; display: grid; justify-items: center; gap: 2px; }
+nav.tabs button .ic { font-size: 20px; line-height: 1; }
+nav.tabs button.on { color: var(--tan2); }
+.wrap { max-width: 760px; margin: 0 auto; }
+
+/* shared */
+h2 { font-size: 20px; margin: 4px 0 12px; }
+h3 { font-size: 16px; margin: 0 0 6px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; margin-bottom: 12px; }
+.muted { color: var(--muted); } .faint { color: var(--faint); font-size: 14px; }
+.btn { border: 1px solid var(--line2); background: var(--card2); border-radius: 10px; padding: 10px 14px; }
+.btn.primary { background: var(--tan); color: #1b1608; border-color: var(--tan); font-weight: 700; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn.small { padding: 8px 12px; font-size: 15px; min-height: 40px; }
+.btn.danger { color: var(--red); }
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+input, select, textarea { background: var(--bg); border: 1px solid var(--line2); border-radius: 10px; padding: 10px 12px; width: 100%; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--tan); }
+label { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 4px; }
+.chip { display: inline-block; font-size: 14px; padding: 6px 11px; min-height: 34px; border-radius: 999px; border: 1px solid var(--line2); color: var(--muted); margin: 2px 4px 2px 0; }
+.bar { height: 6px; border-radius: 6px; background: var(--bg); overflow: hidden; margin-top: 8px; }
+.bar > i { display: block; height: 100%; background: var(--olive); }
+.empty { color: var(--faint); text-align: center; padding: 24px 8px; }
+.mono { font-family: var(--mono); font-weight: 700; }
+
+/* chat */
+#ask { display: none; padding: 0; }
+#ask.on { display: flex; flex-direction: row; }
+.suggest[hidden] { display: none; }
+.chatMain { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+#chatSide { width: 250px; flex: none; border-right: 1px solid var(--line); background: var(--bg2); overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+#chatList .ci { display: flex; align-items: center; gap: 2px; padding: 7px 8px 7px 10px; border-radius: 10px; cursor: pointer; color: var(--muted); border: 1px solid transparent; }
+#chatList .ci:hover { color: var(--text); }
+#chatList .ci.on { background: var(--card); color: var(--text); border-color: var(--line); }
+#chatList .ci .t { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+#chatList .ci button { background: none; border: 0; color: var(--faint); padding: 2px 5px; min-height: 0; cursor: pointer; font-size: 13px; }
+#chatList .ci button:hover { color: var(--text); }
+#chatList .when { font-size: 11px; color: var(--faint); margin: 8px 4px 2px; text-transform: uppercase; letter-spacing: .06em; }
+.chatbar { display: none; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--line); background: var(--bg2); }
+.chatbar #chatTitle { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 760px) {
+  .chatbar { display: flex; }
+  #chatSide { position: absolute; left: 0; top: 0; bottom: 0; z-index: 30; width: min(82vw, 300px); transform: translateX(-102%); transition: transform .2s; box-shadow: 4px 0 18px rgba(0,0,0,.35); }
+  #chatSide.open { transform: none; }
+}
+#log { flex: 1; overflow-y: auto; padding: 16px; }
+.msg { max-width: 92%; margin: 0 0 12px; padding: 10px 13px; border-radius: 14px; line-height: 1.5; overflow-wrap: anywhere; }
+.msg.me { margin-left: auto; background: var(--me); border-bottom-right-radius: 4px; white-space: pre-wrap; }
+.msg.ai { background: var(--card); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+.msg.ai .who { font-size: 12px; font-weight: 700; letter-spacing: .1em; color: var(--tan); margin-bottom: 3px; }
+.msg.ai p { margin: 0 0 8px; } .msg.ai p:last-child { margin-bottom: 0; }
+.msg.ai ul { margin: 4px 0 8px; padding-left: 20px; }
+.msg code { font-family: var(--mono); font-size: 13px; background: rgba(0,0,0,.3); padding: 1px 5px; border-radius: 5px; }
+.sources { margin-top: 8px; }
+.suggest { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 12px; }
+.suggest button { background: var(--card); border: 1px solid var(--line2); color: var(--muted); border-radius: 999px; padding: 7px 12px; font-size: 14px; }
+.composer { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--line); background: var(--bg2); }
+.composer textarea { resize: none; height: 46px; max-height: 140px; }
+
+/* study */
+.topic { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+.flash { text-align: center; padding: 26px 16px; }
+.flash .q { font-size: 20px; font-weight: 600; margin: 8px 0 18px; }
+.flash .a { font-size: 17px; color: var(--tan2); margin: 0 0 18px; white-space: pre-wrap; }
+.cardbody { white-space: pre-wrap; }
+
+/* faith */
+.verse { margin: 0 0 8px; }
+.verse b { color: var(--tan); font-size: 12px; margin-right: 6px; }
+.tr-name { font-weight: 700; color: var(--tan2); margin-bottom: 6px; }
+
+/* Pocket cards: print only #printArea, black on white, 2 cards across */
+/* Large text (header A+): scales the whole interface — for sunlight, gloves and tired eyes */
+:root[data-text="large"] body { zoom: 1.2; }
+:focus-visible { outline: 2px solid var(--tan); outline-offset: 2px; }
+mark { background: var(--tan); color: var(--bg); border-radius: 3px; padding: 0 2px; }
+:root[data-mode="red"] #textBtn { color: var(--muted); border-color: var(--line2); }
+#printArea { display: none; }
+/* Profiles for a Soldier's family hide the Soldier-only tools */
+body:not([data-kind="family"]) .family-only, body[data-kind="family"] .soldier-only, body[data-kind="family"] [data-pane="fit"] { display: none !important; }
+:root[data-mode="red"] #packetPreview, :root[data-mode="red"] #packetPreview .packet { background: var(--bg2) !important; color: var(--text) !important; }
+:root[data-mode="red"] #printPreview { background: var(--bg2) !important; color: var(--text) !important; }   /* keep light discipline on screen */
+:root[data-mode="red"] #printPreview .pc, :root[data-mode="red"] #printPreview .pc h4 { background: transparent; color: inherit; border-color: currentColor; }
+@media print {
+  body > *:not(#printArea) { display: none !important; }
+  #printArea { display: block !important; background: #fff; color: #000; }
+  html, body { background: #fff !important; color: #000 !important; height: auto !important; overflow: visible !important; }
+  @page { size: letter; margin: 0.4in; }
+}
+#printArea .packet, #packetPreview .packet { font: 10pt/1.35 Arial, sans-serif; color: #000; background: #fff; }
+#printArea .packet h2, #packetPreview .packet h2 { font-size: 14pt; margin: 0 0 2px; }
+#printArea .packet h3, #packetPreview .packet h3 { font-size: 11pt; margin: 12px 0 4px; border-bottom: 1px solid #000; }
+#printArea .packet table, #packetPreview .packet table { width: 100%; border-collapse: collapse; }
+#printArea .packet td, #printArea .packet th, #packetPreview .packet td, #packetPreview .packet th { border: 1px solid #000; padding: 2px 4px; text-align: left; vertical-align: top; font-size: 9pt; }
+#printArea .packet tr, #packetPreview .packet tr { break-inside: avoid; }
+#printArea .pc-grid, #printPreview .pc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.15in; }
+#printArea .pc, #printPreview .pc { border: 1px dashed #000; padding: 0.12in; font: 8.5pt/1.25 Arial, sans-serif; break-inside: avoid; color: #000; background: #fff; }
+#printArea .pc h4, #printPreview .pc h4 { margin: 0 0 4px; font-size: 10pt; border-bottom: 1px solid #000; }
+#printArea .pc p, #printArea .pc ul, #printPreview .pc p, #printPreview .pc ul { margin: 2px 0; }
+#printArea .pc ul, #printPreview .pc ul { padding-left: 14px; }
+#printArea .pc .src, #printPreview .pc .src { font-size: 6.5pt; margin-top: 4px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><span class="star">✦</span> RECRUIT <small id="hello"></small></div>
+  <div class="row" style="gap:4px;flex-wrap:nowrap">
+    <div class="engine" id="engine"><span class="dot"></span><span>checking…</span></div>
+    <button id="textBtn" type="button" title="Larger text and buttons" aria-label="Large text" aria-pressed="false">A+</button>
+    <button id="modeBtn" type="button" title="Red-light mode keeps your night vision" aria-pressed="false">🔴 Night</button>
+  </div>
+</header>
+
+<main>
+  <!-- ASK -->
+  <section class="view on" id="ask">
+    <aside id="chatSide" aria-label="Conversations">
+      <button class="btn primary" id="newChat" type="button">＋ New chat</button>
+      <div id="chatList"></div>
+    </aside>
+    <div class="chatMain">
+    <div class="chatbar"><button class="btn small" id="chatToggle" type="button" aria-label="Show conversations">☰ Chats</button>
+      <span id="chatTitle" class="faint"></span><button class="btn small" id="newChat2" type="button" aria-label="New chat">＋ New</button></div>
+    <div id="log">
+      <div class="wrap" id="thread">
+        <div class="msg ai"><div class="who">RECRUIT</div><p>I'm Recruit — your study partner and logbook. Ask me about the Army, quiz yourself, or log your progress. Everything stays on this device.</p></div>
+        <div class="suggest" id="suggest"><div class="faint" style="width:100%;margin:2px 0 4px">Try asking — tap one, or type your own question below:</div>
+          <button>Quiz me on the Army Values</button>
+          <button>What is an Article 15?</button>
+          <button>How do I read a grid coordinate?</button>
+          <button>Help me improve my 2-mile run</button>
+          <button>Explain my TSP and why 5% matters</button>
+        </div>
+      </div>
+    </div>
+    <form class="composer" id="composer">
+      <textarea id="msgIn" placeholder="Ask Recruit…" rows="1" aria-label="Message"></textarea>
+      <button class="btn" id="micBtn" type="button" hidden title="Talk to Recruit (offline speech recognition)" aria-label="Talk to Recruit">🎤</button>
+      <button class="btn primary" id="sendBtn" type="submit">Send</button>
+    </form>
+    </div>
+  </section>
+
+  <!-- STUDY -->
+  <section class="view" id="study"><div class="wrap" id="studyBody"></div></section>
+
+  <!-- FAITH -->
+  <section class="view" id="faith"><div class="wrap" id="faithBody"></div></section>
+
+  <!-- LOG -->
+  <section class="view" id="logbook"><div class="wrap">
+    <div class="row" style="justify-content:space-between;margin-bottom:8px">
+      <h2 id="logTitle" style="margin:0">Logbook</h2>
+    </div>
+    <div class="row" id="paneBar" style="gap:6px;margin-bottom:12px"></div>
+    <div id="lettersPane" hidden></div>
+    <div id="checkinPane" hidden></div>
+    <div id="leavePane" hidden></div>
+    <div id="moneyPane" hidden></div>
+    <div id="fitPane" hidden></div>
+    <div id="pcsPane" hidden></div>
+    <div id="logPane">
+    <form class="card" id="logForm">
+      <div class="row">
+        <select id="logKind" style="flex:1"></select>
+        <input id="logDate" type="date" style="flex:1">
+        <input id="logScore" placeholder="Score / result (optional)" style="flex:2">
+      </div>
+      <textarea id="logText" rows="3" placeholder="What happened? (e.g. 2-mile run 16:40, felt strong; zeroed my weapon; goal: max push-ups)" style="margin-top:8px"></textarea>
+      <div class="row" style="margin-top:8px"><button class="btn primary" type="submit">Add to logbook</button><span class="faint">Saved only on this device.</span><button class="btn small" type="button" id="packetBtn" style="margin-left:auto">🖨️ Board packet</button></div>
+    </form>
+    <div id="logList"></div>
+    </div>
+  </div></section>
+
+  <!-- ME -->
+  <section class="view" id="me"><div class="wrap" id="meBody"></div></section>
+</main>
+
+<nav class="tabs" id="tabs">
+  <button data-v="ask" class="on"><span class="ic">💬</span>Ask</button>
+  <button data-v="study"><span class="ic">📘</span>Study</button>
+  <button data-v="faith"><span class="ic">🕊️</span>Faith</button>
+  <button data-v="logbook"><span class="ic">📝</span>Log</button>
+  <button data-v="me"><span class="ic">👤</span>Me</button>
+</nav>
+
+<script src="/js/core.js"></script>
+<script src="/js/ask.js"></script>
+<script src="/js/study.js"></script>
+<script src="/js/faith.js"></script>
+<script src="/js/log.js"></script>
+<script src="/js/voice.js"></script>
+<script src="/js/intake.js"></script>
+<script src="/js/me.js"></script>
+</body>
+</html>
