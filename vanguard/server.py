@@ -109,13 +109,14 @@ class Handler(BaseHTTPRequestHandler):
 
     _ctx = None
     _kctx = None
+    _cctx = None
     _pid = None
     _body_read = False
 
     def _checks(self, method: str, route: str) -> bool:
         """Common security checks. Sends the refusal itself and returns False when a request is refused.
         On success, the request runs with the session's profile as the only reachable data folder."""
-        self._ctx, self._kctx, self._pid, self._body_read = None, None, None, False
+        self._ctx, self._kctx, self._cctx, self._pid, self._body_read = None, None, None, None, False
         host = self.headers.get("Host")
         if not security.host_ok(host, self.app.port, self.app.lan):
             self._deny(421, "Wrong host.")                  # DNS-rebinding protection
@@ -135,9 +136,13 @@ class Handler(BaseHTTPRequestHandler):
             self._pid = pid
             self._ctx = store.use_profile(profiles.folder(pid))
             self._kctx = store.use_key(security.session_key(self._token()))   # decrypts this profile only
+            self._cctx = store.use_class_key(security.session_class_key(self._token()))
         return True
 
     def _done(self) -> None:
+        if self._cctx is not None:
+            store.reset_class_key(self._cctx)
+            self._cctx = None
         if self._kctx is not None:
             store.reset_key(self._kctx)
             self._kctx = None

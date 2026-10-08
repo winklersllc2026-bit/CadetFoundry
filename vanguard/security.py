@@ -35,17 +35,38 @@ from vanguard import profiles, store, vault
 ITERATIONS = 400_000
 COOKIE = "vanguard_session"
 _lock = threading.Lock()
-_sessions: dict[str, list] = {}          # token -> [profile id, last activity, data key or None]
+# token -> [profile id, last activity, data key, class key, program private key (instructor, after the Instructor PIN)]
+_sessions: dict[str, list] = {}
 
 
 @contextlib.contextmanager
-def as_profile(pid: str, key: bytes | None = None):
-    tok, ktok = store.use_profile(profiles.folder(pid)), store.use_key(key)
+def as_profile(pid: str, key: bytes | None = None, class_key: bytes | None = None):
+    tok, ktok, ctok = store.use_profile(profiles.folder(pid)), store.use_key(key), store.use_class_key(class_key)
     try:
         yield
     finally:
+        store.reset_class_key(ctok)
         store.reset_key(ktok)
         store.reset_profile(tok)
+
+
+def _ensure_class_key(st: dict, key: bytes | None) -> bytes | None:
+    """The active profile's class key (see store.CLASS_FILES), created on first use, and kept sealed to the current
+    program public key so the instructor can read class records. None for a profile without encryption."""
+    if key is None or not vault.AVAILABLE:
+        return None
+    if st.get("class_vault"):
+        ck = vault.open_sealed(key, bytes.fromhex(st["class_vault"]), "class key")
+    else:
+        ck = vault.new_key()
+        st["class_vault"] = vault.seal(key, ck, "class key").hex()
+        _save(st)                                   # saved first; store reads still fall back to the data key
+        store.reseal_folder(store.active_profile_dir(), key, ck, only=store.CLASS_FILES)
+    pub = program_public()
+    if pub and (st.get("class_for") or {}).get("to") != vault.key_id(pub):
+        st["class_for"] = vault.seal_to(pub, ck, "class key")
+        _save(st)
+    return ck
 
 
 def _encrypt_profile(st: dict, pin: str) -> bytes | None:
@@ -57,6 +78,7 @@ def _encrypt_profile(st: dict, pin: str) -> bytes | None:
     st["vault"] = vault.wrap(key, pin)
     _save(st)
     store.reseal_folder(store.active_profile_dir(), None, key)
+    _ensure_class_key(st, key)
     return key
 
 
@@ -126,14 +148,20 @@ def remove_pin(current: str) -> str | None:
             return "Your PIN is wrong."
         if st.get("vault"):                  # no PIN, no encryption: decrypt the files first
             key = vault.unwrap(st["vault"], current)
-            store.reseal_folder(store.active_profile_dir(), key, None)
-        for k in ("salt", "hash", "iterations", "vault", "recovery"):
+            folder = store.active_profile_dir()
+            if st.get("class_vault"):
+                ck = vault.open_sealed(key, bytes.fromhex(st["class_vault"]), "class key")
+                store.reseal_folder(folder, ck, None, only=store.CLASS_FILES)
+                store.reseal_folder(folder, key, None, skip=store.CLASS_FILES)
+            else:
+                store.reseal_folder(folder, key, None)
+        for k in ("salt", "hash", "iterations", "vault", "recovery", "class_vault", "class_for"):
             st.pop(k, None)
         _save(st)
         pid = store.active_profile_dir().name
         for entry in _sessions.values():
             if entry[0] == pid:
-                entry[2] = None
+                entry[2] = entry[3] = None
     return None
 
 
@@ -187,6 +215,37 @@ def admin_set() -> bool:
     return bool(_admin().get("hash"))
 
 
+# The program key pair (vault.new_program_keys): public key in the clear, private key locked by the Instructor PIN.
+def _program_path():
+    return store.DATA / "program.json"
+
+
+def _program() -> dict:
+    try:
+        return json.loads(_program_path().read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
+def _program_save(prog: dict) -> None:
+    path = _program_path()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(".tmp")
+    tmp.write_text(json.dumps(prog), encoding="utf-8")
+    tmp.replace(path)
+
+
+def program_public() -> bytes | None:
+    pub = _program().get("public")
+    return bytes.fromhex(pub) if pub else None
+
+
+def _new_program(pin: str) -> None:
+    if vault.AVAILABLE:
+        priv, pub = vault.new_program_keys()
+        _program_save({"public": pub.hex(), "private": vault.wrap(priv, pin)})
+
+
 def check_admin(pin: str) -> str | None:
     """None if `pin` is the Instructor PIN, else a plain reason. Wrong guesses are throttled."""
     with _lock:
@@ -201,6 +260,8 @@ def check_admin(pin: str) -> str | None:
                 st["failures"] = 0
                 st.pop("locked_until", None)
                 _admin_save(st)
+            if not _program():                     # a device set up before program keys existed
+                _new_program(str(pin))
             return None
         fails = int(st.get("failures", 0)) + 1
         st["failures"] = fails
@@ -220,7 +281,13 @@ def set_admin_pin(new: str, current: str = "") -> str | None:
         return err
     salt = secrets.token_bytes(16)
     with _lock:
+        prog = _program()
+        if prog and admin_set():                   # same key pair, locked by the new PIN
+            prog["private"] = vault.wrap(vault.unwrap(prog["private"], current), new)
+            _program_save(prog)
         _admin_save({"salt": salt.hex(), "iterations": ITERATIONS, "hash": _hash(new, salt)})
+    if not prog:
+        _new_program(new)
     return None
 
 
@@ -250,8 +317,9 @@ def unlock(pid: str, pin: str) -> tuple[str | None, str]:
                 key = vault.unwrap(st["vault"], pin)
             elif st.get("hash"):             # PIN set before encryption existed: encrypt now
                 key = _encrypt_profile(st, pin)
+            ck = _ensure_class_key(st, key)
             token = secrets.token_urlsafe(32)
-            _sessions[token] = [pid, time.time(), key]
+            _sessions[token] = [pid, time.time(), key, ck, None]
             return token, "ok"
         fails = int(st.get("failures", 0)) + 1
         st["failures"] = fails
@@ -270,7 +338,7 @@ def session_profile(token: str | None) -> str | None:
         entry = _sessions.get(token)
         if not entry:
             return None
-        pid, last, _key = entry
+        pid, last = entry[0], entry[1]
         if not profiles.get(pid):
             _sessions.pop(token, None)
             return None
@@ -287,6 +355,34 @@ def session_key(token: str | None) -> bytes | None:
     """The data key of an unlocked session (None for a profile without a PIN)."""
     entry = _sessions.get(token or "")
     return entry[2] if entry else None
+
+
+def session_class_key(token: str | None) -> bytes | None:
+    entry = _sessions.get(token or "")
+    return entry[3] if entry else None
+
+
+def session_program_key(token: str | None) -> bytes | None:
+    """The program private key, only in an instructor's session after the Instructor PIN was entered."""
+    entry = _sessions.get(token or "")
+    return entry[4] if entry else None
+
+
+def unlock_program(token: str | None, pin: str) -> str | None:
+    """An instructor's session opens the class records: needs an instructor profile AND the Instructor PIN."""
+    entry = _sessions.get(token or "")
+    if not entry or (profiles.get(entry[0]) or {}).get("kind") != "instructor":
+        return "Only an instructor profile can open class records."
+    err = check_admin(pin)
+    if err:
+        return err
+    try:
+        priv = vault.unwrap(_program()["private"], pin)
+    except (vault.VaultError, KeyError):
+        return "The program key is missing or damaged."
+    with _lock:
+        entry[4] = priv
+    return None
 
 
 def lock(token: str | None) -> None:
@@ -409,8 +505,9 @@ def recover(pid: str, code: str, new_pin: str) -> tuple[str | None, str, str | N
         st.pop("locked_until", None)
         new_code = _new_recovery(st, key)                # the old code has been used; issue a fresh one
         _save(st)
+        ck = _ensure_class_key(st, key)
     end_sessions(pid)
     token = secrets.token_urlsafe(32)
     with _lock:
-        _sessions[token] = [pid, time.time(), key]
+        _sessions[token] = [pid, time.time(), key, ck, None]
     return token, "ok", new_code

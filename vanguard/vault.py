@@ -113,3 +113,57 @@ def open_backup(box: dict, password: str) -> bytes:
             bytes.fromhex(box["nonce"]), base64.b64decode(box["data"]), b"vanguard backup")
     except (InvalidTag, ValueError, KeyError, TypeError) as e:
         raise VaultError("Wrong backup password, or the file is damaged.") from e
+
+
+# ── program keys: what lets the instructor read class records ────────────────
+# The instructor's key pair (X25519). The public key is stored in the clear so any Cadet's session can seal that
+# Cadet's class key to it; the private key is locked by the Instructor PIN (wrap/unwrap above). The instructor can
+# then open class records only -- never a Cadet's private files, which stay under the Cadet's own key.
+
+def new_program_keys() -> tuple[bytes, bytes]:
+    """(private, public), 32 raw bytes each."""
+    from cryptography.hazmat.primitives import serialization as ser
+    from cryptography.hazmat.primitives.asymmetric.x25519 import X25519PrivateKey
+    priv = X25519PrivateKey.generate()
+    return (priv.private_bytes(ser.Encoding.Raw, ser.PrivateFormat.Raw, ser.NoEncryption()),
+            priv.public_key().public_bytes(ser.Encoding.Raw, ser.PublicFormat.Raw))
+
+
+def _derive(secret: bytes, info: bytes) -> bytes:
+    from cryptography.hazmat.primitives import hashes
+    from cryptography.hazmat.primitives.kdf.hkdf import HKDF
+    return HKDF(algorithm=hashes.SHA256(), length=32, salt=None, info=info).derive(secret)
+
+
+def seal_to(public: bytes, data: bytes, label: str) -> dict:
+    """Encrypt `data` so only the holder of the matching private key can read it (ephemeral X25519 + AES-GCM)."""
+    from cryptography.hazmat.primitives import serialization as ser
+    from cryptography.hazmat.primitives.asymmetric.x25519 import X25519PrivateKey, X25519PublicKey
+    eph = X25519PrivateKey.generate()
+    eph_pub = eph.public_key().public_bytes(ser.Encoding.Raw, ser.PublicFormat.Raw)
+    key = _derive(eph.exchange(X25519PublicKey.from_public_bytes(public)), b"vanguard box|" + eph_pub + public)
+    nonce = secrets.token_bytes(12)
+    return {"eph": eph_pub.hex(), "nonce": nonce.hex(), "to": hashlib.sha256(public).hexdigest()[:16],
+            "data": AESGCM(key).encrypt(nonce, data, label.encode("utf-8")).hex()}
+
+
+def open_from(private: bytes, box: dict, label: str) -> bytes:
+    from cryptography.hazmat.primitives import serialization as ser
+    from cryptography.hazmat.primitives.asymmetric.x25519 import X25519PrivateKey, X25519PublicKey
+    try:
+        priv = X25519PrivateKey.from_private_bytes(private)
+        public = priv.public_key().public_bytes(ser.Encoding.Raw, ser.PublicFormat.Raw)
+        eph_pub = bytes.fromhex(box["eph"])
+        key = _derive(priv.exchange(X25519PublicKey.from_public_bytes(eph_pub)), b"vanguard box|" + eph_pub + public)
+        return AESGCM(key).decrypt(bytes.fromhex(box["nonce"]), bytes.fromhex(box["data"]), label.encode("utf-8"))
+    except (InvalidTag, ValueError, KeyError) as e:
+        raise VaultError("not sealed to this key, or damaged") from e
+
+
+def key_id(public: bytes) -> str:
+    return hashlib.sha256(public).hexdigest()[:16]
+
+
+def program_data_key(private: bytes) -> bytes:
+    """A symmetric key for the instructor's own files (rosters, notes), derived from the program private key."""
+    return _derive(private, b"vanguard program data")

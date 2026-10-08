@@ -69,6 +69,13 @@ def _path(name: str) -> Path:
 _profile_key: contextvars.ContextVar[bytes | None] = contextvars.ContextVar("vanguard_profile_key", default=None)
 PLAIN_FILES = {"security.json"}
 
+# Class records: schoolwork the instructor may read (owner's decision, 2026-10-08). They are sealed with the Cadet's
+# CLASS key, which the instructor can also open; every other file stays under the Cadet's private key only
+# (check-ins, chats, memories, letters, logbook, profile...).
+CLASS_FILES = {"study.json", "exams.jsonl", "lessons.json", "assignments.json", "scenarios.jsonl",
+               "service.jsonl", "fitness.jsonl", "goals.json"}
+_class_key: contextvars.ContextVar[bytes | None] = contextvars.ContextVar("vanguard_class_key", default=None)
+
 
 def use_key(key: bytes | None):
     return _profile_key.set(key)
@@ -76,6 +83,18 @@ def use_key(key: bytes | None):
 
 def reset_key(token) -> None:
     _profile_key.reset(token)
+
+
+def use_class_key(key: bytes | None):
+    return _class_key.set(key)
+
+
+def reset_class_key(token) -> None:
+    _class_key.reset(token)
+
+
+def _key_for(name: str) -> bytes | None:
+    return _class_key.get() if name in CLASS_FILES else _profile_key.get()
 
 
 def _sealable(name: str) -> bool:
@@ -92,7 +111,13 @@ def _read_text(name: str) -> str | None:
     except OSError:
         return None
     if vault.is_sealed(data):
-        data = vault.open_sealed(_profile_key.get(), data, name)
+        try:
+            data = vault.open_sealed(_key_for(name), data, name)
+        except vault.VaultError:
+            # a class record not yet moved to the class key (interrupted move): it still opens with the data key
+            if name not in CLASS_FILES or _profile_key.get() is None:
+                raise
+            data = vault.open_sealed(_profile_key.get(), data, name)
     return data.decode("utf-8")
 
 
@@ -101,7 +126,7 @@ def _write_text(name: str, text: str) -> None:
     power loss mid-write can't leave a half-written logbook."""
     from vanguard import vault
     data = text.encode("utf-8")
-    key = _profile_key.get()
+    key = _key_for(name)
     if key is not None and _sealable(name):
         data = vault.seal(key, data, name)
     with _lock:
@@ -148,15 +173,18 @@ def append_line(name: str, row: dict) -> None:
         write_lines(name, read_lines(name) + [row])
 
 
-def reseal_folder(folder: Path, old_key: bytes | None, new_key: bytes | None) -> int:
-    """Re-encrypt every file in one profile folder from old_key to new_key (None = plain).
-    Used when a PIN is first set (plain -> sealed) or removed (sealed -> plain)."""
+def reseal_folder(folder: Path, old_key: bytes | None, new_key: bytes | None, only: set | None = None,
+                  skip: set | None = None) -> int:
+    """Re-encrypt files in one profile folder from old_key to new_key (None = plain): all of them, only the names
+    in `only`, or all but `skip`. Used when a PIN is set or removed, and to move class records to the class key."""
     from vanguard import vault
     done = 0
     with _lock:
         for path in sorted(folder.iterdir()):
             name = path.name
             if not path.is_file() or name.endswith(".tmp") or not _sealable(name):
+                continue
+            if (only is not None and name not in only) or (skip and name in skip):
                 continue
             data = path.read_bytes()
             if vault.is_sealed(data):
