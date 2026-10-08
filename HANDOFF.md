@@ -62,7 +62,9 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
   `tools/sign.py`), `site/worker.js`, `site/wrangler.toml`. **Do not run `--release` or `--deploy` in the cloud.**
 - ~65 files / ~570 occurrences of "cursiv"/"recruit" (case-insensitive, excluding library/ and books/).
 
-## PHASE 0 — finish the audit (docs only, no feature code)
+## PHASE 0 — DONE (2026-10-08, desktop session): ARCHITECTURE.md, REUSE_PLAN.md, MIGRATION_PLAN.md are committed. Skip to Phase 1.
+
+## (Phase 0 original instructions, for reference)
 
 Write three files at the repo root:
 1. **ARCHITECTURE.md** — how it fits together: server + security + vault/store + profiles, library/knowledge/brain/
