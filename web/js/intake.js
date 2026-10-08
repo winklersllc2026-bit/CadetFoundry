@@ -46,7 +46,7 @@ const intake = {
     STATUS = st;
     this.lock = lock; this.active = true; this.i = 0;
     this.qs = intakeQuestions({ ...(st.profile || {}), name: (st.profile || {}).name || lock.current.name }, st.kind, (cat && cat.installed) || []);
-    document.querySelector('[data-v=ask]').click();
+    openView('ask');
     $('#suggest').hidden = true;
     $('#msgIn').placeholder = 'Type your answer…';
     this.ask();

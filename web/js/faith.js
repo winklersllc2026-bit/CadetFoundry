@@ -52,5 +52,5 @@ loaders.faith = async () => {
   $('#fref').onkeydown = e => { if (e.key === 'Enter') $('#fgo').click(); };
   $('#fcmp').onclick = async () => render(await api(`/api/faith/lookup?ref=${encodeURIComponent(ref())}&compare=1&ids=${encodeURIComponent(tr())}`), ref());
   $('#fsearch').onclick = async () => render(await api(`/api/faith/search?q=${encodeURIComponent(ref())}&ids=${encodeURIComponent(tr())}`), ref());
-  $('#fask').onclick = () => { if (!ref()) return; document.querySelector('[data-v=ask]').click(); send(`Help me understand ${ref()}`); };
+  $('#fask').onclick = () => { if (!ref()) return; openView('ask'); send(`Help me understand ${ref()}`); };
 };

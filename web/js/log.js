@@ -116,7 +116,7 @@ async function showAftPlan() {
       `<li><b>${esc(k)}:</b> ${v.map(esc).join(', ')}</li>`).join('')}</ul></details>
     <div class="row" style="margin-top:8px"><button class="btn small" id="planAsk">Ask Vanguard how to train my ${esc(p.goal.name)}</button></div>
     <p class="faint">${esc(p.source)} Train with your unit's program and your cadre — this is a study aid.</p></div>`;
-  $('#planAsk').onclick = () => { document.querySelector('[data-v=ask]').click(); send(`How do I improve my ${p.goal.name} for the Army Fitness Test? Use FM 7-22.`); };
+  $('#planAsk').onclick = () => { openView('ask'); send(`How do I improve my ${p.goal.name} for the Army Fitness Test? Use FM 7-22.`); };
 }
 
 // ── ARMY FITNESS TEST SCORER ── (official score tables; scoring happens on the device, in vanguard/fitness.py)
@@ -151,7 +151,7 @@ async function loadAft() {
       ${r.weakest ? `<p>Biggest gain available: <b>${esc(names[r.weakest])}</b>.</p>` : ''}
       <div class="row">${r.weakest ? '<button class="btn" id="aftAsk">Ask Vanguard how to improve it</button>' : ''}<button class="btn primary" id="aftSave">Save to logbook</button></div>
       <p class="faint">${esc(r.source)}. Your unit's graders and the official tables decide your record score.</p></div>`;
-    if ($('#aftAsk')) $('#aftAsk').onclick = () => { document.querySelector('[data-v=ask]').click(); send(`How do I improve my ${names[r.weakest]}? Use FM 7-22.`); };
+    if ($('#aftAsk')) $('#aftAsk').onclick = () => { openView('ask'); send(`How do I improve my ${names[r.weakest]}? Use FM 7-22.`); };
     $('#aftSave').onclick = async () => {
       await api('/api/log', { kind: 'PT', date: new Date().toISOString().slice(0, 10), score: String(r.total),
         text: `AFT (${r.standard} standard, ${r.age_group}): ` + r.events.map(e => `${e.event} ${e.raw} = ${e.points}`).join(', ') + (r.complete ? (r.passed ? ' — met standard' : ' — below standard') : ' — partial') });

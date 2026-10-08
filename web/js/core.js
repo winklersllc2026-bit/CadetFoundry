@@ -89,7 +89,7 @@ async function showLock(msg) {
         <h2>${s.profiles.length ? 'New profile' : 'Welcome to Vanguard'}</h2>
         <p class="faint">Your logbook, letters and progress stay in your own profile on this device.</p>
         <label>Your name</label><input id="npName" maxlength="40" autocomplete="off">
-        <label>This profile is for</label><select id="npKind"><option value="soldier">A Soldier (or future Soldier)</option><option value="family">A family member — spouse, parent, loved one</option></select>
+        <label>This profile is for</label><select id="npKind"><option value="soldier">A Cadet</option><option value="family">A parent or guardian</option></select>
         <label>PIN (6–12 digits)${s.profiles.length ? '' : ' — recommended'}</label>
         <input id="npPin" type="password" inputmode="numeric" maxlength="12" autocomplete="off" placeholder="${s.profiles.length ? 'Strongly recommended on a shared device' : 'Optional'}">
         <p class="faint">With a PIN, your files are encrypted on this device. You'll get a <b>recovery code</b> in case you ever forget it.</p>
@@ -182,12 +182,16 @@ new MutationObserver(() => {
 
 // ── tabs ──
 const loaders = {};
+// Shows one view. Header buttons (Ask, Me, Instructor) open views that aren't tabs; then no tab is lit.
+function openView(v, pane) {
+  document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x.dataset.v === v && (x.dataset.pane || '') === (pane || '')));
+  document.querySelectorAll('.view').forEach(x => x.classList.toggle('on', x.id === v));
+  if (pane && typeof showPane === 'function') showPane(pane); else loaders[v] && loaders[v]();
+}
 $('#tabs').addEventListener('click', e => {
-  const b = e.target.closest('button'); if (!b) return;
-  document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x === b));
-  document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id === b.dataset.v));
-  loaders[b.dataset.v] && loaders[b.dataset.v]();
+  const b = e.target.closest('button'); if (b) openView(b.dataset.v, b.dataset.pane);
 });
+document.querySelectorAll('[data-open]').forEach(b => b.addEventListener('click', () => openView(b.dataset.open)));
 
 // ── status ──
 let STATUS = {};

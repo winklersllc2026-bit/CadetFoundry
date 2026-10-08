@@ -49,7 +49,7 @@ loaders.study = async () => {
   showBct();
   $('#examGo').onclick = examSetup;
   $('#libSearch').onsubmit = e => { e.preventDefault(); librarySearch($('#libQ').value); };
-  $('#famLetter').onclick = () => { document.querySelector('[data-v=logbook]').click(); showPane('letters'); };
+  $('#famLetter').onclick = () => { openView('logbook', 'letters'); };
   $('#printGo').onclick = pocketCards; $('#bpUniform').onclick = uniformCheck; $('#bpBoard').onclick = () => mockBoard(); $('#bpCreed').onclick = creedDrill; $('#nineGo').onclick = nineLine; $('#saluteGo').onclick = saluteDrill; $('#laceGo').onclick = () => sortDrill('LACE');
   $('#jobsGo').onclick = () => jobsExplorer();
   $('#booksGo').onclick = () => booksShelf();
@@ -152,7 +152,7 @@ async function jobsExplorer(q = '', area = '') {
         <p class="faint">Source: goarmy.com (${esc(j.url)})</p></div>
       <div class="row"><button class="btn primary" id="askJob">Ask Vanguard about this job</button></div>`;
     $('#backJobs').onclick = () => jobsExplorer(q, area);
-    $('#askJob').onclick = () => { document.querySelector('[data-v=ask]').click(); send(`Tell me about the Army job ${j.code} ${j.title}. What does the training look like and what should I know?`); };
+    $('#askJob').onclick = () => { openView('ask'); send(`Tell me about the Army job ${j.code} ${j.title}. What does the training look like and what should I know?`); };
   });
 }
 studyBody.addEventListener('click', async e => {
@@ -167,7 +167,7 @@ studyBody.addEventListener('click', async e => {
       <div class="row"><button class="btn primary" data-quiz="${esc(card.id)}">Quiz me on this</button>
       <button class="btn" id="askAbout">Ask Vanguard about it</button></div>`;
     $('#backStudy').onclick = loaders.study;
-    $('#askAbout').onclick = () => { document.querySelector('[data-v=ask]').click(); send('Help me understand: ' + card.title); };
+    $('#askAbout').onclick = () => { openView('ask'); send('Help me understand: ' + card.title); };
   }
 });
 async function startQuiz(topic, preset, onDone) {

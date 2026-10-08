@@ -235,11 +235,11 @@ loaders.me = async () => {
 
 // ── FIRST-RUN TOUR ── (once per profile on this device; "Take the tour" on the Me tab shows it again)
 const TOUR = [
-  ['ask', '💬 Ask', 'Ask anything about Army life. Answers come from the official manuals on this device, with the source under every answer — tap a source to read the exact passage.'],
-  ['study', '📘 Study', 'Flashcards, quizzes and timed exams; report drills (9-line, SALUTE, LACE); board prep; printable pocket cards.'],
-  ['faith', '🕊️ Faith', 'Your faith texts and reading plans — only if you want them.'],
-  ['logbook', '📝 Log', 'Your logbook, letters home, daily check-in, leave and money, the AFT scorer and fitness plan, and a PCS checklist. Print a board packet from the logbook.'],
-  ['me', '👤 Me', 'Your profile, PIN and encrypted backup. Set a PIN — it locks Vanguard and encrypts your files on this device.'],
+  ['study', '📘 Learn', 'Study cards, quizzes and timed exams, and the library of books and founding documents. Answers come from sources on this device, with the source shown.'],
+  ['lead', '🧭 Lead', 'Leadership scenarios: real situations, your decision, what happened and why, and what you would do next time.'],
+  ['logbook', '💪 Train', 'Your fitness history and goals — measured against your own last result, not anyone else.'],
+  ['serve', '🤝 Serve', 'Your service projects and hours, and Explore Military Service if you want to learn what serving is like.'],
+  ['progress', '📈 Progress', 'Your growth over time, in one place.'],
 ];
 function tour(pid) {
   const done = () => { try { localStorage.setItem('tour:' + pid, '1'); } catch (e) { } };
@@ -255,7 +255,7 @@ function tour(pid) {
     if (b) b.style.outline = '3px solid var(--tan)';
     o.innerHTML = `<div class="card" role="dialog" aria-modal="true" aria-labelledby="tourH" style="max-width:420px;width:100%">
       <div class="faint">${i + 1} of ${TOUR.length}</div><h3 id="tourH">${name}</h3><p>${text}</p>
-      ${i === TOUR.length - 1 ? '<p class="faint">Everything stays on this device. Vanguard is a study aid — confirm standards with your chain of command.</p>' : ''}
+      ${i === TOUR.length - 1 ? '<p class="faint">Everything stays on this device. Vanguard supports your instructor — it doesn’t replace your instructor, your curriculum or official sources.</p>' : ''}
       <div class="row"><button class="btn primary" id="tourNext">${i === TOUR.length - 1 ? 'Done' : 'Next'}</button>
       ${i < TOUR.length - 1 ? '<button class="btn small" id="tourSkip">Skip the tour</button>' : ''}</div></div>`;
     $('#tourNext').onclick = () => { i++; show(); };

@@ -160,6 +160,9 @@ body:not([data-kind="family"]) .family-only, body[data-kind="family"] .soldier-o
   <div class="brand"><span class="star">✦</span> VANGUARD <small id="hello"></small></div>
   <div class="row" style="gap:4px;flex-wrap:nowrap">
     <div class="engine" id="engine"><span class="dot"></span><span>checking…</span></div>
+    <button type="button" class="hdrNav" data-open="ask" title="Ask a question" aria-label="Ask a question">💬 Ask</button>
+    <button type="button" class="hdrNav" data-open="me" title="My profile and settings" aria-label="My profile and settings">👤</button>
+    <button type="button" class="hdrNav" data-open="instructor" title="Instructor" aria-label="Instructor">🎓</button>
     <button id="textBtn" type="button" title="Larger text and buttons" aria-label="Large text" aria-pressed="false">A+</button>
     <button id="modeBtn" type="button" title="Red-light mode keeps your night vision" aria-pressed="false">🔴 Night</button>
   </div>
@@ -227,16 +230,22 @@ body:not([data-kind="family"]) .family-only, body[data-kind="family"] .soldier-o
     </div>
   </div></section>
 
+  <!-- LEAD / SERVE / PROGRESS / INSTRUCTOR (web/js/shell.js) -->
+  <section class="view" id="lead"><div class="wrap" id="leadBody"></div></section>
+  <section class="view" id="serve"><div class="wrap" id="serveBody"></div></section>
+  <section class="view" id="progress"><div class="wrap" id="progressBody"></div></section>
+  <section class="view" id="instructor"><div class="wrap" id="instructorBody"></div></section>
+
   <!-- ME -->
   <section class="view" id="me"><div class="wrap" id="meBody"></div></section>
 </main>
 
-<nav class="tabs" id="tabs">
-  <button data-v="ask" class="on"><span class="ic">💬</span>Ask</button>
-  <button data-v="study"><span class="ic">📘</span>Study</button>
-  <button data-v="faith"><span class="ic">🕊️</span>Faith</button>
-  <button data-v="logbook"><span class="ic">📝</span>Log</button>
-  <button data-v="me"><span class="ic">👤</span>Me</button>
+<nav class="tabs" id="tabs" aria-label="Main">
+  <button data-v="study"><span class="ic" aria-hidden="true">📘</span>Learn</button>
+  <button data-v="lead"><span class="ic" aria-hidden="true">🧭</span>Lead</button>
+  <button data-v="logbook" data-pane="fit"><span class="ic" aria-hidden="true">💪</span>Train</button>
+  <button data-v="serve"><span class="ic" aria-hidden="true">🤝</span>Serve</button>
+  <button data-v="progress"><span class="ic" aria-hidden="true">📈</span>Progress</button>
 </nav>
 
 <script src="/js/core.js"></script>
@@ -244,6 +253,7 @@ body:not([data-kind="family"]) .family-only, body[data-kind="family"] .soldier-o
 <script src="/js/study.js"></script>
 <script src="/js/faith.js"></script>
 <script src="/js/log.js"></script>
+<script src="/js/shell.js"></script>
 <script src="/js/voice.js"></script>
 <script src="/js/intake.js"></script>
 <script src="/js/me.js"></script>
