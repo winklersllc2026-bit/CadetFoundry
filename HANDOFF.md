@@ -72,10 +72,13 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
   3. Navigation: Learn (study) / Lead / Train (logbook → fitness) / Serve / Progress tabs; Ask, Me, Instructor in the
      header; `web/js/shell.js` holds Lead/Serve/Progress/Instructor pages; Serve → Explore Military Service works.
      NOTE: the page CSP blocks inline `onclick` — always attach listeners in JS.
+  4. Cadet wording: AI persona (high-school Cadets, instructor is the authority, nurse/counselor/trusted adult),
+     APP_HELP, guardian note, welcome text and suggested questions; crisis banners use 988 call/text, Crisis Text
+     Line, RAINN, Childhelp, "tell a trusted adult" (no military lines, never promise secrecy).
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with
-  Instructor PIN, hiding the matching UI; (b) "Soldier" → "Cadet" in the AI persona (`vanguard/brain.py` PERSONA,
-  APP_HELP), welcome message and suggested questions in `web/index.html`, intake questions (`web/js/intake.js`),
-  safety wording for teenagers (school counselor / trusted adult + 988); (c) rewrite README, SECURITY, LIBRARY,
+  Instructor PIN, hiding the matching UI; (b) remaining "Soldier" wording outside Explore Military Service:
+  intake questions (`web/js/intake.js`), study/log/me screens, study cards that address "you" as a Soldier;
+  (c) rewrite README, SECURITY, LIBRARY,
   CLAUDE.md for Vanguard, then remove the planning docs from the brand-test allow-list (reword them);
   (d) site: new landing page, /pilot, /security (`site/build.py`, `site/worker.js`, wrangler name `vanguard`);
   (e) REPORT.md.

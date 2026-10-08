@@ -192,7 +192,7 @@ class LibraryTests(unittest.TestCase):
         with mock.patch("vanguard.engine.stream", fake), mock.patch.object(Brain, "_learn", lambda *a: None):
             events = list(Brain(self.lib).chat("Do I salute a sergeant first class?"))
         self.assertTrue(events[0]["t"].startswith("✅ **Checked answer:** No"))
-        self.assertIn("ANSWER (already shown to the Soldier)", seen["system"])
+        self.assertIn("ANSWER (already shown to the Cadet)", seen["system"])
         self.assertIn("Do NOT repeat it", seen["system"])                  # the AI only adds help around the answer
 
     def test_army_terms_always_in_prompt_and_sources_only_when_named(self):
@@ -413,7 +413,7 @@ class LibraryTests(unittest.TestCase):
              mock.patch.object(Brain, "_learn", lambda *a: None):
             list(Brain(self.lib).chat("What do ranks mean?", family=True))
             list(Brain(self.lib).chat("What do ranks mean?"))
-        self.assertIn("FAMILY MEMBER", seen[0][0]["content"])
+        self.assertIn("PARENT OR GUARDIAN", seen[0][0]["content"])
         self.assertNotIn("FAMILY MEMBER", seen[1][0]["content"])
 
     def test_quiz_prefers_missed_questions(self):
@@ -432,7 +432,7 @@ class SafetyTests(unittest.TestCase):
         self.assertIn("988", safety.check("thinking about killing myself")["banner"])
 
     def test_assault_detected(self):
-        self.assertIn("877-995-5247", safety.check("I was sexually assaulted by someone in my platoon")["banner"])
+        self.assertIn("800-656-4673", safety.check("I was sexually assaulted by someone in my platoon")["banner"])
 
     def test_normal_message_is_not_crisis(self):
         self.assertFalse(safety.check("my PT run is killing me lol, how do I get faster")["care"])

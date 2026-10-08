@@ -4,7 +4,7 @@ Safety checks that run on every message before the AI answers.
   * Crisis: signs of suicidal thoughts, self-harm, abuse or sexual assault ->
     help resources are shown FIRST (before any AI text), and the AI switches to
     a short, caring reply that encourages reaching out now.
-  * OPSEC: if a Soldier starts typing unit movements, dates, locations or
+  * OPSEC: if someone starts typing unit movements, dates, locations or
     numbers, a gentle reminder is added. Nothing is blocked or reported --
     everything stays on this device.
 """
@@ -23,31 +23,32 @@ ASSAULT_RE = re.compile(
 
 CRISIS_BANNER = (
     "**You matter, and help is available right now.**\n"
-    "- Call **988 and press 1** (Veterans & Military Crisis Line) — or text **838255**. 24/7.\n"
-    "- Tell your battle buddy, drill sergeant, or a chaplain **now**. You don't have to carry this alone.\n"
-    "- In immediate danger: call **911** or get to any medic or leader.\n\n"
+    "- Call or text **988** (Suicide & Crisis Lifeline) — free, 24/7. Or text **HOME** to **741741**.\n"
+    "- Tell a parent or guardian, a school counselor, your instructor, or another adult you trust **now**. "
+    "You don't have to carry this alone.\n"
+    "- In immediate danger: call **911**.\n\n"
 )
 ASSAULT_BANNER = (
     "**What happened to you is not okay, and it is not your fault.**\n"
-    "- **DoD Safe Helpline: 877-995-5247** (24/7, anonymous) — or your unit's **SHARP** representative.\n"
-    "- You can make a **restricted** report (confidential care, no investigation) or an **unrestricted** report.\n"
-    "- A chaplain is a confidential person to talk to. If you're in danger, call **911**.\n\n"
+    "- **RAINN: 800-656-4673** (24/7) · **Childhelp: 800-422-4453** (24/7, for anyone under 18).\n"
+    "- Tell a parent or guardian, a school counselor, or another adult you trust. They can help you stay safe.\n"
+    "- If you're in danger, call **911**.\n\n"
 )
 
 # Used when no AI model is available and the message showed signs of crisis or harm.
 CARE_FALLBACK = (
-    "I'm here, and I'm glad you said something. Please reach out to a person right now — call **988 and press 1** "
-    "(or text **838255**), or tell your battle buddy, a leader or a chaplain. If you're in danger, call **911**. "
+    "I'm here, and I'm glad you said something. Please reach out to a person right now — call or text **988**, or "
+    "tell a parent or guardian, a school counselor or another adult you trust. If you're in danger, call **911**. "
     "You don't have to carry this alone."
 )
 
 CARE_PROMPT = (
-    "You are Vanguard, a supportive companion for a U.S. Army Soldier. The Soldier may be in crisis or may have been "
-    "harmed. Help resources have already been shown above your reply. Speak like a calm, caring battle buddy: short, "
-    "warm, plain sentences. Acknowledge what they said and that it matters. Ask if they are safe right now. "
-    "Encourage them to call 988 and press 1 (or text 838255) or to tell their battle buddy, drill sergeant or "
-    "chaplain right now — and say you're here to keep talking. Never lecture, never judge, never refuse, and don't "
-    "list many resources (they're already shown)."
+    "You are Vanguard, a supportive companion for a JROTC Cadet (a high school student). The Cadet may be in crisis "
+    "or may have been harmed. Help resources have already been shown above your reply. Speak like a calm, caring "
+    "older mentor: short, warm, plain sentences. Acknowledge what they said and that it matters. Ask if they are safe "
+    "right now. Encourage them to call or text 988 or to tell a parent or guardian, a school counselor or another "
+    "trusted adult right now — and say you're here to keep talking. Never lecture, never judge, never refuse, never "
+    "promise to keep a secret, and don't list many resources (they're already shown)."
 )
 
 OPSEC_RE = re.compile(

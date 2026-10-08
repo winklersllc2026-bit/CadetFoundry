@@ -14,35 +14,31 @@ from vanguard import daily, engine, facts, safety, store
 from vanguard.faith import Faith
 from vanguard.knowledge import PUB_RE, Library, unsupported_numbers
 
-PERSONA = """You are Vanguard, an offline study companion for U.S. Army Soldiers in Basic Combat Training, AIT, and
-their first assignment. You run on the Soldier's own device. You are not part of the Army chain of command and
-not an official Army source.
+PERSONA = """You are Vanguard, an offline learning and leadership companion for JROTC Cadets (high school students).
+You support their JROTC instructor; you never replace the instructor, the curriculum, school policy or official
+sources. You are not an official Army, JROTC or school source.
 
-How you talk: like a sharp, encouraging squad leader — respectful, direct, plain words. Answers are complete but
-not padded: give every step, number and rule the library gives for the question, then stop. Use the Soldier's
-name or rank if you know it. Encourage, don't lecture.
+How you talk: like a calm, encouraging senior Cadet leader — respectful, direct, plain words a high school student
+understands. Answers are complete but not padded: give every step, number and rule the library gives, then stop.
+Use the Cadet's name if you know it. Encourage, don't lecture, never shame.
 
 How you answer:
-- Base answers on the LIBRARY passages below. When you use one, cite it in parentheses, e.g. (AR 670-1) or
-  (TC 7-21.13). If the library doesn't cover the question, say so plainly, give general knowledge only if you're
-  sure it's correct, and tell them to confirm with their drill sergeant, cadre or the regulation.
-- Regulations and standards change. For anything with numbers or rules (uniform, grooming, fitness scores, pay),
-  remind them to confirm the current version with their leadership.
-- Medical problems: tell them to go to sick call or a medic. Legal trouble: Trial Defense Service. Pay problems:
-  finance. Faith or personal struggles: the chaplain (any faith or none).
-- Never help with anything that breaks the UCMJ or training rules: going AWOL, cheating on tests or
-  qualifications, drugs, hiding injuries, hurting anyone. Explain the consequences and point to the right help.
-- Never invent or reveal classified or sensitive information, unit locations, or tactics beyond public training
-  material.
+- Base answers on the LIBRARY passages below. When you use one, cite it in parentheses, e.g. (AR 670-1). If the
+  library doesn't cover the question, say so plainly and tell them to ask their instructor.
+- Standards change and programs differ. For anything with numbers or rules, tell them to confirm with their
+  instructor.
+- Health or injury: the school nurse, a parent or guardian, or a doctor. Personal struggles: a school counselor, a
+  parent or guardian, or another trusted adult. You never diagnose or judge.
+- You never grade, discipline, decide promotions, or speak for the instructor.
+- Never help with cheating, hurting anyone, or breaking school rules. Explain why and point to the right help.
+- Never invent or reveal sensitive information.
 - For study: quiz them, make memory tricks, break things into steps.
-- Faith: respect every tradition and none. Answer within the tradition the Soldier asks about, quote the exact
-  SCRIPTURE text given below (name the translation), note that traditions and translations differ on
-  interpretation, never push a religion, and suggest a chaplain for deeper spiritual questions.
+- Faith: respect every tradition and none; never push a religion.
 """
 
 
 def _my_people() -> str:
-    """The Soldier's own support contacts (Check-in -> My people), shown right under the crisis lines."""
+    """The Cadet's own support contacts (Check-in -> My people), shown right under the crisis lines."""
     people = daily.support()
     if not people:
         return ""
@@ -71,14 +67,14 @@ ANSWER_RULES = """## Before you answer
 5. If the LIBRARY doesn't answer it, say so and tell them who to ask.
 6. Expand an acronym only as ARMY TERMS or the LIBRARY gives it; if you don't know it, don't guess. The fitness
    test is the Army Fitness Test (AFT) — never call it the PFT or APFT.
-7. Use what you know about the Soldier (where they are in training, their job) to make the answer fit them.
-8. Talk to the Soldier as "you". Never mention file names.
+7. Use what you know about the Cadet (their LET level, goals and interests) to make the answer fit them.
+8. Talk to the Cadet as "you". Never mention file names.
 """
 
 # When Vanguard already showed the answer from its own data, the AI may only add a little help around it -- it
 # never restates or changes the facts (the AFT answer once listed pull-ups right under the checked answer).
 COACH_RULES = """## Your job now
-The Soldier already sees the ANSWER above, from Vanguard's official data. Do NOT repeat it, list it again, change it,
+The Cadet already sees the ANSWER above, from Vanguard's official data. Do NOT repeat it, list it again, change it,
 or add any numbers, events, steps or rules. Write at most 3 short sentences that help them use it: why it matters,
 a practical tip, or who to ask. Talk to them as "you". If there's nothing useful to add, write one short sentence
 of encouragement.
@@ -92,16 +88,13 @@ _FACTUAL = re.compile(r"^\s*(what|which|when|where|who|how (many|much|long|often
 _BOILERPLATE = re.compile(r"feel free to ask|if you have any (other|more|further) questions|hope this helps|let me know\b",
                           re.I)
 
-LIBRARY_GAP = ("Vanguard's library doesn't cover that, so I won't guess. Ask your drill sergeant, cadre or "
-               "your unit — and for pay, your finance office; for school, your education center.")
+LIBRARY_GAP = ("Vanguard's library doesn't cover that, so I won't guess. Ask your instructor.")
 
 
 FAMILY_NOTE = """## Who you're talking with
-This profile belongs to a FAMILY MEMBER of a Soldier (for example a spouse or parent), not a Soldier. Talk to
-them as a supportive guide: explain Army terms and acronyms plainly, help them understand and support their
-Soldier, and point them to family support — Military OneSource (800-342-9647), the installation Military and
-Family Support Center, the unit's Soldier and Family Readiness Group, and a chaplain. Keep OPSEC: never ask
-for or repeat unit locations, movement or deployment dates, or numbers of people or equipment.
+This profile belongs to a PARENT OR GUARDIAN of a Cadet, not a Cadet. Talk to them as a supportive guide: explain
+JROTC and military terms plainly, and help them understand and support their Cadet. For questions about their
+Cadet's grades, standing or the program, point them to the JROTC instructor and the school.
 """
 
 
@@ -117,15 +110,16 @@ def app_help_question(text: str) -> bool:
     return len(text) <= 90 and bool(_APP_HELP.search(text)) or text.strip().lower() in ("help", "help?", "/help")
 
 
-APP_HELP = """Here's how I work, and how to get the most out of me:
+APP_HELP = """Here's how Vanguard works:
 
-- **Ask me anything** about Army life right here — ranks, customs, uniforms, first aid, pay, your fitness test. I answer from the **official manuals stored on this device** and name the source under each answer. Tap a source to read the exact page.
-- A **✅ Checked answer** means it matched a study card that was checked word for word against the manual.
-- **📘 Study** — flashcards, quizzes, timed exams, report drills (9-line, SALUTE, LACE) and board prep.
-- **📝 Log** — your logbook, the Army Fitness Test scorer and fitness plan, letters home, check-ins, pay and PCS help.
-- **👤 Me** — your profile, PIN and encrypted backup.
+- **📘 Learn** — study cards, quizzes, timed exams and the library (founding documents, Army history, classics). Answers come from sources stored on this device, with the source shown. A **✅ Checked answer** matched a study card checked against its source.
+- **🧭 Lead** — leadership scenarios and your leadership log.
+- **💪 Train** — your fitness history and goals, measured against your own last result.
+- **🤝 Serve** — your service projects and hours, and Explore Military Service if you want to learn what serving is like.
+- **📈 Progress** — your growth over time.
+- **💬 Ask** (top of the screen) — ask a question about anything in the library. **👤** is your profile, PIN and backup.
 
-Try: *"What happens in AIT?"*, *"Quiz me on ranks"*, or *"How do I wear the AGSU?"* Everything stays on this device. I'm a study aid — confirm standards with your drill sergeant or cadre."""
+Everything stays on this device. Vanguard supports your instructor — your instructor and official sources come first."""
 
 
 def used_cites(reply: str, cites: list[dict], checked: dict | None = None) -> list[dict]:
@@ -164,7 +158,7 @@ _URL = re.compile(r"\(?\b(?:https?://|www\.)[^\s)\]]+\)?", re.I)
 
 # Library file names leak into AI text ("AR_621-5_Army_Continuing_Education_System.md") -> "AR 621-5".
 _FILE = re.compile(r"\b(AR|FM|TC|ATP|ADP|DA_PAM|GTA)_(\d[\w.\-]*?)(?:_[A-Za-z0-9\-]+)*\.(?:md|txt)\b")
-# Small models drift into talking about the Soldier ("they should check with their finance office").
+# Small models drift into talking about the Cadet ("they should check with their finance office").
 _THEY = re.compile(r"\bthey (should|can|could|will need to|need to|may want to|might want to) "
                    r"(check|confirm|ask|contact|talk|see|visit|refer|reach out)", re.I)
 
@@ -197,7 +191,7 @@ def for_history(text: str) -> str:
 
 class SentenceGate:
     """Releases AI text one sentence (or line) at a time, and drops any sentence `keep` rejects -- one with a number
-    or a manual Vanguard's sources don't back up. The Soldier never sees a made-up figure, and never has to be told
+    or a manual Vanguard's sources don't back up. The Cadet never sees a made-up figure, and never has to be told
     to double-check one."""
     _END = re.compile(r"(?<!\b[A-Z])[.!?](?=\s)|\n")          # not inside "U.S." or after an initial
 
@@ -279,7 +273,7 @@ class Brain:
                 parts.append(FAMILY_NOTE)
             prof = store.profile_text()
             if prof:
-                parts.append("## The Soldier\n" + prof)
+                parts.append("## The Cadet\n" + prof)
             mems = store.memories()[-25:]
             if mems:
                 parts.append("## What you remember about them\n" + "\n".join(f"- {m['text']}" for m in mems))
@@ -294,7 +288,7 @@ class Brain:
             parts.append(ARMY_TERMS)
             parts.append("## LIBRARY (official sources — cite them)\n" + (lib or "(nothing in the library matched this question)"))
             if checked:
-                parts.append("## ANSWER (already shown to the Soldier)\n"
+                parts.append("## ANSWER (already shown to the Cadet)\n"
                              f"Q: {checked.get('question', text)}\nA: {checked['answer']} ({checked['source']})")
             parts.append(COACH_RULES if checked else ANSWER_RULES)   # last, where small models pay the most attention
             system = "\n\n".join(parts)
@@ -350,7 +344,7 @@ class Brain:
         mode = store.ai_mode()
         library_only = mode == "off"                     # AI Off: checked answers and quoted library text only
         # A factual question the library has nothing on: say so, don't guess. (Not for faith questions, which
-        # answer from scripture, or questions about the Soldier's own log and profile.)
+        # answer from scripture, or questions about the Cadet's own log and profile.)
         # In Library-only mode (the default) that applies to every question, not only factual ones.
         gap = (not check["care"] and not checked and not sources and (mode != "ai" and len(text.split()) >= 4 or bool(_FACTUAL.search(text)))
                and "## SCRIPTURE" not in msgs[0]["content"] and not re.search(r"\b(my|me|i)\b", text, re.I))
@@ -362,7 +356,7 @@ class Brain:
         def keep(sentence: str) -> bool:
             if checked:
                 # Help around a data answer is a few plain sentences: no numbers, no lists or headings, and
-                # nothing that just repeats the answer the Soldier already sees.
+                # nothing that just repeats the answer the Cadet already sees.
                 s = sentence.strip()
                 if re.search(r"\d", s) or re.match(r"([-*•]|\d+\.)\s", s) or s.endswith(":") or len(s) < 12:
                     return False
@@ -403,7 +397,7 @@ class Brain:
             elif checked:                                # the checked answer above already answers it
                 fallback = ("*AI is off: this is the checked answer on its own. Open Learn to read the whole card.*"
                             if library_only else
-                            "*The offline AI isn't running, so this is the checked answer on its own. Open the Study tab to read the whole card.*")
+                            "*The offline AI isn't running, so this is the checked answer on its own. Open Learn to read the whole card.*")
             else:
                 fallback = self._offline_fallback(text, library_only)
             fell_back = True
@@ -415,14 +409,14 @@ class Brain:
         store.add_history("user", text)
         store.add_history("assistant", full)
         if not check["care"]:
-            ctx = contextvars.copy_context()             # keep this Soldier's profile in the background job
+            ctx = contextvars.copy_context()             # keep this Cadet's profile in the background job
             threading.Thread(target=ctx.run, args=(self._learn, text, full), daemon=True).start()
         if not fell_back:                                # the offline fallback quotes every passage it shows
             sources = used_cites(full, sources, checked)
         yield {"done": True, "sources": list(dict.fromkeys(c["source"] for c in sources)), "cites": sources,
                "ai": not fell_back and not check["care"]}      # the app labels AI-written text
 
-    _SIMPLER = ("You are Vanguard. Rewrite the answer below for a new Soldier who wants it in plain words. Use short "
+    _SIMPLER = ("You are Vanguard. Rewrite the answer below for a Cadet who wants it in plain words. Use short "
                 "sentences and everyday words. The first time an acronym or Army term appears, say what it means in "
                 "a few words. Keep every fact, number, rule and source name (like AR 670-1) exactly as given. Do not "
                 "add anything that isn't in the answer. Keep it under 150 words. Reply with the rewrite only.")
@@ -467,10 +461,10 @@ class Brain:
                "Here's what the library says:\n\n")
         if not said:
             return msg.replace("Here's what the library says:\n\n", "") + \
-                   "I didn't find this in the library either. Check the Study tab, or ask your drill sergeant."
+                   "I didn't find this in the library either. Check Learn, or ask your instructor."
         return msg + said
 
-    _LEARN = ("From this exchange, list 0-2 lasting facts about the Soldier that will help in future conversations "
+    _LEARN = ("From this exchange, list 0-2 lasting facts about the Cadet that will help in future conversations "
               "(goals, struggles, job, progress, preferences, family they mention). Never record anything about unit "
               "locations, movements or dates. Never guess. Reply with a JSON array of short strings only, or [].")
 
@@ -478,7 +472,7 @@ class Brain:
         if len(user) < 20:
             return
         raw = engine.quick([{"role": "system", "content": self._LEARN},
-                            {"role": "user", "content": f"Soldier: {user[:1500]}\nVanguard: {reply[:1500]}"}], 200)
+                            {"role": "user", "content": f"Cadet: {user[:1500]}\nVanguard: {reply[:1500]}"}], 200)
         m = re.search(r"\[.*\]", raw or "", re.S)
         try:
             items = json.loads(m.group(0)) if m else []
@@ -490,7 +484,7 @@ class Brain:
 
     # ── study ───────────────────────────────────────────────────────────────
     def quiz(self, topic: str = "", n: int = 10) -> list[dict]:
-        """Flashcards weighted toward questions the Soldier has missed or never seen."""
+        """Flashcards weighted toward questions the Cadet has missed or never seen."""
         stats = store.study()
         pool = []
         for c in self.library.cards:
