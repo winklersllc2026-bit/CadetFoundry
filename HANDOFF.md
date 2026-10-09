@@ -109,6 +109,10 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
   allows it — enforced server-side via `knowledge.use_categories`; instructor switches per category; 7 new cards from
   USA.gov, National Archives, CDC, BLS (FAFSA flagged unverified). Rule for new content: U.S. government sources,
   fetched and cited; anything unverified gets `verified: no`.
+- **Phase 7 DONE (2026-10-08):** `vanguard/service.py` (service log in class records, instructor projects, verify /
+  return-with-note / un-verify, verified entries locked, totals), `web/js/service.js` (Serve: hours, log form, status;
+  Instructor: review queue, hours by Cadet, projects), `tests/test_service.py`. Verified in the browser end to end.
+- **Branches: Army JROTC only** (owner, 2026-10-08) until another branch approaches for a pilot.
 - **Next:** owner testing (run from C:\Code\Vanguard with `python run.py`), then Phase 7 Serve (service log +
   instructor verification), 8 Progress, 9 Instructor analytics, 10 Pilot. Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with

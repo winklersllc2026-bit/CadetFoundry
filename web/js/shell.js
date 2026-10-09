@@ -14,9 +14,9 @@ loaders.serve = async () => {
   const cadet = STATUS.kind === 'cadet', basicAllowed = (STATUS.categories_enabled || []).includes('basic');
   $('#serveBody').innerHTML = `<h2>Serve</h2>
     <div class="card"><h3>🤝 Service learning</h3>
-      <p>Track your service projects: date, hours, organization, your role, and what you learned. Your instructor
-      verifies them.</p>${SOON('The service log is being built.', 'Phase 7')}
-      <button class="btn small" ${go('logbook', 'letters')}>✉️ Write to family, service members or veterans</button></div>
+      <p class="faint">Your service projects: date, hours, organization, your role, and what you learned. Your instructor verifies them.</p>
+      <div id="serviceBox"></div>
+      <button class="btn small" ${go('logbook', 'letters')} style="margin-top:8px">✉️ Write to family, service members or veterans</button></div>
     ${'explore' in cats ? `<div class="card" id="exploreMil"><h3>🎗️ Explore Military Service</h3>
       <p class="faint">For Cadets who want to learn what military service is like. Information only — nothing here
       signs you up or shares anything with a recruiter. Numbers come straight from official tables.</p>
@@ -37,6 +37,7 @@ loaders.serve = async () => {
   $('#serveBody').querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => {
     const [v, pane] = b.dataset.go.split(':'); openView(v, pane);
   }));
+  if (typeof serviceCadet === 'function') serviceCadet($('#serviceBox'));       // web/js/service.js
   if ($('#milTrack')) $('#milTrack').addEventListener('change', async e => {
     const on = e.target.checked;
     const r = await api('/api/profile', { military_track: on ? 'yes' : '' });
@@ -149,4 +150,5 @@ loaders.instructor = async () => {
   if (typeof instructorLessons === 'function') await instructorLessons(body, ov);   // web/js/lessons.js
   if (typeof instructorLeadership === 'function') await instructorLeadership(body);   // web/js/scenarios.js
   if (typeof instructorTrain === 'function') await instructorTrain(body);             // web/js/train.js
+  if (typeof instructorService === 'function') await instructorService(body);         // web/js/service.js
 };
