@@ -102,6 +102,13 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
   (`web/js/train.js`: cards, trend line, goal, log a result, history; private logbook link), instructor events +
   test-day recording; AFT scorer moved to Serve → Explore Military Service; `tests/test_train.py`. Fixed: the date
   box used UTC (tomorrow on US evenings). Verified in the browser at 375 px.
+- **JROTC audit (2026-10-08, owner: "still feels like a Soldier app"):** Cadet interview/profile = name, grade,
+  interests, goals only (no rank/MOS/stage/station/height/weight/sex); every card has a `category:`; Learn shows
+  Leadership / Citizenship / Military Knowledge / Health & Fitness / Careers / Explore Military Service, and
+  **Basic Training & Beyond only when the Cadet opts in** ("I plan to join the military", Serve) and the instructor
+  allows it — enforced server-side via `knowledge.use_categories`; instructor switches per category; 7 new cards from
+  USA.gov, National Archives, CDC, BLS (FAFSA flagged unverified). Rule for new content: U.S. government sources,
+  fetched and cited; anything unverified gets `verified: no`.
 - **Next:** owner testing (run from C:\Code\Vanguard with `python run.py`), then Phase 7 Serve (service log +
   instructor verification), 8 Progress, 9 Instructor analytics, 10 Pilot. Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with
