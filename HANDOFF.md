@@ -173,7 +173,9 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
     91 cards. Fix: card screen didn't render "> quote" lines (Constitution, Declaration, Pledge showed a stray >);
     md() in web/js/core.js now renders blockquotes (style in index.html). Tables don't render -- test_grading checks.
   - **Phase 11 step 8 DONE (2026-10-09):** leadership_after_action_review, leadership_thinking_skills (FM 6-22),
-    troop_leading_procedures (Ranger Handbook ch 2), careers_banking (FDIC + CFPB). 95 cards. investor.gov blocked (403).
+    troop_leading_procedures (Ranger Handbook ch 2), careers_banking (FDIC + CFPB). 95 cards.
+  - **Phase 11 step 9 DONE (2026-10-09):** careers_compound_interest + careers_emergency_savings (Investor.gov, read in
+    the browser), army_birthday_flag (TC 3-21.5 App. I). 98 cards.
 - **Next:** owner testing (run from C:\Code\Vanguard with `python run.py`), then Phase 7 Serve (service log +
   instructor verification), 8 Progress, 9 Instructor analytics, 10 Pilot. Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with
