@@ -66,6 +66,21 @@ Needs Python 3.10+ and the `cryptography` package (installed by the setup script
 **Install as an app:** on a phone, "Add to Home Screen"; on a computer, "Install app" in the browser. Vanguard
 then opens full screen with its own icon.
 
+## Run it from a USB drive
+
+Put the whole system on a USB drive and run it on any Windows computer — nothing is installed there, and every
+profile and class record stays on the drive (each profile still encrypted with its own PIN):
+
+```
+python tools/make_usb.py E:\                  # app + its own Python + the library (about 50 MB)
+python tools/make_usb.py E:\ --with-ai        # also the offline AI, copied from this computer (adds about 1–2 GB)
+```
+
+On the drive, double-click **Start Vanguard.bat** (this computer only) or **Start Vanguard (classroom).bat** (Cadets
+connect over the classroom network). Keep the window open while you use it; close it or use Me → Quit Vanguard
+before unplugging. Run the command again to update the drive — the `VanguardData` folder is never touched.
+Linux / Mac: `sh start-vanguard-usb.sh` on the drive. Details: `README-USB.txt` on the drive.
+
 ## Offline AI (optional)
 
 ```

@@ -221,6 +221,13 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
     the server refuses a switched-off tool's routes (_module_off in server.py) and the chat stops using faith texts;
     status.modules_off hides the UI; 'Optional tools' card on the Instructor screen. tests/test_modules.py.
     (Explore Military Service already has its own switch: the 'explore' Learn category.)
+  - **USB mode DONE (owner request 2026-10-09):** tools/make_usb.py <drive> [--with-ai [--model m] [--all-gpu]]
+    writes Vanguard\ (app + embedded Python via site/build.py bundle_python), VanguardData\ (VANGUARD_DATA, kept on
+    rebuild), Start Vanguard.bat / (classroom).bat (--lan), start-vanguard-usb.sh, README-USB.txt. --with-ai copies the
+    Ollama engine (CPU + Vulkan libs only unless --all-gpu; ~0.1 GB) and one model's manifest + blobs. run.py
+    _start_portable_ai(): VANGUARD_OLLAMA set by the .bat -> starts the drive's ollama serve (OLLAMA_MODELS on the
+    drive) only if no Ollama answers; terminated at exit. Tested: built a drive in scratch, started from its python,
+    data landed in VanguardData; the drive's ollama served qwen2.5:1.5b on a spare port.
 - **Next:** owner testing (run from C:\Code\Vanguard with `python run.py`), then Phase 7 Serve (service log +
   instructor verification), 8 Progress, 9 Instructor analytics, 10 Pilot. Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with

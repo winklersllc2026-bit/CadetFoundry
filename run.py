@@ -65,6 +65,7 @@ def main() -> int:
 
     host = "0.0.0.0" if args.lan else "127.0.0.1"
     url = f"http://127.0.0.1:{args.port}"
+    _start_portable_ai()
     try:
         httpd = serve(host, args.port, lan=args.lan)
     except OSError:
@@ -95,6 +96,29 @@ def main() -> int:
         pass
     httpd.server_close()
     return 0
+
+
+def _start_portable_ai() -> None:
+    """USB mode (tools/make_usb.py --with-ai): the drive carries Ollama and a model. If no Ollama is answering yet,
+    start the drive's copy with its models folder on the drive. It runs in the same console window, so closing that
+    window (or Me > Quit Vanguard) stops it too -- nothing keeps running on the school's computer."""
+    import atexit
+    import os
+    import subprocess
+    exe = os.environ.get("VANGUARD_OLLAMA")
+    if not exe or not os.path.exists(exe):
+        return
+    from vanguard import engine
+    if engine.local_models() is not None:            # an Ollama is already running on this computer: use it
+        return
+    env = dict(os.environ, OLLAMA_MODELS=os.path.join(os.path.dirname(exe), "models"), OLLAMA_HOST="127.0.0.1:11434")
+    try:
+        proc = subprocess.Popen([exe, "serve"], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except OSError as e:
+        print(f"  Offline AI on this drive couldn't start ({e}). Vanguard works without it.")
+        return
+    atexit.register(proc.terminate)
+    print("  Offline AI: starting from this drive (the first answer can take a minute while the model loads).")
 
 
 def _is_vanguard(url: str) -> bool:
