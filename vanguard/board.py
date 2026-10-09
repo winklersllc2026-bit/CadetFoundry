@@ -50,7 +50,7 @@ def word_grade(answer: str, reference: str) -> dict:
             "score": round(score, 2), "missing": [k for k in keys if k not in hit], "how": "words"}
 
 
-_JUDGE = ("You grade answers at a U.S. Army promotion board practice session. Compare the Soldier's answer with "
+_JUDGE = ("You grade answers at a practice board for a JROTC Cadet studying military knowledge. Compare the Cadet's answer with "
           "the reference answer. The answer is correct if it has the same meaning, even in different words. Reply "
           "with JSON only: {\"verdict\": \"go\" | \"partial\" | \"nogo\", \"why\": \"one short sentence\"}.")
 

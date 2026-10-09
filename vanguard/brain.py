@@ -49,12 +49,12 @@ def _my_people() -> str:
 
 # Always in the prompt: small models invent acronym expansions ("AIT = Airborne Infantry Training"). These are the
 # exact meanings (FM 7-22 glossary; ATP 7-22.02 for the AFT) -- the same as the "Army Terms" study card.
-ARMY_TERMS = """## ARMY TERMS (exact meanings — never expand an acronym any other way)
-AIT = advanced individual training (your Army job's technical training, after BCT) · BCT = basic combat training ·
-OSUT = one station unit training · IMT = initial military training · FSP = Future Soldier Program · MOS = military
-occupational specialty (your job) · FUA = first unit of assignment · NCO = noncommissioned officer · H2F = holistic
-health and fitness · AFT = Army Fitness Test (the Army's fitness test; it replaced the ACFT) · ABCP = Army Body
-Composition Program · ACU = Army combat uniform · TRADOC = U.S. Army Training and Doctrine Command
+ARMY_TERMS = """## JROTC AND MILITARY TERMS (exact meanings — never expand an acronym any other way)
+JROTC = Junior Reserve Officers' Training Corps (the high school program the Cadet is in) · LET = Leadership
+Education and Training (the JROTC course level, LET 1 to LET 4) · SAI = Senior Army Instructor · NCO =
+noncommissioned officer · MOS = military occupational specialty (an Army job) · BCT = basic combat training ·
+AIT = advanced individual training (Army job training after BCT) · H2F = holistic health and fitness · AFT = Army
+Fitness Test (the Army's fitness test for Soldiers; it replaced the ACFT)
 """
 
 ANSWER_RULES = """## Before you answer

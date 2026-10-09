@@ -87,9 +87,9 @@ def concern() -> str | None:
     low = sum(1 for r in recent[:3] if r["mood"] <= 2 or r["stress"] >= 4)
     short_sleep = sum(1 for r in recent[:3] if r["sleep"] < 5)
     if low >= 3:
-        return ("Your last few check-ins have been rough. That happens to a lot of Soldiers, and you don't have to carry "
-                "it alone — talk to your battle buddy, a chaplain, or behavioral health. If it ever feels like too much, "
-                "call 988 and press 1 (or text 838255), any time.")
+        return ("Your last few check-ins have been rough. That happens to a lot of people, and you don't have to carry "
+                "it alone — talk to a parent or guardian, a school counselor, or another adult you trust. If it ever "
+                "feels like too much, call or text 988, any time.")
     if short_sleep >= 3:
         return ("You've been short on sleep for several days. Sleep is part of readiness (FM 7-22) — if it keeps up, "
                 "let your leadership or sick call know.")

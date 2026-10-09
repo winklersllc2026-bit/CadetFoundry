@@ -58,14 +58,16 @@ $('#packetBtn').onclick = boardPacket;
 // ── LETTERS HOME ──
 const PANES = [
   ['log', '📝 Logbook', 'Logbook', () => loaders.logbook()],
-  ['letters', '✉️ Letters', 'Letters home', () => loadLetters()],
+  ['letters', '✉️ Letters', 'Letters', () => loadLetters()],
   ['checkin', '🙂 Check-in', 'Daily check-in', () => loadCheckin()],
   ['leave', '🏖️ Leave', 'Leave tracker', () => loadLeave()],
   ['money', '💵 Money', 'Budget', () => loadMoney()],
   ['fit', '💪 AFT', 'Army Fitness Test', () => loadAft()],
   ['pcs', '📦 PCS', 'PCS / first duty station', () => loadPcs()],
 ];
-$('#paneBar').innerHTML = PANES.map(([k, label]) => `<button class="btn small" data-pane="${k}">${label}</button>`).join('');
+// leave, the AFT scorer and PCS belong to Explore Military Service (Serve opens them); they're hidden from the bar
+const EXPLORE_PANES = new Set(['leave', 'fit', 'pcs']);
+$('#paneBar').innerHTML = PANES.map(([k, label]) => `<button class="btn small" data-pane="${k}"${EXPLORE_PANES.has(k) ? ' hidden' : ''}>${label}</button>`).join('');
 function showPane(which, load = true) {
   for (const [k, , title, fn] of PANES) {
     $('#' + k + 'Pane').hidden = k !== which;
