@@ -368,6 +368,40 @@ class SecurityTests(unittest.TestCase):
         self.assertEqual(get("/api/card?id=ucmj_basics")[0], 404)
         self.req("POST", "/api/profile", {"military_track": ""}, {"Cookie": alice})
 
+    def test_quiz_answers_are_typed_and_graded_never_self_reported(self):
+        """Owner's rule, for every quiz: Cadets type the answer and Vanguard grades it. The answer key isn't sent before
+        they answer, and no route lets the screen report its own score."""
+        alice = self.login(self.alice["id"], "482915")
+        get = lambda path: json.loads(self.req("GET", path, headers={"Cookie": alice})[2])
+        post = lambda path, body: self.req("POST", path, body, {"Cookie": alice})
+        qs = get("/api/quiz?n=50&topic=citizenship")
+        self.assertTrue(qs)
+        self.assertTrue(all("a" not in x for x in qs))                          # no answers in advance
+        self.assertNotIn("a", get("/api/daily")["questions"][0])
+        self.assertEqual(post("/api/quiz/result", {"id": qs[0]["id"], "correct": True})[0], 404)   # self-report route gone
+        branches = next(x for x in qs if "how many branches" in x["q"].lower())
+        g = json.loads(post("/api/quiz/answer", {"id": branches["id"], "answer": "legislative, executive and judicial"})[2])
+        self.assertEqual((g["verdict"], g["correct"]), ("right", True))
+        self.assertIn("legislative", g["answer"])                               # the answer comes back after answering
+        self.assertFalse(json.loads(post("/api/quiz/answer", {"id": branches["id"], "answer": "two"})[2])["correct"])
+        # practice mode: four choices, the right one among them, graded by which one was picked
+        mc = next(x for x in get("/api/quiz?n=50&topic=citizenship&mode=mc") if x["id"] == branches["id"])
+        self.assertEqual(len(mc["choices"]), 4)
+        self.assertNotIn("a", mc)
+        right_choice = next(c for c in mc["choices"] if c.lower().startswith("three"))
+        wrong_choice = next(c for c in mc["choices"] if c != right_choice)
+        self.assertTrue(json.loads(post("/api/quiz/answer", {"id": mc["id"], "choice": right_choice})[2])["correct"])
+        self.assertFalse(json.loads(post("/api/quiz/answer", {"id": mc["id"], "choice": wrong_choice})[2])["correct"])
+        self.assertTrue(all("choices" not in x for x in get("/api/quiz?n=5&topic=citizenship")))   # challenge: none
+        # the mock board grades by question id too -- no answer key from the screen, no "count it right"
+        g = json.loads(post("/api/board/grade", {"id": branches["id"], "answer": ""})[2])
+        self.assertEqual(g["verdict"], "nogo")
+        # the Daily 10 score is counted from graded answers, not from what the screen claims
+        for x in get("/api/daily")["questions"]:
+            post("/api/quiz/answer", {"id": x["id"], "answer": "I don't know", "daily": True})
+        done = json.loads(post("/api/daily/done", {"right": 10, "total": 10})[2])
+        self.assertEqual(done["today_score"]["right"], 0)
+
     def test_app_can_be_installed_from_the_lock_screen(self):
         """Phones 'Add to Home Screen' and computers 'Install app' before anyone signs in: the manifest and icons are
         public (they hold no data); everything else stays locked."""

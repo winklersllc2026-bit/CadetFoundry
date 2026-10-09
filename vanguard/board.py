@@ -55,6 +55,33 @@ _JUDGE = ("You grade answers at a practice board for a JROTC Cadet studying mili
           "with JSON only: {\"verdict\": \"go\" | \"partial\" | \"nogo\", \"why\": \"one short sentence\"}.")
 
 
+_YESNO = re.compile(r"^\s*(yes|no)\b", re.I)
+
+
+def quiz_grade(question: str, reference: str, answer: str, use_ai: bool = True) -> dict:
+    """A Cadet's typed answer to a study-card quiz question, graded on the device -- never self-reported.
+    {"verdict": "right" | "close" | "wrong", "correct": bool, "why": str}. Only "right" counts as right."""
+    answer = (answer or "").strip()[:1000]
+    if not answer:
+        return {"verdict": "wrong", "correct": False, "why": "No answer given."}
+    ref_yn, ans_yn = _YESNO.match(reference), _YESNO.match(answer)
+    if ref_yn:                                       # "No — the AFT has no sit-up event...": the yes/no decides
+        ok = bool(ans_yn) and ans_yn.group(1).lower() == ref_yn.group(1).lower()
+        return {"verdict": "right" if ok else "wrong", "correct": ok, "how": "yes/no",
+                "why": "" if ok else f"The answer starts with \"{ref_yn.group(1).capitalize()}\"."}
+    head = re.split(r"\s[—–-]\s|;", reference, maxsplit=1)[0]        # "Three — legislative, ..." -> "Three"
+    words = max((word_grade(answer, r) for r in {reference, head} if keywords(r)), key=lambda g: g["score"],
+                default={"score": 0.0, "verdict": "nogo"})
+    verdict = {"go": "right", "partial": "close", "nogo": "wrong"}[words["verdict"]]
+    out = {"verdict": verdict, "correct": verdict == "right", "how": "words", "why": ""}
+    if use_ai and verdict != "right":                # the offline AI may recognize the same meaning in other words
+        g = grade(question, reference, answer)
+        if g.get("how") == "ai":
+            v = {"go": "right", "partial": "close", "nogo": "wrong"}.get(g.get("verdict"), verdict)
+            out = {"verdict": v, "correct": v == "right", "how": "ai", "why": g.get("why", "")}
+    return out
+
+
 def grade(question: str, reference: str, answer: str) -> dict:
     answer = (answer or "").strip()[:2000]
     if not answer:

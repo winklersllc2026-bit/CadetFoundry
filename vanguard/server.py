@@ -322,7 +322,8 @@ class Handler(BaseHTTPRequestHandler):
                 n = max(1, min(50, int(q.get("n", "10") or 10)))
             except ValueError:
                 n = 10
-            return self._json(app.brain.quiz(q.get("topic", ""), n))
+            # questions only: the answer is revealed after the Cadet answers (POST /api/quiz/answer)
+            return self._json(app.brain.for_screen(app.brain.quiz(q.get("topic", ""), n), q.get("mode", "")))
         if r == "/api/log":
             return self._json(store.log_entries())
         if r == "/api/memory":
@@ -336,7 +337,8 @@ class Handler(BaseHTTPRequestHandler):
         if r == "/api/letters":
             return self._json({"contacts": letters.contacts(), "letters": letters.letters()})
         if r == "/api/daily":
-            return self._json({"status": daily.daily_status(), "questions": daily.daily_questions(app.brain)})
+            return self._json({"status": daily.daily_status(),
+                               "questions": app.brain.for_screen(daily.daily_questions(app.brain), q.get("mode", ""))})
         if r == "/api/checkin":
             return self._json({"rows": daily.checkins()[:30], "concern": daily.concern(), "sleep": daily.sleep_summary(),
                                "support": daily.support(), "roles": daily.SUPPORT_ROLES})
@@ -524,8 +526,20 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json({"text": voice.transcribe(str(b.get("audio", "")), rate)})
             except Exception as e:
                 return self._json({"error": str(e)[:200]}, 400)
-        if r == "/api/quiz/result":
-            return self._json(store.record_answer(str(b.get("id", ""))[:80], bool(b.get("correct"))))
+        if r == "/api/quiz/answer":
+            # The Cadet types an answer; Vanguard grades it. Scores are never self-reported (owner's rule).
+            item = app.brain.quiz_item(str(b.get("id", ""))[:80])
+            if not item:
+                return self._json({"error": "No such question."}, 404)
+            if isinstance(b.get("choice"), str):        # practice: a multiple-choice pick, checked here
+                ok = exam._norm(b["choice"]) == exam._norm(item["a"])
+                g = {"verdict": "right" if ok else "wrong", "correct": ok, "how": "choice", "why": ""}
+            else:                                        # challenge: a typed answer
+                g = board.quiz_grade(item["q"], item["a"], str(b.get("answer", "")), use_ai=store.ai_mode() != "off")
+            store.record_answer(item["id"], g["correct"])
+            if b.get("daily"):
+                daily.daily_record(item["id"], g["correct"])
+            return self._json({**g, "answer": item["a"], "source": item["source"]})
         if r == "/api/log":
             if not (b.get("text") or "").strip():
                 return self._json({"error": "empty entry"}, 400)
@@ -574,7 +588,7 @@ class Handler(BaseHTTPRequestHandler):
             except ValueError as e:
                 return self._json({"error": str(e)}, 400)
         if r == "/api/daily/done":
-            return self._json(daily.daily_done(int(b.get("right", 0)), int(b.get("total", 10))))
+            return self._json(daily.daily_done())
         if r == "/api/checkin":
             try:
                 return self._json(daily.add_checkin(b.get("mood", 3), b.get("stress", 3), b.get("sleep", 7), str(b.get("note", ""))))
@@ -843,8 +857,15 @@ class Handler(BaseHTTPRequestHandler):
         if r == "/api/support":
             return self._json(daily.save_support(b.get("contacts") if isinstance(b.get("contacts"), list) else []))
         if r == "/api/board/grade":
+            # by question id: the reference answer stays on the device until graded; the result is recorded here
+            item = app.brain.quiz_item(str(b.get("id", ""))[:80])
+            if not item:
+                return self._json({"error": "No such question."}, 404)
+            answer = str(b.get("answer", ""))
             with app.lock:                               # may use the AI model
-                return self._json(board.grade(str(b.get("q", ""))[:500], str(b.get("a", ""))[:800], str(b.get("answer", ""))))
+                g = board.grade(item["q"], item["a"], answer) if answer.strip() else                     {"verdict": "nogo", "score": 0.0, "missing": [], "how": "words", "why": "No answer given."}
+            store.record_answer(item["id"], g.get("verdict") == "go")
+            return self._json({**g, "answer": item["a"], "source": item["source"]})
         if r == "/api/board/recite":
             return self._json(board.recite(str(b.get("text", ""))[:5000]))
         if r == "/api/faith/plan/done":

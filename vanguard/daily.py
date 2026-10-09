@@ -16,14 +16,39 @@ def _today() -> dt.date:
     return dt.date.today()
 
 
+DAILY_ANSWERS = "daily_answers.json"            # {"date", "ids": [...], "answers": {qid: true/false}}
+
+
+def _today_set() -> dict:
+    d = store.read_json(DAILY_ANSWERS, {})
+    return d if d.get("date") == _today().isoformat() else {"date": _today().isoformat(), "ids": [], "answers": {}}
+
+
 def daily_questions(brain, n: int = 10) -> list[dict]:
-    """Same 10 questions all day (seeded by the date), weighted toward ones missed before."""
+    """The same 10 questions all day, weighted toward ones missed before. The set is fixed the first time it's
+    shown (answering changes the weights, which would otherwise change the set mid-day)."""
+    today = _today_set()
+    if today["ids"]:
+        items = [x for x in (brain.quiz_item(q) for q in today["ids"]) if x]
+        if items:
+            return items
     state = random.getstate()
     random.seed(_today().isoformat())
     try:
-        return brain.quiz("", n)
+        items = brain.quiz("", n)
     finally:
         random.setstate(state)
+    today.update({"ids": [x["id"] for x in items], "answers": {}})
+    store.write_json(DAILY_ANSWERS, today)
+    return items
+
+
+def daily_record(qid: str, correct: bool) -> None:
+    """A graded answer to one of today's Daily 10 questions (the first answer to each counts)."""
+    today = _today_set()
+    if qid in today["ids"] and qid not in today["answers"]:
+        today["answers"][qid] = bool(correct)
+        store.write_json(DAILY_ANSWERS, today)
 
 
 def daily_status() -> dict:
@@ -44,9 +69,12 @@ def daily_status() -> dict:
             "streak": streak, "best": best, "days": len(d)}
 
 
-def daily_done(right: int, total: int) -> dict:
+def daily_done() -> dict:
+    """Finish today's Daily 10. The score comes from the answers Vanguard graded -- never from the screen."""
+    today = _today_set()
     d = store.read_json("daily.json", {})
-    d[_today().isoformat()] = {"right": int(right), "total": int(total)}
+    d[_today().isoformat()] = {"right": sum(1 for v in today["answers"].values() if v),
+                               "total": len(today["ids"]) or len(today["answers"])}
     store.write_json("daily.json", d)
     return daily_status()
 

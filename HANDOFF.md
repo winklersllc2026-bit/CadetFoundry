@@ -113,6 +113,17 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
   return-with-note / un-verify, verified entries locked, totals), `web/js/service.js` (Serve: hours, log form, status;
   Instructor: review queue, hours by Cadet, projects), `tests/test_service.py`. Verified in the browser end to end.
 - **Branches: Army JROTC only** (owner, 2026-10-08) until another branch approaches for a pilot.
+- **Quizzes (owner's rules, 2026-10-08):** every quiz is a chat feed graded on the device -- never self-reported, and
+  the answer isn't sent to the screen before answering. Two ways in: 📝 Practice (multiple choice) and 🎯 Challenge
+  (type the answer; key words + offline AI for meaning; yes/no handled). Daily 10's set is fixed for the day and its
+  score is counted from graded answers. Mock board grades by question id (no "count it right"). The note on every
+  quiz: missing one means nothing bad; the more you miss now, the more you have to look forward to.
+- **Planned additions (owner):**
+  - Phase 9 or 11: the instructor can **view and edit the quiz questions** of the built-in cards for their program, and
+    give a **pop quiz** (their own questions; live in class like the scenario vote, or assigned). Today a lesson with
+    only questions already works as an assigned pop quiz.
+  - **Phase 11: much more content** -- same rule: U.S. government sources, fetched and cited, `verified: no` when not
+    checked; Army JROTC only.
 - **Next:** owner testing (run from C:\Code\Vanguard with `python run.py`), then Phase 7 Serve (service log +
   instructor verification), 8 Progress, 9 Instructor analytics, 10 Pilot. Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with

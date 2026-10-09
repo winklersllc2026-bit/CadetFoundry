@@ -504,6 +504,30 @@ class Brain:
                     break
         return picked
 
+    def quiz_item(self, qid: str) -> dict | None:
+        """One quiz question by its id ("card_id#index"), only from cards this request may see."""
+        cid, _, idx = (qid or "").partition("#")
+        c = self.library.card(cid)
+        if not c or not idx.isdigit() or int(idx) >= len(c.quiz):
+            return None
+        q, a = c.quiz[int(idx)]
+        return {"id": f"{c.id}#{idx}", "q": q, "a": a, "card": c.title, "topic": c.topic, "source": c.source}
+
+    def for_screen(self, items: list[dict], mode: str = "") -> list[dict]:
+        """Quiz questions as the screen gets them: never the answer. Practice mode adds four choices (the right one
+        and three from other questions), shuffled; challenge mode (typed answers) has none."""
+        from vanguard import exam
+        out = []
+        for x in items:
+            q = {k: v for k, v in x.items() if k != "a"}
+            if mode == "mc":
+                card = self.library.card(x["id"].partition("#")[0])
+                choices = (exam._choices(self.library, card, x["a"]) if card else []) + [x["a"]]
+                random.shuffle(choices)
+                q["choices"] = choices
+            out.append(q)
+        return out
+
     def progress(self) -> dict:
         stats = store.study()
         out = {}

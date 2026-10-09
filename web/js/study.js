@@ -56,10 +56,7 @@ loaders.study = async () => {
       <button class="btn small" id="examGo">Take an exam</button></div></div>
     <div class="card"><div class="row" style="justify-content:space-between"><div><h3>Mixed quiz</h3><div class="faint">10 questions from everything you can see — the ones you miss come back more often.</div></div><button class="btn primary" data-quiz="">Start</button></div></div>`;
   const on = (id, fn) => { const el = $('#' + id); if (el) el.onclick = fn; };
-  $('#dailyGo').onclick = () => startQuiz('', dly.questions, async right => {
-    const s = await api('/api/daily/done', { right, total: dly.questions.length });
-    return `Streak: ${s.streak} day${s.streak === 1 ? '' : 's'} 🔥`;
-  });
+  $('#dailyGo').onclick = () => chooseQuiz('', true);
   on('navGo', landNav); on('examGo', examSetup); on('jobsGo', () => jobsExplorer()); on('booksGo', () => booksShelf());
   on('toLead', () => openView('lead')); on('toServe', () => openView('serve'));
   on('printGo', pocketCards); on('bpUniform', uniformCheck); on('bpBoard', () => mockBoard()); on('bpCreed', creedDrill);
@@ -171,7 +168,7 @@ async function jobsExplorer(q = '', area = '') {
 }
 studyBody.addEventListener('click', async e => {
   const q = e.target.closest('[data-quiz]'), c = e.target.closest('[data-card]');
-  if (q) return startQuiz(q.dataset.quiz);
+  if (q) return chooseQuiz(q.dataset.quiz);
   if (c) {
     const card = await api('/api/card?id=' + encodeURIComponent(c.dataset.card));
     studyBody.innerHTML = `<button class="btn small" id="backStudy">← Study</button>
@@ -184,32 +181,96 @@ studyBody.addEventListener('click', async e => {
     $('#askAbout').onclick = () => { openView('ask'); send('Help me understand: ' + card.title); };
   }
 });
-async function startQuiz(topic, preset, onDone) {
-  const qs = preset || await api('/api/quiz?n=10&topic=' + encodeURIComponent(topic || ''));
-  let i = 0, right = 0;
-  const show = async () => {
-    if (i >= qs.length) {
-      const extra = onDone ? await onDone(right) : '';
-      studyBody.innerHTML = `<div class="card flash"><div class="faint">Done</div><div class="q">${right} / ${qs.length} right</div>
-        ${extra ? `<p>${esc(extra)}</p>` : ''}
-        <div class="row" style="justify-content:center"><button class="btn primary" id="again">Again</button><button class="btn" id="backStudy">Back to Study</button></div></div>`;
-      $('#again').onclick = () => startQuiz(topic, preset, onDone); $('#backStudy').onclick = loaders.study; return;
-    }
-    const q = qs[i];
-    studyBody.innerHTML = `<div class="faint">${i + 1} of ${qs.length} · ${esc(q.topic)}</div>
-      <div class="card flash"><div class="q">${esc(q.q)}</div><div class="a" id="ans" hidden>${esc(q.a)}</div>
-      <div class="row" style="justify-content:center" id="ctl"><button class="btn primary" id="reveal">Show answer</button></div>
-      <div class="faint" style="margin-top:14px">${esc(q.source)}</div></div>
-      <button class="btn small" id="quit">End quiz</button>`;
-    $('#quit').onclick = loaders.study;
-    $('#reveal').onclick = () => {
-      $('#ans').hidden = false;
-      $('#ctl').innerHTML = '<button class="btn" id="miss">✗ Missed it</button><button class="btn primary" id="got">✓ Got it</button>';
-      const grade = ok => { api('/api/quiz/result', { id: q.id, correct: ok }); if (ok) right++; i++; show(); };
-      $('#got').onclick = () => grade(true); $('#miss').onclick = () => grade(false);
-    };
+// Quizzes are a chat feed: Vanguard asks, the Cadet types an answer, Vanguard grades it on the device. Nothing is
+// self-reported and the answer isn't sent to the screen until after the Cadet answers (owner's rule: scores must be
+// real). `daily` marks Daily 10 answers so today's score is counted from graded answers.
+const QUIZ_NOTE = "Getting one wrong doesn't mean anything bad. A lot of these are just facts — knowing them doesn't make " +
+  "anyone a better person, but learning more is the sign of a good mind. The more you miss now, the more you have to " +
+  "look forward to: every one you learn raises your score.";
+const VERDICT = { right: '✅ Right!', close: '🟡 Close.', wrong: '❌ Not quite.' };
+
+// Two ways in (owner's design): Practice = multiple choice, to learn it; Challenge = type the answer, to prove it.
+function chooseQuiz(topic, daily = false) {
+  studyBody.innerHTML = `<h2>${daily ? '🔥 Daily 10' : 'Quiz'}</h2>
+    <div class="card"><p>${esc(QUIZ_NOTE)}</p>
+      <button class="btn primary" id="qPractice" style="display:block;width:100%;text-align:left;margin:8px 0">📝 <b>Practice</b> — multiple choice<br><span class="faint">Pick from four answers. A good way to learn it.</span></button>
+      <button class="btn" id="qChallenge" style="display:block;width:100%;text-align:left;margin:8px 0">🎯 <b>Challenge</b> — type the answer<br><span class="faint">No choices. For when you've studied it.</span></button>
+      <button class="btn small" id="qBack">← Back to Learn</button></div>`;
+  $('#qBack').onclick = loaders.study;
+  const go = async mode => {
+    if (!daily) return startQuiz(topic, null, null, false, mode);
+    const d = await api('/api/daily?mode=' + mode);
+    startQuiz('', d.questions, async () => {
+      const st = await api('/api/daily/done', {});               // scored on the device from the graded answers
+      return `Streak: ${st.streak} day${st.streak === 1 ? '' : 's'} 🔥`;
+    }, true, mode);
   };
-  show();
+  $('#qPractice').onclick = () => go('mc');
+  $('#qChallenge').onclick = () => go('typed');
+}
+
+async function startQuiz(topic, preset, onDone, daily = false, mode = 'typed') {
+  const qs = preset || await api('/api/quiz?n=10&mode=' + mode + '&topic=' + encodeURIComponent(topic || ''));
+  let i = 0, right = 0;
+  studyBody.innerHTML = `<div class="row" style="justify-content:space-between;align-items:center">
+      <h2 style="margin:0">${daily ? '🔥 Daily 10' : 'Quiz'}</h2><button class="btn small" id="quit">End quiz</button></div>
+    <div id="qFeed" class="thread" aria-live="polite" style="margin-top:10px"></div>
+    <form id="qForm" class="composer" style="position:sticky;bottom:0;background:var(--bg);padding:8px 0">
+      <input id="qIn" autocomplete="off" placeholder="Type your answer…" aria-label="Your answer" style="flex:1">
+      <button class="btn primary" id="qSend">Answer</button></form>`;
+  const feed = $('#qFeed'), form = $('#qForm'), input = $('#qIn');
+  const say = (who, html) => {
+    const m = document.createElement('div');
+    m.className = 'msg ' + (who === 'me' ? 'me' : 'ai');
+    m.innerHTML = (who === 'me' ? '' : '<div class="who">VANGUARD</div>') + html;
+    feed.appendChild(m); m.scrollIntoView({ block: 'end' });
+  };
+  $('#quit').onclick = loaders.study;
+  say('ai', `<p>${esc(QUIZ_NOTE)}</p>`);
+  const ask = () => {
+    if (i >= qs.length) return finish();
+    const q = qs[i];
+    say('ai', `<div class="faint">${i + 1} of ${qs.length} · ${esc(q.topic)}</div><p><b>${esc(q.q)}</b></p>
+      ${q.choices ? `<div class="mcq">${q.choices.map((c, k) => `<button class="btn" data-mc="${k}" style="display:block;width:100%;text-align:left;margin:6px 0">${'ABCD'[k]}. ${esc(c)}</button>`).join('')}</div>` : ''}`);
+    if (q.choices) {
+      form.hidden = true;
+      const box = feed.lastElementChild;
+      box.querySelectorAll('[data-mc]').forEach(b => b.addEventListener('click', () => {
+        box.querySelectorAll('[data-mc]').forEach(x => { x.disabled = true; x.classList.toggle('primary', x === b); });
+        answer({ choice: q.choices[+b.dataset.mc] }, `${'ABCD'[+b.dataset.mc]}. ${q.choices[+b.dataset.mc]}`);
+      }));
+    } else {
+      form.hidden = false; input.value = ''; input.disabled = false; input.focus();
+    }
+  };
+  const finish = async () => {
+    form.hidden = true;
+    const extra = onDone ? await onDone(right) : '';
+    say('ai', `<p><b>${right} of ${qs.length} right.</b>${extra ? ' ' + esc(extra) : ''}</p><p class="faint">${esc(QUIZ_NOTE)}</p>
+      <div class="row"><button class="btn primary" id="again">Again</button><button class="btn" id="backStudy">Back to Learn</button></div>`);
+    $('#again').onclick = () => chooseQuiz(daily ? '' : topic);
+    $('#backStudy').onclick = loaders.study;
+  };
+  const answer = async (body, shown) => {
+    say('me', `<p>${esc(shown)}</p>`);
+    const q = qs[i];
+    const g = await api('/api/quiz/answer', { id: q.id, daily, ...body });
+    if (g.error) { say('ai', `<p>${esc(g.error)}</p>`); input.disabled = false; return; }
+    if (g.correct) right++;
+    say('ai', `<p><b>${VERDICT[g.verdict] || ''}</b> ${g.verdict === 'right' ? '' : 'The answer: '}${g.verdict === 'right' ? '' : `<b>${esc(g.answer)}</b>`}</p>
+      ${g.verdict === 'right' ? `<p class="faint">${esc(g.answer)}</p>` : ''}${g.why ? `<p class="faint">${esc(g.why)}</p>` : ''}
+      <div class="faint">${esc(g.source || '')}</div>`);
+    i++;
+    setTimeout(ask, 400);
+  };
+  form.onsubmit = ev => {
+    ev.preventDefault();
+    const text = input.value.trim();
+    if (!text || input.disabled) return;
+    input.disabled = true;
+    answer({ answer: text }, text);
+  };
+  ask();
 }
 
 // ── LAND NAV PRACTICE ──
@@ -241,7 +302,6 @@ function landNav() {
     const v = $('#navIn').value.replace(/\D/g, ''), half = digits / 2;
     const tol = digits === 8 ? 2 : 0;    // 8-digit: within 20 m counts (estimating hundredths by eye)
     const ok = v.length === digits && Math.abs(+v.slice(0, half) - +answer.slice(0, half)) <= tol && Math.abs(+v.slice(half) - +answer.slice(half)) <= tol;
-    api('/api/quiz/result', { id: `landnav#${digits}`, correct: ok });
     $('#navMsg').innerHTML = ok ? `<b style="color:var(--green)">✓ Correct</b> — ${answer.slice(0, half)} ${answer.slice(half)}`
       : `<b style="color:var(--red)">Not quite.</b> The answer is <b>${answer.slice(0, half)} ${answer.slice(half)}</b> — easting first (right), then northing (up).`;
   };
@@ -382,7 +442,6 @@ function nineLine() {
       if (ok) right++;
       $('#m' + n).innerHTML = ok ? '<b style="color:var(--green)">✓</b>' : `<b style="color:var(--red)">✗</b> ${esc(ans)}`;
     }
-    api('/api/quiz/result', { id: 'medevac#drill', correct: right === 9 });
     const time = timed ? '' : (timed = true, await stopClock('9-line', right === 9));
     $('#nineSum').innerHTML = `<p><b>${right} / 9 lines right.</b> ${right === 9 ? 'Ready to send.' : 'Fix the red lines and check again.'}${time ? ' ' + esc(time) + '.' : ''}</p>
       <p class="faint">Remember: say "I have a MEDEVAC request", send lines 1–5 on first contact, say each line number in the clear, end with OVER. Don't send the smoke or panel color — the crew calls it on arrival.</p>`;
@@ -447,7 +506,6 @@ function sortDrill(kind) {
       const ok = $('#s' + k).value === facts[k]; if (ok) right++;
       $('#sm' + k).innerHTML = ok ? '<b style="color:var(--green)">✓</b>' : `<b style="color:var(--red)">✗</b> ${esc(facts[k])}`;
     }
-    api('/api/quiz/result', { id: d.id, correct: right === keys.length });
     const time = timed ? '' : (timed = true, await stopClock(kind, right === keys.length));
     $('#salSum').innerHTML = `<p><b>${right} / ${keys.length} right.</b>${time ? ' ' + esc(time) + '.' : ''} ${esc(d.tip)}</p>`;
   };
@@ -593,7 +651,7 @@ async function uniformCheck() {
       <div id="ucList">${html}</div><p id="ucDone" class="faint"></p>
       <div class="row"><button class="btn" id="ucQuiz">Quiz me on placement</button></div></div>`;
   $('#backStudy').onclick = loaders.study;
-  $('#ucQuiz').onclick = () => startQuiz('uniform_agsu');
+  $('#ucQuiz').onclick = () => chooseQuiz('uniform_agsu');
   $('#ucList').addEventListener('change', () => {
     const boxes = $('#ucList').querySelectorAll('input[type=checkbox]'), n = [...boxes].filter(b => b.checked).length;
     $('#ucDone').textContent = n === boxes.length ? '✓ Every item checked. Ready for inspection.' : `${n} of ${boxes.length} checked`;
@@ -625,17 +683,18 @@ async function mockBoard(topic = '') {
     $('#backStudy').onclick = loaders.study;
     $('#mbTopic').onchange = e => mockBoard(e.target.value);
     micInto($('#mbMic'), $('#mbAns'));
-    const finish = ok => { api('/api/quiz/result', { id: q.id, correct: ok }); if (ok) right++; i++; show(); };
     const submit = async skipped => {
       $('#mbGo').disabled = $('#mbSkip').disabled = true;
-      const g = skipped ? { verdict: 'nogo', how: 'words', missing: [] } : await api('/api/board/grade', { q: q.q, a: q.a, answer: $('#mbAns').value });
+      // graded and recorded by Vanguard on the device -- no "count it right" button (scores are never self-reported)
+      const g = await api('/api/board/grade', { id: q.id, answer: skipped ? '' : $('#mbAns').value });
       const [label, color] = VERDICT[g.verdict] || VERDICT.nogo;
+      if (g.verdict === 'go') right++;
       $('#mbOut').innerHTML = `<div style="margin-top:12px"><b style="color:${color};font-size:20px">${label}</b>
           ${g.why ? `<span class="faint"> — ${esc(g.why)}</span>` : ''}${g.how === 'words' && g.missing && g.missing.length && !skipped ? `<div class="faint">Key words not heard: ${g.missing.map(esc).join(', ')}</div>` : ''}
-          <p><b>Answer:</b> ${esc(q.a)}</p><p class="faint">Source: ${esc(q.source)}</p>
-          <div class="row"><button class="btn" id="mbWrong">Count it wrong</button><button class="btn primary" id="mbRight">Count it right</button></div></div>`;
-      $('#mbRight').onclick = () => finish(true); $('#mbWrong').onclick = () => finish(false);
-      (g.verdict === 'go' ? $('#mbRight') : $('#mbWrong')).focus();
+          <p><b>Answer:</b> ${esc(g.answer || '')}</p><p class="faint">Source: ${esc(g.source || q.source)}</p>
+          <div class="row"><button class="btn primary" id="mbNext">Next question</button></div></div>`;
+      $('#mbNext').onclick = () => { i++; show(); };
+      $('#mbNext').focus();
     };
     $('#mbGo').onclick = () => submit(false); $('#mbSkip').onclick = () => submit(true);
   };
@@ -655,7 +714,6 @@ function creedDrill() {
   $('#crClear').onclick = () => { $('#crIn').value = ''; $('#crOut').innerHTML = ''; };
   $('#crGo').onclick = async () => {
     const r = await api('/api/board/recite', { text: $('#crIn').value });
-    api('/api/quiz/result', { id: 'creed#recite', correct: r.perfect });
     $('#crOut').innerHTML = `<p style="margin-top:12px"><b>${r.right} of ${r.total} words</b>${r.perfect ? ' — word perfect. 🎖️' : ''}</p>
       <div style="line-height:1.9">${r.lines.map(l => l.map(w => w.ok ? esc(w.w) : `<b style="color:var(--red);text-decoration:underline">${esc(w.w)}</b>`).join(' ')).join('<br>')}</div>
       ${r.extra.length ? `<p class="faint">Words that aren't in the creed: ${r.extra.map(esc).join(', ')}</p>` : ''}
