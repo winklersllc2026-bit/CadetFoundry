@@ -24,7 +24,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from vanguard import (addons, backup, board, books, careers, daily, engine, exam, fitness, instructor, integrity, knowledge,
-                      lessons, letters, pay, profiles, scenarios, security, store, train, voice)
+                      lessons, letters, pay, profiles, scenarios, security, service, store, train, voice)
 from vanguard.brain import Brain
 from vanguard.faith import Faith
 from vanguard.knowledge import Library
@@ -214,6 +214,17 @@ class Handler(BaseHTTPRequestHandler):
                     return self._json({"error": "No such Cadet."}, 404)
                 log = instructor.read_class_file(priv, pid, "scenarios.jsonl", [])
                 return self._json({"shared": log is not None, "entries": list(reversed(log or []))})
+            if r == "/api/instructor/service":
+                cadets = []
+                for p in profiles.all_profiles():
+                    if p["kind"] != "cadet":
+                        continue
+                    rows = instructor.read_class_file(priv, p["id"], "service.jsonl", [])
+                    cadets.append({"id": p["id"], "name": p["name"], "shared": rows is not None,
+                                   "entries": sorted(rows or [], key=lambda r: (r["date"], r["id"]), reverse=True),
+                                   "totals": service.totals(rows or [])})
+                return self._json({"cadets": cadets, "projects": service.projects(),
+                                   "pending": sum(1 for c in cadets for e in c["entries"] if e.get("status") == "pending")})
             if r == "/api/instructor/train":
                 out = []
                 for p in profiles.all_profiles():
@@ -238,6 +249,11 @@ class Handler(BaseHTTPRequestHandler):
                 if (profiles.get(pid) or {}).get("kind") != "cadet":
                     return self._json({"error": "No such Cadet."}, 404)
                 return self._json(instructor.records(priv, pid))
+        if r == "/api/service":
+            if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
+                return self._json({"entries": [], "totals": service.totals([]), "projects": service.projects(),
+                                   "not_cadet": True})
+            return self._json(service.mine())
         if r == "/api/train":
             if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
                 return self._json({"events": [], "units": train.UNITS, "not_cadet": True})
@@ -604,6 +620,21 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(books.save_place(str(b.get("id", ""))[:40], int(b.get("ch", 0) or 0)))
             except (ValueError, TypeError) as e:
                 return self._json({"error": str(e)}, 400)
+        if r in ("/api/service/add", "/api/service/edit", "/api/service/delete"):
+            if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
+                return self._json({"error": "The service log is for Cadets."}, 403)
+            try:
+                if r == "/api/service/add":
+                    service.add(b)
+                elif r == "/api/service/edit":
+                    service.edit(str(b.get("id", ""))[:10], b)
+                else:
+                    service.delete(str(b.get("id", ""))[:10])
+                return self._json(service.mine())
+            except LookupError as e:
+                return self._json({"error": str(e)}, 404)
+            except ValueError as e:
+                return self._json({"error": str(e)}, 400)
         if r in ("/api/train/add", "/api/train/delete", "/api/train/goal"):
             if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
                 return self._json({"error": "Train is for Cadets."}, 403)
@@ -673,6 +704,22 @@ class Handler(BaseHTTPRequestHandler):
                         instructor.delete_unit(priv, str(b.get("id", ""))[:10])
                         return self._json({"ok": True})
                     return self._json({"error": "Choose add, rename or delete."}, 400)
+                if r == "/api/instructor/service/project":
+                    if b.get("action") == "remove":
+                        service.remove_project(str(b.get("id", ""))[:8])
+                        return self._json({"ok": True})
+                    return self._json(service.add_project(b.get("title"), b.get("organization"), str(b.get("date", ""))[:10],
+                                                          b.get("hours"), b.get("description")))
+                if r == "/api/instructor/service/review":
+                    pid = str(b.get("cadet", ""))[:12]
+                    if (profiles.get(pid) or {}).get("kind") != "cadet":
+                        return self._json({"error": "No such Cadet."}, 404)
+                    ck, status = instructor.class_key(priv, pid)
+                    if status == "waiting":
+                        return self._json({"error": "This Cadet's records aren't shared yet."}, 409)
+                    with security.as_profile(pid, None, ck):
+                        return self._json(service.review(str(b.get("id", ""))[:10], str(b.get("action", "")),
+                                                         str(b.get("note", ""))))
                 if r == "/api/instructor/train/event":
                     if b.get("action") == "remove":
                         train.remove_event(str(b.get("id", ""))[:12])
@@ -751,6 +798,8 @@ class Handler(BaseHTTPRequestHandler):
                     if b.get("unit"):                    # joining a unit brings that unit's assignments, to this Cadet only
                         out = {**out, "new_assignments": lessons.sync_cadet(priv, pid)}
                     return self._json(out)
+            except LookupError as e:
+                return self._json({"error": str(e)}, 404)
             except (ValueError, TypeError) as e:
                 return self._json({"error": str(e)}, 400)
             return self._json({"error": "Unknown instructor action."}, 404)
