@@ -24,7 +24,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from vanguard import (addons, backup, board, books, careers, daily, engine, exam, fitness, instructor, integrity, knowledge,
-                      lessons, letters, pay, profiles, scenarios, security, service, store, train, voice)
+                      lessons, letters, pay, profiles, progress, scenarios, security, service, store, train, voice)
 from vanguard.brain import Brain
 from vanguard.faith import Faith
 from vanguard.knowledge import Library
@@ -214,6 +214,18 @@ class Handler(BaseHTTPRequestHandler):
                     return self._json({"error": "No such Cadet."}, 404)
                 log = instructor.read_class_file(priv, pid, "scenarios.jsonl", [])
                 return self._json({"shared": log is not None, "entries": list(reversed(log or []))})
+            if r == "/api/instructor/progress":
+                pid = str(q.get("id", ""))[:12]
+                p = profiles.get(pid)
+                if (p or {}).get("kind") != "cadet":
+                    return self._json({"error": "No such Cadet."}, 404)
+                ck, status = instructor.class_key(priv, pid)
+                if status == "waiting":
+                    return self._json({"name": p["name"], "status": status})
+                with security.as_profile(pid, None, ck):
+                    return self._json({"name": p["name"], "status": status, **progress.portfolio(app.library, pid),
+                                       "sections": progress.portfolio_sections(), "section_names": progress.SECTIONS,
+                                       "kinds": progress.KINDS})
             if r == "/api/instructor/service":
                 cadets = []
                 for p in profiles.all_profiles():
@@ -249,6 +261,13 @@ class Handler(BaseHTTPRequestHandler):
                 if (profiles.get(pid) or {}).get("kind") != "cadet":
                     return self._json({"error": "No such Cadet."}, 404)
                 return self._json(instructor.records(priv, pid))
+        if r == "/api/progress":
+            p = profiles.get(self._pid or "") or {}
+            if p.get("kind") != "cadet":
+                return self._json({"not_cadet": True})
+            return self._json({"name": p["name"], **progress.portfolio(app.library, self._pid),
+                               "sections": progress.portfolio_sections(), "section_names": progress.SECTIONS,
+                               "kinds": progress.KINDS})
         if r == "/api/service":
             if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
                 return self._json({"entries": [], "totals": service.totals([]), "projects": service.projects(),
@@ -718,6 +737,25 @@ class Handler(BaseHTTPRequestHandler):
                         instructor.delete_unit(priv, str(b.get("id", ""))[:10])
                         return self._json({"ok": True})
                     return self._json({"error": "Choose add, rename or delete."}, 400)
+                if r == "/api/instructor/recognition":
+                    pid = str(b.get("cadet", ""))[:12]
+                    if (profiles.get(pid) or {}).get("kind") != "cadet":
+                        return self._json({"error": "No such Cadet."}, 404)
+                    ck, status = instructor.class_key(priv, pid)
+                    if status == "waiting":
+                        return self._json({"error": "This Cadet's records aren't shared yet."}, 409)
+                    with security.as_profile(pid, None, ck):
+                        if b.get("action") == "remove":
+                            progress.remove_recognition(str(b.get("id", ""))[:10])
+                            return self._json({"ok": True})
+                        return self._json(progress.add_recognition(str(b.get("kind", "")), b.get("title"),
+                                                                   str(b.get("date", ""))[:10], b.get("note")))
+                if r == "/api/instructor/portfolio-sections":
+                    secs = b.get("sections")
+                    if not isinstance(secs, list) or not all(x in progress.SECTIONS for x in secs):
+                        return self._json({"error": "Unknown section."}, 400)
+                    store.save_config({"portfolio_sections": [x for x in progress.SECTIONS if x in secs]})
+                    return self._json({"sections": progress.portfolio_sections()})
                 if r == "/api/instructor/service/project":
                     if b.get("action") == "remove":
                         service.remove_project(str(b.get("id", ""))[:8])

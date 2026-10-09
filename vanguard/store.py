@@ -73,7 +73,7 @@ PLAIN_FILES = {"security.json"}
 # CLASS key, which the instructor can also open; every other file stays under the Cadet's private key only
 # (check-ins, chats, memories, letters, logbook, profile...).
 CLASS_FILES = {"study.json", "exams.jsonl", "lessons.json", "assignments.json", "scenarios.jsonl",
-               "service.jsonl", "fitness.jsonl", "goals.json"}
+               "service.jsonl", "fitness.jsonl", "goals.json", "recognition.jsonl"}
 _class_key: contextvars.ContextVar[bytes | None] = contextvars.ContextVar("vanguard_class_key", default=None)
 
 
@@ -506,12 +506,15 @@ def ai_mode() -> str:
 
 def save_config(data: dict) -> dict:
     c = config()
-    for k in ("model", "groq_key", "gemini_key", "online", "ai_mode", "categories"):
+    for k in ("model", "groq_key", "gemini_key", "online", "ai_mode", "categories", "portfolio_sections"):
         if k in data:
             c[k] = data[k]
     if c.get("ai_mode") not in AI_MODES:
         c.pop("ai_mode", None)
     if "categories" in c and not (isinstance(c["categories"], list) and all(x in ALL_CATEGORIES for x in c["categories"])):
         c.pop("categories", None)
+    if "portfolio_sections" in c and not (isinstance(c["portfolio_sections"], list)
+                                          and all(isinstance(x, str) and len(x) < 20 for x in c["portfolio_sections"])):
+        c.pop("portfolio_sections", None)
     write_json("config.json", c)
     return c
