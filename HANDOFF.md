@@ -135,6 +135,13 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
     scenario vote).
   - **Phase 11: much more content** -- same rule: U.S. government sources, fetched and cited, `verified: no` when not
     checked; Army JROTC only.
+  - **Phase 11 step 1 DONE (2026-10-09):** 7 new cards (57 total), each fetched or checked against its source:
+    leadership_purpose_direction_motivation (TC 7-21.13 ch 4), citizenship_constitution + citizenship_declaration
+    (local National Archives text), citizenship_later_amendments (archives.gov 11-27), citizenship_how_laws_are_made
+    (USA.gov), careers_apprenticeship (DOL apprenticeship.gov), health_managing_stress (CDC, incl. 988).
+    Still to verify: careers_fafsa (studentaid.gov timed out). MyPlate blocked (403); CDC nutrition page had no
+    guidance. Next ideas: more leadership (TC 7-21.13), financial literacy (consumer.gov/CFPB), study skills, more
+    scenarios.
 - **Next:** owner testing (run from C:\Code\Vanguard with `python run.py`), then Phase 7 Serve (service log +
   instructor verification), 8 Progress, 9 Instructor analytics, 10 Pilot. Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with
