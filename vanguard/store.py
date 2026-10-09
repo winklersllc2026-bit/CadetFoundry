@@ -236,6 +236,8 @@ def height_text(inches) -> str:
 
 def _clean_profile_value(k: str, v: str) -> str:
     """Numbers and choices the AFT scorer and the fitness plan rely on. Raises ValueError with a plain reason."""
+    if k == "military_track":                       # the Cadet's opt-in to Basic Training & Beyond: yes or nothing
+        return "yes" if v == "yes" else ""
     if not v or k not in ("age", "sex", "height", "weight"):
         return v
     if k == "age":

@@ -3,56 +3,70 @@
 
 // ── STUDY ──
 const studyBody = $('#studyBody');
+// Learn: the five categories from the owner's spec (§7), then Explore Military Service for any curious Cadet, and
+// Basic Training & Beyond only for a Cadet who said they plan to join (the server decides what each profile sees).
+const CATEGORY_ICON = { leadership: '🧭', citizenship: '🏛️', military: '🎖️', health: '💚', careers: '💼', explore: '🎗️', basic: '🪖' };
+const CATEGORY_BLURB = {
+  leadership: 'Values, leader attributes and how good leaders act. Practice it in 🧭 Lead.',
+  citizenship: 'The Constitution, your rights, how government works, and being part of your community.',
+  military: 'Ranks, customs and courtesies, drill, uniforms, map reading and military traditions.',
+  health: 'Fitness, nutrition, sleep, heat safety and taking care of yourself.',
+  careers: 'Planning what comes next: college, careers, tests and scholarships.',
+  explore: 'For Cadets curious about serving: benefits, pay, training and Army jobs. Information only.',
+  basic: 'Your study guide for basic training and beyond — because you said you plan to join.',
+};
+
 loaders.study = async () => {
-  const topics = await api('/api/topics');
-  const dly = await api('/api/daily');
-  const st = dly.status;
-  studyBody.innerHTML = `<h2>Study</h2>
+  const [topics, dly] = await Promise.all([api('/api/topics'), api('/api/daily')]);
+  const st = dly.status, cats = STATUS.categories || {};
+  const byCat = {};
+  topics.forEach(t => t.cards.forEach(c => (byCat[c.category] = byCat[c.category] || []).push(c)));
+  const chips = list => (list || []).map(c => `<button class="chip" data-card="${esc(c.id)}" style="background:none;cursor:pointer">${esc(c.title)}</button>`).join('');
+  const extra = {
+    leadership: '<button class="btn small" id="toLead">🧭 Leadership scenarios</button>',
+    citizenship: '<button class="btn small" data-books="1">📜 Founding documents</button>',
+    military: '<button class="btn small" id="navGo">🗺️ Map reading practice</button> <button class="btn small" data-books="1">📚 Army history</button>',
+    explore: '<button class="btn small" id="jobsGo">💼 Army jobs explorer</button> <button class="btn small" id="toServe">More in 🤝 Serve</button>',
+    basic: `<div class="row" style="flex-wrap:wrap;gap:6px"><button class="btn small" id="nineGo">📻 9-line</button><button class="btn small" id="saluteGo">SALUTE</button>
+      <button class="btn small" id="laceGo">LACE</button><button class="btn small" id="bpUniform">Uniform check</button><button class="btn small" id="bpBoard">Mock board</button>
+      <button class="btn small" id="bpCreed">Soldier's Creed</button><button class="btn small" id="printGo">🖨️ Pocket cards</button></div><div id="bctCard" style="margin-top:8px"></div>`,
+  };
+  const section = cat => {
+    const list = byCat[cat] || [];
+    if (!list.length && !extra[cat]) return '';
+    return `<div class="card"${cat === 'basic' || cat === 'explore' ? ' style="border-color:var(--tan)"' : ''}>
+      <div class="topic"><div><h3>${CATEGORY_ICON[cat] || ''} ${esc(cats[cat])}</h3><div class="faint">${esc(CATEGORY_BLURB[cat] || '')}</div></div>
+      ${list.length ? `<button class="btn small" data-quiz="${esc(cat)}">Quiz</button>` : ''}</div>
+      ${list.length ? `<div style="margin-top:8px">${chips(list)}</div>` : '<p class="faint" style="margin:8px 0 0">Study cards for this section are being written.</p>'}
+      ${extra[cat] ? `<div style="margin-top:10px">${extra[cat]}</div>` : ''}</div>`;
+  };
+  const order = ['leadership', 'citizenship', 'military', 'health', 'careers', 'explore', 'basic'].filter(c => c in cats);
+  studyBody.innerHTML = `<h2>Learn</h2>
     <div class="card" style="border-color:var(--tan)"><div class="row" style="justify-content:space-between">
       <div><h3>🔥 Daily 10</h3><div class="faint">${st.done_today ? `Done today: ${st.today_score.right}/${st.today_score.total}. ` : 'Ten questions, every day. '}Streak: <b>${st.streak}</b> day${st.streak === 1 ? '' : 's'} · best ${st.best}</div></div>
       <button class="btn primary" id="dailyGo">${st.done_today ? 'Again' : 'Start'}</button></div></div>
-    <form class="card" id="libSearch" role="search"><h3>🔎 Search the manuals</h3>
-      <div class="row" style="flex-wrap:nowrap"><input id="libQ" type="search" placeholder="e.g. hair length, tourniquet, leave, profile" aria-label="Search the manuals" style="flex:1"><button class="btn primary">Search</button></div>
-      <div class="faint">Searches every manual and study card on this device — instant, no AI. Tap a result to read the page.</div>
-      <div id="libResults" aria-live="polite"></div></form>
-    <div class="card" id="bctCard"></div>
-    <div class="card family-only" style="border-color:var(--tan)"><h3>👪 Family start here</h3>
-      <div class="faint">For spouses, parents and loved ones: how training works, what ranks mean, what not to post, and where families get help.</div>
-      <div style="margin-top:8px"><button class="chip" data-card="training_pipeline" style="background:none;cursor:pointer">How training works</button><button class="chip" data-card="ranks" style="background:none;cursor:pointer">Army ranks</button><button class="chip" data-card="opsec" style="background:none;cursor:pointer">OPSEC — what not to post</button><button class="chip" data-card="help_resources" style="background:none;cursor:pointer">Where to get help</button></div>
-      <div class="row" style="margin-top:8px"><button class="btn small" id="famLetter">✉️ Write a letter to your Soldier</button></div></div>
-        <div class="card"><div class="row" style="justify-content:space-between"><div><h3>💼 Army jobs (MOS)</h3><div class="faint">Search every Army job — official descriptions from goarmy.com.</div></div>
-      <button class="btn small" id="jobsGo">Explore</button></div></div>
-    <div class="card"><div class="row" style="justify-content:space-between"><div><h3>📚 Books</h3><div class="faint">Free books on this device: Army history, the Constitution and founding documents, and classics like The Art of War.</div></div>
+    ${order.map(section).join('')}
+    <div class="card"><div class="row" style="justify-content:space-between"><div><h3>📚 Books</h3><div class="faint">The Constitution and founding documents, American military history, and classics — free on this device.</div></div>
       <button class="btn small" id="booksGo">Open</button></div></div>
-    <div class="card soldier-only"><div class="row" style="justify-content:space-between"><div><h3>🧭 Land nav practice</h3><div class="faint">Read grid coordinates on a practice map — 4, 6 and 8 digits.</div></div>
-      <button class="btn small" id="navGo">Practice</button></div></div>
-    <div class="card soldier-only"><div class="row" style="justify-content:space-between"><div><h3>📻 Report drills</h3><div class="faint">Build a 9-line MEDEVAC request, a SALUTE or a LACE report from a practice scenario — or say the 9-line out loud.</div></div>
-      <div class="row"><button class="btn small" id="nineGo">9-line</button><button class="btn small" id="saluteGo">SALUTE</button><button class="btn small" id="laceGo">LACE</button></div></div></div>
-    <div class="card soldier-only" style="border-color:var(--tan)"><div><h3>🎖️ Board prep</h3><div class="faint">Get ready for a board: check your uniform, answer board questions out loud, recite the Soldier's Creed.</div></div>
-      <div class="row" style="margin-top:8px"><button class="btn small" id="bpUniform">Uniform check</button><button class="btn small" id="bpBoard">Mock board</button><button class="btn small" id="bpCreed">Soldier's Creed</button></div></div>
-    <div class="card soldier-only"><div class="row" style="justify-content:space-between"><div><h3>🖨️ Pocket cards</h3><div class="faint">Print the 9-line, SALUTE / LACE, phonetic alphabet, Soldier's Creed and Army Values — cut out and carry.</div></div>
-      <button class="btn small" id="printGo">Open</button></div></div>
-    <div class="card"><div class="row" style="justify-content:space-between"><div><h3>📝 Exam mode</h3><div class="faint">A timed multiple-choice test on one topic — graded on the device, with your score history.</div></div>
+    <form class="card" id="libSearch" role="search"><h3>🔎 Search the library</h3>
+      <div class="row" style="flex-wrap:nowrap"><input id="libQ" type="search" placeholder="e.g. Bill of Rights, salute, sleep" aria-label="Search the library" style="flex:1"><button class="btn primary">Search</button></div>
+      <div class="faint">Searches the study cards and documents on this device — instant, no AI. Tap a result to read it.</div>
+      <div id="libResults" aria-live="polite"></div></form>
+    <div class="card"><div class="row" style="justify-content:space-between"><div><h3>📝 Exam mode</h3><div class="faint">A timed multiple-choice test — graded on the device, with your score history.</div></div>
       <button class="btn small" id="examGo">Take an exam</button></div></div>
-    <div class="card"><div class="row" style="justify-content:space-between"><div><h3>Mixed quiz</h3><div class="faint">10 questions from everything — the ones you miss come back more often.</div></div><button class="btn primary" data-quiz="">Start</button></div></div>` +
-    topics.map(t => {
-      const pct = t.progress.total ? Math.round(100 * t.progress.known / t.progress.total) : 0;
-      return `<div class="card"><div class="topic"><div><h3>${esc(t.topic)}</h3><div class="faint">${t.progress.known} of ${t.progress.total} questions answered right</div></div>
-        <button class="btn small" data-quiz="${esc(t.topic)}">Quiz</button></div><div class="bar"><i style="width:${pct}%"></i></div>
-        <div style="margin-top:8px">${t.cards.map(c => `<button class="chip" data-card="${esc(c.id)}" style="background:none;cursor:pointer">${esc(c.title)}</button>`).join('')}</div></div>`;
-    }).join('');
+    <div class="card"><div class="row" style="justify-content:space-between"><div><h3>Mixed quiz</h3><div class="faint">10 questions from everything you can see — the ones you miss come back more often.</div></div><button class="btn primary" data-quiz="">Start</button></div></div>`;
+  const on = (id, fn) => { const el = $('#' + id); if (el) el.onclick = fn; };
   $('#dailyGo').onclick = () => startQuiz('', dly.questions, async right => {
     const s = await api('/api/daily/done', { right, total: dly.questions.length });
     return `Streak: ${s.streak} day${s.streak === 1 ? '' : 's'} 🔥`;
   });
-  $('#navGo').onclick = landNav;
-  showBct();
-  $('#examGo').onclick = examSetup;
+  on('navGo', landNav); on('examGo', examSetup); on('jobsGo', () => jobsExplorer()); on('booksGo', () => booksShelf());
+  on('toLead', () => openView('lead')); on('toServe', () => openView('serve'));
+  on('printGo', pocketCards); on('bpUniform', uniformCheck); on('bpBoard', () => mockBoard()); on('bpCreed', creedDrill);
+  on('nineGo', nineLine); on('saluteGo', saluteDrill); on('laceGo', () => sortDrill('LACE'));
+  studyBody.querySelectorAll('[data-books]').forEach(b => { b.onclick = () => booksShelf(); });
+  if ($('#bctCard')) showBct();
   $('#libSearch').onsubmit = e => { e.preventDefault(); librarySearch($('#libQ').value); };
-  $('#famLetter').onclick = () => { openView('logbook', 'letters'); };
-  $('#printGo').onclick = pocketCards; $('#bpUniform').onclick = uniformCheck; $('#bpBoard').onclick = () => mockBoard(); $('#bpCreed').onclick = creedDrill; $('#nineGo').onclick = nineLine; $('#saluteGo').onclick = saluteDrill; $('#laceGo').onclick = () => sortDrill('LACE');
-  $('#jobsGo').onclick = () => jobsExplorer();
-  $('#booksGo').onclick = () => booksShelf();
 };
 
 // ── BOOKS: free public-domain reading, offline ──

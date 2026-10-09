@@ -42,7 +42,7 @@ def _choices(library, card, answer: str, k: int = 3) -> list[str]:
 
 
 def start(library, topic: str = "", n: int = 10) -> dict:
-    items = [(c, i, q, a) for c in library.cards if not topic or c.topic == topic
+    items = [(c, i, q, a) for c in library.cards if not topic or topic in (c.topic, c.category)
              for i, (q, a) in enumerate(c.quiz)]
     if not items:
         raise ValueError("No questions for that topic.")

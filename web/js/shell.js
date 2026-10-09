@@ -6,29 +6,44 @@ const SOON = (what, phase) => `<p class="faint">${what} <b>Coming in a later upd
 
 // Lead: web/js/scenarios.js
 
-loaders.serve = () => {
+loaders.serve = async () => {
   // data-go="view[:pane]" -- the page's security policy blocks inline onclick handlers
   const go = (v, pane) => `data-go="${v}${pane ? ':' + pane : ''}"`;
+  await refreshStatus();
+  const cats = STATUS.categories || {}, track = (STATUS.profile || {}).military_track === 'yes';
+  const cadet = STATUS.kind === 'cadet', basicAllowed = (STATUS.categories_enabled || []).includes('basic');
   $('#serveBody').innerHTML = `<h2>Serve</h2>
     <div class="card"><h3>🤝 Service learning</h3>
       <p>Track your service projects: date, hours, organization, your role, and what you learned. Your instructor
-      verifies them.</p>${SOON('The service log is being built.', 'Phase 7')}</div>
-    <div class="card" id="exploreMil"><h3>🎖️ Explore Military Service</h3>
+      verifies them.</p>${SOON('The service log is being built.', 'Phase 7')}
+      <button class="btn small" ${go('logbook', 'letters')}>✉️ Write to family, service members or veterans</button></div>
+    ${'explore' in cats ? `<div class="card" id="exploreMil"><h3>🎗️ Explore Military Service</h3>
       <p class="faint">For Cadets who want to learn what military service is like. Information only — nothing here
       signs you up or shares anything with a recruiter. Numbers come straight from official tables.</p>
       <div class="row" style="flex-wrap:wrap;gap:6px">
+        <button class="btn small" ${go('study')}>💼 Army jobs explorer (in Learn)</button>
         <button class="btn small" ${go('logbook', 'money')}>💵 Military pay and budgeting</button>
-        <button class="btn small" ${go('study')}>🪖 Army jobs explorer (in Learn)</button>
         <button class="btn small" ${go('logbook', 'fit')}>🏋️ Army Fitness Test scorer</button>
         <button class="btn small" ${go('logbook', 'leave')}>🏖️ How military leave works</button>
         <button class="btn small" ${go('logbook', 'pcs')}>📦 Moving with the military (PCS)</button>
-        <button class="btn small" ${go('logbook', 'letters')}>✉️ Letters to family, service members and veterans</button>
       </div>
-      <p class="faint">Ask questions like "What does an E-4 with 3 years make?" or "What is the ETS box on a pay
-      statement?" with 💬 Ask.</p></div>`;
+      <p class="faint">Ask questions like "What does an E-4 with 3 years make?" with 💬 Ask.</p>
+      ${cadet && basicAllowed ? `<div class="card" style="margin-top:10px">
+        <label style="display:flex;gap:12px;align-items:flex-start;cursor:pointer">
+          <input type="checkbox" id="milTrack" ${track ? 'checked' : ''} style="width:24px;height:24px;flex:none;margin-top:2px">
+          <span><b>I plan to join the military.</b><br><span class="faint">Adds the <b>🪖 Basic Training &amp; Beyond</b> study guide to Learn:
+          what basic training is like, the General Orders, the Soldier's Creed, military law, safety and more. You can turn it off any time.</span></span></label>
+        <p class="faint" id="milMsg" role="status"></p></div>` : ''}</div>` : ''}`;
   $('#serveBody').querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => {
     const [v, pane] = b.dataset.go.split(':'); openView(v, pane);
   }));
+  if ($('#milTrack')) $('#milTrack').addEventListener('change', async e => {
+    const on = e.target.checked;
+    const r = await api('/api/profile', { military_track: on ? 'yes' : '' });
+    if (r.error) { $('#milMsg').textContent = r.error; e.target.checked = !on; return; }
+    await refreshStatus();
+    $('#milMsg').textContent = on ? 'Added: 🪖 Basic Training & Beyond is now in Learn.' : 'Removed from Learn.';
+  });
 };
 
 loaders.progress = () => {

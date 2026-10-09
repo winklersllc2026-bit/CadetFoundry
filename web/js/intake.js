@@ -99,7 +99,9 @@ const intake = {
     };
   },
   adminPin() {
-    if (this.lock.admin_set || STATUS.kind === 'guardian') return this.finish();
+    // Cadets and guardians never set the Instructor PIN: the first instructor chooses it when creating their
+    // profile on the instructor's own computer.
+    return this.finish();
     const box = addMsg('ai', md("One more for whoever looks after this computer: a **Instructor PIN**. It's needed to install Vanguard updates, and it's separate from your own PIN. If this is your own device, set one now."));
     box.insertAdjacentHTML('beforeend', `<div class="row" style="margin-top:8px">
       <input id="inAdm" type="password" inputmode="numeric" maxlength="12" placeholder="Admin PIN (6–12 digits)" style="flex:1" autocomplete="new-password">
