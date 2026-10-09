@@ -168,6 +168,10 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
     nominations) from CRS IF11313 (Jan 2026) and 10 USC 2031; health_eating_well (Dietary Guidelines 2025-2030 PDF).
     Scenario 16 (the resume). 87 cards, 16 scenarios. MyPlate.gov has a certificate error. test_progress also now asks
     for a specific card.
+  - **Phase 11 step 7 DONE (2026-10-09):** 4 leadership cards from ATP 6-22.1: leadership_active_listening (incl. open
+    vs closed questions, OARS), leadership_smart_goals, leadership_taking_feedback, leadership_counsel_coach_mentor.
+    91 cards. Fix: card screen didn't render "> quote" lines (Constitution, Declaration, Pledge showed a stray >);
+    md() in web/js/core.js now renders blockquotes (style in index.html). Tables don't render -- test_grading checks.
 - **Next:** owner testing (run from C:\Code\Vanguard with `python run.py`), then Phase 7 Serve (service log +
   instructor verification), 8 Progress, 9 Instructor analytics, 10 Pilot. Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with

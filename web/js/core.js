@@ -145,6 +145,8 @@ function md(text) {
     if (!l.trim()) { flush(); continue; }
     const h = l.match(/^#{1,4}\s+(.*)/);
     if (h) { flush(); html += '<p><b>' + inline(h[1]) + '</b></p>'; continue; }
+    const q = l.match(/^&gt;\s?(.*)/);                     // "> quoted text" (escaped above)
+    if (q) { flush(); html += '<blockquote>' + inline(q[1]) + '</blockquote>'; continue; }
     para.push(l);
   }
   flush(); if (inList) html += '</ul>';

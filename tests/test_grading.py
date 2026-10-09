@@ -45,5 +45,12 @@ class GradingTests(unittest.TestCase):
                     self.assertEqual(board.quiz_grade(q, a, a, use_ai=False)["verdict"], "right")
 
 
+    def test_cards_use_only_markdown_the_screen_shows(self):
+        """web/js/core.js md() renders bold, italic, lists, headings and > quotes -- not tables."""
+        for card in knowledge.Library().all_cards:
+            with self.subTest(card=card.id):
+                self.assertFalse([l for l in card.body.splitlines() if l.lstrip().startswith("|")], "tables don't render")
+
+
 if __name__ == "__main__":
     unittest.main()
