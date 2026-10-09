@@ -1164,8 +1164,12 @@ def serve(host: str = "127.0.0.1", port: int = 8780, lan: bool = False) -> Threa
     profiles.migrate_legacy()
     if lan and not security.all_have_pins():
         raise SystemExit("LAN mode needs every profile to have a PIN. Set them in Me → Security, then use --lan.")
-    Handler.app = App(port, lan)
-    httpd = _Server((host, port), Handler)
+    httpd = _Server((host, port), Handler)                 # take the port first: if it's busy, change nothing
+    try:
+        Handler.app = App(port, lan)
+    except BaseException:
+        httpd.server_close()
+        raise
     httpd.daemon_threads = True
     if not os.environ.get("VANGUARD_NO_WARMUP"):          # load the AI while the Soldier picks a profile
         threading.Thread(target=lambda: (addons.start_ollama(), engine.warm_up()), daemon=True).start()
