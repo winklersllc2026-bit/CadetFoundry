@@ -1,4 +1,5 @@
 ---
+category: military
 title: The Phonetic Alphabet and Numbers
 topic: Basic Knowledge
 source: NATO / ICAO phonetic alphabet (ICAO Annex 10) and radiotelephone numbers

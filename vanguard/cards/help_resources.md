@@ -1,4 +1,5 @@
 ---
+category: basic
 title: Where to Get Help
 topic: Wellness & Help
 source: Veterans Crisis Line (988, press 1); DoD Safe Helpline; Military OneSource; Army SHARP program

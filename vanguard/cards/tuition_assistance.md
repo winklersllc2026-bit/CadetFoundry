@@ -1,4 +1,5 @@
 ---
+category: explore
 title: Tuition Assistance and Credentialing Assistance
 topic: Money
 source: AR 621-5, Army Continuing Education System (19 March 2026), paras 4-2 to 4-6, 4-10 to 4-13

@@ -1,4 +1,5 @@
 ---
+category: basic
 title: SHARP — Sexual Harassment/Assault Response and Prevention
 topic: Board: Leadership & Programs
 source: AR 600-52, SHARP Program (11 February 2025), paras 1-6, 2-2, 2-5 to 2-9, 3-3, 3-9

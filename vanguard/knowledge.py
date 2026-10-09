@@ -13,6 +13,7 @@ on a Raspberry Pi. Answers quote the passages they used and name the source.
 """
 from __future__ import annotations
 
+import contextvars
 import hashlib
 import json
 import math
@@ -119,6 +120,31 @@ class Card:
     quiz: list[tuple[str, str]] = field(default_factory=list)   # (question, answer)
     also: dict[str, list[str]] = field(default_factory=dict)     # question -> other ways Soldiers ask it
     verified: bool = True        # "verified: no" in the header: couldn't be checked against a current public source
+    category: str = "military"   # one of CATEGORIES (Learn's sections)
+
+
+# Learn's sections (owner's spec §7), plus two for Cadets interested in serving:
+#   explore -- Explore Military Service: information for any curious Cadet (pay, benefits, how service works)
+#   basic   -- Basic Training & Beyond: the Soldier study guide, only for Cadets who say they plan to join
+CATEGORIES = {"leadership": "Leadership", "citizenship": "Citizenship", "military": "Military Knowledge",
+              "health": "Health & Fitness", "careers": "Careers", "explore": "Explore Military Service",
+              "basic": "Basic Training & Beyond"}
+# Which categories this request may see (None = everything: tools, tests, instructors). Set per request by the
+# server from the instructor's settings and the Cadet's own choice (security.py / server.py).
+_visible: contextvars.ContextVar[frozenset | None] = contextvars.ContextVar("vanguard_visible_categories", default=None)
+
+
+def use_categories(cats):
+    return _visible.set(frozenset(cats) if cats is not None else None)
+
+
+def reset_categories(token) -> None:
+    _visible.reset(token)
+
+
+def _shown(category: str) -> bool:
+    allowed = _visible.get()
+    return allowed is None or category in allowed
 
 
 # Study cards summarize the manuals with paragraph numbers; raw manual pages hold many
@@ -133,6 +159,7 @@ class Passage:
     text: str
     terms: list[str] = field(default_factory=list)
     card: bool = False   # a checked study card, not raw manual text
+    category: str = ""   # a card's category (empty for manual pages)
 
 
 def parse_card(path: Path) -> Card | None:
@@ -160,9 +187,11 @@ def parse_card(path: Path) -> Card | None:
             quiz.append((q.strip(), a.strip()))
             if alts.strip():
                 also[q.strip()] = [x.strip() for x in alts.split(";") if x.strip()]
+    cat = meta.get("category", "military").strip().lower()
     return Card(id=path.stem, title=meta.get("title", path.stem), topic=meta.get("topic", "General"),
                 source=meta.get("source", "Vanguard study card"), body=body.strip(), quiz=quiz, also=also,
-                verified=meta.get("verified", "yes").strip().lower() not in ("no", "false"))
+                verified=meta.get("verified", "yes").strip().lower() not in ("no", "false"),
+                category=cat if cat in CATEGORIES else "military")
 
 
 def _read_document(path: Path) -> list[tuple[str, str]]:
@@ -216,13 +245,19 @@ class Library:
         self.cards_dir = cards_dir
         self.library_dir = library_dir or (HERE.parent / "library")
         self.cache_dir = cache_dir
-        self.cards: list[Card] = []
+        self.all_cards: list[Card] = []
         self.passages: list[Passage] = []
         self.skipped: list[str] = []
         self._df: dict[str, int] = {}
         self._avg = 1.0
         self._lock = threading.Lock()
         self.load()
+
+    @property
+    def cards(self) -> list[Card]:
+        """The study cards this request may see (see use_categories). Quizzes, the Daily 10, exams, Ask and the
+        card list all read this, so a hidden category is hidden everywhere."""
+        return [c for c in self.all_cards if _shown(c.category)]
 
     # ── building ────────────────────────────────────────────────────────────
     def _fingerprint(self) -> str:
@@ -237,12 +272,12 @@ class Library:
 
     def load(self) -> None:
         with self._lock:
-            self.cards = [c for c in (parse_card(p) for p in sorted(self.cards_dir.glob("*.md"))) if c]
+            self.all_cards = [c for c in (parse_card(p) for p in sorted(self.cards_dir.glob("*.md"))) if c]
             passages: list[Passage] = []
-            for c in self.cards:
+            for c in self.all_cards:
                 text = f"{c.title}\n{c.body}" + "".join(f"\nQ: {q} A: {a}" for q, a in c.quiz)
                 for piece in _chunks(text):
-                    passages.append(Passage(source=c.source, where=c.title, text=piece, card=True))
+                    passages.append(Passage(source=c.source, where=c.title, text=piece, card=True, category=c.category))
             passages += self._load_documents()
             for p in passages:
                 p.terms = _terms(p.where + " " + p.text)
@@ -323,6 +358,8 @@ class Library:
         # at most 2 passages from the same place, so answers draw on several sources
         out, per = [], {}
         for s, p in scored:
+            if p.card and not _shown(p.category):        # a card from a category this Cadet can't see
+                continue
             key = (p.source, p.where)
             if per.get(key, 0) >= 2:
                 continue
@@ -389,7 +426,7 @@ class Library:
             for p in self.passages:
                 for m in PUB_RE.finditer(p.source + " " + p.text):
                     found.add(_pub_key(m.group(0)))
-            for c in self.cards:
+            for c in self.all_cards:
                 for m in PUB_RE.finditer(c.source + " " + c.body):
                     found.add(_pub_key(m.group(0)))
             self._pubs, self._pubs_n = found, len(self.passages)
@@ -455,5 +492,5 @@ class Library:
 
     def stats(self) -> dict:
         docs = sorted({p.source for p in self.passages if "(" in p.source})
-        return {"cards": len(self.cards), "quiz_questions": sum(len(c.quiz) for c in self.cards),
+        return {"cards": len(self.all_cards), "quiz_questions": sum(len(c.quiz) for c in self.all_cards),
                 "documents": docs, "passages": len(self.passages), "skipped": self.skipped}

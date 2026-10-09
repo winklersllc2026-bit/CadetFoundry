@@ -1,4 +1,5 @@
 ---
+category: basic
 title: Weapons Safety and Range Basics
 topic: Weapons & Range
 source: TC 3-22.9, Rifle and Carbine (May 2016, incl. C3 20 November 2019), paras 1-5 to 1-18, 8-35, 8-36

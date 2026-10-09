@@ -201,7 +201,7 @@ def reseal_folder(folder: Path, old_key: bytes | None, new_key: bytes | None, on
 # ── profile ─────────────────────────────────────────────────────────────────
 # A Cadet's profile: only what helps Vanguard fit the Cadet. Nothing about body size, sex or military status --
 # minors' data is kept to the minimum (owner's spec §25), and Train needs none of it.
-PROFILE_FIELDS = ("name", "grade", "interests", "goals", "faith_texts", "intake_done")
+PROFILE_FIELDS = ("name", "grade", "interests", "goals", "faith_texts", "military_track", "intake_done")
 GRADES = ("9th grade", "10th grade", "11th grade", "12th grade", "Other")
 INTERESTS = ("Leadership", "Public speaking", "Fitness", "Grades", "Confidence", "Teamwork", "Service", "College",
              "A career", "Military service")
@@ -472,6 +472,26 @@ def config() -> dict:
 AI_MODES = ("off", "library", "ai")
 
 
+ALL_CATEGORIES = ("leadership", "citizenship", "military", "health", "careers", "explore", "basic")
+
+
+def categories_enabled() -> list[str]:
+    """The Learn categories the instructor has turned on for this device (all, until the instructor chooses)."""
+    c = config().get("categories")
+    return [x for x in ALL_CATEGORIES if x in c] if isinstance(c, list) else list(ALL_CATEGORIES)
+
+
+def visible_categories(kind: str) -> list[str]:
+    """What one profile may see. Instructors: everything (to review it). Cadets and guardians: what the instructor
+    enabled -- and Basic Training & Beyond only for a Cadet who said they plan to join the military."""
+    if kind == "instructor":
+        return list(ALL_CATEGORIES)
+    cats = [c for c in categories_enabled() if c != "basic"]
+    if kind == "cadet" and "basic" in categories_enabled() and profile().get("military_track") == "yes":
+        cats.append("basic")
+    return cats
+
+
 def ai_mode() -> str:
     """The instructor's AI setting: "off" (no AI writing at all), "library" (default: the AI may only explain what
     the library holds, and says so when it holds nothing) or "ai" (broader explanations, labeled as AI)."""
@@ -484,10 +504,12 @@ def ai_mode() -> str:
 
 def save_config(data: dict) -> dict:
     c = config()
-    for k in ("model", "groq_key", "gemini_key", "online", "ai_mode"):
+    for k in ("model", "groq_key", "gemini_key", "online", "ai_mode", "categories"):
         if k in data:
             c[k] = data[k]
     if c.get("ai_mode") not in AI_MODES:
         c.pop("ai_mode", None)
+    if "categories" in c and not (isinstance(c["categories"], list) and all(x in ALL_CATEGORIES for x in c["categories"])):
+        c.pop("categories", None)
     write_json("config.json", c)
     return c

@@ -1,4 +1,5 @@
 ---
+category: health
 title: Heat Exhaustion and Heat Stroke — Signs and What to Do
 topic: Field Craft
 source: FM 7-22, Holistic Health and Fitness (1 October 2020), Table 14-1 notes; ATP 4-25.12, Unit Field Sanitation Teams (30 April 2014), paras 7-9, 7-10, 7-16, 11-6

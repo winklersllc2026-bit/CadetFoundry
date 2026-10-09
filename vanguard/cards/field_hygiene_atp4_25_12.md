@@ -1,4 +1,5 @@
 ---
+category: basic
 title: Field Hygiene and Sanitation
 topic: Field Craft
 source: ATP 4-25.12, Unit Field Sanitation Teams (30 April 2014, incl. C2), paras 2-13 to 2-24, 2-47, 2-69, 2-70, 2-81, 2-84

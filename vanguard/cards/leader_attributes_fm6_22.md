@@ -1,4 +1,5 @@
 ---
+category: leadership
 title: Be, Know, Do — Leader Attributes and Competencies
 topic: Board: Leadership & Programs
 source: FM 6-22, Developing Leaders (1 November 2022), paras 1-10, 1-12, 2-26 to 2-31 (the leadership requirements model of ADP 6-22)

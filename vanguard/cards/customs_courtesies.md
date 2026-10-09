@@ -1,4 +1,5 @@
 ---
+category: military
 title: Customs, Courtesies and the Salute
 topic: Customs & Courtesies
 source: AR 600-25, Salutes, Honors, and Courtesies (1 May 2026), paras 2-1, B-1 and table B-1; TC 3-21.5, Drill and Ceremonies, paras 4-5, 4-6, 4-10

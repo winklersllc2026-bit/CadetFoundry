@@ -1,4 +1,5 @@
 ---
+category: health
 title: Nutrition and Hydration for Training
 topic: Fitness & Health
 source: FM 7-22, Holistic Health and Fitness (1 October 2020), chapter 8 (paras 8-5 to 8-7, 8-24, 8-32 to 8-40, table 8-3)

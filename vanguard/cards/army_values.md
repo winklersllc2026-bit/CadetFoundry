@@ -1,4 +1,5 @@
 ---
+category: leadership
 title: The Army Values (LDRSHIP)
 topic: Creeds & Values
 source: U.S. Army, The Army Values (army.mil/values); ADP 6-22, Army Leadership and the Profession

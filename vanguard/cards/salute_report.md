@@ -1,4 +1,5 @@
 ---
+category: basic
 title: The SALUTE Report
 topic: Reports
 source: TC 3-21.76, Ranger Handbook (para. 2-16, Table 2-7)

@@ -1,4 +1,5 @@
 ---
+category: health
 title: Holistic Health and Fitness (H2F) — The Five Domains
 topic: Fitness & Health
 source: FM 7-22, Holistic Health and Fitness (1 October 2020), Introduction, chapter 3 (paras 3-9, 3-21) and paras 11-3, 11-11; TC 3-22.9, Rifle and Carbine (title page)

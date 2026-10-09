@@ -1,4 +1,5 @@
 ---
+category: basic
 title: First Aid — Tactical Combat Casualty Care and MARCH PAWS
 topic: First Aid
 source: TC 3-21.76, Ranger Handbook (19 September 2025), chapter 15, paras 15-1 to 15-15

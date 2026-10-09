@@ -1,4 +1,5 @@
 ---
+category: basic
 title: Basic Training, AIT and OSUT
 topic: Training Pipeline
 source: U.S. Army, Basic Combat Training (goarmy.com/army-life/basic-training)

@@ -1,4 +1,5 @@
 ---
+category: basic
 title: Army Terms and Acronyms for New Soldiers
 topic: Basic Knowledge
 source: FM 7-22, Holistic Health and Fitness (1 October 2020), Glossary section I and paras 2-2, 2-10; ATP 7-22.02, H2F Drills and Exercises (change replacing the ACFT with the AFT)

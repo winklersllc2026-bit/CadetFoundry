@@ -1,4 +1,5 @@
 ---
+category: basic
 title: The LACE Report — and Which Report to Send
 topic: Reports
 source: TC 3-21.76, Ranger Handbook (paras. 1-11, 7-12, ch. 7 consolidation and reorganization)

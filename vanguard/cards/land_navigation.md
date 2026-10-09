@@ -1,4 +1,5 @@
 ---
+category: military
 title: Land Navigation — Terrain Features and Grids
 topic: Land Navigation
 source: TC 3-25.26, Map Reading and Land Navigation (restricted to CAC holders — not checked against the current edition)

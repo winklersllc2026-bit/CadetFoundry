@@ -1,4 +1,5 @@
 ---
+category: basic
 title: The Three General Orders
 topic: Basic Knowledge
 source: Earlier editions of TC 7-21.13, The Soldier's Guide (not in the 17 September 2025 edition; the guard duty manual is no longer listed as active on armypubs)

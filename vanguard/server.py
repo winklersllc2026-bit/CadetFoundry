@@ -23,7 +23,7 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from vanguard import (addons, backup, board, books, careers, daily, engine, exam, fitness, instructor, integrity,
+from vanguard import (addons, backup, board, books, careers, daily, engine, exam, fitness, instructor, integrity, knowledge,
                       lessons, letters, pay, profiles, scenarios, security, store, train, voice)
 from vanguard.brain import Brain
 from vanguard.faith import Faith
@@ -113,6 +113,7 @@ class Handler(BaseHTTPRequestHandler):
     _ctx = None
     _kctx = None
     _cctx = None
+    _catctx = None
     _pid = None
     _body_read = False
 
@@ -120,6 +121,7 @@ class Handler(BaseHTTPRequestHandler):
         """Common security checks. Sends the refusal itself and returns False when a request is refused.
         On success, the request runs with the session's profile as the only reachable data folder."""
         self._ctx, self._kctx, self._cctx, self._pid, self._body_read = None, None, None, None, False
+        self._catctx = None
         host = self.headers.get("Host")
         if not security.host_ok(host, self.app.port, self.app.lan):
             self._deny(421, "Wrong host.")                  # DNS-rebinding protection
@@ -140,9 +142,18 @@ class Handler(BaseHTTPRequestHandler):
             self._ctx = store.use_profile(profiles.folder(pid))
             self._kctx = store.use_key(security.session_key(self._token()))   # decrypts this profile only
             self._cctx = store.use_class_key(security.session_class_key(self._token()))
+            # which study-card categories this profile may see -- applied to quizzes, Daily 10, exams, Ask, lists
+            try:
+                cats = store.visible_categories((profiles.get(pid) or {}).get("kind", "cadet"))
+            except Exception:                            # a profile that can't be read yet sees the safe default
+                cats = [c for c in store.categories_enabled() if c != "basic"]
+            self._catctx = knowledge.use_categories(cats)
         return True
 
     def _done(self) -> None:
+        if self._catctx is not None:
+            knowledge.reset_categories(self._catctx)
+            self._catctx = None
         if self._cctx is not None:
             store.reset_class_key(self._cctx)
             self._cctx = None
@@ -274,15 +285,19 @@ class Handler(BaseHTTPRequestHandler):
                                "profile": store.profile(), "grades": store.GRADES, "interests": store.INTERESTS, "log_kinds": store.LOG_KINDS,
                                "lan": app.lan, "voice": voice.available(),
                                "ai_mode": store.ai_mode(), "library_only": store.ai_mode() == "off",
+                               "categories": {c: knowledge.CATEGORIES[c] for c in store.visible_categories(
+                                   (profiles.get(self._pid) or {}).get("kind", "cadet"))},
+                               "categories_enabled": store.categories_enabled(),
                                "kind": (profiles.get(self._pid) or {}).get("kind", "cadet")})
         if r == "/api/topics":
             prog = app.brain.progress()
-            return self._json([{"topic": t, "cards": [{"id": c.id, "title": c.title, "questions": len(c.quiz)} for c in cs],
+            return self._json([{"topic": t, "cards": [{"id": c.id, "title": c.title, "questions": len(c.quiz),
+                                                       "category": c.category} for c in cs],
                                 "progress": prog.get(t, {"known": 0, "total": 0})}
                                for t, cs in app.library.topics().items()])
         if r == "/api/card":
             c = app.library.card(q.get("id", ""))
-            return self._json({"id": c.id, "title": c.title, "topic": c.topic, "source": c.source, "body": c.body,
+            return self._json({"id": c.id, "title": c.title, "topic": c.topic, "category": c.category, "source": c.source, "body": c.body,
                                "verified": c.verified,
                                "quiz": [{"q": a, "a": b} for a, b in c.quiz]} if c else {"error": "not found"},
                               200 if c else 404)
@@ -685,6 +700,12 @@ class Handler(BaseHTTPRequestHandler):
                         except ValueError as e:
                             errors[pid] = str(e)
                     return self._json({"saved": saved, "skipped": skipped, "errors": errors})
+                if r == "/api/instructor/categories":    # which Learn categories Cadets get on this device
+                    cats = b.get("categories")
+                    if not isinstance(cats, list) or not all(c in store.ALL_CATEGORIES for c in cats):
+                        return self._json({"error": "Unknown category."}, 400)
+                    store.save_config({"categories": [c for c in store.ALL_CATEGORIES if c in cats]})
+                    return self._json({"categories_enabled": store.categories_enabled()})
                 if r == "/api/instructor/scenario":
                     sid = str(b.get("id", ""))[:40]
                     if b.get("action") == "delete":

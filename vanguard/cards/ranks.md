@@ -1,4 +1,5 @@
 ---
+category: military
 title: Army Ranks, Pay Grades and How to Address Them
 topic: Rank & Structure
 source: AR 600-20, Army Command Policy (15 April 2026), para 1-7 and table 1-1

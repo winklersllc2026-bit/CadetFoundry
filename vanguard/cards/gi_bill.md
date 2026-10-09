@@ -1,4 +1,5 @@
 ---
+category: explore
 title: The GI Bill — Education Benefits
 topic: Money
 source: U.S. Department of Veterans Affairs, va.gov — About GI Bill benefits; Post-9/11 GI Bill (Chapter 33); Montgomery GI Bill Active Duty (pages last updated 2024–2026)

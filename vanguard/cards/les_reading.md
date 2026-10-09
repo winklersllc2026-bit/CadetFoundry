@@ -1,4 +1,5 @@
 ---
+category: explore
 title: Reading Your LES (Leave and Earnings Statement)
 topic: Money
 source: DFAS, How to read an active duty Army Leave and Earning Statement; How to read a Reserve and National Guard Leave and Earning Statement (dfas.mil), DFAS Form 702

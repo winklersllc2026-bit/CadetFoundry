@@ -1,4 +1,5 @@
 ---
+category: military
 title: Drill Basics — Commands, Attention, Rests and Facings
 topic: Drill & Ceremonies
 source: TC 3-21.5, Drill and Ceremonies (3 May 2021), paras 3-3, 3-5, 4-3 to 4-10

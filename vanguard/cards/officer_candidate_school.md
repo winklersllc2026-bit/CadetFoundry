@@ -1,4 +1,5 @@
 ---
+category: explore
 title: Officer Candidate School (OCS) — GT Score
 topic: Training Pipeline
 source: AR 350-51, United States Army Officer Candidate School (11 June 2001)

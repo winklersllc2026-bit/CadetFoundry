@@ -1,4 +1,5 @@
 ---
+category: basic
 title: The Soldier's Creed
 topic: Creeds & Values
 source: U.S. Army, The Soldier's Creed (army.mil/values/soldiers.html)

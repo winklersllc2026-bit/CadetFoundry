@@ -1,4 +1,5 @@
 ---
+category: basic
 title: AGSU Coat — Where Everything Goes (Enlisted)
 topic: Uniforms
 source: DA PAM 670-1 (26 January 2021), paras 14-5, 21-4, 21-7, 21-13, 21-17, 21-18, 21-22, 21-28, 21-29, 22-6, 22-10, 22-15 to 22-17 and their figures

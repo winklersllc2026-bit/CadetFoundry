@@ -1,4 +1,5 @@
 ---
+category: basic
 title: OPSEC — Operations Security and Posting Online
 topic: Security
 source: AR 530-1, Operations Security (26 September 2014), paras 1-5, 2-22; TC 7-21.13, The Soldier's Guide (17 September 2025), paras 1-20 to 1-25

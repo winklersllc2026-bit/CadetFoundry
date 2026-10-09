@@ -1,4 +1,5 @@
 ---
+category: basic
 title: The Code of Conduct
 topic: Creeds & Values
 source: Executive Order 10631 as amended (National Archives, archives.gov/federal-register/codification/executive-order/10631.html); TC 7-21.13, The Soldier's Guide (17 September 2025), paras 2-11 to 2-16

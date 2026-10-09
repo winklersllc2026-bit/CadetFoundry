@@ -1,4 +1,5 @@
 ---
+category: basic
 title: Moving Under Fire, Cover, Concealment and Camouflage
 topic: Soldier Skills
 source: TC 3-21.75, The Warrior Ethos and Soldier Combat Skills (13 August 2013), paras 5-8 to 5-15, 7-2 to 7-7 and chapter 5

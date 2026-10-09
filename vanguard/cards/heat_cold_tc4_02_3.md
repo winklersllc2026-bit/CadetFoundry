@@ -1,4 +1,5 @@
 ---
+category: basic
 title: Heat, Cold, Carbon Monoxide and Sleep — Protect Yourself
 topic: Field Craft
 source: TC 4-02.3, Field Hygiene and Sanitation (6 May 2015), paras 2-45 to 2-54, 2-62

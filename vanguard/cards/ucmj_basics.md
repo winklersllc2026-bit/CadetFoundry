@@ -1,4 +1,5 @@
 ---
+category: basic
 title: The UCMJ — Articles Every Soldier Should Know
 topic: UCMJ & Law
 source: Uniform Code of Military Justice, 10 U.S.C. chapter 47 — Arts. 15, 31, 86, 89, 91, 92, 107, 108, 112a, 120, 121, 128, 134 (10 U.S.C. §§ 815–934)

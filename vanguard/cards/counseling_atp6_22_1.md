@@ -1,4 +1,5 @@
 ---
+category: basic
 title: Counseling — Types, Approaches and the Four Stages
 topic: Board: Leadership & Programs
 source: ATP 6-22.1, The Counseling Process (13 February 2024), paras 2-4 to 2-10, 2-29, 2-41 to 2-44

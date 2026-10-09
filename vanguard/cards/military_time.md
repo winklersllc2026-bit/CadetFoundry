@@ -1,4 +1,5 @@
 ---
+category: military
 title: Military Time
 topic: Basic Knowledge
 source: Vanguard study card — 24-hour clock arithmetic (no manual in the library covers it)

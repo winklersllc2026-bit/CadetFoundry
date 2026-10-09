@@ -1,4 +1,5 @@
 ---
+category: military
 title: The Army Song, National Anthem and Bugle Calls
 topic: Customs & Courtesies
 source: AR 600-25, Salutes, Honors, and Courtesies (1 May 2026), para 4-6; TC 3-21.5, Drill and Ceremonies (3 May 2021), paras 1-11 to 1-14

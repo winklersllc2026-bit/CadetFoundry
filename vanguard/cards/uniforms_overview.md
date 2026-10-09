@@ -1,4 +1,5 @@
 ---
+category: military
 title: Army Uniforms — The Basics
 topic: Uniforms
 source: AR 670-1, Wear and Appearance of Army Uniforms and Insignia (26 January 2021), paras 4-2, 4-3, 10-3, 11-3, 14-3; DA PAM 670-1 (26 January 2021), paras 4-1, 10-1

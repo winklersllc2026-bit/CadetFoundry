@@ -1,4 +1,5 @@
 ---
+category: explore
 title: The Army Fitness Test (AFT) — Events and Passing
 topic: Fitness & Health
 source: U.S. Army, AFT Scoring Scales (approved 15 May 2025, effective 1 June 2025, army.mil); U.S. Army announcement of AFT standards (21 April 2025, army.mil)

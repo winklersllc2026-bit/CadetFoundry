@@ -1,4 +1,5 @@
 ---
+category: basic
 title: The 9-Line MEDEVAC Request
 topic: Reports
 source: ATP 4-02.2, Medical Evacuation (Table 2-1, Appendix C); TC 3-21.76, Ranger Handbook (ch. 15)

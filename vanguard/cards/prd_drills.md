@@ -1,4 +1,5 @@
 ---
+category: basic
 title: Preparation Drill and Recovery Drill (PRT)
 topic: Fitness & Health
 source: ATP 7-22.02, Holistic Health and Fitness Drills and Exercises (1 October 2020), paras 1-25, 3-1, 16-1; FM 7-22, table 6-2 and paras 6-23, 6-26

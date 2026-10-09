@@ -1,4 +1,5 @@
 ---
+category: careers
 title: ASVAB, AFQT and Line Scores (including GT)
 topic: Training Pipeline
 source: U.S. Army, ASVAB Test & Preparation (goarmy.com/how-to-join/steps/asvab)

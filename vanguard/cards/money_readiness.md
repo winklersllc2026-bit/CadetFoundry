@@ -1,4 +1,5 @@
 ---
+category: explore
 title: Money Readiness
 topic: Money
 source: Servicemembers Civil Relief Act (50 U.S.C. § 3937); Military Lending Act (10 U.S.C. § 987); Thrift Savings Plan (tsp.gov)

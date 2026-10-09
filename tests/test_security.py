@@ -341,6 +341,33 @@ class SecurityTests(unittest.TestCase):
                                                                   "pin": "573920", "admin": "111222"})
             self.assertEqual(s, 403)                                            # now the PIN must match
 
+    def test_basic_training_cards_only_for_cadets_who_plan_to_join(self):
+        """Owner's rule: the adult-Soldier study guide (UCMJ, SHARP, weapons, BCT/AIT...) shows only for a Cadet who
+        says they plan to join the military -- and only if the instructor hasn't turned it off."""
+        alice = self.login(self.alice["id"], "482915")
+        get = lambda path: self.req("GET", path, headers={"Cookie": alice})
+        cats = lambda: {c["category"] for t in json.loads(get("/api/topics")[2]) for c in t["cards"]}
+        self.addCleanup(store.save_config, {"categories": list(store.ALL_CATEGORIES)})
+        with security.as_profile(self.alice["id"], security.session_key(alice.split("=")[1]),
+                                 security.session_class_key(alice.split("=")[1])):
+            store.save_profile({"military_track": ""})
+        self.assertNotIn("basic", cats())
+        self.assertEqual(get("/api/card?id=ucmj_basics")[0], 404)
+        quiz = json.loads(get("/api/quiz?n=50")[2])
+        self.assertFalse(any("UCMJ" in x["card"] for x in (quiz if isinstance(quiz, list) else quiz.get("cards", []))))
+        self.assertNotIn("basic", json.loads(get("/api/status")[2])["categories"])
+        # the Cadet opts in from their own profile
+        s, _, _ = self.req("POST", "/api/profile", {"military_track": "yes"}, {"Cookie": alice})
+        self.assertEqual(s, 200)
+        self.assertIn("basic", cats())
+        self.assertEqual(get("/api/card?id=ucmj_basics")[0], 200)
+        # the instructor can turn categories off for everyone; a Cadet can't change that setting
+        self.assertEqual(self.req("POST", "/api/instructor/categories", {"categories": ["leadership"]}, {"Cookie": alice})[0], 403)
+        store.save_config({"categories": ["leadership", "citizenship", "health", "careers", "explore"]})
+        self.assertFalse(cats() & {"basic", "military"})
+        self.assertEqual(get("/api/card?id=ucmj_basics")[0], 404)
+        self.req("POST", "/api/profile", {"military_track": ""}, {"Cookie": alice})
+
     def test_app_can_be_installed_from_the_lock_screen(self):
         """Phones 'Add to Home Screen' and computers 'Install app' before anyone signs in: the manifest and icons are
         public (they hold no data); everything else stays locked."""

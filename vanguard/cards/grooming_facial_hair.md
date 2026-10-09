@@ -1,4 +1,5 @@
 ---
+category: basic
 title: Grooming — Shaving and Mustaches
 topic: Uniforms
 source: AR 670-1, Wear and Appearance of Army Uniforms and Insignia (26 January 2021), para 3-2a(2)(b)
