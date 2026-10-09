@@ -374,7 +374,7 @@ class SecurityTests(unittest.TestCase):
         alice = self.login(self.alice["id"], "482915")
         get = lambda path: json.loads(self.req("GET", path, headers={"Cookie": alice})[2])
         post = lambda path, body: self.req("POST", path, body, {"Cookie": alice})
-        qs = get("/api/quiz?n=50&topic=citizenship")
+        qs = get("/api/quiz?n=50&topic=citizenship_three_branches")
         self.assertTrue(qs)
         self.assertTrue(all("a" not in x for x in qs))                          # no answers in advance
         self.assertNotIn("a", get("/api/daily")["questions"][0])
@@ -385,7 +385,7 @@ class SecurityTests(unittest.TestCase):
         self.assertIn("legislative", g["answer"])                               # the answer comes back after answering
         self.assertFalse(json.loads(post("/api/quiz/answer", {"id": branches["id"], "answer": "two"})[2])["correct"])
         # practice mode: four choices, the right one among them, graded by which one was picked
-        mc = next(x for x in get("/api/quiz?n=50&topic=citizenship&mode=mc") if x["id"] == branches["id"])
+        mc = next(x for x in get("/api/quiz?n=50&topic=citizenship_three_branches&mode=mc") if x["id"] == branches["id"])
         self.assertEqual(len(mc["choices"]), 4)
         self.assertNotIn("a", mc)
         right_choice = next(c for c in mc["choices"] if c.lower().startswith("three"))

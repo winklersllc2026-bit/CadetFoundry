@@ -99,13 +99,13 @@ class InstructorReportTests(unittest.TestCase):
         self.assertIn(self.a["name"], data.decode("utf-8-sig"))
         self.assertIn("Leadership scenarios", data.decode("utf-8-sig").splitlines()[0])
         # quiz edit: the program's answer is the one graded; a hidden question disappears
-        qid = next(x["id"] for x in self.req("GET", "/api/quiz?n=50&topic=citizenship", cookie=ty)[1] if "breaks ties" in x["q"].lower())
+        qid = next(x["id"] for x in self.req("GET", "/api/quiz?n=50&topic=citizenship_three_branches", cookie=ty)[1] if "breaks ties" in x["q"].lower())
         self.addCleanup(quiz_edits.reset, qid)
         self.assertEqual(self.req("POST", "/api/instructor/quiz", {"id": qid, "a": "The Vice President of the United States"}, cpt)[0], 200)
         g = self.req("POST", "/api/quiz/answer", {"id": qid, "answer": "vice president of the united states"}, ty)[1]
         self.assertIn("Vice President of the United States", g["answer"])
         self.req("POST", "/api/instructor/quiz", {"id": qid, "hidden": True}, cpt)
-        self.assertNotIn(qid, [x["id"] for x in self.req("GET", "/api/quiz?n=50&topic=citizenship", cookie=ty)[1]])
+        self.assertNotIn(qid, [x["id"] for x in self.req("GET", "/api/quiz?n=50&topic=citizenship_three_branches", cookie=ty)[1]])
         self.assertEqual(self.req("POST", "/api/quiz/answer", {"id": qid, "answer": "x"}, ty)[0], 404)
         # pop quiz: due today, only for the Cadet chosen
         s, pop = self.req("POST", "/api/instructor/pop-quiz", {"title": "Branches", "cadets": [self.a["id"]],

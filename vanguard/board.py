@@ -120,7 +120,8 @@ def quiz_grade(question: str, reference: str, answer: str, use_ai: bool = True) 
     words = max((word_grade(answer, r) for r in {reference, head, core} if keywords(r)), key=lambda g: g["score"],
                 default={"score": 0.0, "verdict": "nogo"})
     verdict = {"go": "right", "partial": "close", "nogo": "wrong"}[words["verdict"]]
-    if keywords(core) and core != head and word_grade(answer, core)["score"] == 0:
+    if keywords(core) and core != head and word_grade(answer, core)["score"] == 0 \
+            and word_grade(answer, reference)["verdict"] != "go":   # the full answer in other words still counts
         verdict = "wrong"                            # "the 26th amendment" for "The 19th Amendment": the key part is wrong
     out = {"verdict": verdict, "correct": verdict == "right", "how": "words", "why": ""}
     if use_ai and verdict != "right":                # the offline AI may recognize the same meaning in other words

@@ -6,7 +6,7 @@ source: TC 3-21.5, Drill and Ceremonies (3 May 2021), paras 1-1 to 1-8
 ---
 **Drill's original purpose** was to prepare troops for battle — to move forces quickly, mass them into formation, and maneuver them as the situation changed (para 1-1).
 
-**Valley Forge, 1778.** For three years Washington's Continental Army had suffered — little money, food, clothing or equipment — and it lacked organization, discipline and teamwork (para 1-2). Through Benjamin Franklin, Washington recruited the Prussian officer **Baron Friedrich von Steuben**, who arrived at Valley Forge on **23 February 1778** (para 1-3).
+**Valley Forge, 1778.** For three years Washington's Continental Army had suffered — little money, food, clothing or equipment — and it lacked organization, discipline and teamwork (para 1-2). Through Benjamin Franklin, Washington enlisted the aid of the Prussian officer **Baron Friedrich von Steuben**, who arrived at Valley Forge on **23 February 1778** (para 1-3).
 
 Von Steuben wrote drill movements at night and taught them the next day to a **model company of 120 men**. They learned to respond to commands without hesitation, worked as a team, and took pride in their unit. The model company then spread out to teach drill to the whole Army (paras 1-3 to 1-5).
 

@@ -25,6 +25,8 @@ CASES = [
     ("Which Article of the Constitution creates Congress?", "Article I", "article 2", "wrong"),
     ("Which Article creates the executive branch?", "Article II", "article iv", "wrong"),
     ("How many branches of government are there?", "Three — legislative, executive, judicial", "3", "right"),
+    ("How many branches of government are there?", "Three — legislative, executive, judicial",
+     "legislative, executive and judicial", "right"),
 ]
 
 

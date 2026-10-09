@@ -158,6 +158,11 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
     careers_interview_virtual, careers_resume, careers_references, careers_job_applications. Drill set from TC 3-21.5:
     drill_history (von Steuben, cadence), drill_command_voice, drill_marching, flag_detail (App. I + AR 600-25 2-6i).
     Scenario 14 (first job / clocking in a coworker). Note: scenario text may not use combat words (test_scenarios).
+  - **Phase 11 step 5 DONE (2026-10-09):** 6 more cards (84 total): drill_squad_formations, drill_inspection (TC 3-21.5
+    ch 6-7); leadership_bullying, leadership_upstander (StopBullying.gov, read in the browser); health_teen_driving (CDC);
+    careers_protect_accounts (FTC). Scenario 15 (the ride home). Fixes: grader no longer marks a full correct answer
+    wrong for leaving out the short key part ("legislative, executive and judicial" for "Three — ..."); quiz tests now
+    ask for a specific card (Citizenship has more than 50 questions now); "recruited" reworded (brand test).
 - **Next:** owner testing (run from C:\Code\Vanguard with `python run.py`), then Phase 7 Serve (service log +
   instructor verification), 8 Progress, 9 Instructor analytics, 10 Pilot. Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with
