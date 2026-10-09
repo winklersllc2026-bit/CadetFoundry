@@ -199,6 +199,8 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
   - **Items 3-4 DONE:** leadership_assertive_communication (FM 7-22 9-46..9-52), leadership_briefing_clearly (FM 6-22
     4-78, table 4-46), map_reading_topo (USGS Lesson 4 + Maps booklet; verified, unlike land_navigation which stays
     verified: no because TC 3-25.26 is restricted). 121 cards.
+  - **Items 5-6 DONE:** study_skills (IES Practice Guide 2007: quizzing + deep questions = strong evidence). 122 cards.
+    CONTENT_REFRESH.md = the yearly check list (time-sensitive cards, where to verify, manual editions).
 - **Next:** owner testing (run from C:\Code\Vanguard with `python run.py`), then Phase 7 Serve (service log +
   instructor verification), 8 Progress, 9 Instructor analytics, 10 Pilot. Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with
