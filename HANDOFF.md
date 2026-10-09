@@ -213,6 +213,10 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
     laptop, Vanguard roadmap, build history), pilot.html (/pilot) and security.html (/security); installer.iss wording.
     NOT done (owner): `python tools/sign.py keygen` + commit vanguard/data/release_key.pub; build/deploy/release
     (`python site/build.py --deploy` / `--release`) -- outward-facing, owner runs or approves.
+  - **Item 10 (part) DONE:** Money pane is Cadet-first (budget with teen examples; pay estimate, LES and TSP folded into
+    a collapsed 'Military pay tools' section that opens automatically when reached from Serve -> Explore Military
+    Service). README Cadet table updated (Learn/Lead/Serve/Progress). Still open from Phase 1: module on/off flags
+    (explore_military, faith, letters, voice) for the instructor; Soldier-oriented code comments; REPORT.md.
 - **Next:** owner testing (run from C:\Code\Vanguard with `python run.py`), then Phase 7 Serve (service log +
   instructor verification), 8 Progress, 9 Instructor analytics, 10 Pilot. Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with

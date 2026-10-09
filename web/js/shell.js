@@ -35,7 +35,9 @@ loaders.serve = async () => {
           what basic training is like, the General Orders, the Soldier's Creed, military law, safety and more. You can turn it off any time.</span></span></label>
         <p class="faint" id="milMsg" role="status"></p></div>` : ''}</div>` : ''}`;
   $('#serveBody').querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => {
-    const [v, pane] = b.dataset.go.split(':'); openView(v, pane);
+    const [v, pane] = b.dataset.go.split(':');
+    window.moneyMilitary = !!b.closest('#exploreMil');       // the Money pane opens its military pay tools
+    openView(v, pane);
   }));
   if (typeof serviceCadet === 'function') serviceCadet($('#serviceBox'));       // web/js/service.js
   if ($('#milTrack')) $('#milTrack').addEventListener('change', async e => {

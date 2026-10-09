@@ -14,11 +14,11 @@ control; Vanguard supplies the tools.
 
 | Area | What's there today |
 |---|---|
-| **📘 Learn** | Your assignments from your instructor (lessons with vocabulary, questions and a reflection), study cards, quizzes and timed exams, and a library of public-domain books — the Declaration of Independence, the Constitution, the Bill of Rights, the Federalist Papers, American Military History (U.S. Army Center of Military History), and classics. Questions you miss come back more often. |
-| **🧭 Lead** | Leadership scenarios: a real Cadet situation (two teammates arguing, a teammate who stopped participating, a deadline, peer pressure, criticism, delegation, a new Cadet left out, falling short). You choose, see what happened and why, and write what you'd do next time — saved to your leadership log. No scores, no "wrong answer". |
+| **📘 Learn** | Your assignments from your instructor (lessons with vocabulary, questions and a reflection), 120+ study cards from U.S. government sources and Army manuals (leadership, citizenship and history, military knowledge, health and first aid, careers and money — each names its source), quizzes you type and Vanguard grades (Practice with choices, Challenge typed), timed exams, and a library of public-domain books — the Declaration of Independence, the Constitution, the Bill of Rights, the Federalist Papers, American Military History (U.S. Army Center of Military History), and classics. Questions you miss come back more often. |
+| **🧭 Lead** | Live questions and classroom votes from your instructor, and 20 leadership scenarios: real Cadet situations (teammates arguing, peer pressure, online bullying, a hidden injury, a first job, a rumor, a ride home with a driver who's been drinking, and more). You choose, see what happened and why, and write what you'd do next time — saved to your leadership log. No scores, no "wrong answer". |
 | **💪 Train** | Your fitness history and goals, measured against your own last result. |
-| **🤝 Serve** | Service learning (being built), and **Explore Military Service** — for Cadets who want to learn what serving is like: military pay tables, how a military pay statement works, the Army jobs explorer, leave, moving with the military, and letters to family, service members and veterans. Information only; nothing signs you up or contacts a recruiter. |
-| **📈 Progress** | Your growth over time (being built). |
+| **🤝 Serve** | Your service hours and what you learned, verified by your instructor; and **Explore Military Service** — for Cadets who want to learn what serving is like: military pay tables, how a military pay statement works, the Army jobs explorer, leave, moving with the military, and letters to family, service members and veterans. Information only; nothing signs you up or contacts a recruiter. |
+| **📈 Progress** | Your growth over time — lessons, leadership, fitness, service and recognition — and a printable portfolio. |
 | **💬 Ask** | Questions about anything in the library. Answers come from sources stored on the device and name them. |
 
 ## For instructors

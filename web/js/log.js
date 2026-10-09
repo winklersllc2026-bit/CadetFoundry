@@ -321,6 +321,15 @@ async function loadMoney(local) {
   const inc = total(bd.income), exp = total(bd.expenses), left = inc - exp;
   const pt = await api('/api/pay');
   $('#moneyPane').innerHTML = `
+    <div class="card"><div class="row" style="justify-content:space-between">
+      <div><div class="faint">Left over each month</div><div style="font-size:30px;font-weight:700;color:${left >= 0 ? 'var(--green)' : 'var(--red)'}">$${left.toFixed(2)}</div></div>
+      <div class="faint" style="text-align:right">In $${inc.toFixed(2)}<br>Out $${exp.toFixed(2)}</div></div>
+      <p class="faint">Use your real numbers — paychecks, allowance and bills. Plain math on your own numbers — not financial advice. See the Money Basics study cards for how to budget.</p></div>
+    <div class="card"><h3>Money in (monthly)</h3>${rowsHtml(bd.income, 'income') || '<p class="faint">e.g. Part-time job, allowance, babysitting</p>'}<button class="btn small" data-add="income">+ Add</button></div>
+    <div class="card"><h3>Money out (monthly)</h3>${rowsHtml(bd.expenses, 'expenses') || '<p class="faint">e.g. Phone, gas, car insurance, savings</p>'}<button class="btn small" data-add="expenses">+ Add</button></div>
+    <div class="card"><label>Savings goal</label><input id="bdGoal" value="${esc(bd.goal)}" placeholder="e.g. $500 emergency fund by graduation"></div>
+    <button class="btn primary" id="bdSave">Save budget</button>
+    <details class="card" style="margin-top:14px"><summary><b>🎖️ Military pay tools</b> <span class="faint">— pay estimate, reading a pay statement (LES), retirement savings (TSP). For Cadets exploring military service.</span></summary>
     <div class="card"><h3>💵 Pay estimate</h3>
       ${pt.grades.length ? `<div class="row">
         <div style="flex:1"><label>Grade</label><select id="payGrade">${pt.grades.map(g => `<option>${esc(g)}</option>`).join('')}</select></div>
@@ -336,14 +345,6 @@ async function loadMoney(local) {
         <input id="lesFind" placeholder="Block name or number" style="flex:2"></div>
       <div id="lesInfo" style="margin:10px 0"></div><div id="lesGrid"></div>
       <p class="faint">Explanations are DFAS's own wording (<i>How to read an active duty Army LES</i> and <i>How to read a Reserve and National Guard LES</i>, dfas.mil). Vanguard's notes are marked. Questions about your pay go to your finance office.</p></div>
-    <div class="card"><div class="row" style="justify-content:space-between">
-      <div><div class="faint">Left over each month</div><div style="font-size:30px;font-weight:700;color:${left >= 0 ? 'var(--green)' : 'var(--red)'}">$${left.toFixed(2)}</div></div>
-      <div class="faint" style="text-align:right">In $${inc.toFixed(2)}<br>Out $${exp.toFixed(2)}</div></div>
-      <p class="faint">Use the amounts from your LES (pay) and your real bills. Plain math on your own numbers — not financial advice.</p></div>
-    <div class="card"><h3>Money in (monthly)</h3>${rowsHtml(bd.income, 'income') || '<p class="faint">e.g. Base pay, BAS, BAH</p>'}<button class="btn small" data-add="income">+ Add</button></div>
-    <div class="card"><h3>Money out (monthly)</h3>${rowsHtml(bd.expenses, 'expenses') || '<p class="faint">e.g. Phone, car payment, insurance, savings, TSP</p>'}<button class="btn small" data-add="expenses">+ Add</button></div>
-    <div class="card"><label>Savings goal</label><input id="bdGoal" value="${esc(bd.goal)}" placeholder="e.g. $1,000 emergency fund by AIT graduation"></div>
-    <button class="btn primary" id="bdSave">Save budget</button>
     <div class="card" style="margin-top:14px"><h3>TSP calculator (Blended Retirement System)</h3>
       <div class="row">
         <div style="flex:1"><label>Monthly basic pay ($)</label><input id="tspPay" type="number" min="0" step="1" placeholder="from your LES"></div>
@@ -356,7 +357,9 @@ async function loadMoney(local) {
       </div>
       <div id="tspOut" style="margin-top:10px"></div>
       <p class="faint">Rules as written in the official <i>Summary of the Thrift Savings Plan</i> (TSPBK08, pp. 5–6, tsp.gov, downloaded 2026-10-07): automatic 1% of basic pay after 60 days of service; matching on the first 5% you contribute — first 3% dollar-for-dollar, next 2% at 50¢ — for BRS members who began service on or after Jan 1, 2018, starting after two years of service; the automatic 1% vests after two years. Assumes your pay stays the same. Growth is only an example you choose, not a prediction or advice. Confirm with your finance office.</p>
-    </div>`;
+    </div>
+    </details>`;
+  if (window.moneyMilitary) { $('#moneyPane details').open = true; window.moneyMilitary = false; }   // opened from Serve
   lesDecoder();
   if ($('#payGo')) $('#payGo').onclick = async () => {
     const r = await api('/api/pay', { grade: $('#payGrade').value, years: $('#payYears').value, months: $('#payMonths').value, bah: $('#payBah').value });
