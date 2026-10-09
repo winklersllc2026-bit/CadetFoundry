@@ -24,7 +24,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from vanguard import (addons, backup, board, books, careers, daily, engine, exam, fitness, instructor, integrity, knowledge,
-                      lessons, letters, pay, profiles, progress, scenarios, security, service, store, train, voice)
+                      lessons, letters, pay, profiles, program_backup, progress, quiz_edits, reports, scenarios, security, service, store, train, voice)
 from vanguard.brain import Brain
 from vanguard.faith import Faith
 from vanguard.knowledge import Library
@@ -214,6 +214,23 @@ class Handler(BaseHTTPRequestHandler):
                     return self._json({"error": "No such Cadet."}, 404)
                 log = instructor.read_class_file(priv, pid, "scenarios.jsonl", [])
                 return self._json({"shared": log is not None, "entries": list(reversed(log or []))})
+            if r == "/api/instructor/quiz":
+                c = app.library.card(str(q.get("card", ""))[:60])
+                if not c:
+                    return self._json({"cards": [{"id": x.id, "title": x.title, "category": x.category, "questions": len(x.quiz)}
+                                                 for x in app.library.cards if x.quiz]})
+                edits = quiz_edits.overrides()
+                return self._json({"card": {"id": c.id, "title": c.title, "source": c.source},
+                                   "questions": [{"id": f"{c.id}#{i}", "q": qq, "a": aa, "edit": edits.get(f"{c.id}#{i}", {})}
+                                                 for i, (qq, aa) in enumerate(c.quiz)]})
+            if r == "/api/instructor/dashboard":
+                return self._json(reports.dashboard(priv, app.library, str(q.get("unit", ""))[:10]))
+            if r == "/api/instructor/report.csv":       # an explicit export, only for the instructor
+                body = reports.to_csv(reports.cadet_rows(priv, app.library, str(q.get("unit", ""))[:10])).encode("utf-8-sig")
+                self._headers(200, "text/csv; charset=utf-8", len(body), {
+                    "Content-Disposition": f'attachment; filename="vanguard-class-report-{time.strftime("%Y-%m-%d")}.csv"'})
+                self.wfile.write(body)
+                return
             if r == "/api/instructor/progress":
                 pid = str(q.get("id", ""))[:12]
                 p = profiles.get(pid)
@@ -737,6 +754,37 @@ class Handler(BaseHTTPRequestHandler):
                         instructor.delete_unit(priv, str(b.get("id", ""))[:10])
                         return self._json({"ok": True})
                     return self._json({"error": "Choose add, rename or delete."}, 400)
+                if r == "/api/instructor/quiz":
+                    qid = str(b.get("id", ""))[:80]
+                    cid, _, idx = qid.partition("#")
+                    c = app.library.card(cid)
+                    if not c or not idx.isdigit() or int(idx) >= len(c.quiz):
+                        return self._json({"error": "No such question."}, 404)
+                    if b.get("action") == "reset":
+                        quiz_edits.reset(qid)
+                        return self._json({"ok": True})
+                    return self._json(quiz_edits.save(qid, b.get("q", ""), b.get("a", ""), bool(b.get("hidden"))))
+                if r == "/api/instructor/pop-quiz":
+                    # a quick, questions-only lesson, assigned right away and due today
+                    as_list = lambda v: [str(x)[:12] for x in v][:200] if isinstance(v, list) else []
+                    title = " ".join(str(b.get("title") or "").split())[:80] or "Pop quiz"
+                    lesson = lessons.save_lesson(priv, {"title": "Pop quiz: " + title, "competency": "Pop quiz",
+                                                        "questions": str(b.get("questions", "")), "reflection": ""})
+                    try:
+                        a = lessons.assign(priv, lesson["id"], bool(b.get("everyone")), as_list(b.get("units")),
+                                           as_list(b.get("cadets")), time.strftime("%Y-%m-%d"))
+                    except ValueError:
+                        lessons.delete_lesson(priv, lesson["id"])    # no one to give it to: don't leave it behind
+                        raise
+                    return self._json({"lesson": lesson, "assignment": a})
+                if r == "/api/instructor/program-backup":
+                    sealed = program_backup.export(str(b.get("password", ""))[:200])
+                    return self._json({"file": sealed, "name": f"vanguard-program-{time.strftime('%Y-%m-%d')}.json"})
+                if r == "/api/instructor/program-restore":
+                    out = program_backup.restore(b.get("file") if isinstance(b.get("file"), dict) else {},
+                                                 str(b.get("password", ""))[:200])
+                    security.drop_program_keys()
+                    return self._json({**out, "relock": True})
                 if r == "/api/instructor/recognition":
                     pid = str(b.get("cadet", ""))[:12]
                     if (profiles.get(pid) or {}).get("kind") != "cadet":

@@ -364,6 +364,13 @@ def session_class_key(token: str | None) -> bytes | None:
     return entry[3] if entry else None
 
 
+def drop_program_keys() -> None:
+    """After a program restore the program key may have changed: every instructor enters the Instructor PIN again."""
+    with _lock:
+        for entry in _sessions.values():
+            entry[4] = None
+
+
 def session_program_key(token: str | None) -> bytes | None:
     """The program private key, only in an instructor's session after the Instructor PIN was entered."""
     entry = _sessions.get(token or "")

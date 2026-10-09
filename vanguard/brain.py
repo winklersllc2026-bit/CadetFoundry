@@ -10,7 +10,7 @@ import re
 import threading
 from typing import Generator
 
-from vanguard import daily, engine, facts, safety, store
+from vanguard import daily, engine, facts, quiz_edits, safety, store
 from vanguard.faith import Faith
 from vanguard.knowledge import PUB_RE, Library, unsupported_numbers
 
@@ -488,6 +488,10 @@ class Brain:
                 continue
             for i, (q, a) in enumerate(c.quiz):
                 qid = f"{c.id}#{i}"
+                edited = quiz_edits.apply(qid, q, a)          # the instructor's version, or hidden
+                if edited is None:
+                    continue
+                q, a = edited
                 s = stats.get(qid, {})
                 weight = 3 + 4 * s.get("wrong", 0) - min(2, s.get("right", 0)) if s else 5
                 pool.append((max(1, weight), {"id": qid, "q": q, "a": a, "card": c.title, "topic": c.topic,
@@ -510,7 +514,10 @@ class Brain:
         c = self.library.card(cid)
         if not c or not idx.isdigit() or int(idx) >= len(c.quiz):
             return None
-        q, a = c.quiz[int(idx)]
+        edited = quiz_edits.apply(f"{c.id}#{idx}", *c.quiz[int(idx)])
+        if edited is None:                                 # hidden by the instructor
+            return None
+        q, a = edited
         return {"id": f"{c.id}#{idx}", "q": q, "a": a, "card": c.title, "topic": c.topic, "source": c.source}
 
     def for_screen(self, items: list[dict], mode: str = "") -> list[dict]:
