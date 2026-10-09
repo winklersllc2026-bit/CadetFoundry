@@ -128,7 +128,7 @@ async function instructorLessons(body, ov) {
         `<label style="display:flex;gap:10px;align-items:center;min-height:44px"><input type="checkbox" data-ac="${esc(c.id)}" style="width:22px;height:22px"> ${esc(c.name)}</label>`).join('')}</details>` : ''}
       <label>Due date (optional)</label><input id="aDue" type="date">
       <div class="row" style="gap:8px;margin-top:10px"><button class="btn primary" id="aGo">Assign</button><button class="btn small" id="aCancel">Cancel</button></div>
-      <p class="faint" id="aMsg" role="alert"></p><p class="faint">Cadets added to a unit later need the lesson assigned again.</p></div>`;
+      <p class="faint" id="aMsg" role="alert"></p><p class="faint">Cadets who join a unit later get its lessons automatically — only them; nobody else sees a new assignment.</p></div>`;
     $('#aCancel').addEventListener('click', () => { $('#lForm').innerHTML = ''; });
     $('#aGo').addEventListener('click', async () => {
       const units = [...sec.querySelectorAll('[data-au]:checked')].map(x => x.dataset.au);

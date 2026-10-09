@@ -213,17 +213,53 @@ def assign(priv: bytes, lid: str, everyone: bool = False, units: list | None = N
     chosen = set(all_cadets) if everyone else set()
     chosen |= {pid for pid, meta in r["cadets"].items() if meta.get("unit") in wanted and pid in all_cadets}
     chosen |= {c for c in (cadets or []) if c in all_cadets}
-    if not chosen:
-        raise ValueError("Choose who gets this lesson: everyone, a unit with Cadets in it, or individual Cadets.")
+    if not chosen and not everyone and not wanted:
+        raise ValueError("Choose who gets this lesson: everyone, a unit, or individual Cadets.")
     names = [u["name"] for u in r["units"] if u["id"] in units]
-    a = {"id": uuid.uuid4().hex[:12], "lesson": lid, "title": lesson["title"], "cadets": sorted(chosen), "due": due,
-         "to": "Everyone" if everyone else ", ".join(names + ([f"{len(cadets or [])} Cadet(s)"] if cadets else [])),
-         "created": time.strftime("%Y-%m-%d")}
     with _lock:
         rows = all_assignments()
+        # Never the same lesson twice on one Cadet's list: anyone who already has it is left out of the new one.
+        have = {pid for x in rows if x["lesson"] == lid for pid in recipients(x)}
+        if everyone and any(x["lesson"] == lid and x.get("everyone") for x in rows):
+            raise ValueError("Everyone already has this lesson.")
+        new = chosen - have
+        covered = {u for x in rows if x["lesson"] == lid for u in x.get("units", [])}
+        if not new and not everyone and set(wanted) <= covered:
+            raise ValueError("Everyone you chose already has this lesson. Cadets who join a unit later get it automatically.")
+        a = {"id": uuid.uuid4().hex[:12], "lesson": lid, "title": lesson["title"], "cadets": sorted(new), "due": due,
+             "everyone": bool(everyone), "units": sorted(wanted),
+             "to": "Everyone" if everyone else ", ".join(names + ([f"{len(cadets or [])} Cadet(s)"] if cadets else [])),
+             "created": time.strftime("%Y-%m-%d")}
         rows.append(a)
         _write("assignments.json", rows)
     return a
+
+
+def recipients(a: dict) -> list[str]:
+    """Who has this assignment now. 'Everyone' means every current Cadet, including ones added later."""
+    if a.get("everyone"):
+        return [p["id"] for p in profiles.all_profiles() if p["kind"] == "cadet"]
+    return a["cadets"]
+
+
+def sync_cadet(priv: bytes, pid: str) -> list[str]:
+    """A Cadet just joined a unit: give them that unit's existing assignments -- once, and only them. Other Cadets'
+    lists don't change. A lesson they already have from another assignment isn't added again."""
+    unit = (instructor.roster(priv)["cadets"].get(pid) or {}).get("unit")
+    if not unit:
+        return []
+    added = []
+    with _lock:
+        rows = all_assignments()
+        have = {x["lesson"] for x in rows if pid in recipients(x)}
+        for a in rows:
+            if unit in a.get("units", []) and a["lesson"] not in have:
+                a["cadets"] = sorted(set(a["cadets"]) | {pid})
+                have.add(a["lesson"])
+                added.append(a["id"])
+        if added:
+            _write("assignments.json", rows)
+    return added
 
 
 def delete_assignment(aid: str) -> None:
@@ -242,8 +278,9 @@ def _work(priv: bytes, pid: str) -> dict | None:
 
 
 def progress(priv: bytes, a: dict) -> dict:
-    counts = {"assigned": len(a["cadets"]), "complete": 0, "in_progress": 0, "not_started": 0, "unknown": 0}
-    for pid in a["cadets"]:
+    who = recipients(a)
+    counts = {"assigned": len(who), "complete": 0, "in_progress": 0, "not_started": 0, "unknown": 0}
+    for pid in who:
         w = _work(priv, pid)
         if w is None:
             counts["unknown"] += 1
@@ -258,7 +295,7 @@ def details(priv: bytes, aid: str) -> dict:
     if not a:
         raise ValueError("No such assignment.")
     rows = []
-    for pid in a["cadets"]:
+    for pid in recipients(a):
         p = profiles.get(pid)
         if not p:
             continue
@@ -272,7 +309,7 @@ def details(priv: bytes, aid: str) -> dict:
 
 # ── Cadet ───────────────────────────────────────────────────────────────────
 def _mine(pid: str, aid: str) -> tuple[dict, dict]:
-    a = next((x for x in all_assignments() if x["id"] == aid and pid in x["cadets"]), None)
+    a = next((x for x in all_assignments() if x["id"] == aid and pid in recipients(x)), None)
     lesson = a and next((x for x in all_lessons() if x["id"] == a["lesson"]), None)
     if not a or not lesson:
         raise LookupError("No such assignment.")       # also when it's someone else's: never confirm it exists
@@ -284,7 +321,7 @@ def my_assignments(pid: str) -> list[dict]:
     work = store.read_json("assignments.json", {})
     out = []
     for a in all_assignments():
-        if pid not in a["cadets"]:
+        if pid not in recipients(a):
             continue
         w = work.get(a["id"]) or {}
         out.append({"id": a["id"], "title": a["title"], "due": a["due"], "state": w.get("state", "not_started"),

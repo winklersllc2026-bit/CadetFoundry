@@ -155,6 +155,24 @@ class LessonFlowTests(unittest.TestCase):
         # an assigned lesson can't be deleted out from under the Cadets
         self.assertEqual(self.req("POST", "/api/instructor/lesson", {"action": "delete", "id": lesson["id"]}, teach)[0], 400)
 
+        # Owner's rule: a Cadet who joins the platoon later gets the platoon's lesson -- once, only them. Nobody else's
+        # list changes, and no new assignment appears.
+        before = len(self.req("GET", "/api/instructor/lessons", cookie=teach)[1]["assignments"])
+        s, out = self.req("POST", "/api/instructor/assign", {"cadet": self.b["id"], "unit": unit["id"]}, teach)
+        self.assertEqual((s, out["new_assignments"]), (200, [a["id"]]))
+        self.assertEqual([x["id"] for x in self.req("GET", "/api/lessons", cookie=ben)[1]["assignments"]], [a["id"]])
+        self.assertEqual([x["id"] for x in self.req("GET", "/api/lessons", cookie=ann)[1]["assignments"]], [a["id"]])
+        self.assertEqual(next(x for x in self.req("GET", "/api/instructor/lessons", cookie=teach)[1]["assignments"]
+                              if x["id"] == a["id"])["complete"], 1)                       # Ann's work is untouched
+        self.assertEqual(len(self.req("GET", "/api/instructor/lessons", cookie=teach)[1]["assignments"]), before)
+        # moving Ben around again doesn't add it twice
+        self.assertEqual(self.req("POST", "/api/instructor/assign", {"cadet": self.b["id"], "unit": unit["id"]}, teach)[1]["new_assignments"], [])
+        # assigning the same lesson to the same platoon again is refused instead of making a duplicate
+        s, err = self.req("POST", "/api/instructor/assign-lesson", {"lesson": lesson["id"], "units": [unit["id"]]}, teach)
+        self.assertEqual(s, 400)
+        self.assertIn("already has this lesson", err["error"])
+        self.assertEqual(len(self.req("GET", "/api/lessons", cookie=ben)[1]["assignments"]), 1)
+
 
 if __name__ == "__main__":
     unittest.main()

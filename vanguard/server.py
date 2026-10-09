@@ -571,10 +571,12 @@ class Handler(BaseHTTPRequestHandler):
                         return self._json({"ok": True})
                     return self._json({"error": "Unknown action."}, 400)
                 if r == "/api/instructor/assign":
-                    let = b.get("let")
-                    return self._json(instructor.assign(priv, str(b.get("cadet", ""))[:12],
-                                                         None if b.get("unit") is None else str(b.get("unit"))[:10],
-                                                         None if let in (None, "") else int(let)))
+                    let, pid = b.get("let"), str(b.get("cadet", ""))[:12]
+                    out = instructor.assign(priv, pid, None if b.get("unit") is None else str(b.get("unit"))[:10],
+                                            None if let in (None, "") else int(let))
+                    if b.get("unit"):                    # joining a unit brings that unit's assignments, to this Cadet only
+                        out = {**out, "new_assignments": lessons.sync_cadet(priv, pid)}
+                    return self._json(out)
             except (ValueError, TypeError) as e:
                 return self._json({"error": str(e)}, 400)
             return self._json({"error": "Unknown instructor action."}, 404)

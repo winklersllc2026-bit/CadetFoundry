@@ -91,7 +91,7 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
   assignment`, Cadet `/api/lessons`, `/api/lesson`, `/api/lesson/submit`), `web/js/lessons.js` (Cadet "My
   assignments" in Learn + lesson page; instructor lesson editor, assign form, progress + details), tests in
   `tests/test_lessons.py`. Verified in the browser at 375 px: write → assign to platoon → Cadet completes → instructor
-  sees score and reflection. Known limit: Cadets added to a unit later need the lesson assigned again.
+  sees score and reflection. Late joiners: `lessons.sync_cadet` gives a Cadet who joins a unit its assignments (only them; no duplicates).
 - **Next:** Phase 5 leadership scenarios (engine, choices, explanation, reflection, leadership log, classroom
   voting), or the Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with
