@@ -85,12 +85,20 @@ def event(eid: str) -> dict:
 def parse_value(unit: str, raw) -> float:
     s = str(raw if raw is not None else "").strip()
     if unit == "time":
-        m = re.fullmatch(r"(?:(\d{1,2}):)?(\d{1,3}):(\d{2})|(\d{1,5})", s)
+        t = s.lower().replace(" ", "")
+        # "1m30s", "1min30sec", "20s", "20sec" -> m:ss; a plain number is seconds
+        w = re.fullmatch(r"(?:(\d{1,3})(?:m|min|mins|minutes?))?(?:(\d{1,4})(?:s|sec|secs|seconds?))?", t)
+        if w and (w.group(1) or w.group(2)):
+            mins, secs = int(w.group(1) or 0), int(w.group(2) or 0)
+            if w.group(1) and secs >= 60:
+                raise ValueError("Seconds go up to 59.")
+            return float(mins * 60 + secs)
+        m = re.fullmatch(r"(?:(\d{1,2}):)?(\d{0,3}):(\d{2})|(\d{1,5})", t)     # ":20" is 20 seconds
         if not m:
-            raise ValueError("Write the time as m:ss (for example 1:45 or 8:30).")
+            raise ValueError("Write the time as m:ss — for example 1:45, 0:20 or :20 (or 20s).")
         if m.group(4):
             return float(m.group(4))
-        h, mins, secs = int(m.group(1) or 0), int(m.group(2)), int(m.group(3))
+        h, mins, secs = int(m.group(1) or 0), int(m.group(2) or 0), int(m.group(3))
         if secs >= 60:
             raise ValueError("Seconds go up to 59.")
         return float(h * 3600 + mins * 60 + secs)

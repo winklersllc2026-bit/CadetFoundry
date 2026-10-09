@@ -3,7 +3,7 @@
 // recording results on test day, and each Cadet's progress. Listeners in JS (no inline handlers).
 'use strict';
 
-const UNIT_HINT = { reps: 'e.g. 25', time: 'm:ss, e.g. 8:30', lbs: 'pounds', inches: 'inches', laps: 'laps' };
+const UNIT_HINT = { reps: 'e.g. 25', time: 'm:ss, e.g. 1:45 or :20', lbs: 'pounds', inches: 'inches', laps: 'laps' };
 // the local date (toISOString alone is UTC, which is already tomorrow on a US evening)
 const today = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); };
 

@@ -31,9 +31,14 @@ class TrainMathTests(unittest.TestCase):
         self.assertEqual(train.parse_value("time", "8:30"), 510)
         self.assertEqual(train.parse_value("time", "1:02:05"), 3725)
         self.assertEqual(train.parse_value("time", "95"), 95)
+        for typed in (":20", "0:20", "20s", "20 sec", "20 seconds"):              # the owner typed ":20" for a plank
+            self.assertEqual(train.parse_value("time", typed), 20, typed)
+        self.assertEqual(train.parse_value("time", "1m 30s"), 90)
+        self.assertEqual(train.parse_value("time", "1 min 30 sec"), 90)
+        self.assertEqual(train.parse_value("time", "2 minutes"), 120)
         self.assertEqual(train.show_value("time", 510), "8:30")
         self.assertEqual(train.parse_value("reps", "25"), 25)
-        for unit, bad in (("time", "8:75"), ("time", "abc"), ("reps", "-3"), ("reps", "lots")):
+        for unit, bad in (("time", "8:75"), ("time", "abc"), ("time", "1m 75s"), ("time", ":"), ("reps", "-3"), ("reps", "lots")):
             with self.assertRaises(ValueError):
                 train.parse_value(unit, bad)
 
