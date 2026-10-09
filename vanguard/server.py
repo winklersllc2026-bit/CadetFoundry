@@ -24,7 +24,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from vanguard import (addons, backup, board, books, careers, daily, engine, exam, fitness, instructor, integrity,
-                      lessons, letters, pay, profiles, scenarios, security, store, voice)
+                      lessons, letters, pay, profiles, scenarios, security, store, train, voice)
 from vanguard.brain import Brain
 from vanguard.faith import Faith
 from vanguard.knowledge import Library
@@ -199,6 +199,16 @@ class Handler(BaseHTTPRequestHandler):
                     return self._json({"error": "No such Cadet."}, 404)
                 log = instructor.read_class_file(priv, pid, "scenarios.jsonl", [])
                 return self._json({"shared": log is not None, "entries": list(reversed(log or []))})
+            if r == "/api/instructor/train":
+                out = []
+                for p in profiles.all_profiles():
+                    if p["kind"] != "cadet":
+                        continue
+                    rows = instructor.read_class_file(priv, p["id"], "fitness.jsonl", [])
+                    goals = instructor.read_class_file(priv, p["id"], "goals.json", {}) or {}
+                    out.append({"id": p["id"], "name": p["name"], "shared": rows is not None,
+                                "events": [train.stats(e, rows or [], goals.get(e["id"])) for e in train.events()]})
+                return self._json({"events": train.events(), "units": train.UNITS, "cadets": out})
             if r == "/api/instructor/live":
                 return self._json(scenarios.live_for_instructor())
             if r == "/api/instructor/lessons":
@@ -213,6 +223,10 @@ class Handler(BaseHTTPRequestHandler):
                 if (profiles.get(pid) or {}).get("kind") != "cadet":
                     return self._json({"error": "No such Cadet."}, 404)
                 return self._json(instructor.records(priv, pid))
+        if r == "/api/train":
+            if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
+                return self._json({"events": [], "units": train.UNITS, "not_cadet": True})
+            return self._json(train.my_train())
         if r == "/api/scenarios":
             done = {}
             if (profiles.get(self._pid or "") or {}).get("kind") == "cadet":
@@ -559,6 +573,22 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(books.save_place(str(b.get("id", ""))[:40], int(b.get("ch", 0) or 0)))
             except (ValueError, TypeError) as e:
                 return self._json({"error": str(e)}, 400)
+        if r in ("/api/train/add", "/api/train/delete", "/api/train/goal"):
+            if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
+                return self._json({"error": "Train is for Cadets."}, 403)
+            try:
+                eid = str(b.get("event", ""))[:12]
+                if r == "/api/train/add":
+                    train.add_result(eid, b.get("value"), str(b.get("date", ""))[:10], str(b.get("note", "")))
+                elif r == "/api/train/delete":
+                    train.delete_result(str(b.get("id", ""))[:12])
+                else:
+                    train.set_goal(eid, b.get("target"), str(b.get("by", ""))[:10])
+                return self._json(train.my_train())
+            except LookupError as e:
+                return self._json({"error": str(e)}, 404)
+            except ValueError as e:
+                return self._json({"error": str(e)}, 400)
         if r in ("/api/scenario/choose", "/api/scenario/log"):
             try:
                 sc = scenarios.get(str(b.get("id", ""))[:40])
@@ -612,6 +642,35 @@ class Handler(BaseHTTPRequestHandler):
                         instructor.delete_unit(priv, str(b.get("id", ""))[:10])
                         return self._json({"ok": True})
                     return self._json({"error": "Choose add, rename or delete."}, 400)
+                if r == "/api/instructor/train/event":
+                    if b.get("action") == "remove":
+                        train.remove_event(str(b.get("id", ""))[:12])
+                        return self._json({"ok": True})
+                    return self._json(train.add_event(b.get("name"), str(b.get("unit", "")), str(b.get("better", "")),
+                                                      b.get("description", "")))
+                if r == "/api/instructor/train/record":
+                    # test day: the instructor records results for several Cadets into their class records
+                    ev = train.event(str(b.get("event", ""))[:12])
+                    results = b.get("results") if isinstance(b.get("results"), dict) else {}
+                    saved, skipped, errors = [], [], {}
+                    for pid, raw in list(results.items())[:200]:
+                        pid = str(pid)[:12]
+                        if str(raw).strip() == "":
+                            continue
+                        if (profiles.get(pid) or {}).get("kind") != "cadet":
+                            errors[pid] = "Not a Cadet."
+                            continue
+                        ck, status = instructor.class_key(priv, pid)
+                        if status == "waiting":
+                            skipped.append(pid)
+                            continue
+                        try:
+                            with security.as_profile(pid, None, ck):
+                                train.add_result(ev["id"], raw, str(b.get("date", ""))[:10], "", by="instructor")
+                            saved.append(pid)
+                        except ValueError as e:
+                            errors[pid] = str(e)
+                    return self._json({"saved": saved, "skipped": skipped, "errors": errors})
                 if r == "/api/instructor/scenario":
                     sid = str(b.get("id", ""))[:40]
                     if b.get("action") == "delete":
