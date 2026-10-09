@@ -187,6 +187,12 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
   - **Phase 11 step 13 DONE (2026-10-09):** citizenship_supreme_court (supremecourt.gov + Art. III),
     citizenship_federalism (Art. IV, VI, 10th Amendment), citizenship_census (census.gov + Art. I s2). Scenarios 19
     (the crosswalk / city council) and 20 (the rumor). 112 cards, 20 scenarios.
+  - **Phase 11 step 14 DONE (2026-10-09):** civilian first aid for every Cadet (health): health_until_help_arrives
+    (Ready.gov/FEMA tutorial PDF + MedlinePlus bleeding), health_choking, health_cpr (MedlinePlus). 115 cards.
+    Owner's plan after this (2026-10-09, "all of it in that order"): 2 history milestones (National Archives),
+    3 communication/conflict resolution, 4 map reading/geography, 5 study skills only with a gov source,
+    6 yearly refresh list, 7 dairy conflict (owner decides), 8 LIVE in-class pop quiz, 9 pilot prerequisites,
+    10 Phase 1 leftovers.
 - **Next:** owner testing (run from C:\Code\Vanguard with `python run.py`), then Phase 7 Serve (service log +
   instructor verification), 8 Progress, 9 Instructor analytics, 10 Pilot. Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with
