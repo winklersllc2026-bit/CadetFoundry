@@ -24,7 +24,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from vanguard import (addons, backup, board, books, careers, daily, engine, exam, fitness, instructor, integrity, knowledge,
-                      lessons, letters, pay, profiles, program_backup, progress, quiz_edits, reports, scenarios, security, service, store, train, voice)
+                      lessons, letters, pay, pilot, profiles, program_backup, progress, quiz_edits, reports, scenarios, security, service, store, train, voice)
 from vanguard.brain import Brain
 from vanguard.faith import Faith
 from vanguard.knowledge import Library
@@ -224,7 +224,13 @@ class Handler(BaseHTTPRequestHandler):
                                    "questions": [{"id": f"{c.id}#{i}", "q": qq, "a": aa, "edit": edits.get(f"{c.id}#{i}", {})}
                                                  for i, (qq, aa) in enumerate(c.quiz)]})
             if r == "/api/instructor/dashboard":
-                return self._json(reports.dashboard(priv, app.library, str(q.get("unit", ""))[:10]))
+                dash = reports.dashboard(priv, app.library, str(q.get("unit", ""))[:10])
+                if not q.get("unit") and pilot.config().get("start"):
+                    pilot.take_snapshot(dash)            # about weekly during a pilot: change over time
+                return self._json(dash)
+            if r == "/api/instructor/pilot":
+                return self._json({**pilot.report(reports.dashboard(priv, app.library)), "survey": pilot.SURVEY,
+                                   "scale": pilot.SCALE})
             if r == "/api/instructor/report.csv":       # an explicit export, only for the instructor
                 body = reports.to_csv(reports.cadet_rows(priv, app.library, str(q.get("unit", ""))[:10])).encode("utf-8-sig")
                 self._headers(200, "text/csv; charset=utf-8", len(body), {
@@ -278,6 +284,10 @@ class Handler(BaseHTTPRequestHandler):
                 if (profiles.get(pid) or {}).get("kind") != "cadet":
                     return self._json({"error": "No such Cadet."}, 404)
                 return self._json(instructor.records(priv, pid))
+        if r == "/api/pilot/survey":
+            if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
+                return self._json({"open": False})
+            return self._json(pilot.survey_status())
         if r == "/api/progress":
             p = profiles.get(self._pid or "") or {}
             if p.get("kind") != "cadet":
@@ -670,6 +680,14 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(books.save_place(str(b.get("id", ""))[:40], int(b.get("ch", 0) or 0)))
             except (ValueError, TypeError) as e:
                 return self._json({"error": str(e)}, 400)
+        if r == "/api/pilot/survey":
+            if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
+                return self._json({"error": "The survey is for Cadets."}, 403)
+            try:
+                pilot.submit_survey(b.get("answers") if isinstance(b.get("answers"), dict) else {}, str(b.get("comment", "")))
+                return self._json({"ok": True})
+            except ValueError as e:
+                return self._json({"error": str(e)}, 400)
         if r in ("/api/service/add", "/api/service/edit", "/api/service/delete"):
             if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
                 return self._json({"error": "The service log is for Cadets."}, 403)
@@ -754,6 +772,15 @@ class Handler(BaseHTTPRequestHandler):
                         instructor.delete_unit(priv, str(b.get("id", ""))[:10])
                         return self._json({"ok": True})
                     return self._json({"error": "Choose add, rename or delete."}, 400)
+                if r == "/api/instructor/pilot":
+                    return self._json(pilot.save_config(b))
+                if r == "/api/instructor/pilot/snapshot":
+                    return self._json(pilot.take_snapshot(reports.dashboard(priv, app.library), force=True))
+                if r == "/api/instructor/pilot/survey":
+                    return self._json(pilot.set_survey(bool(b.get("open"))))
+                if r == "/api/instructor/pilot/feedback":
+                    return self._json(pilot.add_instructor_feedback(b.get("satisfaction"), b.get("minutes_saved"),
+                                                                    str(b.get("use_again", "")), b.get("comment")))
                 if r == "/api/instructor/quiz":
                     qid = str(b.get("id", ""))[:80]
                     cid, _, idx = qid.partition("#")
