@@ -92,8 +92,13 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
   assignments" in Learn + lesson page; instructor lesson editor, assign form, progress + details), tests in
   `tests/test_lessons.py`. Verified in the browser at 375 px: write → assign to platoon → Cadet completes → instructor
   sees score and reflection. Late joiners: `lessons.sync_cadet` gives a Cadet who joins a unit its assignments (only them; no duplicates).
-- **Next:** Phase 5 leadership scenarios (engine, choices, explanation, reflection, leadership log, classroom
-  voting), or the Phase 1 loose ends below.
+- **Phase 5 DONE (2026-10-08):** `vanguard/scenarios.py` (+ 8 practice scenarios in `vanguard/scenarios/`, not
+  combat, no verdicts), leadership log (`scenarios.jsonl`, class record), instructor scenarios (editing a practice one
+  saves a copy), classroom mode (one live anonymous vote, counts only, reveal guidance), `web/js/scenarios.js` (Lead
+  tab, log, instructor section, projector view), `tests/test_scenarios.py`. Verified in the browser: phone (Cadet
+  scenario + log) and desktop (classroom mode). README/SECURITY rewritten for JROTC (Phase 1 item c, mostly done).
+- **Next:** Phase 6 Train (configurable fitness events, personal bests, trends, goals; no pass/fail wording), or
+  the Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with
   Instructor PIN, hiding the matching UI; (b) remaining "Soldier" wording outside Explore Military Service:
   intake questions (`web/js/intake.js`), study/log/me screens, study cards that address "you" as a Soldier;

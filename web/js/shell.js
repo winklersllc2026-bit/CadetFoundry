@@ -1,16 +1,10 @@
-// Vanguard shell: the Lead, Serve, Progress and Instructor pages. Lead, Progress and Instructor are the frames
-// later phases fill in; Serve already holds Explore Military Service (pay, letters, PCS, leave, Army jobs).
+// Vanguard shell: the Serve, Progress and Instructor pages (Lead is web/js/scenarios.js). Progress is a frame a
+// later phase fills in; Serve already holds Explore Military Service (pay, letters, PCS, leave, Army jobs).
 'use strict';
 
 const SOON = (what, phase) => `<p class="faint">${what} <b>Coming in a later update</b> (${phase}). Until then your instructor leads this part in class.</p>`;
 
-loaders.lead = () => {
-  $('#leadBody').innerHTML = `<h2>Lead</h2>
-    <div class="card"><h3>🧭 Leadership scenarios</h3>
-      <p>Real situations a Cadet leader meets — a team behind schedule, two Cadets arguing, someone who stopped
-      participating. You choose what to do, see what happened and why, and write what you'd do next time.</p>
-      ${SOON('Scenarios and your leadership log are being built.', 'Phase 5')}</div>`;
-};
+// Lead: web/js/scenarios.js
 
 loaders.serve = () => {
   // data-go="view[:pane]" -- the page's security policy blocks inline onclick handlers
@@ -120,4 +114,5 @@ loaders.instructor = async () => {
   body.querySelectorAll('[data-unit]').forEach(s => s.addEventListener('change', () => api('/api/instructor/assign', { cadet: s.dataset.unit, unit: s.value })));
   body.querySelectorAll('[data-let]').forEach(s => s.addEventListener('change', () => s.value && api('/api/instructor/assign', { cadet: s.dataset.let, let: Number(s.value) })));
   if (typeof instructorLessons === 'function') await instructorLessons(body, ov);   // web/js/lessons.js
+  if (typeof instructorLeadership === 'function') await instructorLeadership(body);   // web/js/scenarios.js
 };
