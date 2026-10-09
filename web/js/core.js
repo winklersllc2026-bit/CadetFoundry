@@ -220,5 +220,5 @@ async function refreshStatus() {
     : online ? '<span class="dot ok"></span><span>Online AI</span>'
              : '<span class="dot warn"></span><span>Library only (no AI model)</span>';
   const p = STATUS.profile || {};
-  $('#hello').textContent = p.name ? `· ${p.rank ? p.rank + ' ' : ''}${p.name}` : '';
+  $('#hello').textContent = p.name ? `· ${p.name}` : '';
 }

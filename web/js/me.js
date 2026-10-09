@@ -91,24 +91,18 @@ loaders.me = async () => {
       <input type="checkbox" class="faithPick" value="${esc(t.id)}" ${myFaith.has(t.id) ? 'checked' : ''} style="width:auto">
       ${esc(t.name)} <span class="faint">— ${esc(t.tradition)}</span></label>`).join('')
     : '<p class="faint">No scripture texts installed on this device.</p>';
-  const stageOpts = ['', ...STATUS.stages].map(s => `<option ${p.stage === s ? 'selected' : ''}>${esc(s)}</option>`).join('');
+  const gradeOpts = ['', ...(STATUS.grades || [])].map(s => `<option ${p.grade === s ? 'selected' : ''}>${esc(s)}</option>`).join('');
   $('#meBody').innerHTML = `<h2>Me</h2>
     <div class="card"><div class="row" style="justify-content:space-between">
       <div><div class="faint">Profile on this device</div><div id="profName" style="font-size:20px;font-weight:700">${STATUS.kind === 'guardian' ? '👪' : STATUS.kind === 'instructor' ? '🎓' : '👤'} ${esc(lock.current.name)}
         <button class="btn small" id="renameProf" aria-label="Rename this profile" style="margin-left:6px">✎ Rename</button></div></div>
       <div class="row" style="gap:6px"><button class="btn small" id="switchProf">⇄ Switch profile</button><button class="btn small" id="addProf">+ Add profile</button><button class="btn small danger" id="delProf">Delete profile</button></div></div>
-      <p class="faint">Each Soldier on this device has their own profile — their logbook, letters and progress can't be seen from anyone else's.</p></div>
+      <p class="faint">Everyone on this device has their own profile, locked by their own PIN. Other Cadets can never see yours.</p></div>
     <form class="card" id="profForm">
-      <div class="row"><div style="flex:2"><label>Name</label><input name="name" value="${esc(p.name)}"></div>
-      <div style="flex:1"><label>Rank</label><input name="rank" value="${esc(p.rank)}" placeholder="PV1"></div></div>
-      <div class="row"><div style="flex:1"><label>Age</label><input name="age" inputmode="numeric" maxlength="3" value="${esc(p.age)}"></div>
-      <div style="flex:1"><label>Sex</label><select name="sex">${[['', ''], ['M', 'Male'], ['F', 'Female']].map(([v, t]) => `<option value="${v}" ${p.sex === v ? 'selected' : ''}>${t}</option>`).join('')}</select></div>
-      <div style="flex:1"><label>Height</label><input name="height" value="${esc(heightText(p.height))}" placeholder="5'10&quot;"></div>
-      <div style="flex:1"><label>Weight (lb)</label><input name="weight" inputmode="numeric" maxlength="3" value="${esc(p.weight)}"></div></div>
-      <div class="row"><div style="flex:1"><label>Job (MOS)</label><input name="mos" value="${esc(p.mos)}" placeholder="e.g. 11B Infantry"></div>
-      <div style="flex:1"><label>Where you are</label><select name="stage">${stageOpts}</select></div></div>
-      <label>Where you're training or stationed (post name only)</label><input name="station" value="${esc(p.station)}" placeholder="e.g. Fort Jackson">
-      <label>Goals</label><textarea name="goals" rows="2" placeholder="e.g. Max the run, make Expert at the range, pass AIT with honors">${esc(p.goals)}</textarea>
+      <div class="row" style="flex-wrap:wrap;gap:8px"><div style="flex:2;min-width:180px"><label>Name</label><input name="name" value="${esc(p.name)}"></div>
+      <div style="flex:1;min-width:140px"><label>Grade</label><select name="grade">${gradeOpts}</select></div></div>
+      <label>What I want to get better at</label><input name="interests" value="${esc(p.interests)}" placeholder="e.g. public speaking, fitness, leadership">
+      <label>My goals</label><textarea name="goals" rows="2" placeholder="e.g. lead my squad at the next drill meet, raise my grades, run a faster mile">${esc(p.goals)}</textarea>
       <label>My faith texts (optional — used first in the Faith tab and when you ask about a passage)</label>
       <div>${faithBoxes}</div>
       <div class="row" style="margin-top:10px"><button class="btn primary">Save</button><span class="faint" id="profSaved"></span></div>

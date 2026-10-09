@@ -263,11 +263,7 @@ class Brain:
             system = safety.CARE_PROMPT
             sources: list[dict] = []
         else:
-            stage = store.profile().get("stage", "")
-            query = text
-            if stage and _VAGUE.search(text) and not re.search(r"\b(BCT|AIT|OSUT|basic|duty station)\b", text, re.I):
-                query = f"{text} {stage}"                 # "what do I need to know?" -> about where they are
-            lib, sources = self.library.context(query)
+            lib, sources = self.library.context(text)
             parts = [PERSONA]
             if family:
                 parts.append(FAMILY_NOTE)

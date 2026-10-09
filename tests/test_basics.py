@@ -229,22 +229,23 @@ class LibraryTests(unittest.TestCase):
         self.assertEqual(events[0]["t"], APP_HELP)
         self.assertEqual(events[-1]["cites"], [])
 
-    def test_profile_checks_age_height_and_weight(self):
-        """The first-run interview saves through save_profile: bad numbers are refused with a plain reason."""
+    def test_cadet_profile_keeps_minors_data_minimal(self):
+        """A Cadet's profile holds only name, grade, interests and goals. Body size, sex, rank, MOS or duty station
+        are never stored, even if sent (owner's audit, 2026-10-08)."""
         p = profiles.create(f"prof-test-{uuid.uuid4().hex[:8]}")
         tok = store.use_profile(profiles.folder(p["id"]))
         self.addCleanup(store.reset_profile, tok)
         self.addCleanup(profiles.delete, p["id"])
-        self.assertEqual(store.parse_height("5'10\""), 70)
-        self.assertEqual(store.parse_height("70"), 70)
-        self.assertEqual(store.parse_height("178 cm"), 70)
-        out = store.save_profile({"age": "19", "sex": "female", "height": "5 6", "weight": "140 lbs"})
-        self.assertEqual((out["age"], out["sex"], out["height"], out["weight"]), ("19", "F", "66", "140"))
-        for bad in ({"weight": "none of your business"}, {"height": "tall"}, {"age": "5"}):
-            with self.assertRaises(ValueError):
-                store.save_profile(bad)
-        self.assertEqual(store.profile()["weight"], "140")          # nothing saved on a refusal
-        self.assertIn("Height / weight: 5'6\" / 140 lb", store.profile_text())
+        out = store.save_profile({"name": "Jo Rivera", "grade": "10th grade", "interests": "Public speaking",
+                                  "goals": "Lead my squad", "age": "15", "sex": "female", "height": "5 6",
+                                  "weight": "120", "rank": "PV1", "mos": "11B", "station": "Fort Jackson"})
+        self.assertEqual({k: out.get(k) for k in ("name", "grade", "interests", "goals")},
+                         {"name": "Jo Rivera", "grade": "10th grade", "interests": "Public speaking", "goals": "Lead my squad"})
+        for gone in ("age", "sex", "height", "weight", "rank", "mos", "station"):
+            self.assertNotIn(gone, out)
+        text = store.profile_text()
+        self.assertIn("Grade: 10th grade", text)
+        self.assertNotRegex(text, r"(?i)height|weight|rank|MOS|stationed")
 
     def test_conversations_are_separate_and_the_old_chat_becomes_the_first(self):
         p = profiles.create(f"chats-test-{uuid.uuid4().hex[:8]}")

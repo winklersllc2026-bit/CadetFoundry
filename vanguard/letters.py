@@ -97,7 +97,7 @@ def draft(to_name: str, relation: str, notes: str) -> str:
     me = prof.get("name", "")
     msgs = [{"role": "system", "content": DRAFT_PROMPT},
             {"role": "user", "content": f"Letter to: {to_name or 'my family'}" + (f" ({relation})" if relation else "") +
-                                        (f"\nFrom: {me}" if me else "") + (f" ({prof.get('stage')})" if prof.get("stage") else "") +
+                                        (f"\nFrom: {me}" if me else "") + "" +
                                         f"\n\nMy notes:\n{notes[:3000]}"}]
     try:
         return "".join(engine.stream(msgs, max_tokens=700)).strip()

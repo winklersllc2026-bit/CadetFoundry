@@ -199,10 +199,12 @@ def reseal_folder(folder: Path, old_key: bytes | None, new_key: bytes | None, on
 
 
 # ── profile ─────────────────────────────────────────────────────────────────
-PROFILE_FIELDS = ("name", "rank", "mos", "stage", "unit_nickname", "goals", "faith_texts",
-                  "age", "sex", "height", "weight", "station", "intake_done")
-STAGES = ("Before shipping", "Reception", "BCT — Yellow phase", "BCT — Red phase", "BCT — White phase", "BCT — Blue phase",
-          "AIT", "OSUT", "First duty station", "Other")
+# A Cadet's profile: only what helps Vanguard fit the Cadet. Nothing about body size, sex or military status --
+# minors' data is kept to the minimum (owner's spec §25), and Train needs none of it.
+PROFILE_FIELDS = ("name", "grade", "interests", "goals", "faith_texts", "intake_done")
+GRADES = ("9th grade", "10th grade", "11th grade", "12th grade", "Other")
+INTERESTS = ("Leadership", "Public speaking", "Fitness", "Grades", "Confidence", "Teamwork", "Service", "College",
+             "A career", "Military service")
 
 
 def profile() -> dict:
@@ -274,21 +276,10 @@ def profile_text() -> str:
     bits = []
     if p.get("name"):
         bits.append(f"Name: {p['name']}")
-    if p.get("rank"):
-        bits.append(f"Rank: {p['rank']}")
-    if p.get("mos"):
-        bits.append(f"MOS / job: {p['mos']}")
-    if p.get("age"):
-        bits.append(f"Age: {p['age']}")
-    if p.get("sex"):
-        bits.append(f"Sex: {'male' if p['sex'] == 'M' else 'female'}")
-    if p.get("height") or p.get("weight"):
-        bits.append("Height / weight: " + " / ".join(x for x in (height_text(p.get("height")),
-                                                             f"{p['weight']} lb" if p.get("weight") else "") if x))
-    if p.get("stage"):
-        bits.append(f"Where they are: {p['stage']}")
-    if p.get("station"):
-        bits.append(f"Training or stationed at: {p['station']}")
+    if p.get("grade"):
+        bits.append(f"Grade: {p['grade']}")
+    if p.get("interests"):
+        bits.append(f"Wants to get better at: {p['interests']}")
     if p.get("goals"):
         bits.append(f"Goals: {p['goals']}")
     return "\n".join(bits)

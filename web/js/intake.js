@@ -1,10 +1,7 @@
 'use strict';
-// First-run interview: before handing over the chat, Vanguard asks the Soldier about themselves one question at a
-// time and fills in the Me tab as they answer. Scripted (no AI), so it is the same every time and works offline.
-// Ends with a required PIN, the recovery code, an optional Instructor PIN, then the tour.
-
-const HW_PUSHBACK = "You're a Soldier — height and weight are part of the job, and there's nothing to be ashamed of. " +
-  'Every Soldier is weighed and measured. I use it to tailor your fitness plan, and it stays on this device, locked by your PIN.';
+// First-run interview: a few short questions so Vanguard fits the Cadet. Scripted (no AI), so it is the same every
+// time and works offline. Only what helps: name, grade, what they want to get better at, goals -- no body size, sex
+// or military status (minors' data stays minimal). Ends with a required PIN and the recovery code, then the tour.
 const SKIPPY = /^\s*(skip|pass|no|nope|why\??|prefer not.*|rather not.*|none of your business|n\/a|idk|i don'?t want to.*)\s*[.!]?\s*$/i;
 // A new Soldier may type a real question instead of an answer ("can the Army pay for college"). It must never be
 // saved as their name or job; Vanguard holds it and answers it right after setup. A question word alone isn't
@@ -18,23 +15,15 @@ function intakeQuestions(p, kind, faith) {
   const name = p.name ? `, ${p.name.split(' ')[0]}` : '';
   if (kind === 'guardian') return [
     { f: 'name', q: `Welcome to Vanguard${name}. I'll ask a few quick questions to set things up. First — what should I call you?`, chips: p.name ? [p.name] : [], check: NAME_CHECK },
-    { f: 'stage', q: 'Where is your Soldier in their Army journey right now?', chips: STATUS.stages },
-    { f: 'goals', q: 'What would help you most right now? (for example: understanding Army terms, writing letters, getting ready for a PCS)' },
+    { f: 'goals', q: 'What would help you most? (for example: understanding JROTC, the terms your Cadet uses, how to support them)', optional: true },
   ];
   const qs = [
-    { f: 'name', q: `Welcome to Vanguard${name}. Before we start, I'll ask you about yourself so I can help you the right way — it takes about two minutes. What's your first and last name?`, chips: p.name ? [p.name] : [], check: NAME_CHECK },
-    { f: 'rank', q: "What's your rank?", chips: ['Future Soldier (not shipped yet)', 'PV1', 'PV2', 'PFC', 'SPC', 'SGT'] },   // AR 600-20, table 1-1
-    { f: 'age', q: 'How old are you?', check: NUM(16, 70, 'Just the number, like 19.') },
-    { f: 'sex', q: 'Male or female? The Army Fitness Test is scored by age and sex.', chips: ['Male', 'Female'] },
-    { f: 'height', q: `How tall are you? (for example 5'10")`, hw: true },
-    { f: 'weight', q: 'What do you weigh, in pounds?', hw: true, check: NUM(80, 400, 'Just the number of pounds, like 165.') },
-    { f: 'stage', q: 'Where are you in your Army journey right now?', chips: STATUS.stages },
-    { f: 'mos', q: "What's your MOS — your Army job? (for example 11B Infantry or 68W Combat Medic)", chips: ["Don't know yet"] },
-    { f: 'station', q: 'Where are you training or stationed? Just the post, like Fort Jackson. (Never share unit locations or movements.)', chips: ['Not there yet'] },
-    { f: 'goals', q: 'What are your goals? (for example: max the AFT, make Expert at the range, finish AIT at the top of my class)' },
+    { f: 'name', q: `Welcome to Vanguard${name}. Before we start, I'll ask you about yourself so Vanguard fits you — it takes about thirty seconds. What's your first and last name?`, chips: p.name ? [p.name] : [], check: NAME_CHECK },
+    { f: 'grade', q: 'What grade are you in?', chips: STATUS.grades || [], optional: true },
+    { f: 'interests', q: 'What do you want to get better at this year? Pick one or type your own.', chips: STATUS.interests || [], optional: true },
+    { f: 'goals', q: 'What is one goal you have this year? (for example: lead my squad at drill, raise my grades, run a faster mile)', optional: true },
   ];
-  if (faith.length) qs.push({ f: 'faith_texts', q: 'Would you like faith readings in the Faith tab? Pick one, or say no thanks — any faith or none is respected.',
-    chips: ['No thanks', ...faith.map(t => t.name)], optional: true, map: a => (faith.find(t => t.name === a) || {}).id || '' });
+  // (no faith question: Vanguard is used in public schools; the faith library is off unless an instructor adds it)
   return qs;
 }
 
@@ -126,9 +115,8 @@ const intake = {
     const p = await api('/api/profile', { intake_done: 'yes' });
     this.active = false; STATUS.profile = p;
     // md() escapes, so plain values here
-    const facts = [p.rank && p.name ? `**${p.rank} ${p.name}**` : p.name && `**${p.name}**`, p.age && `${p.age} years old`,
-      p.height && p.weight && `${heightText(p.height)}, ${p.weight} lb`, p.mos && `MOS ${p.mos}`, p.stage && p.stage, p.station && `at ${p.station}`].filter(Boolean);
-    addMsg('ai', md(`You're set up${facts.length ? ': ' + facts.join(' · ') : ''}.\n\nYou can change any of this in the **Me** tab.${aiReady() ? '' : ' For full-sentence answers, add the **Offline AI** in **Me → Add-ons** (needs internet once).'} Now it's your turn — ask me anything in the library, or tap a suggestion below.`));
+    const facts = [p.name && `**${p.name}**`, p.grade, p.interests && `working on ${p.interests}`].filter(Boolean);
+    addMsg('ai', md(`You're set up${facts.length ? ': ' + facts.join(' · ') : ''}.\n\nYou can change any of this in **👤 Me**.${aiReady() ? '' : ' For full-sentence answers, add the **Offline AI** in **Me → Add-ons** (needs internet once).'} Now it's your turn — ask me anything in the library, or tap a suggestion below.`));
     $('#suggest').hidden = false; $('#msgIn').placeholder = 'Ask Vanguard…';
     thread.appendChild($('#suggest'));
     refreshStatus();

@@ -271,7 +271,7 @@ class Handler(BaseHTTPRequestHandler):
             return self._json(out)
         if r == "/api/status":
             return self._json({"engine": engine.status(), "library": app.library.stats(),
-                               "profile": store.profile(), "stages": store.STAGES, "log_kinds": store.LOG_KINDS,
+                               "profile": store.profile(), "grades": store.GRADES, "interests": store.INTERESTS, "log_kinds": store.LOG_KINDS,
                                "lan": app.lan, "voice": voice.available(),
                                "ai_mode": store.ai_mode(), "library_only": store.ai_mode() == "off",
                                "kind": (profiles.get(self._pid) or {}).get("kind", "cadet")})

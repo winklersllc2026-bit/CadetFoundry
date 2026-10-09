@@ -29,8 +29,8 @@ async function boardPacket() {
   const d = await api('/api/packet'), p = d.profile || {};
   const ev = ['MDL', 'HRP', 'SDC', 'PLK', '2MR'];
   const pct = b => Math.round(100 * b.pct);
-  const html = `<div class="packet"><h2>${esc(p.name || 'Soldier')}${p.rank ? ', ' + esc(p.rank) : ''}</h2>
-    <div>${[p.mos && 'MOS ' + esc(p.mos), p.stage && esc(p.stage), p.unit_nickname && esc(p.unit_nickname)].filter(Boolean).join(' · ')}</div>
+  const html = `<div class="packet"><h2>${esc(p.name || 'Cadet')}</h2>
+    <div>${[p.grade && esc(p.grade)].filter(Boolean).join(' · ')}</div>
     ${p.goals ? `<div><b>Goals:</b> ${esc(p.goals)}</div>` : ''}
     <h3>Army Fitness Test results</h3>${d.aft.length ? `<table><tr><th>Date</th>${ev.map(e => `<th>${e}</th>`).join('')}<th>Total</th></tr>
       ${d.aft.slice().reverse().map(t => `<tr><td>${esc(t.date)}</td>${ev.map(e => `<td>${t.events[e] ? `${esc(t.events[e].raw)} (${t.events[e].points})` : '—'}</td>`).join('')}<td><b>${t.total}</b></td></tr>`).join('')}</table>`
