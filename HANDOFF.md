@@ -87,8 +87,13 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
 - **Phase 3 DONE (2026-10-08):** Instructor screen (Instructor PIN unlock, units, unit + LET per Cadet, record
   status), instructor option on the new-profile screen, instructors skip the Cadet interview/tour, phone header fits
   375 px, SECURITY.md section "Instructors and class records". Checked in the browser at phone width.
-- **Next:** Phase 4 lessons (create, assign, complete, track; lessons/assignments are class records), or the
-  Phase 1 loose ends below.
+- **Phase 4 DONE (2026-10-08):** `vanguard/lessons.py` + routes (`/api/instructor/lesson|lessons|assign-lesson|
+  assignment`, Cadet `/api/lessons`, `/api/lesson`, `/api/lesson/submit`), `web/js/lessons.js` (Cadet "My
+  assignments" in Learn + lesson page; instructor lesson editor, assign form, progress + details), tests in
+  `tests/test_lessons.py`. Verified in the browser at 375 px: write → assign to platoon → Cadet completes → instructor
+  sees score and reflection. Known limit: Cadets added to a unit later need the lesson assigned again.
+- **Next:** Phase 5 leadership scenarios (engine, choices, explanation, reflection, leadership log, classroom
+  voting), or the Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with
   Instructor PIN, hiding the matching UI; (b) remaining "Soldier" wording outside Explore Military Service:
   intake questions (`web/js/intake.js`), study/log/me screens, study cards that address "you" as a Soldier;

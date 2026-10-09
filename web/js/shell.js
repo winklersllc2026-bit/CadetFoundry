@@ -119,4 +119,5 @@ loaders.instructor = async () => {
   }));
   body.querySelectorAll('[data-unit]').forEach(s => s.addEventListener('change', () => api('/api/instructor/assign', { cadet: s.dataset.unit, unit: s.value })));
   body.querySelectorAll('[data-let]').forEach(s => s.addEventListener('change', () => s.value && api('/api/instructor/assign', { cadet: s.dataset.let, let: Number(s.value) })));
+  if (typeof instructorLessons === 'function') await instructorLessons(body, ov);   // web/js/lessons.js
 };
