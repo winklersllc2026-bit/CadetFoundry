@@ -320,6 +320,18 @@ class SecurityTests(unittest.TestCase):
         finally:
             path.unlink(missing_ok=True)
 
+    def test_app_can_be_installed_from_the_lock_screen(self):
+        """Phones 'Add to Home Screen' and computers 'Install app' before anyone signs in: the manifest and icons are
+        public (they hold no data); everything else stays locked."""
+        s, h, raw = self.req("GET", "/manifest.webmanifest")
+        self.assertEqual(s, 200)
+        self.assertIn("manifest+json", h.get("Content-Type", ""))
+        self.assertEqual(json.loads(raw)["display"], "standalone")
+        for icon in ("/icon-192.png", "/icon-512.png", "/icon-maskable-512.png", "/apple-touch-icon.png"):
+            s, h, raw = self.req("GET", icon)
+            self.assertEqual((s, h.get("Content-Type"), raw[:4]), (200, "image/png", b"\x89PNG"), icon)
+        self.assertEqual(self.req("GET", "/api/status")[0], 401)
+
     def test_instructor_routes_need_an_instructor_profile_and_the_instructor_pin(self):
         """Spec §47: a Cadet can never reach instructor data, other Cadets' records or program settings."""
         if not security.admin_set():

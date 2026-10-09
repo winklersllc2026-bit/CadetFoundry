@@ -30,7 +30,9 @@ from vanguard.faith import Faith
 from vanguard.knowledge import Library
 
 WEB = (Path(__file__).parent.parent / "web").resolve()
-PUBLIC_GET = {"/", "/index.html", "/icon.svg", "/api/lock"}       # reachable while locked (plus the page's scripts in /js/)
+mimetypes.add_type("application/manifest+json", ".webmanifest")
+PUBLIC_GET = {"/", "/index.html", "/icon.svg", "/api/lock",       # the app shell: installable before sign-in
+              "/manifest.webmanifest", "/icon-192.png", "/icon-512.png", "/icon-maskable-512.png", "/apple-touch-icon.png"}       # reachable while locked (plus the page's scripts in /js/)
 PUBLIC_POST = {"/api/unlock", "/api/profiles/create", "/api/recover"}
 
 
