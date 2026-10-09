@@ -76,6 +76,7 @@ loaders.progress = async () => {
     <div class="card"><h3>🖨️ My portfolio</h3><p class="faint">A printable record of your growth. Your instructor chooses what it includes.</p>
       <button class="btn primary" id="pgPrint">Print my portfolio</button></div>`;
   $('#pgPrint').addEventListener('click', () => printPortfolio(d, pgTerm()));
+  if (typeof cadetSurvey === 'function') cadetSurvey(body);                          // web/js/pilot.js
 };
 
 // ── Instructor: one Cadet's progress, recognition and the portfolio ──

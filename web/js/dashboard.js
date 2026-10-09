@@ -7,18 +7,11 @@ const dTile = (n, label, sub = '') => `<div style="min-width:110px"><div style="
 const dPct = v => v == null ? '—' : `${v}%`;
 const dSigned = v => v == null ? '—' : `${v > 0 ? '+' : ''}${v}%`;
 
-async function instructorDashboard(body, ov, unit = '') {
+async function instructorDashboard(box, ov, unit = '') {
+  // box: the slot at the top of the Instructor screen (each load of the screen has its own)
   const d = await api('/api/instructor/dashboard?unit=' + encodeURIComponent(unit));
-  if (d.error) return;
-  let box = $('#dashCard');
-  if (!box) {
-    box = document.createElement('div');
-    box.id = 'dashCard';
-    const h2 = body.querySelector('h2');
-    h2.after(box);
-    const old = box.nextElementSibling;                      // the simple totals card it replaces
-    if (old && old.classList.contains('card') && old.innerText.includes('Cadets on this device')) old.remove();
-  }
+  if (d.error || !box) return;
+  box.id = 'dashCard';
   const opts = `<option value="">Whole program</option>` + ov.units.map(u => `<option value="${esc(u.id)}" ${u.id === unit ? 'selected' : ''}>${esc(u.name)}</option>`).join('');
   box.innerHTML = `<div class="card" style="border-color:var(--tan)">
       <div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:8px"><h3 style="margin:0">📊 Dashboard</h3>
@@ -48,7 +41,7 @@ async function instructorDashboard(body, ov, unit = '') {
       <p class="faint">For your records or your school. Only names and numbers — never private notes.</p>
       <div class="row" style="flex-wrap:wrap;gap:8px"><a class="btn small" id="dCsv" href="/api/instructor/report.csv?unit=${encodeURIComponent(unit)}" download>⬇ Class report (spreadsheet)</a>
         <button class="btn small" id="dPrint">🖨️ Print class report</button></div></div>`;
-  $('#dUnit').addEventListener('change', e => instructorDashboard(body, ov, e.target.value));
+  box.querySelector('#dUnit').addEventListener('change', e => instructorDashboard(box, ov, e.target.value));
   box.querySelectorAll('[data-dprog]').forEach(b => b.addEventListener('click', () => instructorProgress(b.dataset.dprog)));
   $('#dPrint').addEventListener('click', () => {
     const unitName = unit ? (ov.units.find(u => u.id === unit) || {}).name : 'Whole program';

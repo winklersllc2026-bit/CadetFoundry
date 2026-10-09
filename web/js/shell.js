@@ -57,7 +57,11 @@ const STATUS_NAME = {
   waiting: ['⏳', 'Waiting — shares records the next time this Cadet signs in'],
 };
 
+// Each load gets a number; an older, slower load stops drawing and its sections land in containers that are
+// no longer on the page (the screen used to show some sections twice when opened twice quickly).
+let instructorRun = 0;
 loaders.instructor = async () => {
+  const run = ++instructorRun;
   const body = $('#instructorBody');
   if (STATUS.kind !== 'instructor') {
     body.innerHTML = `<h2>Instructor</h2><div class="card"><h3>🎓 For instructors</h3>
@@ -84,13 +88,8 @@ loaders.instructor = async () => {
   const units = ov.units, unitName = id => (units.find(u => u.id === id) || {}).name || '';
   const unitOpts = (sel, blank) => `<option value="">${blank}</option>` +
     units.map(u => `<option value="${esc(u.id)}" ${u.id === sel ? 'selected' : ''}>${esc(KIND_NAME[u.kind] || '')}: ${esc(u.name)}</option>`).join('');
-  const shared = ov.cadets.filter(c => c.status !== 'waiting').length;
-  body.innerHTML = `<h2>Instructor</h2>
-    <div class="card"><div class="row" style="flex-wrap:wrap;gap:16px">
-      <div><div style="font-size:28px;font-weight:700">${ov.cadets.length}</div><div class="faint">Cadets on this device</div></div>
-      <div><div style="font-size:28px;font-weight:700">${shared}</div><div class="faint">sharing class records</div></div>
-      <div><div style="font-size:28px;font-weight:700">${units.length}</div><div class="faint">classes, platoons, squads</div></div>
-    </div></div>
+  if (run !== instructorRun) return;                // a newer load of this screen is already drawing
+  body.innerHTML = `<h2>Instructor</h2><div data-top></div>
     <div class="card"><h3>Classes, platoons and squads</h3>
       ${units.length ? `<ul style="padding-left:18px;margin:0 0 10px">${units.map(u => `<li style="margin:6px 0">
         ${esc(KIND_NAME[u.kind])}: <b>${esc(u.name)}</b>${u.parent ? ` <span class="faint">(in ${esc(unitName(u.parent))})</span>` : ''}
@@ -142,11 +141,20 @@ loaders.instructor = async () => {
     $('#catMsg').textContent = r.error || 'Saved.';
     if (!r.error) STATUS.categories_enabled = r.categories_enabled;
   }));
-  if (typeof instructorDashboard === 'function') await instructorDashboard(body, ov); // web/js/dashboard.js
-  if (typeof instructorLessons === 'function') await instructorLessons(body, ov);   // web/js/lessons.js
-  if (typeof instructorLeadership === 'function') await instructorLeadership(body);   // web/js/scenarios.js
-  if (typeof instructorTrain === 'function') await instructorTrain(body);             // web/js/train.js
-  if (typeof instructorService === 'function') await instructorService(body);         // web/js/service.js
-  if (typeof instructorQuizzes === 'function') await instructorQuizzes(body, ov);     // web/js/dashboard.js
-  if (typeof instructorBackup === 'function') instructorBackup(body);
+  const extra = document.createElement('div');       // this load's own container for the sections below
+  body.appendChild(extra);
+  const steps = [
+    () => typeof instructorDashboard === 'function' && instructorDashboard(body.querySelector('[data-top]'), ov),   // dashboard.js
+    () => typeof instructorLessons === 'function' && instructorLessons(extra, ov),          // lessons.js
+    () => typeof instructorLeadership === 'function' && instructorLeadership(extra),        // scenarios.js
+    () => typeof instructorTrain === 'function' && instructorTrain(extra),                  // train.js
+    () => typeof instructorService === 'function' && instructorService(extra),              // service.js
+    () => typeof instructorQuizzes === 'function' && instructorQuizzes(extra, ov),          // dashboard.js
+    () => typeof instructorPilot === 'function' && instructorPilot(extra),                  // pilot.js
+    () => typeof instructorBackup === 'function' && instructorBackup(extra),                // dashboard.js
+  ];
+  for (const step of steps) {
+    if (run !== instructorRun) return;
+    await step();
+  }
 };

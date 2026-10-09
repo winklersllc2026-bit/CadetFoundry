@@ -126,6 +126,10 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
   drill-down), class report CSV (formula cells neutralized) and print, program backup/restore
   (`vanguard/program_backup.py`), quiz editor (`vanguard/quiz_edits.py`: edit/hide built-in questions per program),
   pop quiz (questions-only lesson due today), `web/js/dashboard.js`, `tests/test_reports.py`.
+- **Phase 10 DONE (2026-10-09):** `vanguard/pilot.py` + `web/js/pilot.js`: pilot setup, weekly snapshots (baseline +
+  change), anonymous Cadet survey (opened by the instructor, shown at the top of My Progress), instructor feedback
+  (incl. "use next semester?"), printable pilot report. `tests/test_pilot.py`. Fixed: the Instructor screen could
+  draw sections twice when loaded twice quickly (each load now has its own container; dashboard has a slot).
 - **Planned additions (owner):**
   - Done in Phase 9: instructor quiz editing and assigned pop quizzes. Still open: a LIVE in-class pop quiz (like the
     scenario vote).
