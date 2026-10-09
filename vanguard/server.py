@@ -24,7 +24,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from vanguard import (addons, backup, board, books, careers, daily, engine, exam, fitness, instructor, integrity,
-                      letters, pay, profiles, security, store, voice)
+                      lessons, letters, pay, profiles, security, store, voice)
 from vanguard.brain import Brain
 from vanguard.faith import Faith
 from vanguard.knowledge import Library
@@ -185,11 +185,27 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json({"error": "Instructor only. Open Instructor and enter the Instructor PIN."}, 403)
             if r == "/api/instructor/overview":
                 return self._json(instructor.overview(priv))
+            if r == "/api/instructor/lessons":
+                return self._json(lessons.for_instructor(priv))
+            if r == "/api/instructor/assignment":
+                try:
+                    return self._json(lessons.details(priv, str(q.get("id", ""))[:12]))
+                except ValueError as e:
+                    return self._json({"error": str(e)}, 404)
             if r == "/api/instructor/cadet":
                 pid = str(q.get("id", ""))[:12]
                 if (profiles.get(pid) or {}).get("kind") != "cadet":
                     return self._json({"error": "No such Cadet."}, 404)
                 return self._json(instructor.records(priv, pid))
+        if r == "/api/lessons":                          # the signed-in Cadet's own assignments
+            if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
+                return self._json({"assignments": []})
+            return self._json({"assignments": lessons.my_assignments(self._pid)})
+        if r == "/api/lesson":
+            try:
+                return self._json(lessons.open_lesson(self._pid or "", str(q.get("a", ""))[:12]))
+            except LookupError as e:
+                return self._json({"error": str(e)}, 404)
         if r == "/api/lock":
             out = {"profiles": [{"id": p["id"], "name": p["name"], "kind": p["kind"],
                                  "has_pin": security.has_pin(p["id"]),
@@ -511,6 +527,15 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(books.save_place(str(b.get("id", ""))[:40], int(b.get("ch", 0) or 0)))
             except (ValueError, TypeError) as e:
                 return self._json({"error": str(e)}, 400)
+        if r == "/api/lesson/submit":
+            ans = b.get("answers") if isinstance(b.get("answers"), dict) else {}
+            try:
+                return self._json(lessons.submit(self._pid or "", str(b.get("a", ""))[:12], ans,
+                                                 str(b.get("reflection", ""))[:4000]))
+            except LookupError as e:
+                return self._json({"error": str(e)}, 404)
+            except ValueError as e:
+                return self._json({"error": str(e)}, 400)
         if r == "/api/instructor/unlock":               # instructor profile + Instructor PIN -> class records
             err = security.unlock_program(self._token(), str(b.get("admin", ""))[:32])
             return self._json({"ok": False, "error": err} if err else {"ok": True}, 403 if err else 200)
@@ -530,6 +555,21 @@ class Handler(BaseHTTPRequestHandler):
                         instructor.delete_unit(priv, str(b.get("id", ""))[:10])
                         return self._json({"ok": True})
                     return self._json({"error": "Choose add, rename or delete."}, 400)
+                if r == "/api/instructor/lesson":
+                    if b.get("action") == "delete":
+                        lessons.delete_lesson(priv, str(b.get("id", ""))[:12])
+                        return self._json({"ok": True})
+                    return self._json(lessons.save_lesson(priv, b))
+                if r == "/api/instructor/assign-lesson":
+                    as_list = lambda v: [str(x)[:12] for x in v][:200] if isinstance(v, list) else []
+                    return self._json(lessons.assign(priv, str(b.get("lesson", ""))[:12], bool(b.get("everyone")),
+                                                     as_list(b.get("units")), as_list(b.get("cadets")),
+                                                     str(b.get("due", ""))[:10]))
+                if r == "/api/instructor/assignment":
+                    if b.get("action") == "delete":
+                        lessons.delete_assignment(str(b.get("id", ""))[:12])
+                        return self._json({"ok": True})
+                    return self._json({"error": "Unknown action."}, 400)
                 if r == "/api/instructor/assign":
                     let = b.get("let")
                     return self._json(instructor.assign(priv, str(b.get("cadet", ""))[:12],
