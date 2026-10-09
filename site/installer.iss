@@ -1,7 +1,7 @@
 ; Vanguard — Windows installer, compiled by site/build.py with Inno Setup 6 or 7 (ISCC.exe).
 ; One step: Python is inside (python\, added by build.py), Vanguard starts with pythonw.exe so there is no console
 ; window, and there's no setup script. Optional extras (offline AI, voice) install from inside Vanguard (Me tab).
-; Per-user (no admin): %LOCALAPPDATA%\Programs\Vanguard. Soldiers' data lives in %USERPROFILE%\.vanguard
+; Per-user (no admin): %LOCALAPPDATA%\Programs\Vanguard. Instructor and Cadet data lives in %USERPROFILE%\.vanguard
 ; and is never touched by installing, updating or uninstalling. @NAMES@ are filled in by build.py.
 
 #define AppName "Vanguard"
@@ -14,7 +14,7 @@ AppVersion={#AppVer}
 AppVerName={#AppName} {#AppVer}
 AppPublisher=Winklers LLC
 AppPublisherURL=https://vanguard.winklers-llc.com
-AppComments=Offline study companion and logbook for U.S. Army Soldiers. Works with no internet after setup.
+AppComments=Learning and leadership platform designed to support JROTC instructors and Cadets. Runs on the instructor's laptop.
 VersionInfoVersion=@VIVERSION@
 VersionInfoCompany=Winklers LLC
 VersionInfoDescription=Vanguard setup

@@ -209,6 +209,10 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
     no answer/verdict on the Cadet screen before the reveal, counts only for the instructor. Card questions also count
     in study progress. UI: 📡 Ask live in the quiz editor + 'Ask a live question' form (dashboard.js), projector
     liveQuizMode(), Cadet box at the top of Lead (scenarios.js). tests/test_live_quiz.py. Browser-checked end to end.
+  - **Item 9 (site part) DONE:** site/build.py rebuilt for JROTC: home (what it is, download, set up the instructor's
+    laptop, Vanguard roadmap, build history), pilot.html (/pilot) and security.html (/security); installer.iss wording.
+    NOT done (owner): `python tools/sign.py keygen` + commit vanguard/data/release_key.pub; build/deploy/release
+    (`python site/build.py --deploy` / `--release`) -- outward-facing, owner runs or approves.
 - **Next:** owner testing (run from C:\Code\Vanguard with `python run.py`), then Phase 7 Serve (service log +
   instructor verification), 8 Progress, 9 Instructor analytics, 10 Pilot. Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with
