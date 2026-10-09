@@ -11,7 +11,7 @@ const CATEGORY_BLURB = {
   citizenship: 'The Constitution, your rights, how government works, and being part of your community.',
   military: 'Ranks, customs and courtesies, drill, uniforms, map reading and military traditions.',
   health: 'Fitness, nutrition, sleep, heat safety and taking care of yourself.',
-  careers: 'Planning what comes next: college, careers, tests and scholarships.',
+  careers: 'Planning what comes next: college, careers, apprenticeships, tests — and money basics.',
   explore: 'For Cadets curious about serving: benefits, pay, training and Army jobs. Information only.',
   basic: 'Your study guide for basic training and beyond — because you said you plan to join.',
 };

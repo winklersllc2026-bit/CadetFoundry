@@ -40,10 +40,50 @@ def keywords(text: str) -> list[str]:
     return [w for w in dict.fromkeys(_words(text)) if w not in _STOP and (len(w) > 2 or w.isdigit() or "/" in w)]
 
 
+_ONES = "zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen " \
+        "seventeen eighteen nineteen".split()
+_TENS = {"twenty": 20, "thirty": 30, "forty": 40, "fifty": 50, "sixty": 60, "seventy": 70, "eighty": 80, "ninety": 90}
+_ORD = {"first": 1, "second": 2, "third": 3, "fourth": 4, "fifth": 5, "sixth": 6, "seventh": 7, "eighth": 8, "ninth": 9,
+        "tenth": 10, "eleventh": 11, "twelfth": 12, "thirteenth": 13, "fourteenth": 14, "fifteenth": 15,
+        "sixteenth": 16, "seventeenth": 17, "eighteenth": 18, "nineteenth": 19, "twentieth": 20, "thirtieth": 30}
+
+
+def _num(w: str) -> str:
+    """Number words as digits, so "seven" matches "7" and "nineteenth" matches "19th" (both become "19")."""
+    if w in _ONES:
+        return str(_ONES.index(w))
+    if w in _TENS:
+        return str(_TENS[w])
+    if w in _ORD:
+        return str(_ORD[w])
+    m = re.fullmatch(r"(\d+)(?:st|nd|rd|th)", w)     # "19th" == "nineteenth" == "XIX" == "19"
+    if m:
+        return m.group(1)
+    tens, _, unit = w.partition("-")                 # "twenty-seven", "twenty-sixth"
+    if tens in _TENS and unit:
+        if unit in _ONES[1:10]:
+            return str(_TENS[tens] + _ONES.index(unit))
+        if unit in _ORD and _ORD[unit] < 10:
+            return str(_TENS[tens] + _ORD[unit])
+    return w
+
+
+def _roman(text: str) -> str:
+    """"Article I" / "Amendment XIX" -> "Article 1" / "Amendment 19", only right after those words."""
+    val = {"i": 1, "v": 5, "x": 10, "l": 50}
+
+    def one(m):
+        r, n = m.group(2).lower(), 0
+        for k, a in enumerate(r):
+            n += -val[a] if k + 1 < len(r) and val[r[k + 1]] > val[a] else val[a]
+        return f"{m.group(1)} {n}"
+    return re.sub(r"\b(article|amendment|section|title)\s+([ivxl]+)\b", one, text or "", flags=re.I)
+
+
 def word_grade(answer: str, reference: str) -> dict:
     """Share of the reference answer's key words that appear in the Soldier's answer."""
-    keys = keywords(reference)
-    said = set(_words(answer))
+    keys = list(dict.fromkeys(_num(k) for k in keywords(_roman(reference))))
+    said = {_num(w) for w in _words(_roman(answer))}
     hit = [k for k in keys if k in said or k.rstrip("s") in said or k + "s" in said]
     score = len(hit) / len(keys) if keys else 0.0
     return {"verdict": "go" if score >= 0.6 else "partial" if score >= 0.3 else "nogo",
@@ -70,9 +110,18 @@ def quiz_grade(question: str, reference: str, answer: str, use_ai: bool = True) 
         return {"verdict": "right" if ok else "wrong", "correct": ok, "how": "yes/no",
                 "why": "" if ok else f"The answer starts with \"{ref_yn.group(1).capitalize()}\"."}
     head = re.split(r"\s[—–-]\s|;", reference, maxsplit=1)[0]        # "Three — legislative, ..." -> "Three"
-    words = max((word_grade(answer, r) for r in {reference, head} if keywords(r)), key=lambda g: g["score"],
+    if not keywords(_roman(head)):                   # too short for key words ("S" for Sierra): must match exactly
+        said, want = ([_num(w) for w in _words(_roman(t))] for t in (answer, head))
+        ok = said == want or (want == ["you"] and said in (["me"], ["myself"], ["i"], ["i", "am"], ["yourself"])) \
+            or bool(keywords(reference)) and word_grade(answer, reference)["verdict"] == "go"
+        return {"verdict": "right" if ok else "wrong", "correct": ok, "how": "exact", "why": ""}
+    asked = set(_words(question))                    # "Which amendment...?" -> "19th" is enough for "The 19th Amendment"
+    core = " ".join(w for w in _words(_roman(head)) if w not in asked)
+    words = max((word_grade(answer, r) for r in {reference, head, core} if keywords(r)), key=lambda g: g["score"],
                 default={"score": 0.0, "verdict": "nogo"})
     verdict = {"go": "right", "partial": "close", "nogo": "wrong"}[words["verdict"]]
+    if keywords(core) and core != head and word_grade(answer, core)["score"] == 0:
+        verdict = "wrong"                            # "the 26th amendment" for "The 19th Amendment": the key part is wrong
     out = {"verdict": verdict, "correct": verdict == "right", "how": "words", "why": ""}
     if use_ai and verdict != "right":                # the offline AI may recognize the same meaning in other words
         g = grade(question, reference, answer)

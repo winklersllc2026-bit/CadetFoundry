@@ -142,6 +142,12 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
     Still to verify: careers_fafsa (studentaid.gov timed out). MyPlate blocked (403); CDC nutrition page had no
     guidance. Next ideas: more leadership (TC 7-21.13), financial literacy (consumer.gov/CFPB), study skills, more
     scenarios.
+  - **Phase 11 step 2 DONE (2026-10-09):** 7 more cards (64 total): leadership_online_conduct, leadership_positive_climate,
+    leadership_responsibility_accountability, chain_of_command (TC 7-21.13); careers_budget (consumer.gov),
+    careers_credit_reports, careers_spotting_scams (FTC). Scenarios 09-11 (online conduct, accountability, being
+    approachable). Grader fixes (`board.quiz_grade`): number words/ordinals/Roman numerals match digits ("7" = "Seven",
+    "XIX" = "19th"), a short key part must be right ("26th amendment" is wrong for "19th Amendment"), one-letter
+    answers match exactly. `tests/test_grading.py` checks every card's own answer grades right.
 - **Next:** owner testing (run from C:\Code\Vanguard with `python run.py`), then Phase 7 Serve (service log +
   instructor verification), 8 Progress, 9 Instructor analytics, 10 Pilot. Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with
