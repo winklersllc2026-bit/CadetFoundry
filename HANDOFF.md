@@ -75,6 +75,18 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
   4. Cadet wording: AI persona (high-school Cadets, instructor is the authority, nurse/counselor/trusted adult),
      APP_HELP, guardian note, welcome text and suggested questions; crisis banners use 988 call/text, Crisis Text
      Line, RAINN, Childhelp, "tell a trusted adult" (no military lines, never promise secrecy).
+- 2026-10-08 desktop (later): owner chose **class records only** for instructor visibility and **roles + instructor
+  first**. Done: Phase 2 roles (cadet/guardian/instructor, `profiles.role_of`); Phase 3 security core (per-Cadet
+  class key for `store.CLASS_FILES`, X25519 program key locked by the Instructor PIN, `security.unlock_program`);
+  `vanguard/instructor.py` roster (classes/platoons/squads, unit + LET level, sealed) and `/api/instructor/*` routes;
+  tests in `tests/test_classroom.py` and `test_security.py`. Installable app: `web/manifest.webmanifest` + icons.
+- **Owner requirement (2026-10-08): phone-first AND desktop.** Every new screen must work at 375 px wide with large
+  touch targets, and on a laptop/projector. Installable via "Add to Home Screen"/"Install app".
+  Known limit: full offline PWA (service worker) needs HTTPS, which a LAN laptop server doesn't have — phones use
+  the installed shortcut while on the classroom network; that's fine because the data lives on the laptop.
+- **Phase 3 still to do:** Instructor screen in `web/js/shell.js` (unlock with Instructor PIN, roster, create
+  units, assign unit + LET, Cadet class-record view), mobile-first; create-instructor-profile option in the
+  profile picker (asks for the Instructor PIN); docs: SECURITY.md section on class records.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with
   Instructor PIN, hiding the matching UI; (b) remaining "Soldier" wording outside Explore Military Service:
   intake questions (`web/js/intake.js`), study/log/me screens, study cards that address "you" as a Soldier;
