@@ -84,6 +84,16 @@ class DemoBoxTests(unittest.TestCase):
         cookie = r.getheader("Set-Cookie").split(";")[0]
         self.assertEqual(self.req("POST", "/api/pin/remove", {"current": "482915"}, cookie)[0], 403)
 
+    def test_a_busy_port_is_never_shared(self):
+        """Two Vanguards on one port would let the browser reach the wrong data (a USB drive vs the computer's own)."""
+        with self.assertRaises(OSError):
+            serve("127.0.0.1", self.port)
+
+    def test_each_data_folder_has_its_own_id(self):
+        lock = json.loads(self.req("GET", "/api/lock")[1])
+        self.assertEqual(lock["instance"], store.data_id())
+        self.assertEqual(store.data_id(), store.data_id())              # stable
+
     def test_a_brand_new_device_can_start_on_the_classroom_network(self):
         with mock.patch.object(profiles, "all_profiles", return_value=[]):
             self.assertTrue(security.all_have_pins())

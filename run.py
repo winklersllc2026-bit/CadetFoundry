@@ -10,6 +10,7 @@ import sys
 import threading
 import webbrowser
 
+from vanguard import store
 from vanguard.server import serve
 
 
@@ -66,19 +67,29 @@ def main() -> int:
     host = "0.0.0.0" if args.lan else "127.0.0.1"
     url = f"http://127.0.0.1:{args.port}"
     _start_portable_ai()
-    try:
-        httpd = serve(host, args.port, lan=args.lan)
-    except OSError:
-        # Something already uses the port. If it's Vanguard (the icon was clicked again), just show it -- but never
-        # open some other program that happens to use the same port.
-        if not _is_vanguard(url):
-            print(f"Port {args.port} is used by another program, so Vanguard can't start there.")
-            print(f"Close that program, or start Vanguard on another port:  python run.py --port {args.port + 1}")
-            return 1
-        print(f"Vanguard is already running at {url}")
-        if not args.no_browser:
-            webbrowser.open(url)
-        return 0
+    httpd = None
+    for port in range(args.port, args.port + 10):
+        url = f"http://127.0.0.1:{port}"
+        try:
+            httpd = serve(host, port, lan=args.lan)
+            args.port = port
+            break
+        except OSError:
+            # Something already uses the port. The same Vanguard (its icon clicked again, same data): just show it.
+            # Another Vanguard with different data (a USB drive while the computer's own copy runs) or another
+            # program: never show that one -- try the next port.
+            other = _vanguard_instance(url)
+            if other is not None and other == store.data_id():
+                print(f"Vanguard is already running at {url}")
+                if not args.no_browser:
+                    webbrowser.open(url)
+                return 0
+            what = "another Vanguard (different data)" if other is not None else "another program"
+            print(f"Port {port} is used by {what} — trying {port + 1}.")
+    if httpd is None:
+        print(f"Ports {args.port}–{args.port + 9} are all in use. Close another program, or choose one: "
+              f"python run.py --port 8800")
+        return 1
     stats = httpd.RequestHandlerClass.app.library.stats()
     print(f"Vanguard is running at {url}")
     print(f"  Library: {stats['cards']} study cards, {len(stats['documents'])} documents, "
@@ -143,6 +154,20 @@ def _start_portable_ai() -> None:
         return
     atexit.register(proc.terminate)
     print("  Offline AI: starting from this drive (the first answer can take a minute while the model loads).")
+
+
+def _vanguard_instance(url: str) -> str | None:
+    """The data ID of the Vanguard answering at `url` ("" if it's an older Vanguard without one), or None if what
+    answers isn't Vanguard."""
+    import json
+    import urllib.request
+    if not _is_vanguard(url):
+        return None
+    try:
+        with urllib.request.urlopen(url + "/api/lock", timeout=3) as r:
+            return str(json.loads(r.read()).get("instance") or "")
+    except Exception:
+        return ""
 
 
 def _is_vanguard(url: str) -> bool:

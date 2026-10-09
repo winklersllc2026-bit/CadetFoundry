@@ -396,7 +396,7 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                                  "has_pin": security.has_pin(p["id"]),
                                  "lockout": security.lockout_remaining(p["id"])} for p in profiles.all_profiles()],
                    "unlocked": bool(self._pid), "admin_set": security.admin_set(),
-                   "on_this_computer": self._local(), "demo": bool(store.config().get("demo")), "lan": self.app.lan,
+                   "on_this_computer": self._local(), "demo": bool(store.config().get("demo")), "lan": self.app.lan, "instance": store.data_id(),
                    "downloads": bool(_download_files())}
             if self._pid:
                 cur = profiles.get(self._pid)
@@ -1147,12 +1147,25 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
             pass
 
 
+class _Server(ThreadingHTTPServer):
+    """One program per port. Python's HTTP server sets SO_REUSEADDR, which on Windows lets a SECOND program bind a
+    port that's already in use -- two Vanguards (a USB drive and the computer's own) would then share an address and
+    the browser would reach either one. Windows: exclusive use. Elsewhere SO_REUSEADDR only allows a quick restart."""
+    allow_reuse_address = os.name != "nt"
+
+    def server_bind(self):
+        import socket
+        if os.name == "nt" and hasattr(socket, "SO_EXCLUSIVEADDRUSE"):
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
+        super().server_bind()
+
+
 def serve(host: str = "127.0.0.1", port: int = 8780, lan: bool = False) -> ThreadingHTTPServer:
     profiles.migrate_legacy()
     if lan and not security.all_have_pins():
         raise SystemExit("LAN mode needs every profile to have a PIN. Set them in Me → Security, then use --lan.")
     Handler.app = App(port, lan)
-    httpd = ThreadingHTTPServer((host, port), Handler)
+    httpd = _Server((host, port), Handler)
     httpd.daemon_threads = True
     if not os.environ.get("VANGUARD_NO_WARMUP"):          # load the AI while the Soldier picks a profile
         threading.Thread(target=lambda: (addons.start_ollama(), engine.warm_up()), daemon=True).start()

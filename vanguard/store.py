@@ -467,6 +467,23 @@ def clear_history() -> None:
 
 # ── config ──────────────────────────────────────────────────────────────────
 
+def data_id() -> str:
+    """A random ID for this data folder, so a second Vanguard (a USB drive) never mistakes another data folder's
+    running Vanguard for itself. Not secret: it only tells data folders apart."""
+    path = DATA / "instance.id"
+    try:
+        v = path.read_text(encoding="ascii").strip()
+        if v:
+            return v
+    except OSError:
+        pass
+    import secrets
+    v = secrets.token_hex(8)
+    DATA.mkdir(parents=True, exist_ok=True)
+    path.write_text(v, encoding="ascii")
+    return v
+
+
 def config() -> dict:
     return read_json("config.json", {})
 
