@@ -65,6 +65,8 @@ def make_zip(dest: Path) -> int:
             if f.endswith(".bat"):                # Windows cmd needs CRLF, whatever machine builds the zip
                 text = (ROOT / f).read_text(encoding="utf-8").replace("\r\n", "\n").replace("\n", "\r\n")
                 z.writestr(f"Vanguard/{f}", text)
+            elif f.endswith(".sh"):               # and Linux / Raspberry Pi needs LF
+                z.writestr(f"Vanguard/{f}", (ROOT / f).read_bytes().replace(b"\r\n", b"\n"))
             else:
                 z.write(ROOT / f, f"Vanguard/{f}")
         for d in INCLUDE_DIRS:
@@ -72,6 +74,9 @@ def make_zip(dest: Path) -> int:
                 if p.is_file() and "__pycache__" not in p.parts:
                     if d == "books" and p.suffix.lower() == ".pdf":
                         continue                  # the converted text ships; a saved source PDF stays on the build PC
+                    if p.suffix == ".sh":             # shell scripts run on Linux / a Pi: LF, whatever the build PC did
+                        z.writestr(f"Vanguard/{p.relative_to(ROOT).as_posix()}", p.read_bytes().replace(b"\r\n", b"\n"))
+                        continue
                     z.write(p, f"Vanguard/{p.relative_to(ROOT).as_posix()}")
     return dest.stat().st_size
 
