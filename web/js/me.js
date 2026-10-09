@@ -237,7 +237,7 @@ loaders.me = async () => {
 const TOUR = [
   ['study', '📘 Learn', 'Study cards, quizzes and timed exams, and the library of books and founding documents. Answers come from sources on this device, with the source shown.'],
   ['lead', '🧭 Lead', 'Leadership scenarios: real situations, your decision, what happened and why, and what you would do next time.'],
-  ['logbook', '💪 Train', 'Your fitness history and goals — measured against your own last result, not anyone else.'],
+  ['train', '💪 Train', 'Your fitness history and goals — measured against your own last result, not anyone else.'],
   ['serve', '🤝 Serve', 'Your service projects and hours, and Explore Military Service if you want to learn what serving is like.'],
   ['progress', '📈 Progress', 'Your growth over time, in one place.'],
 ];

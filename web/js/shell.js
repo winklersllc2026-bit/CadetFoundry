@@ -19,6 +19,7 @@ loaders.serve = () => {
       <div class="row" style="flex-wrap:wrap;gap:6px">
         <button class="btn small" ${go('logbook', 'money')}>💵 Military pay and budgeting</button>
         <button class="btn small" ${go('study')}>🪖 Army jobs explorer (in Learn)</button>
+        <button class="btn small" ${go('logbook', 'fit')}>🏋️ Army Fitness Test scorer</button>
         <button class="btn small" ${go('logbook', 'leave')}>🏖️ How military leave works</button>
         <button class="btn small" ${go('logbook', 'pcs')}>📦 Moving with the military (PCS)</button>
         <button class="btn small" ${go('logbook', 'letters')}>✉️ Letters to family, service members and veterans</button>
@@ -115,4 +116,5 @@ loaders.instructor = async () => {
   body.querySelectorAll('[data-let]').forEach(s => s.addEventListener('change', () => s.value && api('/api/instructor/assign', { cadet: s.dataset.let, let: Number(s.value) })));
   if (typeof instructorLessons === 'function') await instructorLessons(body, ov);   // web/js/lessons.js
   if (typeof instructorLeadership === 'function') await instructorLeadership(body);   // web/js/scenarios.js
+  if (typeof instructorTrain === 'function') await instructorTrain(body);             // web/js/train.js
 };

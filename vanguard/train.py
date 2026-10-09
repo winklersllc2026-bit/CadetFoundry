@@ -118,7 +118,8 @@ def _clean_date(date: str) -> str:
     date = str(date or "").strip() or time.strftime("%Y-%m-%d")
     if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", date):
         raise ValueError("Date as YYYY-MM-DD.")
-    if date > time.strftime("%Y-%m-%d"):
+    # a day of slack: a phone's date can run ahead of the laptop's near midnight or across time zones
+    if date > time.strftime("%Y-%m-%d", time.localtime(time.time() + 86400)):
         raise ValueError("That date is in the future.")
     return date
 

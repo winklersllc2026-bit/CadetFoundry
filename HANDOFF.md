@@ -97,8 +97,13 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
   saves a copy), classroom mode (one live anonymous vote, counts only, reveal guidance), `web/js/scenarios.js` (Lead
   tab, log, instructor section, projector view), `tests/test_scenarios.py`. Verified in the browser: phone (Cadet
   scenario + log) and desktop (classroom mode). README/SECURITY rewritten for JROTC (Phase 1 item c, mostly done).
-- **Next:** Phase 6 Train (configurable fitness events, personal bests, trends, goals; no pass/fail wording), or
-  the Phase 1 loose ends below.
+- **Phase 6 DONE (2026-10-08):** `vanguard/train.py` (instructor-chosen events, suggested set until then, no
+  built-in standard; results + goals are class records; stats first/previous/latest/best/improvement/%), Train tab
+  (`web/js/train.js`: cards, trend line, goal, log a result, history; private logbook link), instructor events +
+  test-day recording; AFT scorer moved to Serve → Explore Military Service; `tests/test_train.py`. Fixed: the date
+  box used UTC (tomorrow on US evenings). Verified in the browser at 375 px.
+- **Next:** owner testing (run from C:\Code\Vanguard with `python run.py`), then Phase 7 Serve (service log +
+  instructor verification), 8 Progress, 9 Instructor analytics, 10 Pilot. Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with
   Instructor PIN, hiding the matching UI; (b) remaining "Soldier" wording outside Explore Military Service:
   intake questions (`web/js/intake.js`), study/log/me screens, study cards that address "you" as a Soldier;
