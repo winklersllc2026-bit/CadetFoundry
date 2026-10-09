@@ -148,6 +148,11 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
     approachable). Grader fixes (`board.quiz_grade`): number words/ordinals/Roman numerals match digits ("7" = "Seven",
     "XIX" = "19th"), a short key part must be right ("26th amendment" is wrong for "19th Amendment"), one-letter
     answers match exactly. `tests/test_grading.py` checks every card's own answer grades right.
+  - **Phase 11 step 3 DONE (2026-10-09):** 4 more cards (68 total): citizenship_flag_pledge_anthem (4 USC 4, 8; 36 USC 301),
+    citizenship_jury_service (uscourts.gov), citizenship_emergency_ready (Ready.gov kit + plan), health_vaping (CDC +
+    Smokefree Teen). Scenarios 12 (vape pen / peer pressure) and 13 (flag on the ground). Blocked: USCIS rights &
+    responsibilities (403), CareerOneStop interview tips (403); USA.gov state/local and dietaryguidelines.gov pages had
+    no usable detail.
 - **Next:** owner testing (run from C:\Code\Vanguard with `python run.py`), then Phase 7 Serve (service log +
   instructor verification), 8 Progress, 9 Instructor analytics, 10 Pilot. Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with
