@@ -25,6 +25,18 @@ class UsbTests(unittest.TestCase):
         self.assertIn("%*", bat)
         self.assertIn("VANGUARD_OLLAMA", bat)
 
+    def test_a_file_briefly_locked_by_antivirus_is_retried(self):
+        calls = []
+        def flaky(x):
+            calls.append(x)
+            if len(calls) < 3:
+                raise PermissionError("in use")
+            return "copied"
+        self.assertEqual(make_usb._retry(flaky, "f", wait=0), "copied")
+        self.assertEqual(len(calls), 3)
+        with self.assertRaises(PermissionError):
+            make_usb._retry(lambda x: (_ for _ in ()).throw(PermissionError()), "f", tries=2, wait=0)
+
     def test_copy_model_copies_only_its_blobs(self):
         with tempfile.TemporaryDirectory() as src, tempfile.TemporaryDirectory() as dst:
             src = Path(src)

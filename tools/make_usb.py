@@ -144,6 +144,22 @@ replace your instructor or your program's curriculum, and makes no claim of endo
 """
 
 
+def _retry(fn, *args, tries: int = 15, wait: float = 2.0, **kw):
+    """Windows antivirus briefly locks a freshly written .exe while it scans it ("being used by another process").
+    Wait and try again instead of failing; say what's going on after a few tries."""
+    import time
+    for n in range(tries):
+        try:
+            return fn(*args, **kw)
+        except PermissionError:
+            if n == tries - 1:
+                raise PermissionError(f"{args[-1] if args else ''} is still in use. Close anything that has the USB drive "
+                                      "open (Vanguard, File Explorer previews) and run this again.") from None
+            if n == 2:
+                print("  waiting for Windows to finish checking a file (antivirus scan) …")
+            time.sleep(wait)
+
+
 def ollama_install() -> Path | None:
     for p in (Path(os.environ.get("LOCALAPPDATA", "")) / "Programs" / "Ollama",
               Path(os.environ.get("ProgramFiles", "")) / "Ollama"):
@@ -171,7 +187,7 @@ def copy_model(name: str, dest_models: Path) -> int:
         target.parent.mkdir(parents=True, exist_ok=True)
         if not target.exists() or target.stat().st_size != blob.stat().st_size:
             print(f"  copying {blob.name[:19]}… ({blob.stat().st_size / 2**30:.2f} GB)")
-            shutil.copy2(blob, target)
+            _retry(shutil.copy2, blob, target)
         total += blob.stat().st_size
     return total
 
@@ -209,9 +225,9 @@ def main(argv: list[str]) -> int:
                 target.unlink()
             src = stage / "Vanguard" / item
             if src.is_dir():
-                shutil.copytree(src, target)
+                _retry(shutil.copytree, src, target, dirs_exist_ok=True)
             elif src.exists():
-                shutil.copy2(src, target)
+                _retry(shutil.copy2, src, target)
 
     # The installer and zip ride along: on the drive's root for whoever holds it, and in Vanguard\downloads so a
     # Vanguard started from this drive (or a demo Pi set up from it) offers them on /download -- no internet needed.
@@ -220,12 +236,12 @@ def main(argv: list[str]) -> int:
     downloads = app / "downloads"
     shutil.rmtree(downloads, ignore_errors=True)
     for old in drive.glob("Install Vanguard*.exe"):
-        old.unlink()
+        _retry(old.unlink)
     if setup.exists() and zipf.exists():
-        downloads.mkdir()
+        downloads.mkdir(exist_ok=True)
         for f in (setup, zipf):
-            shutil.copy2(f, downloads / f.name)
-        shutil.copy2(setup, drive / f"Install Vanguard {version} on this computer.exe")
+            _retry(shutil.copy2, f, downloads / f.name)
+        _retry(shutil.copy2, setup, drive / f"Install Vanguard {version} on this computer.exe")
     else:
         print(f"Note: no installer for {version} in site/dist — run  python site/build.py  first to put it on the drive.")
     (drive / "VanguardData").mkdir(exist_ok=True)
@@ -253,7 +269,7 @@ def main(argv: list[str]) -> int:
                     if (dest / keep).exists():
                         (dest / keep).rename(app / f"_{keep}_keep")
                 shutil.rmtree(dest)
-            shutil.copytree(src, dest, ignore=skip)
+            _retry(shutil.copytree, src, dest, ignore=skip, dirs_exist_ok=True)
             if (app / "_models_keep").exists():
                 (app / "_models_keep").rename(dest / "models")
             try:
