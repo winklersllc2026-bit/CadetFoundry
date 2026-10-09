@@ -142,8 +142,11 @@ loaders.instructor = async () => {
     $('#catMsg').textContent = r.error || 'Saved.';
     if (!r.error) STATUS.categories_enabled = r.categories_enabled;
   }));
+  if (typeof instructorDashboard === 'function') await instructorDashboard(body, ov); // web/js/dashboard.js
   if (typeof instructorLessons === 'function') await instructorLessons(body, ov);   // web/js/lessons.js
   if (typeof instructorLeadership === 'function') await instructorLeadership(body);   // web/js/scenarios.js
   if (typeof instructorTrain === 'function') await instructorTrain(body);             // web/js/train.js
   if (typeof instructorService === 'function') await instructorService(body);         // web/js/service.js
+  if (typeof instructorQuizzes === 'function') await instructorQuizzes(body, ov);     // web/js/dashboard.js
+  if (typeof instructorBackup === 'function') instructorBackup(body);
 };

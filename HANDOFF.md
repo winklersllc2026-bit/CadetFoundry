@@ -122,10 +122,13 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
   percentages; milestone achievements; timeline), recognition by the instructor (`recognition.jsonl`, class record),
   instructor-chosen portfolio sections, `web/js/progress.js` (My Progress, instructor per-Cadet view, print).
   Fixed: same-day fitness results kept insertion order; unstudied military sections hidden from portfolios.
+- **Phase 9 DONE (2026-10-09):** dashboard (`vanguard/reports.py`, top of the Instructor screen, unit filter,
+  drill-down), class report CSV (formula cells neutralized) and print, program backup/restore
+  (`vanguard/program_backup.py`), quiz editor (`vanguard/quiz_edits.py`: edit/hide built-in questions per program),
+  pop quiz (questions-only lesson due today), `web/js/dashboard.js`, `tests/test_reports.py`.
 - **Planned additions (owner):**
-  - Phase 9 or 11: the instructor can **view and edit the quiz questions** of the built-in cards for their program, and
-    give a **pop quiz** (their own questions; live in class like the scenario vote, or assigned). Today a lesson with
-    only questions already works as an assigned pop quiz.
+  - Done in Phase 9: instructor quiz editing and assigned pop quizzes. Still open: a LIVE in-class pop quiz (like the
+    scenario vote).
   - **Phase 11: much more content** -- same rule: U.S. government sources, fetched and cited, `verified: no` when not
     checked; Army JROTC only.
 - **Next:** owner testing (run from C:\Code\Vanguard with `python run.py`), then Phase 7 Serve (service log +
