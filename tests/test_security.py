@@ -320,6 +320,27 @@ class SecurityTests(unittest.TestCase):
         finally:
             path.unlink(missing_ok=True)
 
+    def test_first_instructor_sets_the_instructor_pin_on_this_computer(self):
+        """A brand-new device: the first instructor profile chooses the Instructor PIN (from the laptop itself)."""
+        from unittest import mock
+        tmp = Path(tempfile.mkdtemp())
+        with mock.patch.object(store, "DATA", tmp), mock.patch.object(profiles, "ROOT", tmp / "profiles"):
+            lock = json.loads(self.req("GET", "/api/lock")[2])
+            self.assertFalse(lock["admin_set"])
+            self.assertTrue(lock["on_this_computer"])
+            s, _, raw = self.req("POST", "/api/profiles/create", {"name": "Ms. First", "kind": "instructor",
+                                                                  "pin": "736281", "admin": "123"})
+            self.assertEqual(s, 403)                                            # too short: nothing created
+            self.assertEqual(profiles.all_profiles(), [])
+            s, _, raw = self.req("POST", "/api/profiles/create", {"name": "Ms. First", "kind": "instructor",
+                                                                  "pin": "736281", "admin": "905172"})
+            self.assertEqual(s, 200, raw)
+            self.assertIsNone(security.check_admin("905172"))
+            self.assertIsNotNone(security.program_public())
+            s, _, raw = self.req("POST", "/api/profiles/create", {"name": "Mr. Second", "kind": "instructor",
+                                                                  "pin": "573920", "admin": "111222"})
+            self.assertEqual(s, 403)                                            # now the PIN must match
+
     def test_app_can_be_installed_from_the_lock_screen(self):
         """Phones 'Add to Home Screen' and computers 'Install app' before anyone signs in: the manifest and icons are
         public (they hold no data); everything else stays locked."""

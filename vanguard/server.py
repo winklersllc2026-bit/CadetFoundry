@@ -171,6 +171,10 @@ class Handler(BaseHTTPRequestHandler):
         finally:
             self._done()
 
+    def _local(self) -> bool:
+        """The request comes from this computer (not another device on the classroom network)."""
+        return self.client_address[0] in ("127.0.0.1", "::1", "::ffff:127.0.0.1")
+
     def _program_key(self) -> bytes | None:
         """The program private key -- only in an instructor profile's session after the Instructor PIN."""
         if (profiles.get(self._pid or "") or {}).get("kind") != "instructor":
@@ -256,7 +260,8 @@ class Handler(BaseHTTPRequestHandler):
             out = {"profiles": [{"id": p["id"], "name": p["name"], "kind": p["kind"],
                                  "has_pin": security.has_pin(p["id"]),
                                  "lockout": security.lockout_remaining(p["id"])} for p in profiles.all_profiles()],
-                   "unlocked": bool(self._pid)}
+                   "unlocked": bool(self._pid), "admin_set": security.admin_set(),
+                   "on_this_computer": self._local()}
             if self._pid:
                 cur = profiles.get(self._pid)
                 out.update({"current": {"id": cur["id"], "name": cur["name"]}, "pin_set": security.pin_set(),
@@ -403,7 +408,16 @@ class Handler(BaseHTTPRequestHandler):
             try:
                 kind = profiles.role_of(str(b.get("kind", "cadet")))
                 if kind == "instructor":                 # only the Instructor PIN can make an instructor
-                    err = security.check_admin(str(b.get("admin", ""))[:32])
+                    admin = str(b.get("admin", ""))[:32]
+                    if not security.admin_set():
+                        # first-time setup: the first instructor chooses the Instructor PIN -- on the laptop itself,
+                        # never over the classroom network (a Cadet must not be able to claim it first)
+                        if not self._local():
+                            return self._json({"ok": False, "error": "Set up the first instructor on the instructor's "
+                                                                     "own computer."}, 403)
+                        err = security.set_admin_pin(admin)
+                    else:
+                        err = security.check_admin(admin)
                     if err:
                         return self._json({"ok": False, "error": err}, 403)
                     err = security.valid_new_pin(str(b.get("pin", "")))

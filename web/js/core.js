@@ -90,8 +90,11 @@ async function showLock(msg) {
         <p class="faint">Your logbook, letters and progress stay in your own profile on this device.</p>
         <label>Your name</label><input id="npName" maxlength="40" autocomplete="off">
         <label>This profile is for</label><select id="npKind"><option value="cadet">A Cadet</option><option value="guardian">A parent or guardian</option><option value="instructor">An instructor</option></select>
-        <div id="npAdmBox" hidden><label>Instructor PIN</label><input id="npAdm" type="password" inputmode="numeric" maxlength="12" autocomplete="off" placeholder="Set in 👤 Me by the instructor">
-          <p class="faint">Instructor profiles need the Instructor PIN and their own PIN.</p></div>
+        <div id="npAdmBox" hidden>${s.admin_set
+          ? `<label>Instructor PIN</label><input id="npAdm" type="password" inputmode="numeric" maxlength="12" autocomplete="off">
+             <p class="faint">Instructor profiles need the Instructor PIN and their own PIN.</p>`
+          : `<label>Choose the Instructor PIN (6–12 digits)</label><input id="npAdm" type="password" inputmode="numeric" maxlength="12" autocomplete="off">
+             <p class="faint">First-time setup. The Instructor PIN opens class records and controls settings for the whole device. Keep it different from your own PIN below, and don't share it with Cadets.</p>`}</div>
         <label>PIN (6–12 digits)${s.profiles.length ? '' : ' — recommended'}</label>
         <input id="npPin" type="password" inputmode="numeric" maxlength="12" autocomplete="off" placeholder="${s.profiles.length ? 'Strongly recommended on a shared device' : 'Optional'}">
         <p class="faint">With a PIN, your files are encrypted on this device. You'll get a <b>recovery code</b> in case you ever forget it.</p>
