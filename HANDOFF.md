@@ -243,6 +243,10 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
     downloads/, VANGUARD_DOWNLOADS); /api/lock has demo, lan, downloads. FIXED: --lan refused to start with zero
     profiles (all_have_pins); LAN now requires a PIN on every new profile and refuses PIN removal. NOT tested on a real
     Pi (no hardware here); everything else tested on this PC. tests/test_demo_box.py.
+  - **START HERE.html** on every USB (replaces README-USB.txt): which start file does what, first steps, data,
+    moving accounts. run.py --lan prints the real LAN address(es). Installer adds a 'Vanguard (classroom)' Start-menu
+    shortcut (python.exe run.py --lan, window shows the address). make_demo_kit reuses the drive's existing Wi-Fi
+    name/password on re-runs. Re-running make_usb/make_demo_kit replaces the app, keeps VanguardData, no duplicates.
 - **Next:** owner testing (run from C:\Code\Vanguard with `python run.py`), then Phase 7 Serve (service log +
   instructor verification), 8 Progress, 9 Instructor analytics, 10 Pilot. Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with

@@ -122,8 +122,14 @@ def main(argv: list[str]) -> int:
         print("The QR codes need the qrcode package on this computer:  python -m pip install qrcode pillow")
         return 1
     drive = Path(args[0])
-    ssid = opt("--ssid") or "Vanguard"
-    password = opt("--wifi-password") or friendly_password()
+    # Re-running on the same drive keeps its Wi-Fi name and password (a printed card and a set-up Pi still match)
+    # unless new ones are given.
+    old = {}
+    conf = drive / "demo" / "vanguard-demo.conf"
+    if conf.exists():
+        old = dict(re.findall(r"^(SSID|PASSWORD)='([^'\n]*)'$", conf.read_text(encoding="utf-8"), re.M))
+    ssid = opt("--ssid") or old.get("SSID") or "Vanguard"
+    password = opt("--wifi-password") or old.get("PASSWORD") or friendly_password()
     if len(password) < 8 or any(c in password for c in "'\n\r"):
         print("The Wi-Fi password needs at least 8 characters (and no quote marks).")
         return 1

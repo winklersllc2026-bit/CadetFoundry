@@ -15,7 +15,7 @@ On the drive:
     Start Vanguard.bat                 this computer only
     Start Vanguard (classroom).bat     Cadets on the classroom network can connect too
     start-vanguard-usb.sh              Linux / Mac (uses that computer's python3)
-    README-USB.txt
+    START HERE.html                    which file does what (opens in any browser)
     Vanguard\\                          the app, with python\\ (and ollama\\ with --with-ai)
     VanguardData\\                      profiles and class records (each profile encrypted with its own PIN)
 """
@@ -63,38 +63,84 @@ fi
 exec python3 run.py "$@"
 """
 
-README = """VANGUARD ON A USB DRIVE
-=======================
+START_HERE = """<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vanguard — start here</title>
+<style>
+body { margin: 0; background: #f6f4ee; color: #1b1a17; font: 17px/1.6 system-ui, "Segoe UI", sans-serif; }
+.w { max-width: 860px; margin: 0 auto; padding: 28px 18px 60px; }
+h1 { margin: 0; font-size: 32px; } h2 { margin: 30px 0 10px; font-size: 22px; border-bottom: 2px solid #cdb57c; padding-bottom: 4px; }
+.sub { color: #555; margin: 4px 0 22px; }
+.box { background: #fff; border: 1px solid #ddd5c0; border-radius: 12px; padding: 16px 18px; margin: 12px 0; }
+.box h3 { margin: 0 0 6px; font-size: 19px; } .file { font-family: Consolas, monospace; background: #efe8d6; padding: 2px 7px; border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: 15px; } th, td { border: 1px solid #ddd5c0; padding: 8px; text-align: left; vertical-align: top; }
+th { background: #efe8d6; } .tip { color: #444; font-size: 15px; } code { font-family: Consolas, monospace; background: #efe8d6; padding: 1px 6px; border-radius: 5px; }
+</style></head><body><div class="w">
+<h1>✦ Vanguard — start here</h1>
+<p class="sub">Leadership. Learning. Character. Version {version}. Everything on this drive works with no internet.</p>
 
-Windows
-  1. Plug in the drive and open it.
-  2. Double-click "Start Vanguard.bat" (this computer only)
-     or "Start Vanguard (classroom).bat" (Cadets on the classroom network can connect; the window shows the address).
-  3. Keep the black window open while you use Vanguard.
-  4. To stop: Me > Quit Vanguard, or close the window. Wait a moment, then unplug the drive.
+<h2>Which one do I open?</h2>
 
-  If Windows warns about the file, choose "More info" > "Run anyway". Nothing is installed on the computer.
+<div class="box"><h3>▶ <span class="file">Start Vanguard.bat</span> — just this computer</h3>
+Vanguard runs from this drive and opens in this computer's browser. <b>Only this computer can use it.</b><br>
+Use it to look around, prepare lessons, check records, or for one person studying.</div>
 
-Install it on your own computer instead
-  Windows: double-click "Install Vanguard ... on this computer.exe" on this drive. Vanguard then runs from that
-  computer (a Vanguard icon on the desktop) and the drive isn't needed. Linux / Mac: the zip in Vanguard\\downloads.
+<div class="box"><h3>▶ <span class="file">Start Vanguard (classroom).bat</span> — the whole class</h3>
+This computer becomes the classroom's Vanguard. <b>Cadets use it from their own phones, tablets or laptops</b> on the
+same Wi-Fi: the black window shows the address to type (for example <code>http://10.0.0.65:8780</code>).<br>
+Every profile needs a PIN in classroom mode. If Windows asks whether to allow Python on networks, choose
+<b>Allow</b> (private networks). If Cadets can't connect, the school Wi-Fi may block devices from reaching each other —
+ask IT, or use a phone hotspot or the Vanguard demo box.</div>
 
-Linux / Mac
-  sh start-vanguard-usb.sh            (or: sh start-vanguard-usb.sh --lan for the classroom)
+<div class="box"><h3>▶ <span class="file">start-vanguard-usb.sh</span> — Linux or Mac</h3>
+The same as <i>Start Vanguard</i>, for a Linux computer or a Mac. Open a terminal in this drive and run
+<code>sh start-vanguard-usb.sh</code> — or <code>sh start-vanguard-usb.sh --lan</code> for the whole class.
+That computer needs Python 3 with the <code>cryptography</code> package.</div>
 
-Your data
-  Everything - profiles, class records, lessons, settings - is in the VanguardData folder on this drive.
-  Each profile's files are encrypted with that person's PIN, and class records also need the Instructor PIN,
-  so a lost drive doesn't expose anyone's data. Still: keep the drive somewhere safe, and make a backup copy of the
-  VanguardData folder (or use Me > Download encrypted backup) now and then.
+<div class="box"><h3>⬇ <span class="file">Install Vanguard … on this computer.exe</span> — keep it on a computer</h3>
+Installs Vanguard on this Windows computer (a Vanguard icon on the desktop and in the Start menu). After that the drive
+isn't needed. If Windows says <i>"Windows protected your PC"</i>, choose <b>More info → Run anyway</b>.</div>
 
-Speed
-  A USB 3 drive in a USB 3 port is much faster. The offline AI (if this drive has it) loads its model from the
-  drive the first time it answers, which can take a minute.
+<table>
+<tr><th></th><th>Start Vanguard</th><th>Start Vanguard (classroom)</th><th>Install …exe</th></tr>
+<tr><td>Who can use it</td><td>This computer only</td><td>This computer + Cadets' devices on the same Wi-Fi</td><td>That computer (classroom mode from its menu)</td></tr>
+<tr><td>Where the data lives</td><td colspan="2">On this drive (<span class="file">VanguardData</span>)</td><td>On that computer</td></tr>
+<tr><td>Installs anything?</td><td colspan="2">No — runs from the drive</td><td>Yes</td></tr>
+<tr><td>Best for</td><td>Preparing, one person</td><td>Teaching a class</td><td>A computer used every day</td></tr>
+</table>
 
-Updating
-  Run tools/make_usb.py again from the computer that builds Vanguard - the app is replaced and VanguardData is kept -
-  or use Me > Install an update with a signed update file.
+<h2>The first time</h2>
+<ol>
+<li>Open <span class="file">Start Vanguard.bat</span> (or the classroom one).</li>
+<li>Instructor: tap <b>+ New profile</b>, choose <b>An instructor</b>, choose the <b>Instructor PIN</b> (it opens class records — don't share it) and your own PIN.</li>
+<li>Open <b>🎓 Instructor</b> to add classes and Cadets' units. Cadets create their own profiles with their own PIN.</li>
+<li>Write down each <b>recovery code</b> Vanguard shows — it's the way back if a PIN is forgotten.</li>
+</ol>
+
+<h2>While it runs and when you're done</h2>
+<ul>
+<li>A black window stays open while Vanguard runs — <b>leave it open</b>.</li>
+<li>To stop: <b>Me → Quit Vanguard</b>, or close the black window. Wait a moment, then unplug the drive.</li>
+<li>The offline AI (if this drive has it) starts and stops with Vanguard. Its first answer can take a minute.</li>
+</ul>
+
+<h2>Your data</h2>
+<ul>
+<li>Everything — profiles, class records, lessons, settings — is in <span class="file">VanguardData</span>. Each profile is encrypted with its own PIN, and class records also need the Instructor PIN, so a lost drive doesn't expose anyone's data.</li>
+<li><b>Back it up:</b> copy the <span class="file">VanguardData</span> folder somewhere safe now and then.</li>
+<li><b>Move everyone to an installed computer:</b> with Vanguard closed on both, copy <span class="file">VanguardData</span> into
+<code>C:\\Users\\&lt;name&gt;\\.vanguard</code> on that computer (before anyone makes profiles there — it replaces them).</li>
+<li><b>Move one person:</b> Me → <i>Download encrypted backup</i>, then restore it on the other computer.</li>
+</ul>
+
+<h2>Other things on this drive</h2>
+<ul>
+<li><span class="file">Vanguard</span> — the app itself. Don't change it.</li>
+<li><span class="file">demo</span> (if present) — the printable demo card and the Raspberry Pi demo-box guide (<span class="file">README-PI.txt</span>).</li>
+</ul>
+<p class="tip">Vanguard is designed to support JROTC instruction. It is not an official JROTC, Army or school product, does not
+replace your instructor or your program's curriculum, and makes no claim of endorsement. Built by Winklers LLC.</p>
+</div></body></html>
 """
 
 
@@ -186,7 +232,8 @@ def main(argv: list[str]) -> int:
     for name, args_ in (("Start Vanguard.bat", ""), ("Start Vanguard (classroom).bat", "--lan")):
         (drive / name).write_bytes(START_BAT.replace("{args}", args_).replace("\r\n", "\n").replace("\n", "\r\n").encode("ascii"))
     (drive / "start-vanguard-usb.sh").write_bytes(START_SH.encode("ascii"))
-    (drive / "README-USB.txt").write_bytes(README.replace("\n", "\r\n").encode("utf-8"))
+    (drive / "README-USB.txt").unlink(missing_ok=True)          # replaced by START HERE.html
+    (drive / "START HERE.html").write_text(START_HERE.replace("{version}", build.__version__), encoding="utf-8")
 
     if "--with-ai" in argv:
         src = ollama_install()

@@ -79,7 +79,7 @@ python tools/make_usb.py E:\ --with-ai        # also the offline AI, copied from
 On the drive, double-click **Start Vanguard.bat** (this computer only) or **Start Vanguard (classroom).bat** (Cadets
 connect over the classroom network). Keep the window open while you use it; close it or use Me → Quit Vanguard
 before unplugging. Run the command again to update the drive — the `VanguardData` folder is never touched.
-Linux / Mac: `sh start-vanguard-usb.sh` on the drive. Details: `README-USB.txt` on the drive.
+Linux / Mac: `sh start-vanguard-usb.sh` on the drive. `START HERE.html` on the drive explains which file does what.
 
 ## Demo box: Raspberry Pi with its own Wi-Fi
 
