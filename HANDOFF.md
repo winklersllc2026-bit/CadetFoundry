@@ -182,6 +182,8 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
   - **Phase 11 step 11 DONE (2026-10-09):** health_training_principles, health_effort_scale (RPE/RIR), health_self_talk
     (Goal-Plan-Do-Check, self-talk) from FM 7-22. Scenarios 17 (push through it / hidden injury) and 18 (the new
     phone / store credit). 105 cards, 18 scenarios.
+  - **Phase 11 step 12 DONE (2026-10-09):** Military Knowledge: color_guard (TC 3-21.5 ch 15), flag_display (App. I),
+    army_profession and customs_traditions_ceremonies (TC 7-21.13 ch 1). 109 cards.
 - **Next:** owner testing (run from C:\Code\Vanguard with `python run.py`), then Phase 7 Serve (service log +
   instructor verification), 8 Progress, 9 Instructor analytics, 10 Pilot. Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with
