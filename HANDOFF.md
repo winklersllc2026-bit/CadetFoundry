@@ -163,6 +163,11 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
     careers_protect_accounts (FTC). Scenario 15 (the ride home). Fixes: grader no longer marks a full correct answer
     wrong for leaving out the short key part ("legislative, executive and judicial" for "Three — ..."); quiz tests now
     ask for a specific card (Citizenship has more than 50 questions now); "recruited" reworded (brand test).
+  - **Phase 11 step 6 DONE (2026-10-09):** careers_fafsa now VERIFIED (studentaid.gov read in the browser; Pell up to
+    $7,395 for 2026-27 -- update yearly). New: jrotc_about (citizenship) + explore_jrotc_and_service (E-2/E-3, academy
+    nominations) from CRS IF11313 (Jan 2026) and 10 USC 2031; health_eating_well (Dietary Guidelines 2025-2030 PDF).
+    Scenario 16 (the resume). 87 cards, 16 scenarios. MyPlate.gov has a certificate error. test_progress also now asks
+    for a specific card.
 - **Next:** owner testing (run from C:\Code\Vanguard with `python run.py`), then Phase 7 Serve (service log +
   instructor verification), 8 Progress, 9 Instructor analytics, 10 Pilot. Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with

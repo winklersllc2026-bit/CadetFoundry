@@ -75,7 +75,7 @@ class ProgressTests(unittest.TestCase):
                                                "reflection": "Sorting by date saved time."}, ria)
         self.req("POST", "/api/train/add", {"event": "pushups", "value": "20", "date": "2026-09-01"}, ria)
         self.req("POST", "/api/train/add", {"event": "pushups", "value": "27", "date": "2026-10-01"}, ria)
-        q = next(x for x in self.req("GET", "/api/quiz?n=50&topic=citizenship", cookie=ria)[1] if "how many branches" in x["q"].lower())
+        q = next(x for x in self.req("GET", "/api/quiz?n=50&topic=citizenship_three_branches", cookie=ria)[1] if "how many branches" in x["q"].lower())
         self.req("POST", "/api/quiz/answer", {"id": q["id"], "answer": "three: legislative, executive and judicial"}, ria)
         self.req("POST", "/api/memory", {"text": "PRIVATE-MEMORY my parents are divorcing"}, ria)   # a private file
         s, me = self.req("GET", "/api/progress", cookie=ria)
