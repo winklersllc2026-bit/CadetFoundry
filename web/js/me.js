@@ -85,7 +85,7 @@ loaders.me = async () => {
   const p = STATUS.profile || {}, e = STATUS.engine, lib = STATUS.library;
   const mems = await api('/api/memory');
   const lock = await api('/api/lock');
-  const cat = (await api('/api/faith/catalog')).installed;
+  const cat = (STATUS.modules_off || []).includes('faith') ? [] : ((await api('/api/faith/catalog').catch(() => ({}))).installed || []);
   const myFaith = new Set((p.faith_texts || '').split(',').filter(Boolean));
   const faithBoxes = cat.length ? cat.map(t => `<label style="display:flex;gap:8px;align-items:center;margin:4px 0;color:var(--text)">
       <input type="checkbox" class="faithPick" value="${esc(t.id)}" ${myFaith.has(t.id) ? 'checked' : ''} style="width:auto">

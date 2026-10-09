@@ -475,6 +475,13 @@ AI_MODES = ("off", "library", "ai")
 
 
 ALL_CATEGORIES = ("leadership", "citizenship", "military", "health", "careers", "explore", "basic")
+# Optional tools the instructor can switch off for every profile on this device (the server refuses their routes).
+MODULES = {"faith": "Faith texts (scripture lookup and reading plans)", "letters": "Letters and address book",
+           "voice": "Talk to Vanguard (offline voice)"}
+
+
+def module_on(name: str) -> bool:
+    return name not in (config().get("modules_off") or [])
 
 
 def categories_enabled() -> list[str]:
@@ -506,13 +513,15 @@ def ai_mode() -> str:
 
 def save_config(data: dict) -> dict:
     c = config()
-    for k in ("model", "groq_key", "gemini_key", "online", "ai_mode", "categories", "portfolio_sections"):
+    for k in ("model", "groq_key", "gemini_key", "online", "ai_mode", "categories", "portfolio_sections", "modules_off"):
         if k in data:
             c[k] = data[k]
     if c.get("ai_mode") not in AI_MODES:
         c.pop("ai_mode", None)
     if "categories" in c and not (isinstance(c["categories"], list) and all(x in ALL_CATEGORIES for x in c["categories"])):
         c.pop("categories", None)
+    if "modules_off" in c and not (isinstance(c["modules_off"], list) and all(x in MODULES for x in c["modules_off"])):
+        c.pop("modules_off", None)
     if "portfolio_sections" in c and not (isinstance(c["portfolio_sections"], list)
                                           and all(isinstance(x, str) and len(x) < 20 for x in c["portfolio_sections"])):
         c.pop("portfolio_sections", None)

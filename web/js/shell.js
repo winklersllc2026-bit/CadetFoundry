@@ -16,7 +16,7 @@ loaders.serve = async () => {
     <div class="card"><h3>🤝 Service learning</h3>
       <p class="faint">Your service projects: date, hours, organization, your role, and what you learned. Your instructor verifies them.</p>
       <div id="serviceBox"></div>
-      <button class="btn small" ${go('logbook', 'letters')} style="margin-top:8px">✉️ Write to family, service members or veterans</button></div>
+      ${(STATUS.modules_off || []).includes('letters') ? '' : `<button class="btn small" ${go('logbook', 'letters')} style="margin-top:8px">✉️ Write to family, service members or veterans</button>`}</div>
     ${'explore' in cats ? `<div class="card" id="exploreMil"><h3>🎗️ Explore Military Service</h3>
       <p class="faint">For Cadets who want to learn what military service is like. Information only — nothing here
       signs you up or shares anything with a recruiter. Numbers come straight from official tables.</p>
@@ -142,6 +142,22 @@ loaders.instructor = async () => {
     const r = await api('/api/instructor/categories', { categories: cats });
     $('#catMsg').textContent = r.error || 'Saved.';
     if (!r.error) STATUS.categories_enabled = r.categories_enabled;
+  }));
+  // Optional tools on or off for every profile on this device (the server refuses a switched-off tool's routes)
+  const MODS = { faith: 'Faith texts (scripture lookup and reading plans)', letters: 'Letters and address book', voice: 'Talk to Vanguard (offline voice)' };
+  const modsOff = STATUS.modules_off || [];
+  const modCard = document.createElement('div');
+  modCard.className = 'card';
+  modCard.innerHTML = `<h3>🧰 Optional tools</h3><p class="faint">Turn optional tools on or off for every profile on this device.</p>
+    ${Object.entries(MODS).map(([k, v]) => `<label style="display:flex;gap:10px;align-items:center;min-height:44px">
+      <input type="checkbox" data-mod="${k}" ${modsOff.includes(k) ? '' : 'checked'} style="width:22px;height:22px"> ${esc(v)}</label>`).join('')}
+    <p class="faint" id="modMsg" role="status"></p>`;
+  body.appendChild(modCard);
+  modCard.querySelectorAll('[data-mod]').forEach(cb => cb.addEventListener('change', async () => {
+    const off = [...modCard.querySelectorAll('[data-mod]')].filter(x => !x.checked).map(x => x.dataset.mod);
+    const r = await api('/api/instructor/modules', { off });
+    $('#modMsg').textContent = r.error || 'Saved. Profiles see the change the next time they open Vanguard.';
+    if (!r.error) STATUS.modules_off = r.modules_off;
   }));
   const extra = document.createElement('div');       // this load's own container for the sections below
   body.appendChild(extra);

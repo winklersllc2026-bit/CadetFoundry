@@ -216,7 +216,11 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
   - **Item 10 (part) DONE:** Money pane is Cadet-first (budget with teen examples; pay estimate, LES and TSP folded into
     a collapsed 'Military pay tools' section that opens automatically when reached from Serve -> Explore Military
     Service). README Cadet table updated (Learn/Lead/Serve/Progress). Still open from Phase 1: module on/off flags
-    (explore_military, faith, letters, voice) for the instructor; Soldier-oriented code comments; REPORT.md.
+    (DONE, see below); Soldier-oriented code comments; REPORT.md.
+  - **Module switches DONE:** store.MODULES (faith, letters, voice), config modules_off; POST /api/instructor/modules;
+    the server refuses a switched-off tool's routes (_module_off in server.py) and the chat stops using faith texts;
+    status.modules_off hides the UI; 'Optional tools' card on the Instructor screen. tests/test_modules.py.
+    (Explore Military Service already has its own switch: the 'explore' Learn category.)
 - **Next:** owner testing (run from C:\Code\Vanguard with `python run.py`), then Phase 7 Serve (service log +
   instructor verification), 8 Progress, 9 Instructor analytics, 10 Pilot. Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with

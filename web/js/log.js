@@ -3,6 +3,8 @@
 
 // ── LOG ──
 loaders.logbook = async () => {
+  const lb = document.querySelector('[data-pane="letters"]');      // the instructor can switch letters off
+  if (lb) lb.hidden = (STATUS.modules_off || []).includes('letters');
   if (!$('#logKind').options.length) {
     $('#logKind').innerHTML = (STATUS.log_kinds || ['Note']).map(k => `<option>${esc(k)}</option>`).join('');
     $('#logDate').value = new Date().toISOString().slice(0, 10);

@@ -192,8 +192,17 @@ class Handler(BaseHTTPRequestHandler):
             return None
         return security.session_program_key(self._token())
 
+    _MODULE_ROUTES = (("faith", ("/api/faith/",)), ("letters", ("/api/letters", "/api/contacts")),
+                      ("voice", ("/api/voice",)))
+
+    def _module_off(self, r: str) -> bool:
+        """A tool the instructor switched off for this device: its routes are refused, not just hidden."""
+        return any(r.startswith(prefixes) and not store.module_on(m) for m, prefixes in self._MODULE_ROUTES)
+
     def _get(self, r: str):
         q, app = self._query(), self.app
+        if self._module_off(r):
+            return self._json({"error": "Your instructor has turned this tool off."}, 403)
         if r.startswith("/api/instructor/"):            # instructor only: profile role + Instructor PIN this session
             priv = self._program_key()
             if not priv:
@@ -351,7 +360,8 @@ class Handler(BaseHTTPRequestHandler):
         if r == "/api/status":
             return self._json({"engine": engine.status(), "library": app.library.stats(),
                                "profile": store.profile(), "grades": store.GRADES, "interests": store.INTERESTS, "log_kinds": store.LOG_KINDS,
-                               "lan": app.lan, "voice": voice.available(),
+                               "lan": app.lan, "voice": voice.available() and store.module_on("voice"),
+                               "modules_off": [m for m in store.MODULES if not store.module_on(m)],
                                "ai_mode": store.ai_mode(), "library_only": store.ai_mode() == "off",
                                "categories": {c: knowledge.CATEGORIES[c] for c in store.visible_categories(
                                    (profiles.get(self._pid) or {}).get("kind", "cadet"))},
@@ -484,6 +494,8 @@ class Handler(BaseHTTPRequestHandler):
 
     def _post(self, r: str):
         app, b = self.app, self._body()
+        if self._module_off(r):
+            return self._json({"error": "Your instructor has turned this tool off."}, 403)
         if r == "/api/unlock":
             token, msg = security.unlock(str(b.get("profile", ""))[:12], str(b.get("pin", ""))[:32])
             if not token:
@@ -894,6 +906,12 @@ class Handler(BaseHTTPRequestHandler):
                         except ValueError as e:
                             errors[pid] = str(e)
                     return self._json({"saved": saved, "skipped": skipped, "errors": errors})
+                if r == "/api/instructor/modules":       # optional tools on or off for every profile on this device
+                    off = b.get("off")
+                    if not isinstance(off, list) or not all(m in store.MODULES for m in off):
+                        return self._json({"error": "Unknown tool."}, 400)
+                    store.save_config({"modules_off": [m for m in store.MODULES if m in off]})
+                    return self._json({"modules_off": [m for m in store.MODULES if not store.module_on(m)]})
                 if r == "/api/instructor/categories":    # which Learn categories Cadets get on this device
                     cats = b.get("categories")
                     if not isinstance(cats, list) or not all(c in store.ALL_CATEGORIES for c in cats):

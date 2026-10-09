@@ -276,7 +276,7 @@ class Brain:
             log = store.log_text(8)
             if log and re.search(r"\b(pt|score|run|plank|push|deadlift|qual|range|progress|log|goal|improv)\w*", text, re.I):
                 parts.append("## Their logbook (recent)\n" + log)
-            if self.faith and self.faith.catalog:
+            if self.faith and self.faith.catalog and store.module_on("faith"):
                 preferred = [x for x in (store.profile().get("faith_texts") or "").split(",") if x]
                 scripture = self.faith.context_for(text, preferred)
                 if scripture:
