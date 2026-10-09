@@ -228,6 +228,10 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
     _start_portable_ai(): VANGUARD_OLLAMA set by the .bat -> starts the drive's ollama serve (OLLAMA_MODELS on the
     drive) only if no Ollama answers; terminated at exit. Tested: built a drive in scratch, started from its python,
     data landed in VanguardData; the drive's ollama served qwen2.5:1.5b on a spare port.
+  - **RELEASED v0.1.0 (2026-10-09, owner approved):** GitHub release v0.1.0 (Vanguard-Setup-0.1.0.exe,
+    Vanguard-Setup-latest.exe, Vanguard-0.1.0.zip; private repo) and the site deployed to vanguard.winklers-llc.com
+    (home, /pilot, /security, installer + zip). NOT signed (no release key yet). No VANGUARD_PAGE_PASSWORD secret is
+    set, so the page is open to anyone with the address (noindex). Faith library not bundled (tools/fetch_faith.py).
 - **Next:** owner testing (run from C:\Code\Vanguard with `python run.py`), then Phase 7 Serve (service log +
   instructor verification), 8 Progress, 9 Instructor analytics, 10 Pilot. Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with
