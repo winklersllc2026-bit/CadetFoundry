@@ -1,72 +1,83 @@
 # Vanguard
 
-An offline AI study companion and logbook for U.S. Army Soldiers — from Basic Combat Training through AIT and the first duty station. Built on the ideas of [Vanguard](https://github.com/winklersllc2026-bit/Vanguard), stripped down to what a Soldier needs.
+**Leadership. Learning. Character.** A learning and leadership platform designed to support JROTC instructors and
+Cadets. Built by Winklers LLC.
 
-**Everything runs on the device, completely offline. No internet, no accounts, no tracking, no GPS.** See [SECURITY.md](SECURITY.md).
+Vanguard runs on the instructor's laptop. Cadets use it in a browser on school computers, tablets or phones on the
+classroom network — no cloud, no accounts on outside services, no advertising, no tracking. The instructor stays in
+control; Vanguard supplies the tools.
 
-## What it does
+> Vanguard is designed to support JROTC instruction. It is **not** an official JROTC, Army or school product, does not
+> replace your instructor or your program's curriculum, and makes no claim of endorsement.
 
-| Tab | |
+## For Cadets
+
+| Area | What's there today |
 |---|---|
-| **Ask** | Chat with Vanguard. Answers come from the official library and name their source (e.g. *AR 670-1*, *UCMJ*). If something isn't in the library, Vanguard says so. |
-| **Study** | Flashcards and quizzes: creeds & values, general orders, ranks, phonetic alphabet, customs, drill, first aid, land navigation, UCMJ, uniforms, money, OPSEC, reports. Practice drills: land-nav grids, the 9-line MEDEVAC request (type it, or say it like on the radio), and the SALUTE and LACE reports. **Board prep**: an AGSU uniform checklist from DA PAM 670-1, a mock board you answer out loud or by typing, and a word-by-word Soldier's Creed check. **Pocket cards**: print the 9-line, SALUTE/LACE, phonetic alphabet, Soldier's Creed and Army Values on one page to cut out and carry. Questions you miss come back more often. |
-| **Faith** | Optional. Public-domain scriptures from 12 texts across Christian (Protestant, Catholic, Orthodox), Jewish, Muslim, Latter-day Saint, Hindu, Buddhist and Taoist traditions. Look up passages, compare translations, search. |
-| **Log** | A personal logbook (PT scores, qualifications, training, goals, notes), an **Army Fitness Test scorer** using the official score tables, and **Letters home**: address book, drafts from your notes, and an OPSEC check before you send. |
-| **Me** | Profile, what Vanguard remembers, **PIN lock**, and **backup / restore**. |
+| **📘 Learn** | Your assignments from your instructor (lessons with vocabulary, questions and a reflection), study cards, quizzes and timed exams, and a library of public-domain books — the Declaration of Independence, the Constitution, the Bill of Rights, the Federalist Papers, American Military History (U.S. Army Center of Military History), and classics. Questions you miss come back more often. |
+| **🧭 Lead** | Leadership scenarios: a real Cadet situation (two teammates arguing, a teammate who stopped participating, a deadline, peer pressure, criticism, delegation, a new Cadet left out, falling short). You choose, see what happened and why, and write what you'd do next time — saved to your leadership log. No scores, no "wrong answer". |
+| **💪 Train** | Your fitness history and goals, measured against your own last result. |
+| **🤝 Serve** | Service learning (being built), and **Explore Military Service** — for Cadets who want to learn what serving is like: military pay tables, how a military pay statement works, the Army jobs explorer, leave, moving with the military, and letters to family, service members and veterans. Information only; nothing signs you up or contacts a recruiter. |
+| **📈 Progress** | Your growth over time (being built). |
+| **💬 Ask** | Questions about anything in the library. Answers come from sources stored on the device and name them. |
 
-Built-in care: **My people** (the Soldier's own battle buddy, chaplain, family — shown right under the crisis lines), a sleep tracker with FM 7-22 guidance, crisis support (988 then 1; text 838255), the DoD Safe Helpline, chaplain and Military OneSource — shown before anything else when someone is struggling. OPSEC reminders when someone starts typing unit movements, dates or locations.
+## For instructors
 
-**Family profiles**: a spouse or parent can have their own profile on the same device — Vanguard explains Army life in plain words, helps them support their Soldier and keep OPSEC, and hides the Soldier-only tools.
+- **Instructor profile + Instructor PIN.** Class records open only with both.
+- **Classes, platoons and squads**, each Cadet's unit and LET level.
+- **Lessons:** write a lesson (objective, content, questions, vocabulary, reflection prompt, private notes) and assign
+  it to everyone, to units, or to individual Cadets with a due date. See who's complete, in progress or not started,
+  with scores and reflections. Cadets who join a unit later get its lessons automatically.
+- **Leadership scenarios:** use the eight practice scenarios or write your own; read each Cadet's leadership log.
+- **Classroom mode:** project a scenario, Cadets vote A–D from their devices (anonymous — you see counts only), then
+  reveal the discussion guidance.
+- **AI setting** for the whole device: **Off**, **Library only** (default — the AI may only explain what the library
+  holds), or **Library + AI**.
 
-## Set up a device (one click)
+## Privacy, in plain words
 
-**Windows:** double-click `install-vanguard.bat` (needs internet once). It installs Python if it's missing, then asks a few yes/no questions — the faith library, the official Army library, offline voice, the offline AI (Ollama + a small model) and a desktop shortcut — and finishes with a summary. **Linux / Raspberry Pi:** `sh install-vanguard.sh`. Unattended: add `--yes` (and `--no-ai`, `--no-voice`, `--model=1.5b` as needed).
+- Everything stays on the instructor's laptop. Each profile has its own PIN, and its files are encrypted.
+- **The instructor sees class records only** — lessons, quizzes, exams, leadership scenarios, fitness and service.
+  A Cadet's private check-ins, chats, notes and letters are encrypted with that Cadet's own key, and the instructor
+  can't open them.
+- Cadets can never see another Cadet's work or anything in the instructor's tools.
+- No public leaderboards. Details for IT staff: [SECURITY.md](SECURITY.md).
 
-## Run it
+## Set up the instructor's laptop
 
-Needs Python 3.10+ (standard library only — nothing to install).
+**Windows:** double-click `install-vanguard.bat` (needs internet once). It installs Python if needed and offers the
+optional parts (offline AI, offline voice, the library). **Linux / Raspberry Pi:** `sh install-vanguard.sh`.
 
-```bash
-python run.py
+Run it:
+
+```
+python run.py              # this computer only (http://127.0.0.1:8765)
+python run.py --lan        # Cadets on the classroom network can connect (requires a PIN on every profile)
 ```
 
-Opens at http://127.0.0.1:8765. Options: `--no-browser` (kiosk / handheld), `--lan` (other devices on the same Wi-Fi can connect), `--port`.
+Needs Python 3.10+ and the `cryptography` package (installed by the setup script).
 
-### Offline AI
-Install [Ollama](https://ollama.com) and a small model:
+**First steps:** set the Instructor PIN in 👤 Me, then create your own profile and choose **An instructor**, and open
+🎓 Instructor. Cadets create their own profile with a PIN the first time they open Vanguard.
 
-```bash
+**Install as an app:** on a phone, "Add to Home Screen"; on a computer, "Install app" in the browser. Vanguard
+then opens full screen with its own icon.
+
+## Offline AI (optional)
+
+```
 ollama pull qwen2.5:3b
 ```
 
-`qwen2.5:3b` is the default and recommended model. Only on a very old or slow device, use `qwen2.5:1.5b` (`--model=1.5b`) — it's about twice as fast but mixes up facts more often. Vanguard picks the best installed model automatically. Without a model, the library, study tools, faith library and logbook still work.
+Without an AI model, everything except free-form AI explanations still works; answers come straight from the library.
+Facts like pay, fitness score tables and job descriptions always come from Vanguard's data, never from the AI.
 
-Vanguard has no internet options in its screens. (Technical operators only: online AI can be enabled by editing the config file — see SECURITY.md.)
+## Library
 
-### Voice (optional)
-Read-aloud uses the computer's own built-in voices (nothing leaves the device). To talk to Vanguard, install the offline speech recognizer once (needs internet one time, ~40 MB):
-
-```bash
-python tools/install_voice.py
-```
-
-Vanguard never uses the browser's built-in speech recognition — that sends audio to cloud servers.
-
-### Faith library (optional)
-Downloads the public-domain texts once (~32 MB), then works offline:
-
-```bash
-python tools/fetch_faith.py
-```
-
-### Official documents
-Drop public Army publications (PDF/TXT) into `library/` — see [LIBRARY.md](LIBRARY.md). PDFs need `pip install pypdf`.
-
-## Moving to a new device
-**Me → Download backup** saves everything in one file; copy it by USB and use **Me → Restore** on the new device.
+Public-domain books: `python tools/fetch_books.py`. Official public documents: drop them into `library/` — see
+[LIBRARY.md](LIBRARY.md).
 
 ## Data
-Everything the Soldier enters is stored in `~/.vanguard/` (or `$VANGUARD_DATA`) as plain files: profile, memory, logbook, study progress, recent chat, settings.
 
-## Not an official Army product
-Vanguard is a study aid. Standards and regulations change — confirm with your chain of command.
+Stored in `~/.vanguard/` (or `$VANGUARD_DATA`). Back up a profile from 👤 Me → Download backup (sealed with a
+password); restore it on another device the same way.

@@ -2,7 +2,7 @@
 
 # Vanguard — notes for anyone (or any AI session) working on this repo
 
-Offline study companion and logbook for U.S. Army Soldiers (and their families). Everything runs on the
+Learning and leadership platform for JROTC Cadets and instructors (see README.md, HANDOFF.md). Everything runs on the
 device: Python 3.10+ standard library server (`run.py`, `vanguard/`), one-page web UI (`web/`), optional
 Ollama model, optional Vosk voice. **No internet at runtime** — tools in `tools/` download things once on a
 setup machine.
@@ -12,10 +12,10 @@ setup machine.
   (`source:` line). Check wording against the actual text in `library/` (or an official page) before
   writing it. If no current public source exists, leave it out and add a roadmap item — never fill gaps
   from memory. CAC-only publications (`/epubs/DR_pubs/DR_c/` on armypubs) are never used.
-- **Safety first.** Crisis messages (`vanguard/safety.py`) always get the crisis lines and the Soldier's own
+- **Safety first.** Crisis messages (`vanguard/safety.py`) always get the crisis lines and the Cadet's own
   people, never library text, even with no AI model. OPSEC reminders stay.
 - **Offline and private.** No network calls from `vanguard/` at runtime (except the optional online AI a
-  technical operator enables). Soldier data lives in `~/.vanguard` (or `$VANGUARD_DATA`), encrypted
+  technical operator enables). Cadet data lives in `~/.vanguard` (or `$VANGUARD_DATA`), encrypted
   per profile when a PIN is set. New per-profile files must be added to `vanguard/backup.py`.
 
 ## Study cards (`vanguard/cards/*.md`)
@@ -28,7 +28,7 @@ source: AR 600-20, Army Command Policy (15 April 2026), paras 2-1, 2-19
 Body in Markdown (lists, **bold**; no tables — the renderer doesn't draw them).
 
 ## Quiz
-Q: question | A: answer as verified | ALSO: another way Soldiers ask it; another way
+Q: question | A: answer as verified | ALSO: another way Cadets ask it; another way
 ```
 - Quiz answers are shown word for word as "checked answers". Only add an `ALSO:` phrasing if the answer
   fits it exactly ("what happens if I go AWOL" → "Article 86" does NOT fit).
@@ -42,7 +42,7 @@ pages, converts PDFs to text once, records editions (`manifest.json`) and SHA-25
 ## Books (`books/`, not in git)
 `python tools/fetch_books.py` downloads public-domain books (catalog in `vanguard/books.py`; each book's chapter-heading
 pattern lives there). Books are for reading in Study → 📚 Books — **never** add them to `library/` or to Ask's
-search: Ask answers only from official sources. A Soldier's place in each book is `books.json` (per profile, in backups).
+search: Ask answers only from official sources. A Cadet's place in each book is `books.json` (per profile, in backups).
 
 ## Tests — run before every push
 ```
