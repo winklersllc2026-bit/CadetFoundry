@@ -12,8 +12,9 @@ const block = (title, text) => text ? `<div style="margin-top:10px"><b>${title}<
 // ── Cadet: Lead tab ──
 loaders.lead = async () => {
   const body = $('#leadBody');
-  const [list, liveNow] = await Promise.all([api('/api/scenarios'), STATUS.kind === 'cadet' ? api('/api/live') : {}]);
-  body.innerHTML = `<h2>Lead</h2><div id="liveBox"></div>
+  const cadet = STATUS.kind === 'cadet';
+  const [list, liveNow, quizNow] = await Promise.all([api('/api/scenarios'), cadet ? api('/api/live') : {}, cadet ? api('/api/live/quiz') : {}]);
+  body.innerHTML = `<h2>Lead</h2><div id="liveQuizBox"></div><div id="liveBox"></div>
     <div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
       <p class="faint" style="margin:0">Real situations a Cadet leader meets. Choose, see what happens, and reflect.</p>
       ${STATUS.kind === 'cadet' ? '<button class="btn small" id="myLog">📓 My leadership log</button>' : ''}</div>
@@ -22,10 +23,14 @@ loaders.lead = async () => {
   body.querySelectorAll('[data-sc]').forEach(b => b.addEventListener('click', () => openScenario(b.dataset.sc)));
   if ($('#myLog')) $('#myLog').addEventListener('click', showMyLog);
   showLive(liveNow);
+  showLiveQuiz(quizNow);
   clearInterval(livePoll);
-  if (STATUS.kind === 'cadet') livePoll = setInterval(async () => {
+  if (cadet) livePoll = setInterval(async () => {
     if (!$('#lead').classList.contains('on')) { clearInterval(livePoll); return; }
-    try { if ($('#liveBox')) showLive(await api('/api/live')); } catch (e) { clearInterval(livePoll); }
+    try {
+      if ($('#liveBox')) showLive(await api('/api/live'));
+      if ($('#liveQuizBox')) showLiveQuiz(await api('/api/live/quiz'));
+    } catch (e) { clearInterval(livePoll); }
   }, 5000);
 };
 
@@ -45,6 +50,42 @@ function showLive(lv) {
     const r = await api('/api/live/vote', { choice: Number(b.dataset.vote) });
     if (!r.error) showLive(await api('/api/live'));
   }));
+}
+
+// The live pop quiz: one answer each, graded by Vanguard; the answer shows only after the instructor reveals it.
+const LQ_RESULT = { right: '✅ Right!', close: '🟡 Close — check the wording below.', wrong: '❌ Not this time.' };
+function showLiveQuiz(lq) {
+  const box = $('#liveQuizBox');
+  if (!box) return;
+  if (!lq || !lq.id) { box.innerHTML = ''; box.dataset.key = ''; return; }
+  const key = lq.id + ':' + lq.answered + ':' + lq.revealed;
+  if (box.dataset.key === key) return;                       // don't redraw (and lose typing) every 5 seconds
+  box.dataset.key = key;
+  let inner;
+  if (lq.revealed) {
+    inner = `${lq.answered ? `<p style="font-size:18px"><b>${LQ_RESULT[lq.verdict] || ''}</b></p>` : '<p class="faint">You didn’t answer this one.</p>'}
+      <div class="card"><b>Answer:</b> ${esc(lq.answer)}</div>`;
+  } else if (lq.answered) {
+    inner = '<p>✅ Answer received. Your result shows when your instructor reveals the answer.</p>';
+  } else if (lq.mode === 'mc') {
+    inner = lq.choices.map((c, i) => `<button class="btn" data-lqc="${i}" style="display:block;width:100%;text-align:left;margin:6px 0"><b>${LETTERS[i]}.</b> ${esc(c)}</button>`).join('');
+  } else {
+    inner = `<label for="lqText" class="faint">Type your answer</label><input id="lqText" maxlength="500" autocomplete="off">
+      <button class="btn primary" id="lqSend" style="margin-top:8px">Send</button>`;
+  }
+  box.innerHTML = `<div class="card" style="border-color:var(--tan)"><h3>🎯 Live question</h3>
+    <p style="font-size:18px">${esc(lq.q)}</p>${inner}<p class="faint" id="lqMsg" role="alert"></p>
+    <p class="faint">One answer each. Your instructor sees only how many got it right — never who. A miss here is just something to learn.</p></div>`;
+  const send = async body => {
+    const r = await api('/api/live/quiz/answer', body);
+    if (r.error) { $('#lqMsg').textContent = r.error; return; }
+    showLiveQuiz(r);
+  };
+  box.querySelectorAll('[data-lqc]').forEach(b => b.addEventListener('click', () => send({ choice: lq.choices[Number(b.dataset.lqc)] })));
+  if ($('#lqSend')) {
+    $('#lqSend').addEventListener('click', () => send({ answer: $('#lqText').value }));
+    $('#lqText').addEventListener('keydown', e => { if (e.key === 'Enter') send({ answer: $('#lqText').value }); });
+  }
 }
 
 async function openScenario(id) {

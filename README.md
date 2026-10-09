@@ -28,9 +28,12 @@ control; Vanguard supplies the tools.
 - **Lessons:** write a lesson (objective, content, questions, vocabulary, reflection prompt, private notes) and assign
   it to everyone, to units, or to individual Cadets with a due date. See who's complete, in progress or not started,
   with scores and reflections. Cadets who join a unit later get its lessons automatically.
-- **Leadership scenarios:** use the eight practice scenarios or write your own; read each Cadet's leadership log.
+- **Leadership scenarios:** use the twenty practice scenarios or write your own; read each Cadet's leadership log.
 - **Classroom mode:** project a scenario, Cadets vote A–D from their devices (anonymous — you see counts only), then
   reveal the discussion guidance.
+- **Live pop quiz:** put any quiz question (or your own) on the projector as multiple choice or typed. Cadets answer
+  once in 🧭 Lead; Vanguard grades each answer. Results stay hidden until you reveal the answer, and you see how many
+  got it right — never who.
 - **AI setting** for the whole device: **Off**, **Library only** (default — the AI may only explain what the library
   holds), or **Library + AI**.
 

@@ -101,7 +101,11 @@ async function instructorQuizzes(body, ov) {
   const sec = document.createElement('div');
   sec.className = 'card';
   sec.innerHTML = `<h3>📝 Quiz questions</h3>
-    <button class="btn primary" id="popGo">🎯 Give a pop quiz</button><div id="popForm"></div>
+    <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn primary" id="popGo">🎯 Give a pop quiz</button>
+      <button class="btn" id="lqOwn">📡 Ask a live question</button><span id="lqResume"></span></div><div id="popForm"></div>
+    <label for="lqMode" style="margin-top:12px">Live questions are</label>
+    <select id="lqMode"><option value="mc">Practice — multiple choice</option><option value="typed">Challenge — typed answers</option></select>
+    <p class="faint">A live question goes on the projector; Cadets answer in 🧭 Lead on their own devices. Use 📡 on any question below.</p>
     <p class="faint" style="margin-top:12px">Change the wording or answer of a built-in question for your program, or hide it. The study card itself isn't changed.</p>
     <select id="qeCard" aria-label="Study card"><option value="">Choose a study card…</option>
       ${list.cards.map(c => `<option value="${esc(c.id)}">${esc(c.title)} (${c.questions})</option>`).join('')}</select>
@@ -115,7 +119,8 @@ async function instructorQuizzes(body, ov) {
       <label>Question</label><input data-qq value="${esc(q.edit.q || q.q)}" maxlength="300">
       <label>Answer</label><input data-qa value="${esc(q.edit.a || q.a)}" maxlength="500">
       <label style="display:flex;gap:10px;align-items:center;min-height:40px"><input type="checkbox" data-qh ${q.edit.hidden ? 'checked' : ''} style="width:22px;height:22px"> Hide this question from Cadets</label>
-      <div class="row" style="gap:6px"><button class="btn small primary" data-qsave>Save</button>${Object.keys(q.edit).length ? '<button class="btn small" data-qreset>Back to original</button>' : ''}</div>
+      <div class="row" style="gap:6px;flex-wrap:wrap"><button class="btn small primary" data-qsave>Save</button>${Object.keys(q.edit).length ? '<button class="btn small" data-qreset>Back to original</button>' : ''}
+        ${q.edit.hidden ? '' : '<button class="btn small" data-qlive>📡 Ask live</button>'}</div>
       <p class="faint" data-qmsg role="status">${Object.keys(q.edit).length ? 'Edited for your program.' : ''}</p></div>`).join('');
     box.querySelectorAll('[data-qe]').forEach(card => {
       const id = card.dataset.qe, orig = d.questions.find(q => q.id === id);
@@ -126,6 +131,31 @@ async function instructorQuizzes(body, ov) {
       });
       const rs = card.querySelector('[data-qreset]');
       if (rs) rs.addEventListener('click', async () => { await api('/api/instructor/quiz', { id, action: 'reset' }); $('#qeCard').dispatchEvent(new Event('change')); });
+      const lv = card.querySelector('[data-qlive]');
+      if (lv) lv.addEventListener('click', async () => {
+        const r = await api('/api/instructor/live-quiz', { action: 'start', id, mode: $('#lqMode').value });
+        if (r.error) { card.querySelector('[data-qmsg]').textContent = r.error; return; }
+        liveQuizMode();
+      });
+    });
+  });
+  api('/api/instructor/live-quiz').then(lq => {
+    if (!lq.id || !$('#lqResume')) return;
+    $('#lqResume').innerHTML = '<button class="btn" id="lqBack">📡 Back to the live question</button>';
+    $('#lqBack').addEventListener('click', liveQuizMode);
+  }).catch(() => {});
+  $('#lqOwn').addEventListener('click', () => {
+    $('#popForm').innerHTML = `<div class="card" style="margin-top:10px"><label for="lqQ">Question</label><input id="lqQ" maxlength="300">
+      <label for="lqA">Answer</label><input id="lqA" maxlength="300">
+      <label for="lqW">Wrong choices (optional, one per line — leave empty for a typed answer)</label><textarea id="lqW" rows="3" style="width:100%"></textarea>
+      <div class="row" style="gap:8px"><button class="btn primary" id="lqStart">Put it on the projector</button><button class="btn small" id="lqCancel">Cancel</button></div>
+      <p class="faint" id="lqMsg2" role="alert"></p></div>`;
+    $('#lqCancel').addEventListener('click', () => { $('#popForm').innerHTML = ''; });
+    $('#lqStart').addEventListener('click', async () => {
+      const wrong = $('#lqW').value.split('\n').map(s => s.trim()).filter(Boolean);
+      const r = await api('/api/instructor/live-quiz', { action: 'start', q: $('#lqQ').value, a: $('#lqA').value, choices: wrong, mode: wrong.length ? 'mc' : 'typed' });
+      if (r.error) { $('#lqMsg2').textContent = r.error; return; }
+      liveQuizMode();
     });
   });
   $('#popGo').addEventListener('click', () => {
@@ -144,4 +174,37 @@ async function instructorQuizzes(body, ov) {
       $('#popForm').innerHTML = `<p>✅ Given to ${r.assignment.cadets.length || 'everyone'}${r.assignment.cadets.length ? ' Cadet' + (r.assignment.cadets.length === 1 ? '' : 's') : ''}. Results show under 📋 Assignments.</p>`;
     });
   });
+}
+
+// ── The live pop quiz on the projector: big type, counts only (never who answered what) ──
+async function liveQuizMode() {
+  openView('classroom');
+  const box = $('#classroomBody');
+  const L = 'ABCDEF';
+  const draw = async () => {
+    const lq = await api('/api/instructor/live-quiz');
+    if (!lq.id) { clearInterval(livePoll); loaders.instructor(); openView('instructor'); return; }
+    const pct = n => lq.answered ? Math.round(100 * n / lq.answered) : 0;
+    const max = Math.max(1, ...(lq.counts || [0]));
+    box.innerHTML = `<div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+        <span class="faint">LIVE QUESTION · ${lq.answered} answer${lq.answered === 1 ? '' : 's'} · Cadets answer in 🧭 Lead</span>
+        <span class="row" style="gap:8px"><button class="btn small" id="lqReveal">${lq.revealed ? 'Hide answer' : 'Reveal answer'}</button>
+        <button class="btn small" id="lqEnd">End</button></span></div>
+      <h1 style="font-size:clamp(26px,4vw,48px);margin:18px 0">${esc(lq.q)}</h1>
+      ${lq.mode === 'mc' ? lq.choices.map((c, i) => `<div style="margin:14px 0;font-size:clamp(18px,2.4vw,30px)">
+        <b>${L[i]}.</b> ${esc(c)}${lq.revealed && c === lq.a ? ' ✅' : ''}
+        ${lq.revealed ? `<div style="display:flex;align-items:center;gap:10px;margin-top:6px"><div style="height:14px;border-radius:7px;background:var(--tan);width:${Math.round(lq.counts[i] / max * 70)}%;min-width:4px"></div>
+        <span class="faint">${lq.counts[i]}</span></div>` : ''}</div>`).join('') : '<p class="faint" style="font-size:20px">Typed answers — graded by Vanguard.</p>'}
+      ${lq.revealed ? `<div class="card" style="font-size:clamp(18px,2.2vw,28px)"><b>Answer:</b> ${esc(lq.a)}
+        <div class="faint" style="font-size:18px;margin-top:8px">${lq.right} of ${lq.answered} right (${pct(lq.right)}%)${lq.close ? ` · ${lq.close} close` : ''}</div></div>`
+        : '<p class="faint">Results stay hidden until you reveal the answer, so nobody copies the room.</p>'}`;
+    $('#lqReveal').addEventListener('click', async () => { await api('/api/instructor/live-quiz', { action: 'reveal', on: !lq.revealed }); draw(); });
+    $('#lqEnd').addEventListener('click', async () => { await api('/api/instructor/live-quiz', { action: 'stop' }); draw(); });
+  };
+  await draw();
+  clearInterval(livePoll);
+  livePoll = setInterval(() => {
+    if (!$('#classroom').classList.contains('on')) { clearInterval(livePoll); return; }
+    draw().catch(() => clearInterval(livePoll));
+  }, 3000);
 }

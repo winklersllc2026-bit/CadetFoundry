@@ -201,6 +201,14 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
     verified: no because TC 3-25.26 is restricted). 121 cards.
   - **Items 5-6 DONE:** study_skills (IES Practice Guide 2007: quizzing + deep questions = strong evidence). 122 cards.
     CONTENT_REFRESH.md = the yearly check list (time-sensitive cards, where to verify, manual editions).
+  - **Item 7 PENDING owner:** nutrition_hydration (FM 7-22) says low-fat dairy; health_eating_well (DGA 2025-2030) says
+    full-fat, no added sugar.
+  - **Item 8 DONE: live in-class pop quiz** -- vanguard/live_quiz.py (DATA/program/live_quiz.json); routes GET
+    /api/live/quiz, POST /api/live/quiz/answer (Cadets), GET/POST /api/instructor/live-quiz (start: card question id or
+    own q/a/choices, mode mc|typed; reveal; stop). One answer each, graded server-side (word grading, no AI, for speed),
+    no answer/verdict on the Cadet screen before the reveal, counts only for the instructor. Card questions also count
+    in study progress. UI: 📡 Ask live in the quiz editor + 'Ask a live question' form (dashboard.js), projector
+    liveQuizMode(), Cadet box at the top of Lead (scenarios.js). tests/test_live_quiz.py. Browser-checked end to end.
 - **Next:** owner testing (run from C:\Code\Vanguard with `python run.py`), then Phase 7 Serve (service log +
   instructor verification), 8 Progress, 9 Instructor analytics, 10 Pilot. Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with

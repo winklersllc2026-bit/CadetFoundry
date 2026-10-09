@@ -24,7 +24,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from vanguard import (addons, backup, board, books, careers, daily, engine, exam, fitness, instructor, integrity, knowledge,
-                      lessons, letters, pay, pilot, profiles, program_backup, progress, quiz_edits, reports, scenarios, security, service, store, train, voice)
+                      lessons, letters, live_quiz, pay, pilot, profiles, program_backup, progress, quiz_edits, reports, scenarios, security, service, store, train, voice)
 from vanguard.brain import Brain
 from vanguard.faith import Faith
 from vanguard.knowledge import Library
@@ -272,6 +272,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json({"events": train.events(), "units": train.UNITS, "cadets": out})
             if r == "/api/instructor/live":
                 return self._json(scenarios.live_for_instructor())
+            if r == "/api/instructor/live-quiz":
+                return self._json(live_quiz.for_instructor())
             if r == "/api/instructor/lessons":
                 return self._json(lessons.for_instructor(priv))
             if r == "/api/instructor/assignment":
@@ -320,6 +322,10 @@ class Handler(BaseHTTPRequestHandler):
             return self._json({"entries": scenarios.my_log()})
         if r == "/api/live":
             return self._json(scenarios.live_for_cadet(self._pid or ""))
+        if r == "/api/live/quiz":                       # the live pop quiz: never the answer before the reveal
+            if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
+                return self._json({})
+            return self._json(live_quiz.for_cadet(self._pid))
         if r == "/api/lessons":                          # the signed-in Cadet's own assignments
             if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
                 return self._json({"assignments": []})
@@ -734,6 +740,18 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json({"error": str(e)}, 404)
             except ValueError as e:
                 return self._json({"error": str(e)}, 400)
+        if r == "/api/live/quiz/answer":
+            if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
+                return self._json({"error": "Only Cadets answer."}, 403)
+            try:
+                ch = b.get("choice")
+                live_quiz.answer(self._pid, str(b.get("answer", "")), ch if isinstance(ch, str) else None,
+                                 use_ai=False)              # fast word grading: a whole class answers at once
+                return self._json(live_quiz.for_cadet(self._pid))
+            except LookupError as e:
+                return self._json({"error": str(e)}, 404)
+            except ValueError as e:
+                return self._json({"error": str(e)}, 400)
         if r == "/api/live/vote":
             if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
                 return self._json({"error": "Only Cadets vote."}, 403)
@@ -892,6 +910,24 @@ class Handler(BaseHTTPRequestHandler):
                     if sid and not sid.startswith("i-"):
                         sid = ""                          # editing a practice scenario saves your own copy
                     return self._json(scenarios.save_custom(sid, str(b.get("text", ""))[:20000]))
+                if r == "/api/instructor/live-quiz":
+                    act = str(b.get("action", ""))
+                    try:
+                        if act == "start":
+                            ch = b.get("choices") if isinstance(b.get("choices"), list) else []
+                            live_quiz.start(app.brain, str(b.get("id", ""))[:80], str(b.get("q", "")), str(b.get("a", "")),
+                                            [str(c) for c in ch[:6]], str(b.get("mode", "")))
+                        elif act == "reveal":
+                            live_quiz.reveal(bool(b.get("on", True)))
+                        elif act == "stop":
+                            live_quiz.stop()
+                        else:
+                            return self._json({"error": "Choose start, reveal or stop."}, 400)
+                    except LookupError as e:
+                        return self._json({"error": str(e)}, 404)
+                    except ValueError as e:
+                        return self._json({"error": str(e)}, 400)
+                    return self._json(live_quiz.for_instructor())
                 if r == "/api/instructor/live":
                     act = str(b.get("action", ""))
                     if act == "start":
