@@ -241,7 +241,8 @@ const TOUR = [
   ['serve', '🤝 Serve', 'Your service projects and hours, and Explore Military Service if you want to learn what serving is like.'],
   ['progress', '📈 Progress', 'Your growth over time, in one place.'],
 ];
-function tour(pid) {
+async function tour(pid) {
+  if ((await api('/api/status')).kind === 'instructor') return;   // the tour shows the Cadet areas
   const done = () => { try { localStorage.setItem('tour:' + pid, '1'); } catch (e) { } };
   const o = document.createElement('div');
   o.id = 'tour';

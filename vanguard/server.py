@@ -344,6 +344,9 @@ class Handler(BaseHTTPRequestHandler):
                     err = security.check_admin(str(b.get("admin", ""))[:32])
                     if err:
                         return self._json({"ok": False, "error": err}, 403)
+                    err = security.valid_new_pin(str(b.get("pin", "")))
+                    if err:
+                        return self._json({"ok": False, "error": "An instructor profile needs its own PIN. " + err}, 400)
                 p = profiles.create(str(b.get("name", "")), kind)
             except ValueError as e:
                 return self._json({"ok": False, "error": str(e)}, 400)

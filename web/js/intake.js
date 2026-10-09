@@ -44,6 +44,11 @@ const intake = {
     await chatReady;
     const [lock, st, cat] = await Promise.all([api('/api/lock'), api('/api/status'), api('/api/faith/catalog')]);
     STATUS = st;
+    if (st.kind === 'instructor') {                // the interview is for Cadets; instructors go to their tools
+      STATUS.profile = await api('/api/profile', { intake_done: 'yes' });
+      openView('instructor');
+      return;
+    }
     this.lock = lock; this.active = true; this.i = 0;
     this.qs = intakeQuestions({ ...(st.profile || {}), name: (st.profile || {}).name || lock.current.name }, st.kind, (cat && cat.installed) || []);
     openView('ask');
@@ -123,7 +128,7 @@ const intake = {
     // md() escapes, so plain values here
     const facts = [p.rank && p.name ? `**${p.rank} ${p.name}**` : p.name && `**${p.name}**`, p.age && `${p.age} years old`,
       p.height && p.weight && `${heightText(p.height)}, ${p.weight} lb`, p.mos && `MOS ${p.mos}`, p.stage && p.stage, p.station && `at ${p.station}`].filter(Boolean);
-    addMsg('ai', md(`You're set up${facts.length ? ': ' + facts.join(' · ') : ''}.\n\nYou can change any of this in the **Me** tab.${aiReady() ? '' : ' For full-sentence answers, add the **Offline AI** in **Me → Add-ons** (needs internet once).'} Now it's your turn — ask me anything about Army life, or tap a suggestion below.`));
+    addMsg('ai', md(`You're set up${facts.length ? ': ' + facts.join(' · ') : ''}.\n\nYou can change any of this in the **Me** tab.${aiReady() ? '' : ' For full-sentence answers, add the **Offline AI** in **Me → Add-ons** (needs internet once).'} Now it's your turn — ask me anything in the library, or tap a suggestion below.`));
     $('#suggest').hidden = false; $('#msgIn').placeholder = 'Ask Vanguard…';
     thread.appendChild($('#suggest'));
     refreshStatus();

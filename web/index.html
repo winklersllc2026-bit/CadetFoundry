@@ -98,6 +98,19 @@ label { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 4px
 #chatList .when { font-size: 11px; color: var(--faint); margin: 8px 4px 2px; text-transform: uppercase; letter-spacing: .06em; }
 .chatbar { display: none; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--line); background: var(--bg2); }
 .chatbar #chatTitle { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* header on phones: icons only, nothing pushed off-screen */
+.hdrNav { background: none; border: 1px solid var(--line2); border-radius: 999px; color: var(--text); padding: 6px 12px; font-size: 14px; margin-left: 6px; min-height: 40px; min-width: 40px; white-space: nowrap; }
+header { gap: 8px; }
+header > .row { flex-wrap: nowrap; min-width: 0; }
+@media (max-width: 560px) {
+  header { padding: 10px 10px; }
+  .brand small, .engine span:not(.dot) { display: none; }
+  .hdrNav, #modeBtn, #textBtn { margin-left: 4px; padding: 6px 9px; font-size: 13px; }
+  .hdrNav .lbl, #modeBtn .lbl { display: none; }
+}
+@media (max-width: 420px) {
+  .brand .name { display: none; }                 /* just the star: room for every button */
+}
 @media (max-width: 760px) {
   .chatbar { display: flex; }
   #chatSide { position: absolute; left: 0; top: 0; bottom: 0; z-index: 30; width: min(82vw, 300px); transform: translateX(-102%); transition: transform .2s; box-shadow: 4px 0 18px rgba(0,0,0,.35); }
@@ -163,14 +176,14 @@ body:not([data-kind="family"]) .family-only, body[data-kind="family"] .soldier-o
 </head>
 <body>
 <header>
-  <div class="brand"><span class="star">✦</span> VANGUARD <small id="hello"></small></div>
+  <div class="brand"><span class="star" aria-hidden="true">✦</span> <span class="name">VANGUARD</span> <small id="hello"></small></div>
   <div class="row" style="gap:4px;flex-wrap:nowrap">
     <div class="engine" id="engine"><span class="dot"></span><span>checking…</span></div>
-    <button type="button" class="hdrNav" data-open="ask" title="Ask a question" aria-label="Ask a question">💬 Ask</button>
+    <button type="button" class="hdrNav" data-open="ask" title="Ask a question" aria-label="Ask a question">💬<span class="lbl"> Ask</span></button>
     <button type="button" class="hdrNav" data-open="me" title="My profile and settings" aria-label="My profile and settings">👤</button>
     <button type="button" class="hdrNav" data-open="instructor" title="Instructor" aria-label="Instructor">🎓</button>
     <button id="textBtn" type="button" title="Larger text and buttons" aria-label="Large text" aria-pressed="false">A+</button>
-    <button id="modeBtn" type="button" title="Red-light mode keeps your night vision" aria-pressed="false">🔴 Night</button>
+    <button id="modeBtn" type="button" title="Red-light mode keeps your night vision" aria-pressed="false" aria-label="Red-light night mode">🔴<span class="lbl"> Night</span></button>
   </div>
 </header>
 

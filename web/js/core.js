@@ -89,7 +89,9 @@ async function showLock(msg) {
         <h2>${s.profiles.length ? 'New profile' : 'Welcome to Vanguard'}</h2>
         <p class="faint">Your logbook, letters and progress stay in your own profile on this device.</p>
         <label>Your name</label><input id="npName" maxlength="40" autocomplete="off">
-        <label>This profile is for</label><select id="npKind"><option value="cadet">A Cadet</option><option value="guardian">A parent or guardian</option></select>
+        <label>This profile is for</label><select id="npKind"><option value="cadet">A Cadet</option><option value="guardian">A parent or guardian</option><option value="instructor">An instructor</option></select>
+        <div id="npAdmBox" hidden><label>Instructor PIN</label><input id="npAdm" type="password" inputmode="numeric" maxlength="12" autocomplete="off" placeholder="Set in 👤 Me by the instructor">
+          <p class="faint">Instructor profiles need the Instructor PIN and their own PIN.</p></div>
         <label>PIN (6–12 digits)${s.profiles.length ? '' : ' — recommended'}</label>
         <input id="npPin" type="password" inputmode="numeric" maxlength="12" autocomplete="off" placeholder="${s.profiles.length ? 'Strongly recommended on a shared device' : 'Optional'}">
         <p class="faint">With a PIN, your files are encrypted on this device. You'll get a <b>recovery code</b> in case you ever forget it.</p>
@@ -98,9 +100,10 @@ async function showLock(msg) {
         ${s.profiles.length ? '<button type="button" class="btn small" id="backPick">← Back</button>' : ''}</form>`;
     $('#npName').focus();
     if ($('#backPick')) $('#backPick').onclick = pick;
+    $('#npKind').addEventListener('change', () => { $('#npAdmBox').hidden = $('#npKind').value !== 'instructor'; });
     $('#newForm').onsubmit = async ev => {
       ev.preventDefault();
-      const r = await api('/api/profiles/create', { name: $('#npName').value, pin: $('#npPin').value, kind: $('#npKind').value });
+      const r = await api('/api/profiles/create', { name: $('#npName').value, pin: $('#npPin').value, kind: $('#npKind').value, admin: $('#npAdm').value });
       if (r.ok) (r.recovery ? showRecoveryCode(r.recovery, go) : go()); else $('#npMsg').textContent = r.error;
     };
   };
@@ -167,7 +170,7 @@ new MutationObserver(() => {
   const btn = $('#modeBtn'), meta = document.querySelector('meta[name=theme-color]');
   const apply = red => {
     document.documentElement.dataset.mode = red ? 'red' : '';
-    btn.textContent = red ? '☀️ Day' : '🔴 Night';
+    btn.innerHTML = red ? '☀️<span class="lbl"> Day</span>' : '🔴<span class="lbl"> Night</span>';
     btn.setAttribute('aria-pressed', String(red));
     meta.content = red ? '#000000' : '#0f120e';
   };
@@ -195,14 +198,17 @@ document.querySelectorAll('[data-open]').forEach(b => b.addEventListener('click'
 
 // ── status ──
 let STATUS = {};
-const FAMILY_SUGGEST = ['How does basic training work?', 'What do Army ranks mean?', 'What should I not post online about my Soldier?',
-  'What is the Soldier and Family Readiness Group?', 'Where can military families get help?'];
+const FAMILY_SUGGEST = ['What is JROTC?', 'What does LET level mean?', 'What are the Army Values?',
+  'What do military ranks mean?', 'How can I support my Cadet?']
+let landed = false;
 async function refreshStatus() {
   STATUS = await api('/api/status');
+  if (!landed && STATUS.kind === 'instructor') openView('instructor');   // instructors start in their tools
+  landed = true;
   if ((document.body.dataset.kind = STATUS.kind || 'cadet') === 'guardian') {          // family member's profile
     $('#suggest').innerHTML = FAMILY_SUGGEST.map(q => `<button>${esc(q)}</button>`).join('');
     const hi = document.querySelector('#thread .msg.ai p');
-    if (hi) hi.textContent = "I'm Vanguard — here to help you understand Army life and support your Soldier. Ask me anything. Everything stays on this device.";
+    if (hi) hi.textContent = "I'm Vanguard — here to help you understand JROTC and support your Cadet. Ask me anything. Everything stays on this device.";
   }
   const e = STATUS.engine, el = $('#engine');
   const online = e.online_enabled && e.online_keys.length;
