@@ -102,8 +102,9 @@ def has_pin(pid: str) -> bool:
 
 
 def all_have_pins() -> bool:
-    ps = profiles.all_profiles()
-    return bool(ps) and all(has_pin(p["id"]) for p in ps)
+    """Every profile on this device has a PIN (true for a brand-new device with no profiles yet -- in LAN mode the
+    server then requires a PIN on every profile it creates, so it stays true)."""
+    return all(has_pin(p["id"]) for p in profiles.all_profiles())
 
 
 def idle_minutes() -> int:

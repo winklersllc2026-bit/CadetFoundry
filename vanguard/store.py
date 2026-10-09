@@ -513,13 +513,15 @@ def ai_mode() -> str:
 
 def save_config(data: dict) -> dict:
     c = config()
-    for k in ("model", "groq_key", "gemini_key", "online", "ai_mode", "categories", "portfolio_sections", "modules_off"):
+    for k in ("model", "groq_key", "gemini_key", "online", "ai_mode", "categories", "portfolio_sections", "modules_off", "demo"):
         if k in data:
             c[k] = data[k]
     if c.get("ai_mode") not in AI_MODES:
         c.pop("ai_mode", None)
     if "categories" in c and not (isinstance(c["categories"], list) and all(x in ALL_CATEGORIES for x in c["categories"])):
         c.pop("categories", None)
+    if "demo" in c and not isinstance(c["demo"], bool):
+        c.pop("demo", None)
     if "modules_off" in c and not (isinstance(c["modules_off"], list) and all(x in MODULES for x in c["modules_off"])):
         c.pop("modules_off", None)
     if "portfolio_sections" in c and not (isinstance(c["portfolio_sections"], list)

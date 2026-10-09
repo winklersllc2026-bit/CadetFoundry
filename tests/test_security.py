@@ -57,7 +57,7 @@ class SecurityTests(unittest.TestCase):
         """Call every /api route (GET and an empty POST) as a logged-in Soldier: nothing may crash (5xx).
         Catches a route that uses a module it never imported -- the unit tests call modules directly."""
         import re
-        routes = sorted(set(re.findall(r'if r == "(/api/[^"]+)"', (ROOT / "vanguard" / "server.py").read_text())))
+        routes = sorted(set(re.findall(r'if r == "(/api/[^"]+)"', (ROOT / "vanguard" / "server.py").read_text(encoding="utf-8"))))
         self.assertGreater(len(routes), 40)
         skip = {"/api/quit", "/api/chat", "/api/simplify", "/api/voice", "/api/lock", "/api/profiles/delete", "/api/pin/remove",
                 "/api/history/clear", "/api/library/reload", "/api/restore", "/api/update"}      # slow, or ends the session

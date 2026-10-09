@@ -75,6 +75,10 @@ Windows
 
   If Windows warns about the file, choose "More info" > "Run anyway". Nothing is installed on the computer.
 
+Install it on your own computer instead
+  Windows: double-click "Install Vanguard ... on this computer.exe" on this drive. Vanguard then runs from that
+  computer (a Vanguard icon on the desktop) and the drive isn't needed. Linux / Mac: the zip in Vanguard\\downloads.
+
 Linux / Mac
   sh start-vanguard-usb.sh            (or: sh start-vanguard-usb.sh --lan for the classroom)
 
@@ -163,6 +167,21 @@ def main(argv: list[str]) -> int:
             elif src.exists():
                 shutil.copy2(src, target)
 
+    # The installer and zip ride along: on the drive's root for whoever holds it, and in Vanguard\downloads so a
+    # Vanguard started from this drive (or a demo Pi set up from it) offers them on /download -- no internet needed.
+    version = build.__version__
+    setup, zipf = build.DIST / f"Vanguard-Setup-{version}.exe", build.DIST / f"Vanguard-{version}.zip"
+    downloads = app / "downloads"
+    shutil.rmtree(downloads, ignore_errors=True)
+    for old in drive.glob("Install Vanguard*.exe"):
+        old.unlink()
+    if setup.exists() and zipf.exists():
+        downloads.mkdir()
+        for f in (setup, zipf):
+            shutil.copy2(f, downloads / f.name)
+        shutil.copy2(setup, drive / f"Install Vanguard {version} on this computer.exe")
+    else:
+        print(f"Note: no installer for {version} in site/dist — run  python site/build.py  first to put it on the drive.")
     (drive / "VanguardData").mkdir(exist_ok=True)
     for name, args_ in (("Start Vanguard.bat", ""), ("Start Vanguard (classroom).bat", "--lan")):
         (drive / name).write_bytes(START_BAT.replace("{args}", args_).replace("\r\n", "\n").replace("\n", "\r\n").encode("ascii"))

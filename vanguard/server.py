@@ -13,9 +13,11 @@ from __future__ import annotations
 
 import base64
 import binascii
+import html
 import json
 import mimetypes
 import os
+import shutil
 import threading
 import time
 import urllib.parse
@@ -30,10 +32,22 @@ from vanguard.faith import Faith
 from vanguard.knowledge import Library
 
 WEB = (Path(__file__).parent.parent / "web").resolve()
+# Installers a demo box or USB drive hands out on its own network (tools/make_usb.py fills it): public, read-only.
+DOWNLOADS = Path(os.environ.get("VANGUARD_DOWNLOADS") or (Path(__file__).parent.parent / "downloads")).resolve()
+DOWNLOAD_TYPES = {".exe": "application/octet-stream", ".zip": "application/zip", ".sig": "text/plain",
+                  ".pdf": "application/pdf", ".txt": "text/plain"}
 mimetypes.add_type("application/manifest+json", ".webmanifest")
 PUBLIC_GET = {"/", "/index.html", "/icon.svg", "/api/lock",       # the app shell: installable before sign-in
               "/manifest.webmanifest", "/icon-192.png", "/icon-512.png", "/icon-maskable-512.png", "/apple-touch-icon.png"}       # reachable while locked (plus the page's scripts in /js/)
 PUBLIC_POST = {"/api/unlock", "/api/profiles/create", "/api/recover"}
+
+
+
+def _download_files() -> list[Path]:
+    try:
+        return sorted(f for f in DOWNLOADS.iterdir() if f.is_file() and f.suffix.lower() in DOWNLOAD_TYPES)
+    except OSError:
+        return []
 
 
 class App:
@@ -134,7 +148,8 @@ class Handler(BaseHTTPRequestHandler):
             return False
         pid = security.session_profile(self._token())
         public = PUBLIC_GET if method == "GET" else PUBLIC_POST
-        if route not in public and not pid and not (method == "GET" and route.startswith("/js/") and route.endswith(".js")):
+        if (route not in public and not pid and not (method == "GET" and route.startswith("/js/") and route.endswith(".js"))
+                and not (method == "GET" and (route == "/download" or route.startswith("/downloads/")))):
             self._deny(401, "Locked.")
             return False
         if pid:
@@ -199,8 +214,40 @@ class Handler(BaseHTTPRequestHandler):
         """A tool the instructor switched off for this device: its routes are refused, not just hidden."""
         return any(r.startswith(prefixes) and not store.module_on(m) for m, prefixes in self._MODULE_ROUTES)
 
+    def _download_page(self):
+        """The installers on this box, for visitors to take Vanguard home -- no internet needed."""
+        esc = html.escape
+        rows = "".join(f'<li><a href="/downloads/{urllib.parse.quote(f.name)}">{esc(f.name)}</a> '
+                       f'<span>({f.stat().st_size / 2**20:.1f} MB)</span></li>' for f in _download_files())
+        page = f"""<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Get Vanguard</title>
+<style>body{{margin:0;background:#0f120e;color:#ece6d6;font:17px/1.55 system-ui,sans-serif}} .w{{max-width:640px;margin:0 auto;padding:24px 16px}}
+a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</style></head><body><div class="w">
+<h1>Get Vanguard for your computer</h1>
+<p>Download straight from this Vanguard — no internet needed.</p><ul>{rows or '<li>No downloads on this device.</li>'}</ul>
+<p><b>Windows:</b> the <i>Setup</i> file. If Windows says "Windows protected your PC", choose <i>More info → Run anyway</i>.<br>
+<b>Linux, Mac or Raspberry Pi:</b> the zip — unzip it and run <code>sh install-vanguard.sh</code>.</p>
+<p><a href="/">← Back to Vanguard</a></p></div></body></html>"""
+        data = page.encode("utf-8")
+        self._headers(200, "text/html; charset=utf-8", len(data))
+        self.wfile.write(data)
+
+    def _download_file(self, r: str):
+        name = urllib.parse.unquote(r[len("/downloads/"):])
+        f = next((x for x in _download_files() if x.name == name), None)      # only files listed, never a path
+        if not f:
+            return self._deny(404, "Not found.")
+        self._headers(200, DOWNLOAD_TYPES[f.suffix.lower()], f.stat().st_size,
+                      extra={"Content-Disposition": f'attachment; filename="{f.name}"'})
+        with f.open("rb") as fh:
+            shutil.copyfileobj(fh, self.wfile, 1 << 20)
+
     def _get(self, r: str):
         q, app = self._query(), self.app
+        if r == "/download":
+            return self._download_page()
+        if r.startswith("/downloads/"):
+            return self._download_file(r)
         if self._module_off(r):
             return self._json({"error": "Your instructor has turned this tool off."}, 403)
         if r.startswith("/api/instructor/"):            # instructor only: profile role + Instructor PIN this session
@@ -349,7 +396,8 @@ class Handler(BaseHTTPRequestHandler):
                                  "has_pin": security.has_pin(p["id"]),
                                  "lockout": security.lockout_remaining(p["id"])} for p in profiles.all_profiles()],
                    "unlocked": bool(self._pid), "admin_set": security.admin_set(),
-                   "on_this_computer": self._local()}
+                   "on_this_computer": self._local(), "demo": bool(store.config().get("demo")), "lan": self.app.lan,
+                   "downloads": bool(_download_files())}
             if self._pid:
                 cur = profiles.get(self._pid)
                 out.update({"current": {"id": cur["id"], "name": cur["name"]}, "pin_set": security.pin_set(),
@@ -520,6 +568,11 @@ class Handler(BaseHTTPRequestHandler):
                     err = security.valid_new_pin(str(b.get("pin", "")))
                     if err:
                         return self._json({"ok": False, "error": "An instructor profile needs its own PIN. " + err}, 400)
+                if self.app.lan:                         # on the classroom network every profile needs a PIN
+                    err = security.valid_new_pin(str(b.get("pin", "")))
+                    if err:
+                        return self._json({"ok": False, "error": "On the classroom network every profile needs a PIN. "
+                                                                 + err}, 400)
                 p = profiles.create(str(b.get("name", "")), kind)
             except ValueError as e:
                 return self._json({"ok": False, "error": str(e)}, 400)
@@ -570,6 +623,8 @@ class Handler(BaseHTTPRequestHandler):
             code = security.make_recovery_code(str(b.get("pin", ""))[:32])
             return self._json({"recovery": code} if code else {"error": "Wrong PIN."}, 200 if code else 401)
         if r == "/api/pin/remove":
+            if self.app.lan:
+                return self._json({"ok": False, "error": "On the classroom network every profile keeps its PIN."}, 403)
             if (profiles.get(self._pid or "") or {}).get("kind") == "instructor":
                 return self._json({"ok": False, "error": "An instructor profile always keeps its PIN."}, 403)
             err = security.remove_pin(str(b.get("current", "")))

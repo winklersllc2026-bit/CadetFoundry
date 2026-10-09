@@ -81,6 +81,20 @@ connect over the classroom network). Keep the window open while you use it; clos
 before unplugging. Run the command again to update the drive — the `VanguardData` folder is never touched.
 Linux / Mac: `sh start-vanguard-usb.sh` on the drive. Details: `README-USB.txt` on the drive.
 
+## Demo box: Raspberry Pi with its own Wi-Fi
+
+A Raspberry Pi (Zero 2 W or newer) can carry Vanguard anywhere: its own Wi-Fi network, no internet, starts by itself
+on power-up, and visitors can download the installer from it. On this computer:
+
+```
+python site/build.py                      # the installer that goes on the drive and the Pi
+python tools/make_demo_kit.py E:\         # the USB to hand over + demo/ (Pi settings, printable QR card, Pi guide)
+```
+
+Then follow `demo/README-PI.txt` on the drive: copy the Vanguard and demo folders to the Pi and run
+`sudo sh ~/Vanguard/tools/pi_setup.sh`. Cadets join the "Vanguard" Wi-Fi and open http://vanguard.lan. A Pi Zero 2 W
+serves about 10 Cadets at a time, with library answers only (no AI).
+
 ## Offline AI (optional)
 
 ```

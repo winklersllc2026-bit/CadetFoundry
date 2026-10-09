@@ -235,6 +235,14 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
   - **RELEASED v0.1.1 (2026-10-09):** same as 0.1.0 plus the faith library (12 public-domain texts, fetched with
     tools/fetch_faith.py on the build PC; faith/ stays git-ignored). Installer 22.0 MB, zip 15.1 MB (Cloudflare
     limit 25 MB per file). Still unsigned.
+  - **Demo kit + v0.1.2 (2026-10-09):** tools/make_demo_kit.py <drive> (make_usb + demo/vanguard-demo.conf,
+    Demo-Card.html with Wi-Fi/address QR codes via the qrcode package on the build PC, README-PI.txt);
+    tools/pi_setup.sh (Bookworm: python3-cryptography, /opt/vanguard, user vanguard, data /var/lib/vanguard, demo +
+    ai_mode off, Instructor PIN prompt, systemd vanguard.service on port 80 --lan, NetworkManager hotspot
+    vanguard-hotspot 10.42.0.1 + dnsmasq vanguard.lan). Public /download and /downloads/<file> (only files in
+    downloads/, VANGUARD_DOWNLOADS); /api/lock has demo, lan, downloads. FIXED: --lan refused to start with zero
+    profiles (all_have_pins); LAN now requires a PIN on every new profile and refuses PIN removal. NOT tested on a real
+    Pi (no hardware here); everything else tested on this PC. tests/test_demo_box.py.
 - **Next:** owner testing (run from C:\Code\Vanguard with `python run.py`), then Phase 7 Serve (service log +
   instructor verification), 8 Progress, 9 Instructor analytics, 10 Pilot. Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with

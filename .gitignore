@@ -17,3 +17,5 @@ site/.stage/
 site/.cache/
 books/*
 !books/README.md
+# Installers handed out by a demo box / USB drive (tools/make_usb.py)
+downloads/

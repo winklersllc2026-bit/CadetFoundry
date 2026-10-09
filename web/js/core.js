@@ -37,13 +37,16 @@ async function showLock(msg) {
   d.style.cssText = 'position:fixed;inset:0;z-index:100;background:var(--bg);overflow:auto;padding:16px;display:grid;place-items:center';
   document.body.appendChild(d);
   const go = () => location.replace('/');
+  // a demo box says so, and any Vanguard with installers on it offers them (both on every sign-in screen)
+  const extras = (s.demo ? '<p class="faint" style="border-top:1px solid var(--line);padding-top:10px;text-align:center">🧪 <b>Demo unit.</b> This small, portable Vanguard runs on a Raspberry Pi — about 10 Cadets at a time. Please sign in a few at a time.</p>' : '')
+    + (s.downloads ? '<p style="margin:6px 0 0;text-align:center"><a href="/download" style="color:var(--tan)">⬇ Get Vanguard for your own computer</a></p>' : '');
   const pick = () => {
     d.innerHTML = `<div class="card" style="width:100%;max-width:380px;text-align:center">
         <div style="font-size:28px">✦</div><h2>Who's using Vanguard?</h2>
         <div style="display:grid;gap:8px;margin:12px 0">${s.profiles.map(p =>
           `<button class="btn" data-p="${esc(p.id)}" style="text-align:left">${p.kind === 'guardian' ? '👪' : '👤'} ${esc(p.name)} ${p.has_pin ? '<span class="faint">🔒</span>' : ''}</button>`).join('')}</div>
         <button class="btn small" id="newProf">+ New profile</button>
-        <p class="faint">${esc(msg || '')}</p></div>`;
+        <p class="faint">${esc(msg || '')}</p>${extras}</div>`;
     d.querySelectorAll('[data-p]').forEach(b => b.onclick = () => {
       const p = s.profiles.find(x => x.id === b.dataset.p);
       p.has_pin ? pinFor(p) : api('/api/unlock', { profile: p.id, pin: '' }).then(r => r.ok && go());
@@ -95,12 +98,12 @@ async function showLock(msg) {
              <p class="faint">Instructor profiles need the Instructor PIN and their own PIN.</p>`
           : `<label>Choose the Instructor PIN (6–12 digits)</label><input id="npAdm" type="password" inputmode="numeric" maxlength="12" autocomplete="off">
              <p class="faint">First-time setup. The Instructor PIN opens class records and controls settings for the whole device. Keep it different from your own PIN below, and don't share it with Cadets.</p>`}</div>
-        <label>PIN (6–12 digits)${s.profiles.length ? '' : ' — recommended'}</label>
-        <input id="npPin" type="password" inputmode="numeric" maxlength="12" autocomplete="off" placeholder="${s.profiles.length ? 'Strongly recommended on a shared device' : 'Optional'}">
+        <label>PIN (6–12 digits)${s.lan ? ' — required' : s.profiles.length ? '' : ' — recommended'}</label>
+        <input id="npPin" type="password" inputmode="numeric" maxlength="12" autocomplete="off" placeholder="${s.lan ? 'Required on the classroom network' : s.profiles.length ? 'Strongly recommended on a shared device' : 'Optional'}">
         <p class="faint">With a PIN, your files are encrypted on this device. You'll get a <b>recovery code</b> in case you ever forget it.</p>
         <button class="btn primary" style="width:100%;margin-top:12px">Create profile</button>
         <p class="faint" id="npMsg"></p>
-        ${s.profiles.length ? '<button type="button" class="btn small" id="backPick">← Back</button>' : ''}</form>`;
+        ${s.profiles.length ? '<button type="button" class="btn small" id="backPick">← Back</button>' : ''}${extras}</form>`;
     $('#npName').focus();
     if ($('#backPick')) $('#backPick').onclick = pick;
     $('#npKind').addEventListener('change', () => { $('#npAdmBox').hidden = $('#npKind').value !== 'instructor'; });
