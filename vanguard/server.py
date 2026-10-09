@@ -488,6 +488,8 @@ class Handler(BaseHTTPRequestHandler):
             code = security.make_recovery_code(str(b.get("pin", ""))[:32])
             return self._json({"recovery": code} if code else {"error": "Wrong PIN."}, 200 if code else 401)
         if r == "/api/pin/remove":
+            if (profiles.get(self._pid or "") or {}).get("kind") == "instructor":
+                return self._json({"ok": False, "error": "An instructor profile always keeps its PIN."}, 403)
             err = security.remove_pin(str(b.get("current", "")))
             return self._json({"ok": not err, "error": err}, 400 if err else 200)
         if r == "/api/pin/idle":

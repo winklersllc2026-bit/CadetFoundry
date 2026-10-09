@@ -41,7 +41,7 @@ async function showIntegrity() {
     <p>${icon} ${esc(st.message)}</p>${list('Changed', st.changed)}${list('Missing', st.missing)}${list('New, not fingerprinted', st.added)}
     <div class="row"><button class="btn small" id="intCheck">Check again</button></div>
     <h4>Instructor PIN</h4>
-    <p class="faint">${adm ? 'Set. It is needed to install updates and reload the library. It is separate from every profile PIN.' : 'Not set. Installing updates needs an Instructor PIN, so one profile can\'t change Vanguard for everyone on a shared device. Whoever looks after this device should set it.'}</p>
+    <p class="faint">${adm ? 'Set. It opens class records in 🎓 Instructor and controls the AI setting, Learn categories, updates and the library. It is separate from every profile PIN.' : 'Not set. Installing updates needs an Instructor PIN, so one profile can\'t change Vanguard for everyone on a shared device. Whoever looks after this device should set it.'}</p>
     <div class="row">${adm ? '<input id="admCur" type="password" inputmode="numeric" maxlength="12" placeholder="Current Instructor PIN" style="flex:1">' : ''}
       <input id="admNew" type="password" inputmode="numeric" maxlength="12" placeholder="New Instructor PIN (6–12 digits)" style="flex:1">
       <button class="btn small" id="admSave">${adm ? 'Change' : 'Set Instructor PIN'}</button></div><p class="faint" id="admMsg"></p>
@@ -91,6 +91,7 @@ loaders.me = async () => {
       <input type="checkbox" class="faithPick" value="${esc(t.id)}" ${myFaith.has(t.id) ? 'checked' : ''} style="width:auto">
       ${esc(t.name)} <span class="faint">— ${esc(t.tradition)}</span></label>`).join('')
     : '<p class="faint">No scripture texts installed on this device.</p>';
+  const isInst = STATUS.kind === 'instructor', isCadet = STATUS.kind === 'cadet';
   const gradeOpts = ['', ...(STATUS.grades || [])].map(s => `<option ${p.grade === s ? 'selected' : ''}>${esc(s)}</option>`).join('');
   $('#meBody').innerHTML = `<h2>Me</h2>
     <div class="card"><div class="row" style="justify-content:space-between">
@@ -100,16 +101,20 @@ loaders.me = async () => {
       <p class="faint">Everyone on this device has their own profile, locked by their own PIN. Other Cadets can never see yours.</p></div>
     <form class="card" id="profForm">
       <div class="row" style="flex-wrap:wrap;gap:8px"><div style="flex:2;min-width:180px"><label>Name</label><input name="name" value="${esc(p.name)}"></div>
-      <div style="flex:1;min-width:140px"><label>Grade</label><select name="grade">${gradeOpts}</select></div></div>
-      <label>What I want to get better at</label><input name="interests" value="${esc(p.interests)}" placeholder="e.g. public speaking, fitness, leadership">
-      <label>My goals</label><textarea name="goals" rows="2" placeholder="e.g. lead my squad at the next drill meet, raise my grades, run a faster mile">${esc(p.goals)}</textarea>
-      <label>My faith texts (optional — used first in the Faith tab and when you ask about a passage)</label>
-      <div>${faithBoxes}</div>
+      ${isCadet ? `<div style="flex:1;min-width:140px"><label>Grade</label><select name="grade">${gradeOpts}</select></div>` : ''}</div>
+      ${isCadet ? `<label>What I want to get better at</label><input name="interests" value="${esc(p.interests)}" placeholder="e.g. public speaking, fitness, leadership">` : ''}
+      ${isInst ? '' : `<label>${isCadet ? 'My goals' : 'What would help you most'}</label><textarea name="goals" rows="2" placeholder="${isCadet
+        ? 'e.g. lead my squad at the next drill meet, raise my grades, run a faster mile' : 'e.g. understanding JROTC and the terms my Cadet uses'}">${esc(p.goals)}</textarea>`}
+      ${isCadet && (STATUS.categories_enabled || []).includes('basic') ? `<label style="display:flex;gap:10px;align-items:flex-start;margin-top:10px;color:var(--text)">
+        <input type="checkbox" id="mtBox" ${p.military_track === 'yes' ? 'checked' : ''} style="width:22px;height:22px;flex:none">
+        <span>I plan to join the military <span class="faint">— adds the 🪖 Basic Training &amp; Beyond study guide to Learn</span></span></label>` : ''}
+      ${isInst ? '<p class="faint">Program settings — Instructor PIN and the AI setting — are further down this page; classes, lessons and Cadets are in 🎓 Instructor.</p>' : ''}
+      ${cat.length ? `<label>My faith texts (optional — used first in the Faith tab and when you ask about a passage)</label><div>${faithBoxes}</div>` : ''}
       <div class="row" style="margin-top:10px"><button class="btn primary">Save</button><span class="faint" id="profSaved"></span></div>
     </form>
-    <div class="card"><h3>What Vanguard remembers about you</h3>
+    ${isInst ? '' : `<div class="card"><h3>What Vanguard remembers about you</h3>
       ${mems.length ? mems.map(m => `<div class="row" style="justify-content:space-between;border-bottom:1px solid var(--line);padding:6px 0"><span>${esc(m.text)}</span><button class="btn small danger" data-forget="${esc(m.id)}">Forget</button></div>`).join('') : '<p class="faint">Nothing yet. Vanguard learns as you talk, or add something:</p>'}
-      <div class="row" style="margin-top:8px"><input id="memIn" placeholder="e.g. I'm working on my plank time" style="flex:1"><button class="btn small" id="memAdd">Add</button></div></div>
+      <div class="row" style="margin-top:8px"><input id="memIn" placeholder="e.g. I'm working on my plank time" style="flex:1"><button class="btn small" id="memAdd">Add</button></div></div>`}
     <div class="card"><h3>Security</h3>
       <p class="muted">${lock.pin_set ? `A PIN protects Vanguard. It locks after <b>${lock.idle_minutes}</b> minutes without use.${lock.encrypted ? ' Your files are <b>encrypted</b> on this device.' : ''}` : 'No PIN set — anyone who picks up this device can open Vanguard, and your files are not encrypted. Set a PIN of 6–12 digits.'}</p>
       <p class="faint">Your PIN and your <b>recovery code</b> are the only keys to your encrypted files. If you forget your PIN, use "Forgot PIN?" on the lock screen. Lost your code? Make a new one here (it replaces the old one).</p>
@@ -120,34 +125,37 @@ loaders.me = async () => {
       </div>
       ${lock.pin_set ? `<div class="row" style="margin-top:8px">
         <label style="margin:0">Lock after</label><select id="idleSel" style="width:auto">${[5, 10, 15, 30, 60].map(m => `<option ${m === lock.idle_minutes ? 'selected' : ''}>${m}</option>`).join('')}</select><span class="faint">minutes</span>
-        <button class="btn small" id="lockNow">🔒 Lock now</button><button class="btn small" id="newCode">🔑 New recovery code</button><button class="btn small danger" id="pinRemove">Remove PIN</button></div>` : ''}
+        <button class="btn small" id="lockNow">🔒 Lock now</button><button class="btn small" id="newCode">🔑 New recovery code</button>${isInst ? '' : '<button class="btn small danger" id="pinRemove">Remove PIN</button>'}</div>` : ''}
+      ${isInst ? '<p class="faint">An instructor profile always keeps its PIN.</p>' : ''}
       <p class="faint" id="pinMsg"></p>
       <p class="faint">For full protection if the device is lost, also turn on disk encryption (BitLocker on Windows) — see SECURITY.md.</p>
     </div>
     <div class="card"><h3>About this device</h3>
-      <p class="muted">${e.model ? `Offline AI model: <b>${esc(e.model)}</b>.` : 'No offline AI model installed — the library, study tools, faith library and logbook still work.'}</p>
+      <p class="muted">${e.model ? `Offline AI model: <b>${esc(e.model)}</b>.` : 'No offline AI model installed — the library, study tools and logbook still work.'}</p>
       <p class="muted">Library: ${lib.cards} study cards, ${lib.quiz_questions} quiz questions, ${lib.documents.length} official documents. Vanguard works completely offline.</p>
       <p class="muted">Voice: ${speech.ok ? `read-aloud ready (${esc(speech.voice.name)}, on this device)` : 'no offline voice found for read-aloud'}${STATUS.voice ? ' · 🎤 talk-to-Vanguard installed' : ' · 🎤 talk-to-Vanguard not installed (tools/install_voice.py)'}.</p>
       ${speech.ok ? `<label style="color:var(--text)"><input type="checkbox" id="autoRead" ${speech.auto ? 'checked' : ''} style="width:auto"> Read every answer aloud automatically</label>` : ''}
-      <div class="row" style="margin-top:8px"><button class="btn small" id="quitApp">⏻ Quit Vanguard</button><button class="btn small" id="tourAgain">Take the tour</button><button class="btn small" id="reloadLib">Reload library</button><button class="btn small danger" id="clearChat">Clear chat history</button></div>
+      <div class="row" style="margin-top:8px"><button class="btn small" id="quitApp">⏻ Quit Vanguard</button>${isInst ? '' : '<button class="btn small" id="tourAgain">Take the tour</button>'}<button class="btn small" id="reloadLib">Reload library</button><button class="btn small danger" id="clearChat">Clear chat history</button></div>
     </div>
     <div class="card"><h3>Backup and move to a new device</h3>
       <p class="muted">Saves your profile, logbook, letters, address book, study progress and what Vanguard remembers into one <b>encrypted</b> file. Device settings are never included.</p>
+      ${isInst ? '<p class="faint">This backs up your own profile only. Your program — classes, lessons, scenarios, fitness events — isn\'t in it yet; a program export is coming in a later update.</p>' : ''}
       <label>Backup password (at least 10 characters — three or four words works well)</label>
       <input id="bkPass" type="password" autocomplete="new-password" maxlength="200" placeholder="Needed to open the backup later — write it down">
       <div class="row" style="margin-top:8px"><button class="btn small" id="bkSave">⬇ Download encrypted backup</button>
         <label class="btn small" style="margin:0;color:var(--text)">⬆ Restore from backup<input type="file" id="restoreFile" accept=".json,application/json" hidden></label></div>
       <p class="faint" id="restoreMsg">Restoring replaces what's on this device with the backup. Without the backup password, nobody can open the file.</p></div>
-    <p class="faint">Vanguard is a study aid, not an official Army source. Confirm standards with your chain of command. Everything you enter stays on this device — there is no tracking.</p>`;
+    <p class="faint">Vanguard is designed to support JROTC instruction. It isn't an official JROTC, Army or school source — your instructor and official sources come first. Everything you enter stays on this device; there is no tracking.</p>`;
   $('#profForm').onsubmit = async ev => {
     ev.preventDefault();
     const data = Object.fromEntries(new FormData(ev.target));
+    if ($('#mtBox')) data.military_track = $('#mtBox').checked ? 'yes' : '';
     data.faith_texts = [...document.querySelectorAll('.faithPick:checked')].map(x => x.value).join(',');
     const r = await api('/api/profile', data);
     $('#profSaved').textContent = r.error ? r.error : 'Saved.'; refreshStatus();
   };
   $('#meBody').querySelectorAll('[data-forget]').forEach(b => b.onclick = async () => { await api('/api/memory/forget', { id: b.dataset.forget }); loaders.me(); });
-  $('#memAdd').onclick = async () => { if ($('#memIn').value.trim()) { await api('/api/memory', { text: $('#memIn').value }); loaders.me(); } };
+  if ($('#memAdd')) $('#memAdd').onclick = async () => { if ($('#memIn').value.trim()) { await api('/api/memory', { text: $('#memIn').value }); loaders.me(); } };
   showIntegrity().then(showAddons);
   $('#renameProf').onclick = () => {
     $('#profName').innerHTML = `<form id="renameForm" class="row" style="flex-wrap:nowrap"><input id="renameIn" maxlength="40" value="${esc(lock.current.name)}" aria-label="New profile name" style="flex:1">
@@ -182,7 +190,7 @@ loaders.me = async () => {
     };
     $('#idleSel').onchange = async ev => { await api('/api/pin/idle', { minutes: +ev.target.value }); loaders.me(); };
     $('#lockNow').onclick = async () => { await api('/api/lock', {}); location.reload(); };
-    $('#pinRemove').onclick = async () => {
+    if ($('#pinRemove')) $('#pinRemove').onclick = async () => {
       const cur = $('#pinCur').value;
       if (!cur) { $('#pinMsg').textContent = 'Type your current PIN first.'; return; }
       if (!confirm('Remove the PIN? Your files will be decrypted, and anyone with this device could open them.')) return;
@@ -212,7 +220,7 @@ loaders.me = async () => {
     $('#restoreMsg').textContent = 'Encrypted backup saved. Keep the password somewhere safe — the file is useless without it.';
   };
   if ($('#autoRead')) $('#autoRead').onchange = ev => speech.setAuto(ev.target.checked);
-  $('#tourAgain').onclick = () => tour(lock.current.id);
+  if ($('#tourAgain')) $('#tourAgain').onclick = () => tour(lock.current.id);
   $('#quitApp').onclick = async () => {
     if (!confirm('Close Vanguard? Open it again any time from the desktop icon.')) return;
     await api('/api/quit', {});

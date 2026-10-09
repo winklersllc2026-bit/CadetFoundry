@@ -25,7 +25,7 @@ loaders.lead = async () => {
   clearInterval(livePoll);
   if (STATUS.kind === 'cadet') livePoll = setInterval(async () => {
     if (!$('#lead').classList.contains('on')) { clearInterval(livePoll); return; }
-    if ($('#liveBox')) showLive(await api('/api/live'));
+    try { if ($('#liveBox')) showLive(await api('/api/live')); } catch (e) { clearInterval(livePoll); }
   }, 5000);
 };
 
@@ -177,5 +177,9 @@ async function classroomMode() {
   };
   await draw();
   clearInterval(livePoll);
-  livePoll = setInterval(() => { if ($('#classroom').classList.contains('on')) draw(); else clearInterval(livePoll); }, 3000);
+  // stop polling when the view closes or the session locks (an error), never keep calling a locked server
+  livePoll = setInterval(() => {
+    if (!$('#classroom').classList.contains('on')) { clearInterval(livePoll); return; }
+    draw().catch(() => clearInterval(livePoll));
+  }, 3000);
 }

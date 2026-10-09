@@ -405,6 +405,9 @@ class SecurityTests(unittest.TestCase):
         self.addCleanup(profiles.delete, inst["id"])
         self.assertEqual(inst["kind"], "instructor")
         teacher = self.login(inst["id"], "736281")
+        # an instructor profile can't drop its PIN (it would leave a doorway into the instructor tools)
+        self.assertEqual(post("/api/pin/remove", {"current": "736281"}, teacher)[0], 403)
+        self.assertTrue(security.has_pin(inst["id"]))
         # the instructor's own PIN isn't enough: class records need the Instructor PIN this session
         self.assertEqual(get("/api/instructor/overview", teacher)[0], 403)
         self.assertEqual(post("/api/instructor/unlock", {"admin": "000000"}, teacher)[0], 403)
