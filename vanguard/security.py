@@ -281,12 +281,14 @@ def set_admin_pin(new: str, current: str = "") -> str | None:
         return err
     salt = secrets.token_bytes(16)
     with _lock:
-        prog = _program()
-        if prog and admin_set():                   # same key pair, locked by the new PIN
+        prog = _program() if admin_set() else {}
+        if prog:                                   # changing the PIN: same key pair, locked by the new PIN
             prog["private"] = vault.wrap(vault.unwrap(prog["private"], current), new)
             _program_save(prog)
         _admin_save({"salt": salt.hex(), "iterations": ITERATIONS, "hash": _hash(new, salt)})
     if not prog:
+        # A first (or reset) Instructor PIN gets a fresh program key. Cadets' class keys are re-shared to it at
+        # their next sign-in; a roster sealed with an old key can't be read and starts over.
         _new_program(new)
     return None
 

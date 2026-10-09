@@ -23,7 +23,8 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from vanguard import addons, backup, board, books, careers, daily, engine, exam, fitness, integrity, letters, pay, profiles, security, store, voice
+from vanguard import (addons, backup, board, books, careers, daily, engine, exam, fitness, instructor, integrity,
+                      letters, pay, profiles, security, store, voice)
 from vanguard.brain import Brain
 from vanguard.faith import Faith
 from vanguard.knowledge import Library
@@ -168,8 +169,25 @@ class Handler(BaseHTTPRequestHandler):
         finally:
             self._done()
 
+    def _program_key(self) -> bytes | None:
+        """The program private key -- only in an instructor profile's session after the Instructor PIN."""
+        if (profiles.get(self._pid or "") or {}).get("kind") != "instructor":
+            return None
+        return security.session_program_key(self._token())
+
     def _get(self, r: str):
         q, app = self._query(), self.app
+        if r.startswith("/api/instructor/"):            # instructor only: profile role + Instructor PIN this session
+            priv = self._program_key()
+            if not priv:
+                return self._json({"error": "Instructor only. Open Instructor and enter the Instructor PIN."}, 403)
+            if r == "/api/instructor/overview":
+                return self._json(instructor.overview(priv))
+            if r == "/api/instructor/cadet":
+                pid = str(q.get("id", ""))[:12]
+                if (profiles.get(pid) or {}).get("kind") != "cadet":
+                    return self._json({"error": "No such Cadet."}, 404)
+                return self._json(instructor.records(priv, pid))
         if r == "/api/lock":
             out = {"profiles": [{"id": p["id"], "name": p["name"], "kind": p["kind"],
                                  "has_pin": security.has_pin(p["id"]),
@@ -488,6 +506,33 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(books.save_place(str(b.get("id", ""))[:40], int(b.get("ch", 0) or 0)))
             except (ValueError, TypeError) as e:
                 return self._json({"error": str(e)}, 400)
+        if r == "/api/instructor/unlock":               # instructor profile + Instructor PIN -> class records
+            err = security.unlock_program(self._token(), str(b.get("admin", ""))[:32])
+            return self._json({"ok": False, "error": err} if err else {"ok": True}, 403 if err else 200)
+        if r.startswith("/api/instructor/"):
+            priv = self._program_key()
+            if not priv:
+                return self._json({"error": "Instructor only. Open Instructor and enter the Instructor PIN."}, 403)
+            try:
+                if r == "/api/instructor/unit":
+                    act = str(b.get("action", ""))
+                    if act == "add":
+                        return self._json(instructor.add_unit(priv, b.get("name"), str(b.get("kind", "")), str(b.get("parent", ""))[:10]))
+                    if act == "rename":
+                        instructor.rename_unit(priv, str(b.get("id", ""))[:10], b.get("name"))
+                        return self._json({"ok": True})
+                    if act == "delete":
+                        instructor.delete_unit(priv, str(b.get("id", ""))[:10])
+                        return self._json({"ok": True})
+                    return self._json({"error": "Choose add, rename or delete."}, 400)
+                if r == "/api/instructor/assign":
+                    let = b.get("let")
+                    return self._json(instructor.assign(priv, str(b.get("cadet", ""))[:12],
+                                                         None if b.get("unit") is None else str(b.get("unit"))[:10],
+                                                         None if let in (None, "") else int(let)))
+            except (ValueError, TypeError) as e:
+                return self._json({"error": str(e)}, 400)
+            return self._json({"error": "Unknown instructor action."}, 404)
         if r == "/api/admin/ai-mode":                    # device-wide AI setting -> Instructor PIN
             err = security.check_admin(str(b.get("admin", ""))[:32])
             if err:

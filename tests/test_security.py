@@ -320,6 +320,56 @@ class SecurityTests(unittest.TestCase):
         finally:
             path.unlink(missing_ok=True)
 
+    def test_instructor_routes_need_an_instructor_profile_and_the_instructor_pin(self):
+        """Spec §47: a Cadet can never reach instructor data, other Cadets' records or program settings."""
+        if not security.admin_set():
+            self.assertIsNone(security.set_admin_pin("905172"))
+            self.addCleanup((store.DATA / "admin.json").unlink, missing_ok=True)
+        admin = "905172"
+        alice = self.login(self.alice["id"], "482915")                      # a Cadet
+        get = lambda path, cookie: self.req("GET", path, headers={"Cookie": cookie})
+        post = lambda path, body, cookie: self.req("POST", path, body, {"Cookie": cookie})
+        # a Cadet -- even one who knows the Instructor PIN -- gets nothing
+        self.assertEqual(get("/api/instructor/overview", alice)[0], 403)
+        self.assertEqual(get(f"/api/instructor/cadet?id={self.bob['id']}", alice)[0], 403)
+        self.assertEqual(post("/api/instructor/unit", {"action": "add", "name": "Alpha"}, alice)[0], 403)
+        self.assertEqual(post("/api/instructor/unlock", {"admin": admin}, alice)[0], 403)
+        self.assertEqual(get("/api/instructor/overview", alice)[0], 403)
+        # an instructor profile can only be created with the Instructor PIN
+        name = f"Instr-{uuid.uuid4().hex[:6]}"
+        s, _, raw = post("/api/profiles/create", {"name": name, "kind": "instructor", "pin": "736281"}, alice)
+        self.assertEqual(s, 403)
+        s, _, raw = post("/api/profiles/create", {"name": name, "kind": "instructor", "pin": "736281", "admin": admin}, alice)
+        self.assertEqual(s, 200, raw)
+        inst = next(p for p in profiles.all_profiles() if p["name"] == name)
+        self.addCleanup(profiles.delete, inst["id"])
+        self.assertEqual(inst["kind"], "instructor")
+        teacher = self.login(inst["id"], "736281")
+        # the instructor's own PIN isn't enough: class records need the Instructor PIN this session
+        self.assertEqual(get("/api/instructor/overview", teacher)[0], 403)
+        self.assertEqual(post("/api/instructor/unlock", {"admin": "000000"}, teacher)[0], 403)
+        self.assertEqual(post("/api/instructor/unlock", {"admin": admin}, teacher)[0], 200)
+        s, _, raw = get("/api/instructor/overview", teacher)
+        self.assertEqual(s, 200)
+        ov = json.loads(raw)
+        self.assertIn(self.alice["id"], [c["id"] for c in ov["cadets"]])
+        self.assertNotIn(inst["id"], [c["id"] for c in ov["cadets"]])     # instructors aren't Cadets
+        s, _, raw = post("/api/instructor/unit", {"action": "add", "name": "Alpha Platoon", "kind": "platoon"}, teacher)
+        self.assertEqual(s, 200)
+        unit = json.loads(raw)["id"]
+        self.assertEqual(post("/api/instructor/assign", {"cadet": self.alice["id"], "unit": unit, "let": 2}, teacher)[0], 200)
+        self.assertEqual(post("/api/instructor/assign", {"cadet": self.alice["id"], "let": 9}, teacher)[0], 400)
+        self.assertEqual(post("/api/instructor/assign", {"cadet": inst["id"], "let": 1}, teacher)[0], 400)
+        s, _, raw = get(f"/api/instructor/cadet?id={self.alice['id']}", teacher)
+        self.assertEqual(s, 200)
+        rec = json.loads(raw)
+        self.assertEqual(rec["status"], "shared")                         # Alice signed in after the program key
+        self.assertTrue(set(rec) <= {"status", "questions_practiced", "questions_known", "last_study", "exams"})
+        # the roster is sealed: reading the file off the disk shows only ciphertext
+        self.assertNotIn(b"Alpha Platoon", (store.DATA / "program" / "roster.json").read_bytes())
+        # signing out drops the program key with the session
+        self.req("POST", "/api/lock", {}, {"Cookie": teacher})
+        self.assertNotEqual(get("/api/instructor/overview", teacher)[0], 200)
 
 
 class IntegrityAndUpdateTests(unittest.TestCase):
