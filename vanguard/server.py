@@ -24,7 +24,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from vanguard import (addons, backup, board, books, careers, daily, engine, exam, fitness, instructor, integrity,
-                      lessons, letters, pay, profiles, security, store, voice)
+                      lessons, letters, pay, profiles, scenarios, security, store, voice)
 from vanguard.brain import Brain
 from vanguard.faith import Faith
 from vanguard.knowledge import Library
@@ -185,6 +185,22 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json({"error": "Instructor only. Open Instructor and enter the Instructor PIN."}, 403)
             if r == "/api/instructor/overview":
                 return self._json(instructor.overview(priv))
+            if r == "/api/instructor/scenarios":
+                cadets = [p for p in profiles.all_profiles() if p["kind"] == "cadet"]
+                logs = {p["id"]: instructor.read_class_file(priv, p["id"], "scenarios.jsonl", []) for p in cadets}
+                return self._json({"scenarios": [{**scenarios.summary(s), "text": scenarios.to_text(s),
+                                                  "done": sum(1 for L in logs.values() for e in (L or []) if e.get("scenario") == s["id"])}
+                                                 for s in scenarios.all_scenarios()],
+                                   "cadets": [{"id": p["id"], "name": p["name"], "count": len(logs[p["id"]] or []),
+                                               "shared": logs[p["id"]] is not None} for p in cadets]})
+            if r == "/api/instructor/leadership-log":
+                pid = str(q.get("id", ""))[:12]
+                if (profiles.get(pid) or {}).get("kind") != "cadet":
+                    return self._json({"error": "No such Cadet."}, 404)
+                log = instructor.read_class_file(priv, pid, "scenarios.jsonl", [])
+                return self._json({"shared": log is not None, "entries": list(reversed(log or []))})
+            if r == "/api/instructor/live":
+                return self._json(scenarios.live_for_instructor())
             if r == "/api/instructor/lessons":
                 return self._json(lessons.for_instructor(priv))
             if r == "/api/instructor/assignment":
@@ -197,6 +213,22 @@ class Handler(BaseHTTPRequestHandler):
                 if (profiles.get(pid) or {}).get("kind") != "cadet":
                     return self._json({"error": "No such Cadet."}, 404)
                 return self._json(instructor.records(priv, pid))
+        if r == "/api/scenarios":
+            done = {}
+            if (profiles.get(self._pid or "") or {}).get("kind") == "cadet":
+                for e in scenarios.my_log():
+                    done[e["scenario"]] = done.get(e["scenario"], 0) + 1
+            return self._json({"scenarios": [{**scenarios.summary(s), "done": done.get(s["id"], 0)}
+                                             for s in scenarios.all_scenarios()]})
+        if r == "/api/scenario":
+            try:
+                return self._json(scenarios.for_cadet(scenarios.get(str(q.get("id", ""))[:40])))
+            except LookupError as e:
+                return self._json({"error": str(e)}, 404)
+        if r == "/api/leadership-log":
+            return self._json({"entries": scenarios.my_log()})
+        if r == "/api/live":
+            return self._json(scenarios.live_for_cadet(self._pid or ""))
         if r == "/api/lessons":                          # the signed-in Cadet's own assignments
             if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
                 return self._json({"assignments": []})
@@ -527,6 +559,31 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(books.save_place(str(b.get("id", ""))[:40], int(b.get("ch", 0) or 0)))
             except (ValueError, TypeError) as e:
                 return self._json({"error": str(e)}, 400)
+        if r in ("/api/scenario/choose", "/api/scenario/log"):
+            try:
+                sc = scenarios.get(str(b.get("id", ""))[:40])
+                choice = b.get("choice") if isinstance(b.get("choice"), int) else -1
+                if r == "/api/scenario/choose":
+                    return self._json(scenarios.explain(sc, choice))
+                if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
+                    return self._json({"error": "Only Cadets keep a leadership log."}, 403)
+                entry = scenarios.log_entry(sc, choice, str(b.get("reasoning", "")), str(b.get("reflection", "")),
+                                            str(b.get("learned", "")))
+                return self._json({"entry": entry, "all_outcomes": scenarios.all_outcomes(sc)})
+            except LookupError as e:
+                return self._json({"error": str(e)}, 404)
+            except ValueError as e:
+                return self._json({"error": str(e)}, 400)
+        if r == "/api/live/vote":
+            if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
+                return self._json({"error": "Only Cadets vote."}, 403)
+            try:
+                scenarios.live_vote(self._pid, b.get("choice") if isinstance(b.get("choice"), int) else -1)
+                return self._json({"ok": True})
+            except LookupError as e:
+                return self._json({"error": str(e)}, 404)
+            except ValueError as e:
+                return self._json({"error": str(e)}, 400)
         if r == "/api/lesson/submit":
             ans = b.get("answers") if isinstance(b.get("answers"), dict) else {}
             try:
@@ -555,6 +612,27 @@ class Handler(BaseHTTPRequestHandler):
                         instructor.delete_unit(priv, str(b.get("id", ""))[:10])
                         return self._json({"ok": True})
                     return self._json({"error": "Choose add, rename or delete."}, 400)
+                if r == "/api/instructor/scenario":
+                    sid = str(b.get("id", ""))[:40]
+                    if b.get("action") == "delete":
+                        if not sid.startswith("i-"):
+                            return self._json({"error": "Practice scenarios can't be deleted."}, 400)
+                        scenarios.delete_custom(sid)
+                        return self._json({"ok": True})
+                    if sid and not sid.startswith("i-"):
+                        sid = ""                          # editing a practice scenario saves your own copy
+                    return self._json(scenarios.save_custom(sid, str(b.get("text", ""))[:20000]))
+                if r == "/api/instructor/live":
+                    act = str(b.get("action", ""))
+                    if act == "start":
+                        scenarios.live_start(str(b.get("scenario", ""))[:40])
+                    elif act == "reveal":
+                        scenarios.live_reveal(bool(b.get("on", True)))
+                    elif act == "stop":
+                        scenarios.live_stop()
+                    else:
+                        return self._json({"error": "Choose start, reveal or stop."}, 400)
+                    return self._json(scenarios.live_for_instructor())
                 if r == "/api/instructor/lesson":
                     if b.get("action") == "delete":
                         lessons.delete_lesson(priv, str(b.get("id", ""))[:12])

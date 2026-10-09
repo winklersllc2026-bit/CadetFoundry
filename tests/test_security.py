@@ -376,7 +376,7 @@ class SecurityTests(unittest.TestCase):
         self.assertEqual(s, 200)
         rec = json.loads(raw)
         self.assertEqual(rec["status"], "shared")                         # Alice signed in after the program key
-        self.assertTrue(set(rec) <= {"status", "questions_practiced", "questions_known", "last_study", "exams"})
+        self.assertTrue(set(rec) <= {"status", "questions_practiced", "questions_known", "last_study", "exams", "scenarios"})
         # the roster is sealed: reading the file off the disk shows only ciphertext
         self.assertNotIn(b"Alpha Platoon", (store.DATA / "program" / "roster.json").read_bytes())
         # signing out drops the program key with the session

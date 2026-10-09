@@ -129,6 +129,17 @@ def class_key(priv: bytes, pid: str) -> tuple[bytes | None, str]:
         return None, "waiting"
 
 
+def read_class_file(priv: bytes, pid: str, name: str, default):
+    """One class-record file of one Cadet (None if the Cadet hasn't shared yet). Only store.CLASS_FILES."""
+    if name not in store.CLASS_FILES:
+        raise ValueError("Only class records can be read.")
+    ck, status = class_key(priv, pid)
+    if status == "waiting":
+        return None
+    with security.as_profile(pid, None, ck):
+        return store.read_lines(name) if name.endswith(".jsonl") else store.read_json(name, default)
+
+
 def records(priv: bytes, pid: str) -> dict:
     """One Cadet's class records, read-only. Private files are never opened."""
     ck, status = class_key(priv, pid)
@@ -137,12 +148,13 @@ def records(priv: bytes, pid: str) -> dict:
     with security.as_profile(pid, None, ck):
         study = store.read_json("study.json", {})
         exams = store.read_lines("exams.jsonl")
+        scen = store.read_lines("scenarios.jsonl")
     answered = len(study)
     right = sum(1 for r in study.values() if r.get("right"))
     last = max((r.get("last", 0) for r in study.values()), default=0)
     return {"status": status, "questions_practiced": answered, "questions_known": right,
             "last_study": time.strftime("%Y-%m-%d", time.localtime(last)) if last else "",
-            "exams": list(reversed(exams[-10:]))}
+            "exams": list(reversed(exams[-10:])), "scenarios": len(scen)}
 
 
 def overview(priv: bytes) -> dict:
@@ -155,5 +167,6 @@ def overview(priv: bytes) -> dict:
         rec = records(priv, p["id"])
         cadets.append({"id": p["id"], "name": p["name"], "unit": meta.get("unit", ""), "let": meta.get("let"),
                        "status": rec["status"], "questions_known": rec.get("questions_known", 0),
-                       "exams": len(rec.get("exams", [])), "last_study": rec.get("last_study", "")})
+                       "exams": len(rec.get("exams", [])), "last_study": rec.get("last_study", ""),
+                       "scenarios": rec.get("scenarios", 0)})
     return {"units": r["units"], "cadets": cadets, "unit_kinds": UNIT_KINDS, "let_levels": LET_LEVELS}
