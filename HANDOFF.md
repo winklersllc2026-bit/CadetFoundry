@@ -193,6 +193,9 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
     3 communication/conflict resolution, 4 map reading/geography, 5 study skills only with a gov source,
     6 yearly refresh list, 7 dairy conflict (owner decides), 8 LIVE in-class pop quiz, 9 pilot prerequisites,
     10 Phase 1 leftovers.
+  - **Item 2 DONE:** history_civil_war_freedom (Emancipation Proclamation + Gettysburg Address from books/lincoln.txt),
+    history_civil_rights (Brown, CRA 1964, VRA 1965), history_desegregating_military (EO 9981; military category).
+    All National Archives milestone documents. 118 cards.
 - **Next:** owner testing (run from C:\Code\Vanguard with `python run.py`), then Phase 7 Serve (service log +
   instructor verification), 8 Progress, 9 Instructor analytics, 10 Pilot. Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with
