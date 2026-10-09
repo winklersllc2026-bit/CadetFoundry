@@ -176,6 +176,9 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
     troop_leading_procedures (Ranger Handbook ch 2), careers_banking (FDIC + CFPB). 95 cards.
   - **Phase 11 step 9 DONE (2026-10-09):** careers_compound_interest + careers_emergency_savings (Investor.gov, read in
     the browser), army_birthday_flag (TC 3-21.5 App. I). 98 cards.
+  - **Phase 11 step 10 DONE (2026-10-09):** careers_first_paycheck_taxes (IRS Pub 505 2026 + Tax Tip 2022-88),
+    careers_credit_cards (CFPB + FTC), health_underage_drinking (CDC), citizenship_congress (house.gov, senate.gov).
+    102 cards.
 - **Next:** owner testing (run from C:\Code\Vanguard with `python run.py`), then Phase 7 Serve (service log +
   instructor verification), 8 Progress, 9 Instructor analytics, 10 Pilot. Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with
