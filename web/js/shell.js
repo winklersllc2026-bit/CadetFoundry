@@ -129,6 +129,23 @@ loaders.instructor = async () => {
   }));
   body.querySelectorAll('[data-unit]').forEach(s => s.addEventListener('change', () => api('/api/instructor/assign', { cadet: s.dataset.unit, unit: s.value })));
   body.querySelectorAll('[data-let]').forEach(s => s.addEventListener('change', () => s.value && api('/api/instructor/assign', { cadet: s.dataset.let, let: Number(s.value) })));
+  // Learn categories for every Cadet on this device (spec §7). Basic Training & Beyond still needs each Cadet's own opt-in.
+  const CAT_NAMES = { leadership: 'Leadership', citizenship: 'Citizenship', military: 'Military Knowledge', health: 'Health & Fitness',
+    careers: 'Careers', explore: 'Explore Military Service', basic: 'Basic Training & Beyond (only for Cadets who opt in)' };
+  const on = STATUS.categories_enabled || Object.keys(CAT_NAMES);
+  const catCard = document.createElement('div');
+  catCard.className = 'card';
+  catCard.innerHTML = `<h3>📘 What Cadets can study</h3><p class="faint">Turn sections of Learn on or off for every Cadet on this device.</p>
+    ${Object.entries(CAT_NAMES).map(([k, v]) => `<label style="display:flex;gap:10px;align-items:center;min-height:44px">
+      <input type="checkbox" data-cat="${k}" ${on.includes(k) ? 'checked' : ''} style="width:22px;height:22px"> ${esc(v)}</label>`).join('')}
+    <p class="faint" id="catMsg" role="status"></p>`;
+  body.appendChild(catCard);
+  catCard.querySelectorAll('[data-cat]').forEach(cb => cb.addEventListener('change', async () => {
+    const cats = [...catCard.querySelectorAll('[data-cat]:checked')].map(x => x.dataset.cat);
+    const r = await api('/api/instructor/categories', { categories: cats });
+    $('#catMsg').textContent = r.error || 'Saved.';
+    if (!r.error) STATUS.categories_enabled = r.categories_enabled;
+  }));
   if (typeof instructorLessons === 'function') await instructorLessons(body, ov);   // web/js/lessons.js
   if (typeof instructorLeadership === 'function') await instructorLeadership(body);   // web/js/scenarios.js
   if (typeof instructorTrain === 'function') await instructorTrain(body);             // web/js/train.js
