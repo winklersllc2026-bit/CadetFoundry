@@ -1,7 +1,7 @@
 """
 Start Vanguard.
 
-    python run.py              open on this device (http://127.0.0.1:8765)
+    python run.py              open on this device (http://127.0.0.1:8780)
     python run.py --lan        also reachable from other devices on this Wi-Fi/hotspot
     python run.py --no-browser don't open a browser window (kiosk / handheld setups)
 """
@@ -57,7 +57,7 @@ def main() -> int:
             if hasattr(stream, "reconfigure"):
                 stream.reconfigure(errors="replace")
     ap = argparse.ArgumentParser(description="Vanguard")
-    ap.add_argument("--port", type=int, default=8765)
+    ap.add_argument("--port", type=int, default=8780)   # its own port: never mistaken for another app
     ap.add_argument("--lan", action="store_true", help="listen on all network interfaces")
     ap.add_argument("--no-browser", action="store_true")
     ap.add_argument("--kiosk", action="store_true", help="open full-screen with no address bar (handhelds)")
@@ -67,7 +67,13 @@ def main() -> int:
     url = f"http://127.0.0.1:{args.port}"
     try:
         httpd = serve(host, args.port, lan=args.lan)
-    except OSError:                                 # already running (the icon was clicked again): just show it
+    except OSError:
+        # Something already uses the port. If it's Vanguard (the icon was clicked again), just show it -- but never
+        # open some other program that happens to use the same port.
+        if not _is_vanguard(url):
+            print(f"Port {args.port} is used by another program, so Vanguard can't start there.")
+            print(f"Close that program, or start Vanguard on another port:  python run.py --port {args.port + 1}")
+            return 1
         print(f"Vanguard is already running at {url}")
         if not args.no_browser:
             webbrowser.open(url)
@@ -89,6 +95,17 @@ def main() -> int:
         pass
     httpd.server_close()
     return 0
+
+
+def _is_vanguard(url: str) -> bool:
+    """Whatever answers at `url` identifies itself as Vanguard (its Server header)."""
+    import urllib.request
+    try:
+        with urllib.request.urlopen(url + "/api/lock", timeout=3) as r:
+            return r.headers.get("Server", "").startswith("Vanguard")
+    except Exception as e:                          # an HTTP error still carries the header
+        headers = getattr(e, "headers", None)
+        return bool(headers and headers.get("Server", "").startswith("Vanguard"))
 
 
 if __name__ == "__main__":

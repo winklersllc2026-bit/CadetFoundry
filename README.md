@@ -51,7 +51,7 @@ optional parts (offline AI, offline voice, the library). **Linux / Raspberry Pi:
 Run it:
 
 ```
-python run.py              # this computer only (http://127.0.0.1:8765)
+python run.py              # this computer only (http://127.0.0.1:8780)
 python run.py --lan        # Cadets on the classroom network can connect (requires a PIN on every profile)
 ```
 

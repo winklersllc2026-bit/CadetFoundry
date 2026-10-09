@@ -832,7 +832,7 @@ class Handler(BaseHTTPRequestHandler):
             pass
 
 
-def serve(host: str = "127.0.0.1", port: int = 8765, lan: bool = False) -> ThreadingHTTPServer:
+def serve(host: str = "127.0.0.1", port: int = 8780, lan: bool = False) -> ThreadingHTTPServer:
     profiles.migrate_legacy()
     if lan and not security.all_have_pins():
         raise SystemExit("LAN mode needs every profile to have a PIN. Set them in Me → Security, then use --lan.")
