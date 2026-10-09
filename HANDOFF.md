@@ -153,6 +153,11 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
     Smokefree Teen). Scenarios 12 (vape pen / peer pressure) and 13 (flag on the ground). Blocked: USCIS rights &
     responsibilities (403), CareerOneStop interview tips (403); USA.gov state/local and dietaryguidelines.gov pages had
     no usable detail.
+  - **Phase 11 step 4 DONE (2026-10-09):** 10 more cards (78 total). Getting a Job set from CareerOneStop (DOL), read in
+    the browser because it blocks plain fetches: careers_interview_prepare, careers_interview_questions,
+    careers_interview_virtual, careers_resume, careers_references, careers_job_applications. Drill set from TC 3-21.5:
+    drill_history (von Steuben, cadence), drill_command_voice, drill_marching, flag_detail (App. I + AR 600-25 2-6i).
+    Scenario 14 (first job / clocking in a coworker). Note: scenario text may not use combat words (test_scenarios).
 - **Next:** owner testing (run from C:\Code\Vanguard with `python run.py`), then Phase 7 Serve (service log +
   instructor verification), 8 Progress, 9 Instructor analytics, 10 Pilot. Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with
