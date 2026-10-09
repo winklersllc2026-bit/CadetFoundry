@@ -49,6 +49,12 @@ class TrainMathTests(unittest.TestCase):
         self.assertEqual(s["improvement_pct"], 38)
         self.assertTrue(s["latest_is_best"])
 
+    def test_same_day_results_keep_their_order(self):
+        # a Cadet's 29 and the instructor's 31 on the same day: the one entered last is the latest
+        s = train.stats(PUSH, [{"id": "zz", "event": "pushups", "date": "2026-10-08", "value": 29},
+                               {"id": "aa", "event": "pushups", "date": "2026-10-08", "value": 31}])
+        self.assertEqual((s["latest"], s["best"], s["latest_is_best"]), ("31", "31", True))
+
     def test_lower_is_better_counts_as_improvement(self):
         s = train.stats(MILE, rows("mile", ("2026-09-01", 540), ("2026-10-01", 510)), {"target": 480})
         self.assertEqual((s["improvement_shown"], s["best"], s["goal"], s["goal_reached"]), ("+0:30", "8:30", "8:00", False))

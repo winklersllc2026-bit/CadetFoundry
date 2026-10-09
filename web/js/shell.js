@@ -47,14 +47,7 @@ loaders.serve = async () => {
   });
 };
 
-loaders.progress = () => {
-  $('#progressBody').innerHTML = `<h2>My Progress</h2>
-    <div class="card"><h3>📈 Your growth over time</h3>
-      <p>Lessons and quiz mastery, leadership scenarios and reflections, fitness improvement, service hours, and
-      recognition — in one place, with a portfolio you can print.</p>
-      ${SOON('Your progress page is being built.', 'Phase 8')}
-      <p class="faint">Already here: your quiz progress in Learn and your fitness history in Train.</p></div>`;
-};
+// My Progress: web/js/progress.js
 
 // ── Instructor ── (instructor profile + Instructor PIN; Cadets only see an explanation)
 const KIND_NAME = { class: 'Class', platoon: 'Platoon', squad: 'Squad' };
@@ -118,6 +111,7 @@ loaders.instructor = async () => {
             <option value="">LET level…</option>${ov.let_levels.map(l => `<option value="${l}" ${c.let === l ? 'selected' : ''}>LET ${l}</option>`).join('')}</select>
         </div>
         <div class="faint" style="margin-top:6px">${c.status === 'waiting' ? '' : `Quiz questions known: ${c.questions_known} · Exams: ${c.exams}${c.last_study ? ` · Last studied ${esc(c.last_study)}` : ''}`}</div>
+        ${c.status === 'waiting' ? '' : `<button class="btn small" data-prog="${esc(c.id)}" style="margin-top:8px">📈 Progress and portfolio</button>`}
       </div>`).join('') : '<p class="faint">No Cadet profiles on this device yet. Cadets create their own profile with a PIN when they first open Vanguard.</p>'}
       <p class="faint">You see class records only. Cadets' private check-ins, chats and notes are never shown.</p></div>`;
   $('#uAdd').addEventListener('click', async () => {
@@ -129,6 +123,7 @@ loaders.instructor = async () => {
     await api('/api/instructor/unit', { action: 'delete', id: b.dataset.del }); loaders.instructor();
   }));
   body.querySelectorAll('[data-unit]').forEach(s => s.addEventListener('change', () => api('/api/instructor/assign', { cadet: s.dataset.unit, unit: s.value })));
+  body.querySelectorAll('[data-prog]').forEach(b => b.addEventListener('click', () => instructorProgress(b.dataset.prog)));
   body.querySelectorAll('[data-let]').forEach(s => s.addEventListener('change', () => s.value && api('/api/instructor/assign', { cadet: s.dataset.let, let: Number(s.value) })));
   // Learn categories for every Cadet on this device (spec §7). Basic Training & Beyond still needs each Cadet's own opt-in.
   const CAT_NAMES = { leadership: 'Leadership', citizenship: 'Citizenship', military: 'Military Knowledge', health: 'Health & Fitness',

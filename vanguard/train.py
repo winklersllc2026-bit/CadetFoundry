@@ -167,7 +167,8 @@ def set_goal(eid: str, raw, by_date: str = "") -> dict:
 def stats(ev: dict, rows: list[dict], goal: dict | None = None) -> dict:
     """Personal-improvement numbers for one event. Positive improvement always means better, whatever the
     direction. No pass/fail anywhere."""
-    rows = sorted((r for r in rows if r["event"] == ev["id"]), key=lambda r: (r["date"], r["id"]))
+    # by date; results on the same day stay in the order they were entered (the file's order)
+    rows = sorted((r for r in rows if r["event"] == ev["id"]), key=lambda r: r["date"])
     unit, higher = ev["unit"], ev["better"] == "higher"
     out = {"event": ev["id"], "name": ev["name"], "unit": unit, "better": ev["better"], "count": len(rows),
            "history": [{"id": r["id"], "date": r["date"], "value": r["value"], "shown": show_value(unit, r["value"]),

@@ -52,7 +52,10 @@ def academics(library, pid: str) -> dict:
     exams = store.read_lines("exams.jsonl")
     return {"lessons_assigned": len(mine), "lessons_completed": len(done),
             "lesson_score_pct": round(100 * sum(w["score"] for w in scored) / sum(w["total"] for w in scored)) if scored else None,
-            "categories": [v | {"id": k} for k, v in by_cat.items()],
+            # in Learn's order; the two military sections only if the Cadet actually studied them (an instructor's
+            # view can see every card, and a portfolio must not suggest the Cadet chose the military track)
+            "categories": [by_cat[k] | {"id": k} for k in CATEGORIES
+                           if k in by_cat and (k not in ("explore", "basic") or by_cat[k]["tried"])],
             "cards_mastered": len(mastered), "cards_total": cards_total, "mastered": mastered[:50],
             "exams": len(exams), "best_exam": max((round(100 * e["right"] / e["total"]) for e in exams if e.get("total")), default=None)}
 

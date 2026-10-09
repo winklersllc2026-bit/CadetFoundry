@@ -118,6 +118,10 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
   (type the answer; key words + offline AI for meaning; yes/no handled). Daily 10's set is fixed for the day and its
   score is counted from graded answers. Mock board grades by question id (no "count it right"). The note on every
   quiz: missing one means nothing bad; the more you miss now, the more you have to look forward to.
+- **Phase 8 DONE (2026-10-09):** `vanguard/progress.py` (portfolio from class records only; no invented
+  percentages; milestone achievements; timeline), recognition by the instructor (`recognition.jsonl`, class record),
+  instructor-chosen portfolio sections, `web/js/progress.js` (My Progress, instructor per-Cadet view, print).
+  Fixed: same-day fitness results kept insertion order; unstudied military sections hidden from portfolios.
 - **Planned additions (owner):**
   - Phase 9 or 11: the instructor can **view and edit the quiz questions** of the built-in cards for their program, and
     give a **pop quiz** (their own questions; live in class like the scenario vote, or assigned). Today a lesson with

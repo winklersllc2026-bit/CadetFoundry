@@ -149,8 +149,8 @@ header > .row { flex-wrap: nowrap; min-width: 0; }
 mark { background: var(--tan); color: var(--bg); border-radius: 3px; padding: 0 2px; }
 :root[data-mode="red"] #textBtn { color: var(--muted); border-color: var(--line2); }
 #printArea { display: none; }
-/* Profiles for a Soldier's family hide the Soldier-only tools */
-body:not([data-kind="family"]) .family-only, body[data-kind="family"] .soldier-only, body[data-kind="family"] [data-pane="fit"] { display: none !important; }
+/* Parent/guardian profiles hide the Cadet-only tools */
+body:not([data-kind="guardian"]) .family-only, body[data-kind="guardian"] .soldier-only, body[data-kind="guardian"] [data-pane="fit"] { display: none !important; }
 :root[data-mode="red"] #packetPreview, :root[data-mode="red"] #packetPreview .packet { background: var(--bg2) !important; color: var(--text) !important; }
 :root[data-mode="red"] #printPreview { background: var(--bg2) !important; color: var(--text) !important; }   /* keep light discipline on screen */
 :root[data-mode="red"] #printPreview .pc, :root[data-mode="red"] #printPreview .pc h4 { background: transparent; color: inherit; border-color: currentColor; }
@@ -280,6 +280,7 @@ body:not([data-kind="family"]) .family-only, body[data-kind="family"] .soldier-o
 <script src="/js/scenarios.js"></script>
 <script src="/js/train.js"></script>
 <script src="/js/service.js"></script>
+<script src="/js/progress.js"></script>
 <script src="/js/voice.js"></script>
 <script src="/js/intake.js"></script>
 <script src="/js/me.js"></script>
