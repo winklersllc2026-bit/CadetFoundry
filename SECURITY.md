@@ -61,3 +61,31 @@ Vanguard deliberately ships without CAC/PIV sign-in so that it can be configured
 
 ## Official use
 Use inside military networks or as an issued device would additionally require formal accreditation (Authority to Operate, STIG compliance). This project is designed to make that process straightforward: no network services, one well-known dependency (`cryptography`, PyCA, for AES via OpenSSL), all data local.
+
+## Instructors and class records (added 2026-10-08)
+
+Decision by the program owner: **an instructor can read a Cadet's class records, and nothing else.**
+
+- **Two keys per Cadet.** A Cadet with a PIN has a private data key (as above) and a separate **class key**. The
+  class key seals only class-record files: `study.json`, `exams.jsonl`, `lessons.json`, `assignments.json`,
+  `scenarios.jsonl`, `service.jsonl`, `fitness.jsonl`, `goals.json` (`store.CLASS_FILES`). Everything else -- check-ins,
+  chats, memories, letters, logbook, profile -- stays sealed with the private key only.
+- **How the instructor gets the class key.** The class key is stored twice in the Cadet's `security.json`: sealed
+  with the Cadet's data key (so PIN changes and recovery codes keep working), and sealed to the **program public
+  key** (X25519 + HKDF-SHA256 + AES-256-GCM). The program private key is in `program.json`, locked by the
+  **Instructor PIN** (scrypt + AES-256-GCM, like a profile PIN).
+- **Two factors to read class records:** an instructor profile session (its own PIN) **and** the Instructor PIN,
+  entered in that session. The program key lives only in that session's memory and is dropped at sign-out or
+  timeout. Cadet sessions get HTTP 403 on every `/api/instructor/*` route, even if they know the Instructor PIN.
+- **Creating an instructor profile** requires the Instructor PIN and the new profile's own PIN. A restored backup
+  can never turn a profile into an instructor.
+- **The roster** (classes, platoons, squads, each Cadet's unit and LET level) is sealed with a key derived from the
+  program private key; it is ciphertext on disk.
+- **Timing.** A Cadet who set a PIN before the Instructor PIN existed shares class records at their next sign-in
+  (the instructor screen shows "Waiting"). A Cadet without a PIN has no encryption at all; LAN classroom mode
+  refuses to start until every profile has a PIN.
+- **Resetting the Instructor PIN** (deleting `admin.json`) creates a fresh program key: Cadets re-share at their next
+  sign-in, and the old roster can't be read and starts over. Changing the Instructor PIN with the current PIN keeps
+  the same key.
+- Tests: `tests/test_classroom.py` (keys and files) and `tests/test_security.py`
+  (`test_instructor_routes_need_an_instructor_profile_and_the_instructor_pin`).

@@ -84,9 +84,11 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
   touch targets, and on a laptop/projector. Installable via "Add to Home Screen"/"Install app".
   Known limit: full offline PWA (service worker) needs HTTPS, which a LAN laptop server doesn't have — phones use
   the installed shortcut while on the classroom network; that's fine because the data lives on the laptop.
-- **Phase 3 still to do:** Instructor screen in `web/js/shell.js` (unlock with Instructor PIN, roster, create
-  units, assign unit + LET, Cadet class-record view), mobile-first; create-instructor-profile option in the
-  profile picker (asks for the Instructor PIN); docs: SECURITY.md section on class records.
+- **Phase 3 DONE (2026-10-08):** Instructor screen (Instructor PIN unlock, units, unit + LET per Cadet, record
+  status), instructor option on the new-profile screen, instructors skip the Cadet interview/tour, phone header fits
+  375 px, SECURITY.md section "Instructors and class records". Checked in the browser at phone width.
+- **Next:** Phase 4 lessons (create, assign, complete, track; lessons/assignments are class records), or the
+  Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with
   Instructor PIN, hiding the matching UI; (b) remaining "Soldier" wording outside Explore Military Service:
   intake questions (`web/js/intake.js`), study/log/me screens, study cards that address "you" as a Soldier;
