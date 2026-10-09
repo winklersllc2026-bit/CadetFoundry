@@ -247,6 +247,8 @@ Students are just **"Cadets"** — never "Vanguard Cadets".
     moving accounts. run.py --lan prints the real LAN address(es). Installer adds a 'Vanguard (classroom)' Start-menu
     shortcut (python.exe run.py --lan, window shows the address). make_demo_kit reuses the drive's existing Wi-Fi
     name/password on re-runs. Re-running make_usb/make_demo_kit replaces the app, keeps VanguardData, no duplicates.
+  - **RELEASED v0.1.2 (2026-10-09):** GitHub release (Latest) + site deployed. The site now asks for a password
+    (owner set VANGUARD_PAGE_PASSWORD). Still unsigned. tests/test_class_day.py covers a full class day end to end.
 - **Next:** owner testing (run from C:\Code\Vanguard with `python run.py`), then Phase 7 Serve (service log +
   instructor verification), 8 Progress, 9 Instructor analytics, 10 Pilot. Phase 1 loose ends below.
 - **Phase 1 still to do:** (a) module on/off flags in config (explore_military, faith, letters, voice) with
