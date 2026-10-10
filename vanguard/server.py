@@ -419,6 +419,7 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                                "lan": app.lan, "voice": voice.available() and store.module_on("voice"),
                                "modules_off": [m for m in store.MODULES if not store.module_on(m)],
                                "ai_mode": store.ai_mode(), "library_only": store.ai_mode() == "off",
+                               "services": knowledge.SERVICES,
                                "categories": {c: knowledge.CATEGORIES[c] for c in store.visible_categories(
                                    (profiles.get(self._pid) or {}).get("kind", "cadet"))},
                                "categories_enabled": store.categories_enabled(),
@@ -426,12 +427,13 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
         if r == "/api/topics":
             prog = app.brain.progress()
             return self._json([{"topic": t, "cards": [{"id": c.id, "title": c.title, "questions": len(c.quiz),
-                                                       "category": c.category} for c in cs],
+                                                       "category": c.category, "service": c.service} for c in cs],
                                 "progress": prog.get(t, {"known": 0, "total": 0})}
                                for t, cs in app.library.topics().items()])
         if r == "/api/card":
             c = app.library.card(q.get("id", ""))
-            return self._json({"id": c.id, "title": c.title, "topic": c.topic, "category": c.category, "source": c.source, "body": c.body,
+            return self._json({"id": c.id, "title": c.title, "topic": c.topic, "category": c.category, "service": c.service,
+                               "source": c.source, "body": c.body,
                                "verified": c.verified,
                                "quiz": [{"q": a, "a": b} for a, b in c.quiz]} if c else {"error": "not found"},
                               200 if c else 404)

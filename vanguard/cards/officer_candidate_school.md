@@ -1,4 +1,5 @@
 ---
+service: army
 category: explore
 title: Officer Candidate School (OCS) — GT Score
 topic: Training Pipeline

@@ -1,4 +1,5 @@
 ---
+service: army
 category: military
 title: Army Uniforms — The Basics
 topic: Uniforms

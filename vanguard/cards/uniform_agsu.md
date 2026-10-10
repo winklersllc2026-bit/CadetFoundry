@@ -1,4 +1,5 @@
 ---
+service: army
 category: basic
 title: AGSU Coat — Where Everything Goes (Enlisted)
 topic: Uniforms

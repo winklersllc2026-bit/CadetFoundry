@@ -1,4 +1,5 @@
 ---
+service: army
 category: leadership
 title: Be, Know, Do — Leader Attributes and Competencies
 topic: Board: Leadership & Programs

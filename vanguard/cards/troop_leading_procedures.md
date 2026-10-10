@@ -1,4 +1,5 @@
 ---
+service: army
 category: military
 title: Troop Leading Procedures — Planning a Mission
 topic: Military Knowledge

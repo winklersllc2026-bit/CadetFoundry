@@ -1,4 +1,5 @@
 ---
+service: army
 category: basic
 title: Field Hygiene and Sanitation
 topic: Field Craft

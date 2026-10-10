@@ -1,4 +1,5 @@
 ---
+service: army
 category: explore
 title: The Army Fitness Test (AFT) — Events and Passing
 topic: Fitness & Health

@@ -1,4 +1,5 @@
 ---
+service: army
 category: military
 title: The Color Guard
 topic: Drill & Ceremonies

@@ -1,4 +1,5 @@
 ---
+service: army
 category: basic
 title: Moving Under Fire, Cover, Concealment and Camouflage
 topic: Soldier Skills

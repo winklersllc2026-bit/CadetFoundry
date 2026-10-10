@@ -1,4 +1,5 @@
 ---
+service: army
 category: leadership
 title: The Army Values (LDRSHIP)
 topic: Creeds & Values

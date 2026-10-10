@@ -1,4 +1,5 @@
 ---
+service: army
 category: basic
 title: Weapons Safety and Range Basics
 topic: Weapons & Range

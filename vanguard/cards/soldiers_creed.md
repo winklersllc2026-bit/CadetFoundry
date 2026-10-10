@@ -1,4 +1,5 @@
 ---
+service: army
 category: basic
 title: The Soldier's Creed
 topic: Creeds & Values

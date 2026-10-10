@@ -1,4 +1,5 @@
 ---
+service: army
 category: basic
 title: First Aid — Tactical Combat Casualty Care and MARCH PAWS
 topic: First Aid

@@ -1,4 +1,5 @@
 ---
+service: army
 category: basic
 title: The LACE Report — and Which Report to Send
 topic: Reports

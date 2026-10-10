@@ -1,4 +1,5 @@
 ---
+service: army
 category: basic
 title: OPSEC — Operations Security and Posting Online
 topic: Security

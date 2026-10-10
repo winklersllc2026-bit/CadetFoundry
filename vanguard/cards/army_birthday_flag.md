@@ -1,4 +1,5 @@
 ---
+service: army
 category: military
 title: The Army's Birthday and the Army Flag
 topic: Military Knowledge

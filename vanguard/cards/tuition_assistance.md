@@ -1,4 +1,5 @@
 ---
+service: army
 category: explore
 title: Tuition Assistance and Credentialing Assistance
 topic: Money

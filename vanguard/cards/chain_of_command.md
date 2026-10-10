@@ -1,4 +1,5 @@
 ---
+service: army
 category: military
 title: The Chain of Command and the NCO Support Channel
 topic: Military Knowledge

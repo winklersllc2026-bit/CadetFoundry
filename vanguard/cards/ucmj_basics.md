@@ -1,4 +1,5 @@
 ---
+service: army
 category: basic
 title: The UCMJ — Articles Every Soldier Should Know
 topic: UCMJ & Law

@@ -1,4 +1,5 @@
 ---
+service: army
 category: military
 title: The Flag Detail — Raising, Lowering and Folding the Flag
 topic: Drill & Ceremonies

@@ -1,4 +1,5 @@
 ---
+service: army
 category: basic
 title: Heat, Cold, Carbon Monoxide and Sleep — Protect Yourself
 topic: Field Craft

@@ -1,4 +1,5 @@
 ---
+service: army
 category: military
 title: Squad Drill — Falling In, Counting Off and Alignment
 topic: Drill & Ceremonies

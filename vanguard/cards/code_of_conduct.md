@@ -1,4 +1,5 @@
 ---
+service: army
 category: basic
 title: The Code of Conduct
 topic: Creeds & Values

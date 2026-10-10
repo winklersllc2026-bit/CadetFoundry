@@ -1,4 +1,5 @@
 ---
+service: army
 category: military
 title: Customs, Courtesies and the Salute
 topic: Customs & Courtesies

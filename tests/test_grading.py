@@ -52,5 +52,14 @@ class GradingTests(unittest.TestCase):
                 self.assertFalse([l for l in card.body.splitlines() if l.lstrip().startswith("|")], "tables don't render")
 
 
+    def test_every_card_names_a_known_service(self):
+        """Learn is organized by service (Army, Navy, Air Force, Marine Corps, ...) plus shared material."""
+        cards = knowledge.Library().all_cards
+        for card in cards:
+            with self.subTest(card=card.id):
+                self.assertIn(card.service, knowledge.SERVICES)
+        self.assertTrue(all(c.service == "army" for c in cards if c.category == "basic"))   # Army's study guide so far
+        self.assertTrue(any(c.service == "joint" for c in cards))
+
 if __name__ == "__main__":
     unittest.main()

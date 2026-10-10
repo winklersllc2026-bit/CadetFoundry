@@ -1,4 +1,5 @@
 ---
+service: army
 category: basic
 title: Basic Training, AIT and OSUT
 topic: Training Pipeline

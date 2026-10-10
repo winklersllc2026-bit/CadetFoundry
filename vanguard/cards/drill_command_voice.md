@@ -1,4 +1,5 @@
 ---
+service: army
 category: military
 title: The Command Voice
 topic: Drill & Ceremonies

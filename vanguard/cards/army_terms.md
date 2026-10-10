@@ -1,4 +1,5 @@
 ---
+service: army
 category: basic
 title: Army Terms and Acronyms for New Soldiers
 topic: Basic Knowledge

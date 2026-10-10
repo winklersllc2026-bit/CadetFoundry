@@ -1,4 +1,5 @@
 ---
+service: army
 category: military
 title: The Army Profession
 topic: Military Knowledge

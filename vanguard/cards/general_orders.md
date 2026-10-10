@@ -1,4 +1,5 @@
 ---
+service: army
 category: basic
 title: The Three General Orders
 topic: Basic Knowledge

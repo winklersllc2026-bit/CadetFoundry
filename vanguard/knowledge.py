@@ -121,6 +121,7 @@ class Card:
     also: dict[str, list[str]] = field(default_factory=dict)     # question -> other ways Soldiers ask it
     verified: bool = True        # "verified: no" in the header: couldn't be checked against a current public source
     category: str = "military"   # one of CATEGORIES (Learn's sections)
+    service: str = "joint"       # one of SERVICES: which branch the card is about ("joint" = every service / general)
 
 
 # Learn's sections (owner's spec §7), plus two for Cadets interested in serving:
@@ -129,6 +130,11 @@ class Card:
 CATEGORIES = {"leadership": "Leadership", "citizenship": "Citizenship", "military": "Military Knowledge",
               "health": "Health & Fitness", "careers": "Careers", "explore": "Explore Military Service",
               "basic": "Basic Training & Beyond"}
+# Every branch Cadets can explore, whatever their own JROTC program (owner, 2026-10-10). A branch shows in Learn once
+# it has checked cards. "joint" = shared material (citizenship, health, careers, general leadership, JROTC itself).
+SERVICES = {"army": "Army", "navy": "Navy", "air_force": "Air Force", "marine_corps": "Marine Corps",
+            "space_force": "Space Force", "coast_guard": "Coast Guard", "joint": "All services"}
+
 # Which categories this request may see (None = everything: tools, tests, instructors). Set per request by the
 # server from the instructor's settings and the Cadet's own choice (security.py / server.py).
 _visible: contextvars.ContextVar[frozenset | None] = contextvars.ContextVar("vanguard_visible_categories", default=None)
@@ -188,10 +194,11 @@ def parse_card(path: Path) -> Card | None:
             if alts.strip():
                 also[q.strip()] = [x.strip() for x in alts.split(";") if x.strip()]
     cat = meta.get("category", "military").strip().lower()
+    svc = meta.get("service", "joint").strip().lower().replace(" ", "_").replace("-", "_")
     return Card(id=path.stem, title=meta.get("title", path.stem), topic=meta.get("topic", "General"),
                 source=meta.get("source", "Vanguard study card"), body=body.strip(), quiz=quiz, also=also,
                 verified=meta.get("verified", "yes").strip().lower() not in ("no", "false"),
-                category=cat if cat in CATEGORIES else "military")
+                category=cat if cat in CATEGORIES else "military", service=svc if svc in SERVICES else "joint")
 
 
 def _read_document(path: Path) -> list[tuple[str, str]]:

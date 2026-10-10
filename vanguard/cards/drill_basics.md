@@ -1,4 +1,5 @@
 ---
+service: army
 category: military
 title: Drill Basics — Commands, Attention, Rests and Facings
 topic: Drill & Ceremonies

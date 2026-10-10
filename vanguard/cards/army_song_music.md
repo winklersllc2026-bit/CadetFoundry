@@ -1,4 +1,5 @@
 ---
+service: army
 category: military
 title: The Army Song, National Anthem and Bugle Calls
 topic: Customs & Courtesies

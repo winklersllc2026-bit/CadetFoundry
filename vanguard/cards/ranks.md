@@ -1,4 +1,5 @@
 ---
+service: army
 category: military
 title: Army Ranks, Pay Grades and How to Address Them
 topic: Rank & Structure

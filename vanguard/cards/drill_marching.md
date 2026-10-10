@@ -1,4 +1,5 @@
 ---
+service: army
 category: military
 title: Marching — Steps, Halts and Cadence
 topic: Drill & Ceremonies

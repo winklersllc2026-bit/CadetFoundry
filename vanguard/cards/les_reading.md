@@ -1,4 +1,5 @@
 ---
+service: army
 category: explore
 title: Reading Your LES (Leave and Earnings Statement)
 topic: Money

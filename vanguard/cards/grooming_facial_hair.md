@@ -1,4 +1,5 @@
 ---
+service: army
 category: basic
 title: Grooming — Shaving and Mustaches
 topic: Uniforms

@@ -1,4 +1,5 @@
 ---
+service: army
 category: basic
 title: Chain of Command, NCO Support Channel, Open Door, Discipline
 topic: Board: Leadership & Programs

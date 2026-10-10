@@ -1,4 +1,5 @@
 ---
+service: army
 category: military
 title: Why We Drill — Von Steuben and Valley Forge
 topic: Drill & Ceremonies

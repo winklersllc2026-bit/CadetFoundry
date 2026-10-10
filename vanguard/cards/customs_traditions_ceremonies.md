@@ -1,4 +1,5 @@
 ---
+service: army
 category: military
 title: Customs, Traditions and Ceremonies
 topic: Military Knowledge

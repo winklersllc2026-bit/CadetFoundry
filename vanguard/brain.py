@@ -484,7 +484,7 @@ class Brain:
         stats = store.study()
         pool = []
         for c in self.library.cards:
-            if topic and topic not in (c.topic, c.id, c.category):     # a topic, one card, or a Learn category
+            if topic and topic not in (c.topic, c.id, c.category, c.service):   # a topic, card, category or service
                 continue
             for i, (q, a) in enumerate(c.quiz):
                 qid = f"{c.id}#{i}"

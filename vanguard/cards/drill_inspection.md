@@ -1,4 +1,5 @@
 ---
+service: army
 category: military
 title: In-Ranks Inspection
 topic: Drill & Ceremonies

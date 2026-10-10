@@ -1,4 +1,5 @@
 ---
+service: army
 category: basic
 title: Preparation Drill and Recovery Drill (PRT)
 topic: Fitness & Health
