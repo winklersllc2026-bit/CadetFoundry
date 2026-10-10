@@ -14,6 +14,7 @@ import json
 import os
 import sys
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
@@ -48,15 +49,37 @@ def main(argv: list[str]) -> int:
               "  python tools/fetch_videos.py --key YOUR_KEY")
         return 1
     videos.VIDEOS.mkdir(parents=True, exist_ok=True)
-    total, failed = 0, []
+    # DVIDS API terms (I.E, Caching): saved copies are a cache -- every run rechecks each video, keeps its title
+    # current, and deletes the copy of any video DVIDS has removed. Copies of videos no longer in Vanguard's list
+    # are deleted too.
+    status = videos.status()
+    listed = {v["id"] for v in entries}
+    for old in videos.VIDEOS.glob("dvids-*.mp4"):
+        if old.stem not in listed:
+            old.unlink()
+            print(f"removed {old.name} (no longer in Vanguard's list)")
+    total, failed, removed = 0, [], []
     for v in entries:
         dest = videos.VIDEOS / f"{v['id']}.mp4"
-        if dest.exists():
-            continue
         try:
             q = urllib.parse.urlencode({"id": f"video:{v['dvids_id']}", "api_key": key})
-            with urllib.request.urlopen(urllib.request.Request(f"https://api.dvidshub.net/asset?{q}", headers=UA), timeout=60) as r:
-                asset = json.loads(r.read())["results"]
+            try:
+                with urllib.request.urlopen(urllib.request.Request(f"https://api.dvidshub.net/asset?{q}", headers=UA), timeout=60) as r:
+                    asset = (json.loads(r.read()) or {}).get("results")
+            except urllib.error.HTTPError as e:
+                if e.code not in (404, 410):
+                    raise
+                asset = None
+            if not asset:                                 # DVIDS no longer offers it: drop our copy
+                dest.unlink(missing_ok=True)
+                status[v["id"]] = {"removed": True, "checked": time.strftime("%Y-%m-%d")}
+                removed.append(v["id"])
+                print(f"– {v['title']}: removed from DVIDS, so deleted here")
+                continue
+            status[v["id"]] = {"removed": False, "checked": time.strftime("%Y-%m-%d"),
+                               "title": asset.get("title") or v["title"]}
+            if dest.exists():                              # already saved and still on DVIDS
+                continue
             f = _pick(asset.get("files") or [])
             if not f:
                 raise ValueError("no mp4 file offered")
@@ -71,7 +94,10 @@ def main(argv: list[str]) -> int:
             failed.append(v["id"])
             print(f"✗ {v['title']}: {e}")
         time.sleep(0.5)
-    print(f"\nSaved {total / 2**20:.0f} MB into {videos.VIDEOS}." + (f" Not saved: {', '.join(failed)}" if failed else ""))
+    videos.save_status(status)
+    print(f"\nSaved {total / 2**20:.0f} MB into {videos.VIDEOS}." + (f" Not saved: {', '.join(failed)}" if failed else "")
+          + (f" Removed (gone from DVIDS): {', '.join(removed)}" if removed else ""))
+    print("Run this again before each USB rebuild or release, so saved copies stay in step with DVIDS.")
     return 1 if failed else 0
 
 

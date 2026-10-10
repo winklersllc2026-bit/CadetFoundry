@@ -237,6 +237,13 @@ def main(argv: list[str]) -> int:
             for f in sorted(vids.glob("dvids-*.mp4")):
                 if not (app / "videos" / f.name).exists():
                     _retry(shutil.copy2, f, app / "videos" / f.name)
+            # DVIDS API terms (Caching): a video removed from DVIDS (fetch_videos.py deletes it here) goes from the
+            # drive too
+            for f in (app / "videos").glob("dvids-*.mp4"):
+                if not (vids / f.name).exists():
+                    f.unlink()
+            if (vids / "status.json").exists():
+                _retry(shutil.copy2, vids / "status.json", app / "videos" / "status.json")
 
     # The installer and zip ride along: on the drive's root for whoever holds it, and in Vanguard\downloads so a
     # Vanguard started from this drive (or a demo Pi set up from it) offers them on /download -- no internet needed.

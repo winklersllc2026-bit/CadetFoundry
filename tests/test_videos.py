@@ -54,6 +54,47 @@ class CatalogTests(unittest.TestCase):
         self.assertNotIn("youtube", csp)
 
 
+class DvidsCacheTests(unittest.TestCase):
+    def test_saved_copies_follow_dvids(self):
+        """DVIDS API terms (I.E, Caching): copies of removed videos are deleted, details are kept current, and files
+        no longer in Vanguard's list are cleaned up."""
+        import io
+        import urllib.error
+        sys.path.insert(0, str(ROOT / "tools"))
+        import fetch_videos
+        tmp = Path(tempfile.mkdtemp())
+        for name in ("dvids-777200.mp4", "dvids-968639.mp4", "dvids-1.mp4"):
+            (tmp / name).write_bytes(b"x")
+
+        class R(io.BytesIO):
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *a):
+                pass
+
+        def fake(req, timeout=0):
+            url = getattr(req, "full_url", req)
+            if "video%3A968639" in url:
+                raise urllib.error.HTTPError(url, 404, "gone", {}, None)
+            if "video%3A777200" in url:
+                return R(json.dumps({"results": {"title": "Renamed by DVIDS", "files": []}}).encode())
+            if "api.dvidshub.net" in url:
+                return R(json.dumps({"results": {"title": "t", "files": [{"src": "https://x/v.mp4", "width": 1280,
+                                                                          "bitrate": 1500}]}}).encode())
+            return R(b"VIDEO")
+
+        with mock.patch.object(videos, "VIDEOS", tmp), mock.patch("urllib.request.urlopen", fake), \
+                mock.patch("time.sleep"), mock.patch("builtins.print"):
+            self.assertEqual(fetch_videos.main(["--key", "TEST"]), 0)
+            listing = {v["id"]: v for v in videos.listing()["videos"]}
+        self.assertFalse((tmp / "dvids-968639.mp4").exists())          # removed from DVIDS -> deleted here
+        self.assertNotIn("dvids-968639", listing)                       # ...and not shown
+        self.assertEqual(listing["dvids-777200"]["title"], "Renamed by DVIDS")
+        self.assertFalse((tmp / "dvids-1.mp4").exists())                # not in the list -> cleaned up
+        self.assertTrue((tmp / "dvids-850203.mp4").exists())             # a new one was saved
+
+
 @unittest.skipUnless(vault.AVAILABLE, "cryptography not installed")
 class PlaybackTests(unittest.TestCase):
     @classmethod

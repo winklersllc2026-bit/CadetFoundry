@@ -26,6 +26,19 @@ def catalog() -> list[dict]:
         return []
 
 
+def status() -> dict:
+    """What tools/fetch_videos.py last heard from DVIDS: {id: {"removed": bool, "checked": date, "title": ...}}."""
+    try:
+        return json.loads((VIDEOS / "status.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
+def save_status(data: dict) -> None:
+    VIDEOS.mkdir(parents=True, exist_ok=True)
+    (VIDEOS / "status.json").write_text(json.dumps(data, indent=1, ensure_ascii=False), encoding="utf-8")
+
+
 def file_for(v: dict) -> Path | None:
     """The saved file of a DVIDS video, if it's on this device."""
     if v.get("kind") != "dvids":
@@ -35,8 +48,13 @@ def file_for(v: dict) -> Path | None:
 
 
 def listing() -> dict:
-    out = []
+    out, st = [], status()
     for v in catalog():
+        s = st.get(v["id"]) or {}
+        if s.get("removed"):                     # DVIDS took it down: Vanguard doesn't show it either
+            continue
+        if s.get("title"):                       # DVIDS's current title (its terms: keep cached details current)
+            v = {**v, "title": s["title"]}
         f = file_for(v)
         out.append({**v, "local": bool(f), "src": f"/videos/{v['id']}.mp4" if f else "",
                     "mb": round(f.stat().st_size / 2**20) if f else None})
