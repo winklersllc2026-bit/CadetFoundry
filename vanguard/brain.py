@@ -15,6 +15,11 @@ from vanguard.faith import Faith
 from vanguard import knowledge
 from vanguard.knowledge import PUB_RE, Library, unsupported_numbers
 
+# Publication prefixes -> their service (for the reading offered after "Vanguard doesn't have AR 999-99").
+PUB_SERVICE = [(r"(AR|FM|TC|ATP|ADP|DA ?PAM)\b", "Army"), (r"(OPNAVINST|NAVEDTRA|NAVADMIN|NAVPERS)\b", "Navy"),
+               (r"(DAFI|DAFMAN|DAFPAM|AFI|AFMAN|AFH)\b", "Air Force"), (r"(MCO|MCWP|MCRP|MCTP)\b", "Marine Corps"),
+               (r"(SPFH|SFDD)\b", "Space Force")]
+
 PERSONA = """You are Vanguard, an offline learning and leadership companion for JROTC Cadets (high school students).
 You support their JROTC instructor; you never replace the instructor, the curriculum, school policy or official
 sources. You are not an official military, JROTC or school source.
@@ -327,6 +332,12 @@ class Brain:
             names = ", ".join(f"**{x}**" for x in asked_unknown)
             gap = f"Vanguard's library doesn't have {names}, so I can't tell you what it says — and I won't guess."
             topic = re.sub(r"\b(say|says|said|tell|tells|mean|means|state|states)\b", " ", PUB_RE.sub(" ", text), flags=re.I)
+            # The kind of publication says which service the question is about (an AR is Army, a DAFI Air Force...),
+            # so related reading comes from that service first, not another branch that only shares a word.
+            for pat, svc in PUB_SERVICE:
+                if any(re.match(pat, x) for x in asked_unknown):
+                    topic += " " + svc
+                    break
             said = self._library_says(topic)                 # "...about haircuts", not the made-up number
             if said:
                 gap += "\n\nHere's what Vanguard's library has on this:\n\n" + said

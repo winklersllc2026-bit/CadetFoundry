@@ -149,7 +149,10 @@ class LibraryTests(unittest.TestCase):
             fake = "".join(e.get("t", "") for e in Brain(self.lib).chat("What does AR 999-99 say about haircuts?"))
         self.assertIn("no E-12", e12)
         self.assertIn("doesn't have **AR 999-99**", fake)
-        self.assertIn("AR 670-1", fake)                                    # ...and shows what it has on haircuts
+        # ...and shows what it has on haircuts -- from the Army, since an AR is an Army regulation (not a Navy card
+        # that only shares the word "haircuts")
+        first = fake.split("Here's what Vanguard's library has on this:")[1].split("---")[0]
+        self.assertTrue("AR 670-1" in first or "Hair & Appearance" in first, first[:200])
 
     def test_coach_text_never_repeats_or_adds_numbers(self):
         from unittest import mock

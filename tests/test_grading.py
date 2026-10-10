@@ -58,7 +58,8 @@ class GradingTests(unittest.TestCase):
         for card in cards:
             with self.subTest(card=card.id):
                 self.assertIn(card.service, knowledge.SERVICES)
-        self.assertTrue(all(c.service == "army" for c in cards if c.category == "basic"))   # Army's study guide so far
+        # Basic Training & Beyond is about one service's standards, so every card in it names its branch
+        self.assertTrue(all(c.service != "joint" for c in cards if c.category == "basic"))
         self.assertTrue(any(c.service == "joint" for c in cards))
 
     def test_learn_section_filter(self):
