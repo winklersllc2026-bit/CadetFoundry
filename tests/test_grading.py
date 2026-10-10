@@ -61,5 +61,16 @@ class GradingTests(unittest.TestCase):
         self.assertTrue(all(c.service == "army" for c in cards if c.category == "basic"))   # Army's study guide so far
         self.assertTrue(any(c.service == "joint" for c in cards))
 
+    def test_learn_section_filter(self):
+        """Learn's quiz buttons: "category@service" picks one branch's cards in one subject, nothing else."""
+        cards = knowledge.Library().all_cards
+        army_mil = [c for c in cards if knowledge.matches(c, "military@army")]
+        self.assertTrue(army_mil)
+        self.assertTrue(all(c.category == "military" and c.service == "army" for c in army_mil))
+        shared = [c for c in cards if knowledge.matches(c, "leadership@joint")]
+        self.assertTrue(shared and all(c.service == "joint" for c in shared))
+        self.assertEqual(len([c for c in cards if knowledge.matches(c, "army")]), sum(c.service == "army" for c in cards))
+        self.assertEqual(len([c for c in cards if knowledge.matches(c, "")]), len(cards))
+
 if __name__ == "__main__":
     unittest.main()

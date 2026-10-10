@@ -88,6 +88,13 @@ blockquote { margin: 10px 0; padding: 6px 0 6px 14px; border-left: 3px solid var
 input, select, textarea { background: var(--bg); border: 1px solid var(--line2); border-radius: 10px; padding: 10px 12px; width: 100%; }
 input:focus, select:focus, textarea:focus { outline: none; border-color: var(--tan); }
 label { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 4px; }
+/* Big, plain buttons for choosing where to go (Me, Learn) -- easy to hit on a phone, no reading of menus */
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-bottom: 12px; }
+.tile { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; padding: 14px; min-height: 92px;
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--r); color: var(--text); font: inherit; font-weight: 700; cursor: pointer; }
+.tile:hover, .tile:focus-visible { border-color: var(--tan); }
+.tile span { font-size: 26px; line-height: 1.1; }
+.tile small { font-weight: 400; color: var(--muted); font-size: 13px; }
 .chip { display: inline-block; font-size: 14px; padding: 6px 11px; min-height: 34px; border-radius: 999px; border: 1px solid var(--line2); color: var(--muted); margin: 2px 4px 2px 0; }
 .bar { height: 6px; border-radius: 6px; background: var(--bg); overflow: hidden; margin-top: 8px; }
 .bar > i { display: block; height: 100%; background: var(--olive); }
@@ -191,7 +198,6 @@ body:not([data-kind="guardian"]) .family-only, body[data-kind="guardian"] .soldi
   <div class="row" style="gap:4px;flex-wrap:nowrap">
     <div class="engine" id="engine"><span class="dot"></span><span>checking…</span></div>
     <button type="button" class="hdrNav" data-open="ask" title="Ask a question" aria-label="Ask a question">💬<span class="lbl"> Ask</span></button>
-    <button type="button" class="hdrNav" data-open="me" title="My profile and settings" aria-label="My profile and settings">👤</button>
     <button type="button" class="hdrNav" data-open="instructor" title="Instructor" aria-label="Instructor">🎓</button>
     <button id="textBtn" type="button" title="Larger text and buttons" aria-label="Large text" aria-pressed="false">A+</button>
     <button id="modeBtn" type="button" title="Red-light mode keeps your night vision" aria-pressed="false" aria-label="Red-light night mode">🔴<span class="lbl"> Night</span></button>
@@ -199,8 +205,10 @@ body:not([data-kind="guardian"]) .family-only, body[data-kind="guardian"] .soldi
 </header>
 
 <main>
+  <!-- HOME: what's due, the Daily 10, a live question or vote, progress at a glance -->
+  <section class="view on" id="home"><div class="wrap" id="homeBody"></div></section>
   <!-- ASK -->
-  <section class="view on" id="ask">
+  <section class="view" id="ask">
     <aside id="chatSide" aria-label="Conversations">
       <button class="btn primary" id="newChat" type="button">＋ New chat</button>
       <div id="chatList"></div>
@@ -274,11 +282,10 @@ body:not([data-kind="guardian"]) .family-only, body[data-kind="guardian"] .soldi
 </main>
 
 <nav class="tabs" id="tabs" aria-label="Main">
+  <button data-v="home"><span class="ic" aria-hidden="true">🏠</span>Home</button>
   <button data-v="study"><span class="ic" aria-hidden="true">📘</span>Learn</button>
   <button data-v="lead"><span class="ic" aria-hidden="true">🧭</span>Lead</button>
-  <button data-v="train"><span class="ic" aria-hidden="true">💪</span>Train</button>
-  <button data-v="serve"><span class="ic" aria-hidden="true">🤝</span>Serve</button>
-  <button data-v="progress"><span class="ic" aria-hidden="true">📈</span>Progress</button>
+  <button data-v="me"><span class="ic" aria-hidden="true">👤</span>Me</button>
 </nav>
 
 <script src="/js/core.js"></script>
@@ -296,6 +303,7 @@ body:not([data-kind="guardian"]) .family-only, body[data-kind="guardian"] .soldi
 <script src="/js/pilot.js"></script>
 <script src="/js/voice.js"></script>
 <script src="/js/intake.js"></script>
+<script src="/js/home.js"></script>
 <script src="/js/me.js"></script>
 </body>
 </html>

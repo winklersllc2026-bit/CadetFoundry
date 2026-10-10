@@ -3,62 +3,108 @@
 
 // ── STUDY ──
 const studyBody = $('#studyBody');
-// Learn: the five categories from the owner's spec (§7), then Explore Military Service for any curious Cadet, and
-// Basic Training & Beyond only for a Cadet who said they plan to join (the server decides what each profile sees).
+// Learn (0.2): one drop-down picks a section, so the page never turns into a long scroll. Every branch of service a
+// Cadet can explore gets its own section once it has checked cards (a Cadet in one program may join another branch);
+// the shared sections hold what's true for all services. Basic Training & Beyond stays opt-in (the server decides).
 const CATEGORY_ICON = { leadership: '🧭', citizenship: '🏛️', military: '🎖️', health: '💚', careers: '💼', explore: '🎗️', basic: '🪖' };
+const SERVICE_ICON = { army: '⭐', navy: '⚓', air_force: '✈️', marine_corps: '🦅', space_force: '🚀', coast_guard: '🛟' };
+const SHARED_NAME = { military: 'Military basics (all services)', explore: 'Joining the military' };
 const CATEGORY_BLURB = {
   leadership: 'Values, leader attributes and how good leaders act. Practice it in 🧭 Lead.',
   citizenship: 'The Constitution, your rights, how government works, and being part of your community.',
-  military: 'Ranks, customs and courtesies, drill, uniforms, map reading and military traditions.',
+  military: 'Ranks, customs and courtesies, drill, uniforms, map reading and traditions shared by every service.',
   health: 'Fitness, nutrition, sleep, heat safety and taking care of yourself.',
   careers: 'Planning what comes next: college, careers, apprenticeships, tests — and money basics.',
-  explore: 'For Cadets curious about serving: benefits, pay, training and Army jobs. Information only.',
+  explore: 'For Cadets curious about serving in any branch: benefits, pay and training. Information only.',
   basic: 'Your study guide for basic training and beyond — because you said you plan to join.',
 };
+const LEARN_KEY = 'vg.learnSection';
+const learnGet = () => { try { return localStorage.getItem(LEARN_KEY) || ''; } catch { return ''; } };
+const learnSet = v => { try { localStorage.setItem(LEARN_KEY, v); } catch { /* private window: just don't remember */ } };
 
-loaders.study = async () => {
-  const [topics, dly] = await Promise.all([api('/api/topics'), api('/api/daily')]);
-  const st = dly.status, cats = STATUS.categories || {};
-  const byCat = {};
-  topics.forEach(t => t.cards.forEach(c => (byCat[c.category] = byCat[c.category] || []).push(c)));
-  const chips = list => (list || []).map(c => `<button class="chip" data-card="${esc(c.id)}" style="background:none;cursor:pointer">${esc(c.title)}</button>`).join('');
-  const extra = {
-    leadership: '<button class="btn small" id="toLead">🧭 Leadership scenarios</button>',
-    citizenship: '<button class="btn small" data-books="1">📜 Founding documents</button>',
-    military: '<button class="btn small" id="navGo">🗺️ Map reading practice</button> <button class="btn small" data-books="1">📚 Army history</button>',
-    explore: '<button class="btn small" id="jobsGo">💼 Army jobs explorer</button> <button class="btn small" id="toServe">More in 🤝 Serve</button>',
-    basic: `<div class="row" style="flex-wrap:wrap;gap:6px"><button class="btn small" id="nineGo">📻 9-line</button><button class="btn small" id="saluteGo">SALUTE</button>
-      <button class="btn small" id="laceGo">LACE</button><button class="btn small" id="bpUniform">Uniform check</button><button class="btn small" id="bpBoard">Mock board</button>
-      <button class="btn small" id="bpCreed">Soldier's Creed</button><button class="btn small" id="printGo">🖨️ Pocket cards</button></div><div id="bctCard" style="margin-top:8px"></div>`,
-  };
-  const section = cat => {
-    const list = byCat[cat] || [];
-    if (!list.length && !extra[cat]) return '';
-    return `<div class="card"${cat === 'basic' || cat === 'explore' ? ' style="border-color:var(--tan)"' : ''}>
-      <div class="topic"><div><h3>${CATEGORY_ICON[cat] || ''} ${esc(cats[cat])}</h3><div class="faint">${esc(CATEGORY_BLURB[cat] || '')}</div></div>
-      ${list.length ? `<button class="btn small" data-quiz="${esc(cat)}">Quiz</button>` : ''}</div>
-      ${list.length ? `<div style="margin-top:8px">${chips(list)}</div>` : '<p class="faint" style="margin:8px 0 0">Study cards for this section are being written.</p>'}
-      ${extra[cat] ? `<div style="margin-top:10px">${extra[cat]}</div>` : ''}</div>`;
-  };
-  const order = ['leadership', 'citizenship', 'military', 'health', 'careers', 'explore', 'basic'].filter(c => c in cats);
-  studyBody.innerHTML = `<h2>Learn</h2>
-    <div class="card" style="border-color:var(--tan)"><div class="row" style="justify-content:space-between">
-      <div><h3>🔥 Daily 10</h3><div class="faint">${st.done_today ? `Done today: ${st.today_score.right}/${st.today_score.total}. ` : 'Ten questions, every day. '}Streak: <b>${st.streak}</b> day${st.streak === 1 ? '' : 's'} · best ${st.best}</div></div>
-      <button class="btn primary" id="dailyGo">${st.done_today ? 'Again' : 'Start'}</button></div></div>
-    ${order.map(section).join('')}
-    <div class="card"><div class="row" style="justify-content:space-between"><div><h3>📚 Books</h3><div class="faint">The Constitution and founding documents, American military history, and classics — free on this device.</div></div>
+loaders.study = async (pick) => {
+  const topics = await api('/api/topics');
+  const cats = STATUS.categories || {}, svcs = STATUS.services || {};
+  const all = [];
+  topics.forEach(t => t.cards.forEach(c => all.push(c)));
+  const chips = list => list.map(c => `<button class="chip" data-card="${esc(c.id)}" style="background:none;cursor:pointer">${esc(c.title)}</button>`).join('');
+  const faithOn = !(STATUS.modules_off || []).includes('faith');
+
+  // The sections: each branch with cards, then the shared subjects, then Faith and the Library.
+  const sections = [];
+  Object.keys(svcs).filter(s => s !== 'joint' && all.some(c => c.service === s)).forEach(s => sections.push({
+    id: 'svc:' + s, icon: SERVICE_ICON[s] || '🎖️', name: svcs[s], blurb: `Ranks, customs, jobs and training in the ${svcs[s]}.`,
+    count: all.filter(c => c.service === s).length }));
+  ['leadership', 'citizenship', 'military', 'health', 'careers', 'explore'].filter(c => c in cats).forEach(c => sections.push({
+    id: 'cat:' + c, icon: CATEGORY_ICON[c], name: SHARED_NAME[c] || cats[c], blurb: CATEGORY_BLURB[c],
+    count: all.filter(x => x.category === c && x.service === 'joint').length }));
+  if (faithOn) sections.push({ id: 'faith', icon: '📖', name: 'Faith texts', blurb: 'Optional: read and search scripture.' });
+  sections.push({ id: 'library', icon: '📚', name: 'Library & tests', blurb: 'Books, search, exams, mixed quiz.' });
+
+  let cur = typeof pick === 'string' ? pick : learnGet();
+  if (cur && !sections.some(s => s.id === cur)) cur = '';
+  learnSet(cur);
+  studyBody.dataset.section = cur;
+  const menu = `<label class="faint" for="learnPick" style="display:block;margin-bottom:4px">Section</label>
+    <select id="learnPick" style="width:100%;font-size:17px;min-height:46px;margin-bottom:12px">
+      <option value="">🗂️ All sections</option>${sections.map(s => `<option value="${esc(s.id)}" ${s.id === cur ? 'selected' : ''}>${s.icon} ${esc(s.name)}</option>`).join('')}</select>`;
+
+  let html;
+  if (!cur) {
+    html = `<div class="tiles">${sections.map(s => `<button class="tile" data-section="${esc(s.id)}"><span>${s.icon}</span>${esc(s.name)}
+      <small>${s.count != null ? `${s.count} card${s.count === 1 ? '' : 's'}` : esc(s.blurb)}</small></button>`).join('')}</div>`;
+  } else if (cur === 'faith') {
+    html = `<div class="card"><h3>📖 Faith texts</h3><p class="faint">Optional: read and search public-domain scripture — the Bible, Tanakh, Quran, Book of Mormon, Bhagavad Gita and more. Pick yours in 👤 Me.</p>
+      <button class="btn primary" data-open-faith>Open faith texts</button></div>`;
+  } else if (cur === 'library') {
+    html = `<div class="card"><div class="row" style="justify-content:space-between"><div><h3>📚 Books</h3><div class="faint">The Constitution and founding documents, American military history, and classics — free on this device.</div></div>
       <button class="btn small" id="booksGo">Open</button></div></div>
-    ${(STATUS.modules_off || []).includes('faith') ? '' : `<div class="card"><div class="row" style="justify-content:space-between"><div><h3>📖 Faith texts</h3><div class="faint">Optional: read and search public-domain scripture — the Bible, Tanakh, Quran, Book of Mormon, Bhagavad Gita and more. Pick yours in 👤 Me.</div></div>
-      <button class="btn small" data-open-faith>Open</button></div></div>`}
     <form class="card" id="libSearch" role="search"><h3>🔎 Search the library</h3>
       <div class="row" style="flex-wrap:nowrap"><input id="libQ" type="search" placeholder="e.g. Bill of Rights, salute, sleep" aria-label="Search the library" style="flex:1"><button class="btn primary">Search</button></div>
       <div class="faint">Searches the study cards and documents on this device — instant, no AI. Tap a result to read it.</div>
       <div id="libResults" aria-live="polite"></div></form>
     <div class="card"><div class="row" style="justify-content:space-between"><div><h3>📝 Exam mode</h3><div class="faint">A timed multiple-choice test — graded on the device, with your score history.</div></div>
       <button class="btn small" id="examGo">Take an exam</button></div></div>
-    <div class="card"><div class="row" style="justify-content:space-between"><div><h3>Mixed quiz</h3><div class="faint">10 questions from everything you can see — the ones you miss come back more often.</div></div><button class="btn primary" data-quiz="">Start</button></div></div>`;
+    <div class="card"><div class="row" style="justify-content:space-between"><div><h3>🔀 Mixed quiz</h3><div class="faint">10 questions from everything you can see — the ones you miss come back more often.</div></div><button class="btn primary" data-quiz="">Start</button></div></div>`;
+  } else if (cur.startsWith('svc:')) {
+    const s = cur.slice(4), mine = all.filter(c => c.service === s);
+    const order = ['leadership', 'citizenship', 'military', 'health', 'careers', 'explore', 'basic'];
+    const extra = s === 'army' ? {
+      explore: '<button class="btn small" id="jobsGo">💼 Army jobs explorer</button>',
+      basic: `<div class="row" style="flex-wrap:wrap;gap:6px"><button class="btn small" id="nineGo">📻 9-line</button><button class="btn small" id="saluteGo">SALUTE</button>
+        <button class="btn small" id="laceGo">LACE</button><button class="btn small" id="bpUniform">Uniform check</button><button class="btn small" id="bpBoard">Mock board</button>
+        <button class="btn small" id="bpCreed">Soldier's Creed</button><button class="btn small" id="printGo">🖨️ Pocket cards</button></div><div id="bctCard" style="margin-top:8px"></div>`,
+    } : {};
+    const sec = sections.find(x => x.id === cur);
+    html = `<div class="card" style="border-color:var(--tan)"><div class="topic"><div><h3>${sec.icon} ${esc(sec.name)}</h3>
+        <div class="faint">${esc(sec.blurb)} Information only — talk to a recruiter or counselor for anything official.</div></div>
+        <button class="btn small" data-quiz="${esc(s)}">Quiz all</button></div></div>
+      ${order.filter(c => c in cats && mine.some(x => x.category === c)).map(c => `<div class="card"${c === 'basic' ? ' style="border-color:var(--tan)"' : ''}>
+        <div class="topic"><div><h3>${CATEGORY_ICON[c]} ${esc(cats[c])}</h3>${c === 'basic' ? `<div class="faint">${esc(CATEGORY_BLURB.basic)}</div>` : ''}</div>
+        <button class="btn small" data-quiz="${esc(c + '@' + s)}">Quiz</button></div>
+        <div style="margin-top:8px">${chips(mine.filter(x => x.category === c))}</div>
+        ${extra[c] ? `<div style="margin-top:10px">${extra[c]}</div>` : ''}</div>`).join('')}`;
+  } else {
+    const c = cur.slice(4), shared = all.filter(x => x.category === c && x.service === 'joint');
+    const branch = all.filter(x => x.category === c && x.service !== 'joint');
+    const extra = {
+      leadership: '<button class="btn small" id="toLead">🧭 Leadership scenarios</button>',
+      citizenship: '<button class="btn small" data-books="1">📜 Founding documents</button>',
+      military: '<button class="btn small" id="navGo">🗺️ Map reading practice</button> <button class="btn small" data-books="1">📚 Military history</button>',
+      explore: '<button class="btn small" id="toServe">More in 🤝 Serve</button>',
+    }[c];
+    html = `<div class="card"><div class="topic"><div><h3>${CATEGORY_ICON[c]} ${esc(SHARED_NAME[c] || cats[c])}</h3><div class="faint">${esc(CATEGORY_BLURB[c] || '')}</div></div>
+        ${shared.length ? `<button class="btn small" data-quiz="${esc(c + '@joint')}">Quiz</button>` : ''}</div>
+      ${shared.length ? `<div style="margin-top:8px">${chips(shared)}</div>` : '<p class="faint" style="margin:8px 0 0">Study cards for this section are being written.</p>'}
+      ${extra ? `<div style="margin-top:10px">${extra}</div>` : ''}</div>
+      ${branch.length ? `<div class="card"><h3>Branch by branch</h3><div class="faint">How one service does it — pick its section above for more.</div>
+        ${Object.keys(svcs).filter(s => branch.some(x => x.service === s)).map(s => `<div style="margin-top:8px"><b>${SERVICE_ICON[s] || ''} ${esc(svcs[s])}</b><br>
+          ${chips(branch.filter(x => x.service === s))}</div>`).join('')}</div>` : ''}`;
+  }
+  studyBody.innerHTML = `<h2>Learn</h2>${menu}${html}`;
+  $('#learnPick').onchange = e => loaders.study(e.target.value);
+  studyBody.querySelectorAll('[data-section]').forEach(b => { b.onclick = () => loaders.study(b.dataset.section); });
   const on = (id, fn) => { const el = $('#' + id); if (el) el.onclick = fn; };
-  $('#dailyGo').onclick = () => chooseQuiz('', true);
   on('navGo', landNav); on('examGo', examSetup); on('jobsGo', () => jobsExplorer()); on('booksGo', () => booksShelf());
   document.querySelectorAll('[data-open-faith]').forEach(b => { b.onclick = () => openView('faith'); });
   on('toLead', () => openView('lead')); on('toServe', () => openView('serve'));
@@ -66,7 +112,7 @@ loaders.study = async () => {
   on('nineGo', nineLine); on('saluteGo', saluteDrill); on('laceGo', () => sortDrill('LACE'));
   studyBody.querySelectorAll('[data-books]').forEach(b => { b.onclick = () => booksShelf(); });
   if ($('#bctCard')) showBct();
-  $('#libSearch').onsubmit = e => { e.preventDefault(); librarySearch($('#libQ').value); };
+  if ($('#libSearch')) $('#libSearch').onsubmit = e => { e.preventDefault(); librarySearch($('#libQ').value); };
 };
 
 // ── BOOKS: free public-domain reading, offline ──

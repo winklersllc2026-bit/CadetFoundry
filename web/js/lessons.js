@@ -7,9 +7,9 @@ const STATE_NAME = { not_started: 'Not started', in_progress: 'In progress', com
 
 // ── Cadet: My assignments (top of Learn) ──
 const studyLoader = loaders.study;
-loaders.study = async () => {
-  await studyLoader();
-  if (STATUS.kind !== 'cadet') return;
+loaders.study = async (pick) => {
+  await studyLoader(pick);
+  if (STATUS.kind !== 'cadet' || studyBody.dataset.section) return;     // only on the All sections view
   const r = await api('/api/lessons');
   if (!r.assignments || !r.assignments.length) return;
   const card = document.createElement('div');

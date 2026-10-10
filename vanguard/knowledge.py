@@ -135,6 +135,16 @@ CATEGORIES = {"leadership": "Leadership", "citizenship": "Citizenship", "militar
 SERVICES = {"army": "Army", "navy": "Navy", "air_force": "Air Force", "marine_corps": "Marine Corps",
             "space_force": "Space Force", "coast_guard": "Coast Guard", "joint": "All services"}
 
+
+def matches(card, topic: str) -> bool:
+    """A quiz/exam filter: a topic, card id, category or service -- or "category@service" (Learn's sections)."""
+    if not topic:
+        return True
+    if "@" in topic:
+        cat, svc = topic.split("@", 1)
+        return card.service == svc and (not cat or card.category == cat)
+    return topic in (card.topic, card.id, card.category, card.service)
+
 # Which categories this request may see (None = everything: tools, tests, instructors). Set per request by the
 # server from the instructor's settings and the Cadet's own choice (security.py / server.py).
 _visible: contextvars.ContextVar[frozenset | None] = contextvars.ContextVar("vanguard_visible_categories", default=None)

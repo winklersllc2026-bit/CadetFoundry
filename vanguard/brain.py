@@ -12,6 +12,7 @@ from typing import Generator
 
 from vanguard import daily, engine, facts, quiz_edits, safety, store
 from vanguard.faith import Faith
+from vanguard import knowledge
 from vanguard.knowledge import PUB_RE, Library, unsupported_numbers
 
 PERSONA = """You are Vanguard, an offline learning and leadership companion for JROTC Cadets (high school students).
@@ -484,7 +485,7 @@ class Brain:
         stats = store.study()
         pool = []
         for c in self.library.cards:
-            if topic and topic not in (c.topic, c.id, c.category, c.service):   # a topic, card, category or service
+            if not knowledge.matches(c, topic):          # a topic, card, category, service or "category@service"
                 continue
             for i, (q, a) in enumerate(c.quiz):
                 qid = f"{c.id}#{i}"

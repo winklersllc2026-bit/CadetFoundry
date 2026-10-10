@@ -93,7 +93,14 @@ loaders.me = async () => {
     : '<p class="faint">No scripture texts installed on this device.</p>';
   const isInst = STATUS.kind === 'instructor', isCadet = STATUS.kind === 'cadet';
   const gradeOpts = ['', ...(STATUS.grades || [])].map(s => `<option ${p.grade === s ? 'selected' : ''}>${esc(s)}</option>`).join('');
+  const cadetTiles = !isInst && STATUS.kind !== 'guardian';
   $('#meBody').innerHTML = `<h2>Me</h2>
+    ${cadetTiles ? `<div class="tiles">
+      <button class="tile" data-go-view="progress"><span>📈</span>My progress<small>Growth and portfolio</small></button>
+      <button class="tile" data-go-view="train"><span>💪</span>Train<small>Fitness against yourself</small></button>
+      <button class="tile" data-go-view="serve"><span>🤝</span>Serve<small>Service hours · explore the military</small></button>
+      <button class="tile" data-go-view="logbook"><span>📝</span>Logbook<small>Notes, letters, budget</small></button>
+    </div>` : ''}
     <div class="card"><div class="row" style="justify-content:space-between">
       <div><div class="faint">Profile on this device</div><div id="profName" style="font-size:20px;font-weight:700">${STATUS.kind === 'guardian' ? '👪' : STATUS.kind === 'instructor' ? '🎓' : '👤'} ${esc(lock.current.name)}
         <button class="btn small" id="renameProf" aria-label="Rename this profile" style="margin-left:6px">✎ Rename</button></div></div>
@@ -237,11 +244,10 @@ loaders.me = async () => {
 
 // ── FIRST-RUN TOUR ── (once per profile on this device; "Take the tour" on the Me tab shows it again)
 const TOUR = [
-  ['study', '📘 Learn', 'Study cards, quizzes and timed exams, and the library of books and founding documents. Answers come from sources on this device, with the source shown.'],
+  ['home', '🏠 Home', "What's due, your Daily 10, and anything your instructor starts in class — all in one place."],
+  ['study', '📘 Learn', 'Pick a section at the top — any branch of service, leadership, citizenship, health, careers, faith or the library. Every card shows its source.'],
   ['lead', '🧭 Lead', 'Leadership scenarios: real situations, your decision, what happened and why, and what you would do next time.'],
-  ['train', '💪 Train', 'Your fitness history and goals — measured against your own last result, not anyone else.'],
-  ['serve', '🤝 Serve', 'Your service projects and hours, and Explore Military Service if you want to learn what serving is like.'],
-  ['progress', '📈 Progress', 'Your growth over time, in one place.'],
+  ['me', '👤 Me', 'Your progress and portfolio, fitness (Train), service hours (Serve), Explore Military Service, and your settings.'],
 ];
 async function tour(pid) {
   if ((await api('/api/status')).kind === 'instructor') return;   // the tour shows the Cadet areas
@@ -276,3 +282,6 @@ unlocked.then(async s => {
 });
 
 unlocked.then(s => s && refreshStatus());
+
+// Me tiles: Progress, Train, Serve and the logbook live under Me (the bottom bar keeps four tabs).
+$('#meBody').addEventListener('click', e => { const b = e.target.closest('[data-go-view]'); if (b) openView(b.dataset.goView); });

@@ -194,8 +194,11 @@ new MutationObserver(() => {
 // ── tabs ──
 const loaders = {};
 // Shows one view. Header buttons (Ask, Me, Instructor) open views that aren't tabs; then no tab is lit.
+// Screens reached from a tab keep that tab lit: Train, Serve, Progress and the logbook live under Me; Faith under Learn.
+const TAB_OF = { train: 'me', serve: 'me', progress: 'me', logbook: 'me', faith: 'study', lesson: 'home' };
 function openView(v, pane) {
-  document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x.dataset.v === v && (x.dataset.pane || '') === (pane || '')));
+  const tab = TAB_OF[v] || v;
+  document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x.dataset.v === tab));
   document.querySelectorAll('.view').forEach(x => x.classList.toggle('on', x.id === v));
   if (pane && typeof showPane === 'function') showPane(pane); else loaders[v] && loaders[v]();
 }
@@ -211,7 +214,7 @@ const FAMILY_SUGGEST = ['What is JROTC?', 'What does LET level mean?', 'What are
 let landed = false;
 async function refreshStatus() {
   STATUS = await api('/api/status');
-  if (!landed && STATUS.kind === 'instructor') openView('instructor');   // instructors start in their tools
+  if (!landed) openView(STATUS.kind === 'instructor' ? 'instructor' : 'home');   // instructors start in their tools
   landed = true;
   if ((document.body.dataset.kind = STATUS.kind || 'cadet') === 'guardian') {          // family member's profile
     $('#suggest').innerHTML = FAMILY_SUGGEST.map(q => `<button>${esc(q)}</button>`).join('');
