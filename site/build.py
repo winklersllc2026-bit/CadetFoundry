@@ -34,9 +34,13 @@ INCLUDE_DIRS = ["vanguard", "web", "tools", "tests", "faith", "library", "books"
 INCLUDE_FILES = ["run.py", "start-vanguard.bat", "start-vanguard.sh", "start-classroom.bat", "start-classroom.sh", "install-vanguard.bat", "install-vanguard.sh", "README.md", "LIBRARY.md", "SECURITY.md"]
 
 ROADMAP = [
-    (True, "Roles: Cadet, guardian and instructor profiles; Instructor PIN; class records only for the instructor"),
+    (True, "0.2: every branch — Army, Navy, Air Force, Marine Corps and Space Force sections in Learn; your program's labels"),
+    (True, "0.2: simple setup — first-run wizard, Join screen with a QR code, join codes per class or platoon, 30-second sign-up"),
+    (True, "0.2: Home screen and a 4-tab bar (Home, Learn, Lead, Me); an instructor menu (Today, Class, Lessons, Present, Reports, Settings)"),
+    (True, "0.2: military jobs in every service from official sites; ASVAB practice with exact scoring"),
+    (True, "Roles: Cadet, guardian and instructor profiles; Class PIN; class records only for the instructor"),
     (True, "Classes, platoons and squads; lessons assigned to everyone, units or Cadets (late joiners get them once)"),
-    (True, "Learn: 120+ study cards from U.S. government sources and Army manuals, each citing its source"),
+    (True, "Learn: 150+ study cards from official U.S. government and military sources, each citing its source"),
     (True, "Quizzes typed and graded by Vanguard — Practice (multiple choice) and Challenge (typed); never self-reported"),
     (True, "Leadership scenarios (20) with a leadership log; classroom vote on the projector"),
     (True, "Live in-class pop quiz: one question on the projector, Cadets answer on their devices, counts only"),
@@ -48,6 +52,7 @@ ROADMAP = [
     (True, "Installable app on phones and computers; works offline on the classroom network"),
     (False, "Publisher: run tools/sign.py keygen once and commit vanguard/data/release_key.pub"),
     (False, "Code-sign the Windows installer (needs a code-signing certificate)"),
+    (False, "Navy, Air Force, Marine Corps and Space Force cards brought up to the depth of the Army set"),
     (False, "First classroom pilot"),
 ]
 
@@ -224,7 +229,8 @@ JROTC instructors and Cadets. Version <b>{esc(__version__)}</b> · built {time.s
 <p>Vanguard runs on the <b>instructor's laptop</b>. Cadets use it in a browser on school computers, tablets or phones on the
 classroom network — no cloud, no outside accounts, no advertising, no tracking. The instructor stays in control.</p>
 <ul>
-<li><b>📘 Learn</b> — assignments, study cards from U.S. government sources and Army manuals (every card names its source), quizzes Cadets type and Vanguard grades, timed exams, and a library of founding documents and history.</li>
+<li><b>🏠 Home</b> — what's due, the Daily 10, a live question from the instructor, and progress at a glance.</li>
+<li><b>📘 Learn</b> — every branch of service (Army, Navy, Air Force, Marine Corps, Space Force) plus shared subjects; study cards from official sources (every card names its source), quizzes Cadets type and Vanguard grades, timed exams, ASVAB practice, and a jobs explorer for every service.</li>
 <li><b>🧭 Lead</b> — leadership scenarios, a leadership log, the classroom vote and the live pop quiz.</li>
 <li><b>💪 Train</b> — fitness measured against yourself. <b>🤝 Serve</b> — service hours your instructor verifies.</li>
 <li><b>📈 Progress</b> — growth over time and a printable portfolio.</li>
@@ -238,7 +244,8 @@ classroom network — no cloud, no outside accounts, no advertising, no tracking
 <div class="card"><h2>Set up the instructor's laptop</h2><ol>
 <li>Download and open <b>Vanguard-Setup</b>. If Windows says <i>"Windows protected your PC"</i> (the installer isn't code-signed yet), click <b>More info → Run anyway</b>.</li>
 <li>Click through the installer — no admin rights needed. It puts a <b>Vanguard</b> icon on the desktop and in the Start menu.</li>
-<li>Set the <b>Instructor PIN</b>, create your instructor profile, and open <b>🎓 Instructor</b>.</li>
+<li>Open Vanguard and choose <b>I'm the instructor — set up this class</b>: pick your program, a <b>Class PIN</b>, your name and your own PIN.</li>
+<li>In <b>🎓 Instructor → Class</b>, add your classes or platoons. Each gets a <b>join code</b> that places Cadets in it.</li>
 <li>For the classroom, open <b>Vanguard Classroom</b> (or <code>start-classroom</code>). It shows a Join screen with a QR code; Cadets scan it and pick a name and a PIN.</li>
 </ol><p class="faint">Updating: run the newer installer — profiles and class records are kept. Data lives in <code>%USERPROFILE%\\.vanguard</code>.<br>
 Zip instead: unzip, double-click <code>install-vanguard.bat</code>. Linux / Raspberry Pi: <code>sh install-vanguard.sh</code>, then <code>sh start-vanguard.sh</code>.</p></div>

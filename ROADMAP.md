@@ -1,15 +1,26 @@
 # Vanguard roadmap
 
-Current version: **0.1.4** (2026-10-09). Released on GitHub (private repo) and vanguard.winklers-llc.com (password).
+Current version: **0.2.0** (2026-10-10). Released on GitHub (private repo) and vanguard.winklers-llc.com (password).
 
 ## Where it stands
 
-Built and tested (128 automated tests, including a full class day end to end):
-roles and the Instructor PIN · classes, platoons and squads · lessons and assignments · 120+ sourced study cards ·
-quizzes typed and graded by Vanguard · exams · 20 leadership scenarios with a classroom vote (several in a row) ·
-live in-class pop quiz · Train · Serve with instructor verification · Progress and printable portfolio ·
-instructor dashboard and CSV report · program backup · pilot tools · Windows installer · USB drive (with optional
-offline AI) · Raspberry Pi demo box · website.
+**0.2 — every branch, and simpler for everyone:** Learn covers the Army, Navy, Air Force, Marine Corps and Space Force
+(each card checked against an official page) · the instructor picks their program and labels follow it (LET / NS /
+LE / Year) · cadet rank and billet · first-run setup wizard · Join screen with a QR code and join codes per class or
+platoon · 30-second Cadet sign-up · Home screen and 4-tab bar · instructor menu (Today, Class, Lessons, Present,
+Reports, Settings) · jobs explorer for every service from official recruiting sites (Air Force jobs show published
+ASVAB minimums) · ASVAB practice for the four AFQT subtests with exact scoring · Start Classroom launchers.
+
+Built before 0.2 and still here: roles and the Class PIN · classes, platoons and squads · lessons and assignments ·
+quizzes typed and graded by Vanguard · exams · 20 leadership scenarios with a classroom vote · live in-class pop
+quiz · Train · Serve with instructor verification · Progress and printable portfolio · instructor dashboard and CSV
+report · program backup · pilot tools · Windows installer · USB drive (with optional offline AI) · website.
+
+## Next: branch content up to the depth of the Army set
+
+The Army set has 46 cards (values, ranks, customs, drill, uniforms, history, field skills, the opt-in Basic Training
+& Beyond guide). Navy, Air Force, Marine Corps and Space Force are being brought to the same depth, each card checked
+against an official source before it goes in.
 
 ## Before the first classroom pilot (owner)
 
@@ -19,7 +30,7 @@ offline AI) · Raspberry Pi demo box · website.
    signed updates.
 2. **Code-sign the Windows installer** so Windows doesn't show "Windows protected your PC" (needs a code-signing
    certificate in the company's name; then sign `Vanguard-Setup-*.exe` in `site/build.py`).
-3. **Run the Raspberry Pi demo box once on real hardware** (`tools/pi_setup.sh` has only been checked here).
+3. ~~Raspberry Pi demo box~~ — no Pi now (2026-10-10); the instructor's laptop is the first device. The Pi tools stay in the repo.
 4. **Walk the pilot flow once by hand** on the classroom setup you'll use (below).
 
 ## Next work
