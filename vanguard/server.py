@@ -25,7 +25,7 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from vanguard import (addons, backup, board, books, careers, daily, engine, exam, fitness, instructor, integrity, knowledge,
+from vanguard import (addons, asvab, backup, board, books, careers, daily, engine, exam, fitness, instructor, integrity, knowledge,
                       lessons, letters, network, live_quiz, pay, pilot, profiles, program_backup, progress, quiz_edits, reports, scenarios, security, service, store, train, voice)
 from vanguard.brain import Brain
 from vanguard.faith import Faith
@@ -531,7 +531,16 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
             preferred = [x for x in (store.profile().get("faith_texts") or "").split(",") if x]
             return self._json(daily.plan_day(app.faith, q.get("id", ""), int(day) if day and day.isdigit() else None, preferred))
         if r == "/api/jobs":
-            return self._json(careers.search(app.library.library_dir, q.get("q", "")[:100], q.get("area", "")[:60]))
+            scores = {}                                  # a Cadet's own official line scores (never stored)
+            for name in careers.LINE_SCORES:
+                v = str(q.get(name.lower(), "")).strip()
+                if v.isdigit() and 0 < int(v) <= 99:
+                    scores[name] = int(v)
+            return self._json(careers.search(app.library.library_dir, q.get("q", "")[:100], q.get("area", "")[:60],
+                                             service=str(q.get("service", ""))[:20], scores=scores,
+                                             only_meets=q.get("meets") == "1"))
+        if r == "/api/asvab":                            # ASVAB practice: sections and this profile's results
+            return self._json({"sections": asvab.SECTIONS, "order": asvab.ORDER, "history": asvab.history()})
         if r == "/api/books":                            # free, public-domain books on this device
             return self._json(books.shelf())
         if r == "/api/books/read":
@@ -1146,6 +1155,14 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                 return self._json(exam.start(app.library, str(b.get("topic", ""))[:80], int(b.get("n") or 10)))
             except (TypeError, ValueError) as e:
                 return self._json({"error": str(e) or "Couldn't start the exam."}, 400)
+        if r == "/api/asvab/start":
+            secs = b.get("sections") if isinstance(b.get("sections"), list) else []
+            return self._json(asvab.start([str(x)[:3] for x in secs][:4]))
+        if r == "/api/asvab/submit":
+            try:
+                return self._json(asvab.submit(str(b.get("id", ""))[:12], b.get("answers") if isinstance(b.get("answers"), dict) else {}))
+            except ValueError as e:
+                return self._json({"error": str(e)}, 400)
         if r == "/api/exam/submit":
             try:
                 return self._json(exam.submit(str(b.get("id", "")), b.get("answers") if isinstance(b.get("answers"), dict) else {}))

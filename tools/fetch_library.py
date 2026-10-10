@@ -333,9 +333,163 @@ def goarmy_jobs() -> str:
     return f"Army jobs: {len(jobs)}"
 
 
+# ── Jobs in every service (0.2): read from each service's official recruiting site, the same way as Army jobs ──
+# Each page's own words are kept (title, summary, enlisted/officer, job code, and -- where the page lists them --
+# the minimum ASVAB line scores). Nothing is written by hand or guessed.
+BROWSER = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                         "Chrome/130.0 Safari/537.36"}        # the services' recruiting sites refuse unknown clients
 
 
-JOBS = [ucmj, tsp_summary, army_publications, goarmy_pages, va_gi_bill, goarmy_jobs, convert_local_pdfs]
+def _get_page(url: str) -> str:
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(urllib.request.Request(url, headers=BROWSER), timeout=60) as r:
+                return _decode(r.read())
+        except (OSError, urllib.error.URLError):
+            if attempt == 2:
+                raise
+            time.sleep(4 * (attempt + 1))
+
+
+def _text(raw_html: str) -> str:
+    """The page's visible words on one line (scripts and styles dropped)."""
+    t = re.sub(r"(?is)<(script|style|noscript|svg)[^>]*>.*?</\1>", " ", raw_html)
+    return re.sub(r"\s+", " ", html.unescape(re.sub(r"(?s)<[^>]+>", " ", t))).strip()
+
+
+def _meta(raw_html: str, name: str) -> str:
+    m = re.search(rf'(?is)<meta[^>]+(?:name|property)="{name}"[^>]+content="([^"]*)"', raw_html)
+    return re.sub(r"\s+", " ", html.unescape(m.group(1))).strip() if m else ""
+
+
+def _h1(raw_html: str) -> str:
+    m = re.search(r"(?is)<h1[^>]*>(.*?)</h1>", raw_html)
+    return re.sub(r"\s+", " ", html.unescape(re.sub(r"(?s)<[^>]+>", " ", m.group(1)))).strip() if m else ""
+
+
+def _sitemap(url: str) -> list[str]:
+    return re.findall(r"<loc>\s*([^<\s]+)\s*</loc>", _get_page(url))
+
+
+def _area(slug: str) -> str:
+    return slug.replace("-", " ").title().replace(" And ", " and ")
+
+
+ASVAB_AREAS = {"M": "Mechanical", "A": "Administrative", "G": "General", "E": "Electronics"}
+
+
+def _af_job(url: str) -> dict | None:
+    raw = _get_page(url)
+    if 'name="template" content="career-page"' not in raw:
+        return None                                   # an overview or FAQ page, not one job
+    t = _text(raw)
+    title = re.sub(r"\s*-\s*U\.S\. Air Force\s*$", "", re.search(r"(?is)<title>(.*?)</title>", raw).group(1)).strip()
+    title = html.unescape(re.sub(r"\s+", " ", title))
+    rank = re.search(r"Rank:\s*(Enlisted|Officer)", t)
+    code = re.search(r"\bAFSC:\s*([0-9A-Z]{3,6}[0-9A-Z]?)", t)
+    # The summary: after the page's title line and its capitals tagline, up to the first APPLY NOW.
+    m = re.search(re.escape(f"{rank.group(1) if rank else ''} {title}".strip()) + r"\s+(.*?)\s+APPLY NOW", t)
+    summary = m.group(1) if m else ""
+    summary = re.sub(r"^(?:[A-Z0-9’'&,.\-]+\s+){2,}(?=[A-Z][a-z])", "", summary).strip()   # drop the CAPS tagline
+    req = re.search(r"(?i:ASVAB(?: SCORE)? REQUIREMENTS)\s+(.*?)\s+(?:Qualifications|CAREER FINDER|Training)", t)
+    # "62 General (G)"; the letter is the Air Force's area code, so "65 Electrical (E)" is the Electronics area.
+    # Some pages leave the letter off ("70 Electronics"); a page with only a word ("General") gives no number.
+    scores = [{"area": ASVAB_AREAS[a] if a else ("Electronics" if n == "Electrical" else n), "min": int(v)}
+              for v, n, a in re.findall(r"(\d{2,3})\s+(Mechanical|Administrative|General|Electronics|Electrical)"
+                                        r"(?:\s*\(([MAGE])\))?", req.group(1) if req else "")]
+    parts = url.split("airforce.com/careers/")[-1].strip("/").split("/")
+    return {"service": "air_force", "code": code.group(1) if code else "", "title": title,
+            "kind": (rank.group(1).lower() if rank else ""), "area": _area(parts[0]), "group": "",
+            "summary": summary or _meta(raw, "description"), "url": url,
+            "asvab": scores, "asvab_text": re.sub(r"\s+", " ", req.group(1)).strip() if req else "",
+            # "or" between two requirements means either one qualifies
+            "asvab_any": bool(req and re.search(r"\bor\b", req.group(1), re.I))}
+
+
+def airforce_jobs() -> str:
+    urls = [u for u in _sitemap("https://www.airforce.com/sitemap.xml")
+            if re.match(r"https://www\.airforce\.com/careers/[^/]+/[^/]+(/[^/]+)?/?$", u)
+            and not re.search(r"frequently-asked|career-finder|specialty-careers", u)]
+    return _save_jobs("air_force", "airforce.com", urls, _af_job, minimum=60)
+
+
+def _navy_job(url: str) -> dict | None:
+    raw = _get_page(url)
+    title = _h1(raw)
+    if not title:
+        return None
+    t = _text(raw)
+    kind = re.search(r"Apply Now\s+(Enlisted|Officer)\b", t)
+    code = re.search(r"\bAs an? ([A-Z]{2,4}) applicant", t)
+    parts = url.split("/careers-benefits/careers/")[-1].strip("/").split("/")
+    return {"service": "navy", "code": code.group(1) if code else "", "title": title,
+            "kind": kind.group(1).lower() if kind else "", "area": _area(parts[0]), "group": "",
+            "summary": _meta(raw, "description"), "url": url, "asvab": [], "asvab_text": "", "asvab_any": False}
+
+
+def navy_jobs() -> str:
+    urls = [u for u in _sitemap("https://www.navy.com/sitemap.xml")
+            if re.match(r"https://www\.navy\.com/careers-benefits/careers/[^/]+/[^/]+/?$", u)]
+    return _save_jobs("navy", "navy.com", urls, _navy_job, minimum=60)
+
+
+def _sf_job(url: str) -> dict | None:
+    raw = _get_page(url)
+    title = _h1(raw)
+    if not title:
+        return None
+    kind = "officer" if "/officer-careers/" in url else "enlisted"
+    return {"service": "space_force", "code": "", "title": title, "kind": kind, "area": "Space Force",
+            "group": "", "summary": _meta(raw, "description"), "url": url, "asvab": [], "asvab_text": "",
+            "asvab_any": False}
+
+
+def spaceforce_jobs() -> str:
+    urls = []
+    for sm in _sitemap("https://www.spaceforce.com/sitemap.xml"):
+        if sm.endswith(".xml"):
+            urls += [u for u in _sitemap(sm) if re.search(r"spaceforce\.com/(officer|enlisted)-careers/[^/]+/?$", u)]
+    return _save_jobs("space_force", "spaceforce.com", urls, _sf_job, minimum=10)
+
+
+def _usmc_field(url: str) -> dict | None:
+    raw = _get_page(url)
+    title = _h1(raw)
+    if not title:
+        return None
+    return {"service": "marine_corps", "code": "", "title": title, "kind": "career field", "area": "Career Fields",
+            "group": "", "summary": _meta(raw, "description"), "url": url, "asvab": [], "asvab_text": "",
+            "asvab_any": False}
+
+
+def marines_jobs() -> str:
+    """marines.com lists career fields (infantry, aviation, law enforcement ...), not every MOS."""
+    urls = [u for u in _sitemap("https://www.marines.com/sitemap.xml")
+            if re.match(r"https://www\.marines\.com/mission/roles/[^/]+\.html$", u)]
+    return _save_jobs("marine_corps", "marines.com", urls, _usmc_field, minimum=4)
+
+
+def _save_jobs(service: str, site: str, urls: list[str], read, minimum: int) -> str:
+    jobs = []
+    for u in dict.fromkeys(urls):
+        try:
+            j = read(u)
+        except Exception:
+            j = None
+        if j and j["title"] and j["summary"]:
+            jobs.append(j)
+        time.sleep(0.5)
+    if len(jobs) < minimum:
+        raise RuntimeError(f"{site}: only {len(jobs)} job pages read")
+    jobs.sort(key=lambda j: (j["area"], j["title"]))
+    (LIB / f"_jobs_{service}.json").write_text(json.dumps({"source": site, "fetched": time.strftime("%Y-%m-%d"),
+                                                           "service": service, "jobs": jobs}, indent=1,
+                                                          ensure_ascii=False), encoding="utf-8")
+    return f"{site} jobs: {len(jobs)}"
+
+
+JOBS = [ucmj, tsp_summary, army_publications, goarmy_pages, va_gi_bill, goarmy_jobs, airforce_jobs, navy_jobs,
+        spaceforce_jobs, marines_jobs, convert_local_pdfs]
 
 
 def main(argv: list[str]) -> int:

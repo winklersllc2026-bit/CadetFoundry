@@ -65,12 +65,13 @@ loaders.study = async (pick) => {
       <div id="libResults" aria-live="polite"></div></form>
     <div class="card"><div class="row" style="justify-content:space-between"><div><h3>📝 Exam mode</h3><div class="faint">A timed multiple-choice test — graded on the device, with your score history.</div></div>
       <button class="btn small" id="examGo">Take an exam</button></div></div>
+    <div class="card"><div class="row" style="justify-content:space-between"><div><h3>📝 ASVAB practice</h3><div class="faint">The four AFQT subtests, timed like the real test, scored exactly.</div></div>
+      <button class="btn small" id="asvabGo">Practice</button></div></div>
     <div class="card"><div class="row" style="justify-content:space-between"><div><h3>🔀 Mixed quiz</h3><div class="faint">10 questions from everything you can see — the ones you miss come back more often.</div></div><button class="btn primary" data-quiz="">Start</button></div></div>`;
   } else if (cur.startsWith('svc:')) {
     const s = cur.slice(4), mine = all.filter(c => c.service === s);
     const order = ['leadership', 'citizenship', 'military', 'health', 'careers', 'explore', 'basic'];
     const extra = s === 'army' ? {
-      explore: '<button class="btn small" id="jobsGo">💼 Army jobs explorer</button>',
       basic: `<div class="row" style="flex-wrap:wrap;gap:6px"><button class="btn small" id="nineGo">📻 9-line</button><button class="btn small" id="saluteGo">SALUTE</button>
         <button class="btn small" id="laceGo">LACE</button><button class="btn small" id="bpUniform">Uniform check</button><button class="btn small" id="bpBoard">Mock board</button>
         <button class="btn small" id="bpCreed">Soldier's Creed</button><button class="btn small" id="printGo">🖨️ Pocket cards</button></div><div id="bctCard" style="margin-top:8px"></div>`,
@@ -78,7 +79,8 @@ loaders.study = async (pick) => {
     const sec = sections.find(x => x.id === cur);
     html = `<div class="card" style="border-color:var(--tan)"><div class="topic"><div><h3>${sec.icon} ${esc(sec.name)}</h3>
         <div class="faint">${esc(sec.blurb)} Information only — talk to a recruiter or counselor for anything official.</div></div>
-        <button class="btn small" data-quiz="${esc(s)}">Quiz all</button></div></div>
+        <button class="btn small" data-quiz="${esc(s)}">Quiz all</button></div>
+        <div style="margin-top:10px"><button class="btn small" data-jobs="${esc(s)}">💼 ${esc(sec.name)} jobs</button></div></div>
       ${order.filter(c => c in cats && mine.some(x => x.category === c)).map(c => `<div class="card"${c === 'basic' ? ' style="border-color:var(--tan)"' : ''}>
         <div class="topic"><div><h3>${CATEGORY_ICON[c]} ${esc(cats[c])}</h3>${c === 'basic' ? `<div class="faint">${esc(CATEGORY_BLURB.basic)}</div>` : ''}</div>
         <button class="btn small" data-quiz="${esc(c + '@' + s)}">Quiz</button></div>
@@ -91,7 +93,7 @@ loaders.study = async (pick) => {
       leadership: '<button class="btn small" id="toLead">🧭 Leadership scenarios</button>',
       citizenship: '<button class="btn small" data-books="1">📜 Founding documents</button>',
       military: '<button class="btn small" id="navGo">🗺️ Map reading practice</button> <button class="btn small" data-books="1">📚 Military history</button>',
-      explore: '<button class="btn small" id="toServe">More in 🤝 Serve</button>',
+      explore: '<button class="btn small" id="asvabGo">📝 ASVAB practice</button> <button class="btn small" data-jobs="">💼 Jobs in every service</button> <button class="btn small" id="toServe">More in 🤝 Serve</button>',
     }[c];
     html = `<div class="card"><div class="topic"><div><h3>${CATEGORY_ICON[c]} ${esc(SHARED_NAME[c] || cats[c])}</h3><div class="faint">${esc(CATEGORY_BLURB[c] || '')}</div></div>
         ${shared.length ? `<button class="btn small" data-quiz="${esc(c + '@joint')}">Quiz</button>` : ''}</div>
@@ -105,7 +107,8 @@ loaders.study = async (pick) => {
   $('#learnPick').onchange = e => loaders.study(e.target.value);
   studyBody.querySelectorAll('[data-section]').forEach(b => { b.onclick = () => loaders.study(b.dataset.section); });
   const on = (id, fn) => { const el = $('#' + id); if (el) el.onclick = fn; };
-  on('navGo', landNav); on('examGo', examSetup); on('jobsGo', () => jobsExplorer()); on('booksGo', () => booksShelf());
+  on('navGo', landNav); on('examGo', examSetup); on('booksGo', () => booksShelf()); on('asvabGo', asvabHome);
+  studyBody.querySelectorAll('[data-jobs]').forEach(b => { b.onclick = () => jobsExplorer('', '', b.dataset.jobs); });
   document.querySelectorAll('[data-open-faith]').forEach(b => { b.onclick = () => openView('faith'); });
   on('toLead', () => openView('lead')); on('toServe', () => openView('serve'));
   on('printGo', pocketCards); on('bpUniform', uniformCheck); on('bpBoard', () => mockBoard()); on('bpCreed', creedDrill);
@@ -183,36 +186,69 @@ async function bookReader(id, ch = 0, mark = '') {
   const m = studyBody.querySelector('mark'); (m || studyBody).scrollIntoView({ block: m ? 'center' : 'start' });
 }
 
-// ── ARMY JOBS (MOS) EXPLORER ──
-async function jobsExplorer(q = '', area = '') {
-  const r = await api(`/api/jobs?q=${encodeURIComponent(q)}&area=${encodeURIComponent(area)}`);
-  if (!r.total) {
-    studyBody.innerHTML = `<button class="btn small" id="backStudy">← Study</button><div class="card" style="margin-top:12px">
-      <p>The job list isn't on this device yet.</p><p class="faint">An administrator adds it once with <code>python tools/fetch_library.py</code> (needs internet one time).</p></div>`;
+// ── MILITARY JOBS EXPLORER: every service ──
+// Official summaries from each service's recruiting site, saved on this device. Air Force pages also list minimum
+// ASVAB line scores: a Cadet can type in their own official scores (kept only on this screen, never saved) to see
+// which of those jobs they meet. Information only -- requirements and openings change; a recruiter has the final word.
+const JOB_SERVICE_ICON = { army: '⭐', navy: '⚓', air_force: '✈️', space_force: '🚀', marine_corps: '🦅' };
+let jobScores = {};
+async function jobsExplorer(q = '', area = '', service = '', meetsOnly = false) {
+  const qs = new URLSearchParams({ q, area, service });
+  Object.entries(jobScores).forEach(([k, v]) => qs.set(k.toLowerCase(), v));
+  if (meetsOnly) qs.set('meets', '1');
+  const r = await api('/api/jobs?' + qs);
+  const svcName = s => (STATUS.services || {})[s] || s;
+  if (!Object.keys(r.services || {}).length) {
+    studyBody.innerHTML = `<button class="btn small" id="backStudy">← Learn</button><div class="card" style="margin-top:12px">
+      <p>The job lists aren't on this device yet.</p><p class="faint">An administrator adds them once with <code>python tools/fetch_library.py</code> (needs internet one time).</p></div>`;
     $('#backStudy').onclick = loaders.study; return;
   }
-  studyBody.innerHTML = `<button class="btn small" id="backStudy">← Study</button>
-    <div class="card" style="margin-top:12px"><h3>💼 Army jobs</h3>
-      <div class="row"><input id="jobQ" value="${esc(q)}" placeholder="Code (11B), job (medic), or interest (helicopters, computers…)" style="flex:1"><button class="btn primary" id="jobGo">Search</button></div>
-      <div style="margin-top:8px"><button class="chip" data-area="" style="cursor:pointer;${!area ? 'border-color:var(--tan);color:var(--tan2)' : ''}">All</button>${r.areas.map(a =>
-        `<button class="chip" data-area="${esc(a)}" style="cursor:pointer;${a === area ? 'border-color:var(--tan);color:var(--tan2)' : ''}">${esc(a)}</button>`).join('')}</div>
-      <p class="faint">${r.jobs.length} of ${r.total} jobs · official summaries from goarmy.com (saved ${esc(r.fetched)}) · requirements and openings change — ask a career counselor or recruiter.</p></div>
-    <div id="jobList">${r.jobs.map(j => `<div class="card" data-job="${esc(j.code + '|' + j.title)}" style="cursor:pointer">
-      <div class="row" style="justify-content:space-between"><b>${j.code ? `<span class="mono" style="color:var(--tan2)">${esc(j.code)}</span> ` : ''}${esc(j.title)}</b><span class="faint">${esc(j.area)}</span></div>
-      <div class="faint" style="margin-top:4px">${esc(j.summary.slice(0, 160))}${j.summary.length > 160 ? '…' : ''}</div></div>`).join('') || '<div class="empty">No matching jobs.</div>'}</div>`;
+  const chip = (attr, val, label, on) => `<button class="chip" ${attr}="${esc(val)}" style="cursor:pointer;${on ? 'border-color:var(--tan);color:var(--tan2)' : ''}">${label}</button>`;
+  const hasScores = Object.keys(jobScores).length > 0;
+  const showScores = service === 'air_force';
+  studyBody.innerHTML = `<button class="btn small" id="backStudy">← Learn</button>
+    <div class="card" style="margin-top:12px"><h3>💼 Military jobs — every service</h3>
+      <div>${chip('data-svc', '', 'All', !service)}${Object.keys(r.services).map(s => chip('data-svc', s, `${JOB_SERVICE_ICON[s] || ''} ${esc(svcName(s))} (${r.services[s]})`, s === service)).join('')}</div>
+      <div class="row" style="margin-top:8px"><input id="jobQ" value="${esc(q)}" placeholder="Job, code, or interest (medic, computers, aircraft…)" style="flex:1" aria-label="Search jobs"><button class="btn primary" id="jobGo">Search</button></div>
+      ${service ? `<div style="margin-top:8px">${chip('data-area', '', 'All areas', !area)}${r.areas.map(a => chip('data-area', a, esc(a), a === area)).join('')}</div>` : ''}
+      ${showScores ? `<details style="margin-top:10px" ${hasScores ? 'open' : ''}><summary>Have official ASVAB scores? See which Air Force jobs you meet</summary>
+        <p class="faint">Type the Air Force line scores from an official ASVAB (at school or a MEPS) — not a practice test. They stay on this screen only and aren't saved.</p>
+        <div class="row" style="flex-wrap:wrap;gap:8px">${r.line_scores.map(n => `<label style="flex:1;min-width:110px">${n}<input data-ls="${n}" inputmode="numeric" maxlength="2" value="${esc(jobScores[n] || '')}"></label>`).join('')}</div>
+        <div class="row" style="gap:8px;margin-top:8px"><button class="btn small primary" id="lsGo">Check</button>
+          <label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="lsOnly" ${meetsOnly ? 'checked' : ''} style="width:auto"> Only jobs I meet</label>
+          ${hasScores ? '<button class="btn small" id="lsClear">Clear</button>' : ''}</div></details>` : ''}
+      <p class="faint">${r.jobs.length} of ${r.total} shown · official descriptions from ${Object.keys(r.fetched_by).filter(s => !service || s === service).map(s => `${esc(r.sources[s])} (${esc(r.fetched_by[s])})`).join(', ')}.
+        Information only — requirements and openings change. Ask a recruiter or career counselor.</p></div>
+    <div id="jobList">${r.jobs.map((j, n) => `<div class="card" data-job="${n}" style="cursor:pointer">
+      <div class="row" style="justify-content:space-between;gap:8px"><b>${JOB_SERVICE_ICON[j.service] || ''} ${j.code ? `<span class="mono" style="color:var(--tan2)">${esc(j.code)}</span> ` : ''}${esc(j.title)}</b>
+        <span class="faint">${esc(svcName(j.service))}${j.kind ? ' · ' + esc(j.kind) : ''}</span></div>
+      ${j.meets === true ? '<div style="color:var(--green);margin-top:4px">✓ Your scores meet the listed minimum</div>' : j.meets === false ? '<div class="faint" style="margin-top:4px">Below the listed minimum</div>' : ''}
+      <div class="faint" style="margin-top:4px">${esc(j.summary.slice(0, 170))}${j.summary.length > 170 ? '…' : ''}</div></div>`).join('') || '<div class="empty">No matching jobs.</div>'}</div>`;
+  const again = (o = {}) => jobsExplorer(o.q ?? $('#jobQ').value, o.area ?? area, o.service ?? service, o.meets ?? meetsOnly);
   $('#backStudy').onclick = loaders.study;
-  $('#jobGo').onclick = () => jobsExplorer($('#jobQ').value, area);
-  $('#jobQ').onkeydown = e => { if (e.key === 'Enter') $('#jobGo').click(); };
-  studyBody.querySelectorAll('[data-area]').forEach(b => b.onclick = () => jobsExplorer($('#jobQ').value, b.dataset.area));
+  $('#jobGo').onclick = () => again();
+  $('#jobQ').onkeydown = e => { if (e.key === 'Enter') again(); };
+  studyBody.querySelectorAll('[data-svc]').forEach(b => b.onclick = () => again({ service: b.dataset.svc, area: '' }));
+  studyBody.querySelectorAll('[data-area]').forEach(b => b.onclick = () => again({ area: b.dataset.area }));
+  if ($('#lsGo')) {
+    const read = () => {
+      jobScores = {};
+      studyBody.querySelectorAll('[data-ls]').forEach(i => { const v = parseInt(i.value, 10); if (v > 0 && v < 100) jobScores[i.dataset.ls] = v; });
+    };
+    $('#lsGo').onclick = () => { read(); again({ meets: $('#lsOnly').checked }); };
+    $('#lsOnly').onchange = () => { read(); again({ meets: $('#lsOnly').checked }); };
+    if ($('#lsClear')) $('#lsClear').onclick = () => { jobScores = {}; again({ meets: false }); };
+  }
   studyBody.querySelectorAll('[data-job]').forEach(c => c.onclick = () => {
-    const j = r.jobs.find(x => x.code + '|' + x.title === c.dataset.job);
+    const j = r.jobs[+c.dataset.job];
     studyBody.innerHTML = `<button class="btn small" id="backJobs">← Jobs</button>
-      <div class="card" style="margin-top:12px"><div class="faint">${esc(j.area)} — ${esc(j.group)}</div>
+      <div class="card" style="margin-top:12px"><div class="faint">${esc(svcName(j.service))} · ${esc(j.area)}${j.group ? ' — ' + esc(j.group) : ''}${j.kind ? ' · ' + esc(j.kind) : ''}</div>
         <h2>${j.code ? esc(j.code) + ' · ' : ''}${esc(j.title)}</h2><p>${esc(j.summary)}</p>
-        <p class="faint">Source: goarmy.com (${esc(j.url)})</p></div>
+        ${j.asvab_text ? `<p><b>Minimum ASVAB line scores listed:</b> ${esc(j.asvab_text)}${j.meets === true ? ' — <span style="color:var(--green)">your scores meet this</span>' : j.meets === false ? ' — your scores are below this' : ''}</p>` : ''}
+        <p class="faint">Source: ${esc(r.sources[j.service] || '')}${j.url ? ` (${esc(j.url)})` : ''}. Requirements and openings change — check with a recruiter.</p></div>
       <div class="row"><button class="btn primary" id="askJob">Ask Vanguard about this job</button></div>`;
-    $('#backJobs').onclick = () => jobsExplorer(q, area);
-    $('#askJob').onclick = () => { openView('ask'); send(`Tell me about the Army job ${j.code} ${j.title}. What does the training look like and what should I know?`); };
+    $('#backJobs').onclick = () => again();
+    $('#askJob').onclick = () => { openView('ask'); send(`Tell me about the ${svcName(j.service)} job ${j.code} ${j.title}. What does the training look like and what should I know?`); };
   });
 }
 studyBody.addEventListener('click', async e => {

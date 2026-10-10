@@ -145,7 +145,7 @@ def job_answer(question: str, library_dir: Path | None) -> dict | None:
     code = re.search(r"\b(\d{2}[A-Z])\b", q.upper())
     src = "GoArmy.com Army job descriptions"
     if code and re.search(r"\b(what|who|tell|about|do|does|is)\b", q, re.I):
-        jobs = careers.search(library_dir, code.group(1).lower(), limit=1)["jobs"]
+        jobs = careers.search(library_dir, code.group(1).lower(), limit=1, service="army")["jobs"]
         if jobs and jobs[0]["code"].upper() == code.group(1):
             j = jobs[0]
             return {"question": question, "source": src,
@@ -154,7 +154,7 @@ def job_answer(question: str, library_dir: Path | None) -> dict | None:
         words = [w for w in re.findall(r"[a-z]+", q.lower()) if w not in _JOB_STOP and len(w) > 2]
         if not words:
             return None
-        jobs = careers.search(library_dir, " ".join(words), limit=5)["jobs"]
+        jobs = careers.search(library_dir, " ".join(words), limit=5, service="army")["jobs"]
         if not jobs:
             return None
         lines = "\n".join(f"- **{j['code']} {j['title']}** — {_clean(j['summary'])}" for j in jobs)

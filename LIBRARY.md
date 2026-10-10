@@ -36,7 +36,7 @@ Some official sites block automated downloads (dfas.mil, militarypay.defense.gov
 | Manual for Courts-Martial (current edition) | UCMJ articles explained | jsc.defense.gov |
 
 ## Jobs (MOS)
-Use **public** job descriptions only (for example, the career pages on goarmy.com saved as text). The Army's full occupational manual (DA PAM 611-21) is restricted to CAC holders — do **not** add it.
+Use **public** job descriptions only. `tools/fetch_library.py` reads the official career pages of goarmy.com, airforce.com, navy.com, spaceforce.com and marines.com (each page's own summary, and the Air Force's published minimum ASVAB line scores) into `library/_jobs*.json`. The Army's full occupational manual (DA PAM 611-21) is restricted to CAC holders — do **not** add it.
 
 ## Never add
 Anything marked CUI, FOUO, classified, or restricted-distribution; anything from behind a CAC login; unit-specific SOPs, rosters or locations.

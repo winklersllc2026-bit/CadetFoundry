@@ -21,7 +21,7 @@ loaders.serve = async () => {
       <p class="faint">For Cadets who want to learn what military service is like. Information only — nothing here
       signs you up or shares anything with a recruiter. Numbers come straight from official tables.</p>
       <div class="row" style="flex-wrap:wrap;gap:6px">
-        <button class="btn small" ${go('study')}>💼 Army jobs explorer (in Learn)</button>
+        <button class="btn small" ${go('study')}>💼 Military jobs explorer (in Learn)</button>
         <button class="btn small" ${go('logbook', 'money')}>💵 Military pay and budgeting</button>
         <button class="btn small" ${go('logbook', 'fit')}>🏋️ Army Fitness Test scorer</button>
         <button class="btn small" ${go('logbook', 'leave')}>🏖️ How military leave works</button>
