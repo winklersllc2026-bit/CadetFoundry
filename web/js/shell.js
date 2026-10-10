@@ -91,7 +91,10 @@ loaders.instructor = async () => {
   const unitOpts = (sel, blank) => `<option value="">${blank}</option>` +
     units.map(u => `<option value="${esc(u.id)}" ${u.id === sel ? 'selected' : ''}>${esc(KIND_NAME[u.kind] || '')}: ${esc(u.name)}</option>`).join('');
   if (run !== instructorRun) return;                // a newer load of this screen is already drawing
-  body.innerHTML = `<h2>Instructor</h2><div data-top></div>
+  body.innerHTML = `<h2>Instructor</h2>${STATUS.lan ? `<div class="card" style="border-color:var(--tan)"><h3>📡 Classroom network is on</h3>
+      <p class="faint">Anyone on this Wi-Fi can open Vanguard's sign-in screen (they see shortened names, and every profile needs a PIN).
+      For a pilot, use a <b>dedicated hotspot</b> only your class joins — not the school's open or guest Wi-Fi. Close Vanguard
+      (Me → Quit) when class ends. Details: SECURITY.md → "The classroom network".</p></div>` : ''}<div data-top></div>
     <div class="card"><h3>Classes, platoons and squads</h3>
       ${units.length ? `<ul style="padding-left:18px;margin:0 0 10px">${units.map(u => `<li style="margin:6px 0">
         ${esc(KIND_NAME[u.kind])}: <b>${esc(u.name)}</b>${u.parent ? ` <span class="faint">(in ${esc(unitName(u.parent))})</span>` : ''}

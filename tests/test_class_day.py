@@ -127,6 +127,19 @@ class ClassDayTests(unittest.TestCase):
         self.ok("POST", "/api/train/add", {"event": "pushups", "value": "30", "date": "2026-10-01"}, B)
         self.ok("POST", "/api/memory", {"text": "PRIVATE-NOTE my grandma is sick"}, A)            # private, never shown
 
+        # ── the instructor runs a scenario on the projector; the class votes; the instructor sees the counts ──
+        self.ok("POST", "/api/instructor/live", {"action": "start", "scenario": "04_answers_going_around"}, S)
+        self.assertEqual(self.ok("GET", "/api/live", cookie=C)["scenario"]["id"], "04_answers_going_around")
+        self.ok("POST", "/api/live/vote", {"choice": 1}, A)
+        self.ok("POST", "/api/live/vote", {"choice": 1}, B)
+        self.ok("POST", "/api/live/vote", {"choice": 2}, C)
+        live = self.ok("GET", "/api/instructor/live", cookie=S)
+        self.assertEqual((live["votes"], live["counts"][1], live["counts"][2]), (3, 2, 1))
+        self.assertNotIn(ida, json.dumps(live))                              # counts only, never who
+        self.ok("POST", "/api/instructor/live", {"action": "reveal"}, S)
+        self.assertIn("guidance", self.ok("GET", "/api/instructor/live", cookie=S))
+        self.ok("POST", "/api/instructor/live", {"action": "stop"}, S)
+
         # ── the instructor's view ──
         dash = self.ok("GET", "/api/instructor/dashboard", cookie=S)
         rows = {r["id"]: r for r in dash["rows"]}

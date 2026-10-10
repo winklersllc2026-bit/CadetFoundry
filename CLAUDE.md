@@ -1,8 +1,9 @@
-> **Cloud/next session: read HANDOFF.md first.** This repo is Vanguard (JROTC); the notes below are inherited and are being rebranded.
+> **Next session: read ROADMAP.md (what's next) and ARCHITECTURE.md (how it fits together).** Earlier phase-by-phase
+> handoff notes are in docs/history/ — historical only.
 
 # Vanguard — notes for anyone (or any AI session) working on this repo
 
-Learning and leadership platform for JROTC Cadets and instructors (see README.md, HANDOFF.md). Everything runs on the
+Learning and leadership platform for JROTC Cadets and instructors (see README.md, ROADMAP.md). Everything runs on the
 device: Python 3.10+ standard library server (`run.py`, `vanguard/`), one-page web UI (`web/`), optional
 Ollama model, optional Vosk voice. **No internet at runtime** — tools in `tools/` download things once on a
 setup machine.
@@ -58,12 +59,11 @@ Two AI sessions have worked on this repo at once. Before starting: `git pull` on
 history. If both changed the same file, merge — don't overwrite.
 
 ## Releases
-**Release signing key (Ed25519), kept in two places — never in git, a zip, a device, or chat output:**
-- The owner's build PC: `~/.vanguard-release/release_key.pem` (created 2026-10-08 with `tools/sign.py keygen`).
-- GitHub: the encrypted repository secret `VANGUARD_RELEASE_KEY` (same key; readable only by GitHub Actions).
-The matching public key is `vanguard/data/release_key.pub` and ships with the app; devices refuse updates not signed
-by it. A session without the key (for example a cloud session) can build and test but must not make a new key —
-that would lock out every device that has this public key. Releases are signed on the build PC.
+**Release signing key (Ed25519): not created yet.** The forked public key belonged to the earlier product and was
+removed in 0.1.4; until the owner runs `python tools/sign.py keygen` on the build PC (private key
+`~/.vanguard-release/release_key.pem`, never in git, a zip, a device or chat output) and commits
+`vanguard/data/release_key.pub`, devices refuse signed updates. A session must never make the key on the owner's
+behalf in the cloud; once it exists, never replace it (that locks out every device with the old public key).
 
 Bump `vanguard/__init__.py` `__version__` for every release (signed updates refuse equal/older versions).
 `python site/build.py` builds `site/dist/` (page + zip, signed if `~/.vanguard-release/release_key.pem`

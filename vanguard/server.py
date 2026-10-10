@@ -43,6 +43,12 @@ PUBLIC_POST = {"/api/unlock", "/api/profiles/create", "/api/recover"}
 
 
 
+def _short_name(name: str) -> str:
+    """'Ana Rivera' -> 'Ana R.'; one word stays as it is (it's already what the person chose to show)."""
+    parts = (name or "").split()
+    return f"{parts[0]} {parts[-1][0]}." if len(parts) > 1 else (name or "")
+
+
 def _download_files() -> list[Path]:
     try:
         return sorted(f for f in DOWNLOADS.iterdir() if f.is_file() and f.suffix.lower() in DOWNLOAD_TYPES)
@@ -392,7 +398,9 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
             except LookupError as e:
                 return self._json({"error": str(e)}, 404)
         if r == "/api/lock":
-            out = {"profiles": [{"id": p["id"], "name": p["name"], "kind": p["kind"],
+            # Before sign-in, other devices on the classroom network see shortened names ("Ana R."), never full names.
+            short = self.app.lan and not self._local() and not self._pid
+            out = {"profiles": [{"id": p["id"], "name": _short_name(p["name"]) if short else p["name"], "kind": p["kind"],
                                  "has_pin": security.has_pin(p["id"]),
                                  "lockout": security.lockout_remaining(p["id"])} for p in profiles.all_profiles()],
                    "unlocked": bool(self._pid), "admin_set": security.admin_set(),

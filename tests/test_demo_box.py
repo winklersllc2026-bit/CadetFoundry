@@ -84,6 +84,19 @@ class DemoBoxTests(unittest.TestCase):
         cookie = r.getheader("Set-Cookie").split(";")[0]
         self.assertEqual(self.req("POST", "/api/pin/remove", {"current": "482915"}, cookie)[0], 403)
 
+    def test_other_devices_see_shortened_names_before_sign_in(self):
+        name = f"Dana Q{uuid.uuid4().hex[:4]} Whitfield"
+        p = profiles.create(name)
+        self.made.append(p["id"])
+        with security.as_profile(p["id"]):
+            security.set_pin("482915")
+        with mock.patch.object(server.Handler, "_local", return_value=False):   # a Cadet's phone on the Wi-Fi
+            names = [x["name"] for x in json.loads(self.req("GET", "/api/lock")[1])["profiles"]]
+        self.assertIn("Dana W.", names)
+        self.assertNotIn(name, names)
+        names = [x["name"] for x in json.loads(self.req("GET", "/api/lock")[1])["profiles"]]   # the laptop itself
+        self.assertIn(name, names)
+
     def test_a_busy_port_is_never_shared(self):
         """Two Vanguards on one port would let the browser reach the wrong data (a USB drive vs the computer's own)."""
         with self.assertRaises(OSError):

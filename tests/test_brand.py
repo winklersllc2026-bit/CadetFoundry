@@ -6,8 +6,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 OLD = re.compile(r"cursiv|recruit(?!er|ing|ment)", re.I)       # "recruiter"/"recruiting" are ordinary words
-# Phase 0 planning docs still describe the inherited layout; they are rewritten at the end of Phase 1.
-ALLOWED = {"HANDOFF.md", "ARCHITECTURE.md", "REUSE_PLAN.md", "MIGRATION_PLAN.md", "tests/test_brand.py"}
+# Historical planning notes from the fork (docs/history/) describe the earlier product by name, on purpose.
+ALLOWED = {"docs/history/HANDOFF.md", "docs/history/REUSE_PLAN.md", "docs/history/MIGRATION_PLAN.md", "tests/test_brand.py"}
 
 
 class BrandTests(unittest.TestCase):

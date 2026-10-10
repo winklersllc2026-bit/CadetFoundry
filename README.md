@@ -3,9 +3,15 @@
 **Leadership. Learning. Character.** A learning and leadership platform designed to support JROTC instructors and
 Cadets. Built by Winklers LLC.
 
-Vanguard runs on the instructor's laptop. Cadets use it in a browser on school computers, tablets or phones on the
-classroom network — no cloud, no accounts on outside services, no advertising, no tracking. The instructor stays in
-control; Vanguard supplies the tools.
+Vanguard runs on the instructor's laptop (or a USB drive, or a Raspberry Pi demo box). Cadets use it in a browser on
+school computers, tablets or phones on the classroom network. The instructor stays in control; Vanguard supplies the
+tools.
+
+**Vanguard is offline-first.** No student data leaves the instructor's device unless an instructor or IT operator
+explicitly enables an online AI provider (it is off by default and has no switch in the app's screens — see
+SECURITY.md). No accounts on outside services, no advertising, no tracking.
+
+Version 0.1.4. What's built and what's next: ROADMAP.md. How it fits together: ARCHITECTURE.md.
 
 > Vanguard is designed to support JROTC instruction. It is **not** an official JROTC, Army or school product, does not
 > replace your instructor or your program's curriculum, and makes no claim of endorsement.
