@@ -19,3 +19,5 @@ books/*
 !books/README.md
 # Installers handed out by a demo box / USB drive (tools/make_usb.py)
 downloads/
+# Official DVIDS videos saved by tools/fetch_videos.py (large; copied to a USB drive by make_usb.py)
+videos/

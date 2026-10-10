@@ -40,6 +40,7 @@ loaders.study = async (pick) => {
     id: 'cat:' + c, icon: CATEGORY_ICON[c], name: SHARED_NAME[c] || cats[c], blurb: CATEGORY_BLURB[c],
     count: all.filter(x => x.category === c && x.service === 'joint').length }));
   if (faithOn) sections.push({ id: 'faith', icon: '📖', name: 'Faith texts', blurb: 'Optional: read and search scripture.' });
+  sections.push({ id: 'videos', icon: '🎬', name: 'Videos', blurb: 'Official videos: basic training, schools, JROTC.' });
   sections.push({ id: 'library', icon: '📚', name: 'Library & tests', blurb: 'Books, search, exams, mixed quiz.' });
 
   let cur = typeof pick === 'string' ? pick : learnGet();
@@ -54,6 +55,9 @@ loaders.study = async (pick) => {
   if (!cur) {
     html = `<div class="tiles">${sections.map(s => `<button class="tile" data-section="${esc(s.id)}"><span>${s.icon}</span>${esc(s.name)}
       <small>${s.count != null ? `${s.count} card${s.count === 1 ? '' : 's'}` : esc(s.blurb)}</small></button>`).join('')}</div>`;
+  } else if (cur === 'videos') {
+    learnSet('');                                    // the Videos screen has its own back button
+    return videosHome();
   } else if (cur === 'faith') {
     html = `<div class="card"><h3>📖 Faith texts</h3><p class="faint">Optional: read and search public-domain scripture — the Bible, Tanakh, Quran, Book of Mormon, Bhagavad Gita and more. Pick yours in 👤 Me.</p>
       <button class="btn primary" data-open-faith>Open faith texts</button></div>`;
@@ -81,7 +85,7 @@ loaders.study = async (pick) => {
     html = `<div class="card" style="border-color:var(--tan)"><div class="topic"><div><h3>${sec.icon} ${esc(sec.name)}</h3>
         <div class="faint">${esc(sec.blurb)} Information only — talk to a recruiter or counselor for anything official.</div></div>
         <button class="btn small" data-quiz="${esc(s)}">Quiz all</button></div>
-        <div style="margin-top:10px"><button class="btn small" data-jobs="${esc(s)}">💼 ${esc(sec.name)} jobs</button></div></div>
+        <div style="margin-top:10px"><button class="btn small" data-jobs="${esc(s)}">💼 ${esc(sec.name)} jobs</button> <button class="btn small" data-videos="${esc(s)}">🎬 ${esc(sec.name)} videos</button></div></div>
       ${order.filter(c => c in cats && mine.some(x => x.category === c)).map(c => `<div class="card"${c === 'basic' ? ' style="border-color:var(--tan)"' : ''}>
         <div class="topic"><div><h3>${CATEGORY_ICON[c]} ${esc(cats[c])}</h3>${c === 'basic' ? `<div class="faint">${esc(CATEGORY_BLURB.basic)}</div>` : ''}</div>
         <button class="btn small" data-quiz="${esc(c + '@' + s)}">Quiz</button></div>
@@ -110,6 +114,7 @@ loaders.study = async (pick) => {
   const on = (id, fn) => { const el = $('#' + id); if (el) el.onclick = fn; };
   on('navGo', landNav); on('examGo', examSetup); on('booksGo', () => booksShelf()); on('asvabGo', asvabHome);
   studyBody.querySelectorAll('[data-jobs]').forEach(b => { b.onclick = () => jobsExplorer('', '', b.dataset.jobs); });
+  studyBody.querySelectorAll('[data-videos]').forEach(b => { b.onclick = () => videosHome(b.dataset.videos); });
   document.querySelectorAll('[data-open-faith]').forEach(b => { b.onclick = () => openView('faith'); });
   on('toLead', () => openView('lead')); on('toServe', () => openView('serve'));
   on('printGo', pocketCards); on('bpUniform', uniformCheck); on('bpBoard', () => mockBoard()); on('bpCreed', creedDrill);

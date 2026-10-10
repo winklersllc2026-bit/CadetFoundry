@@ -16,6 +16,7 @@ import binascii
 import html
 import json
 import mimetypes
+import re
 import os
 import shutil
 import threading
@@ -25,7 +26,7 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from vanguard import (addons, asvab, backup, board, books, careers, daily, engine, exam, fitness, instructor, integrity, knowledge,
+from vanguard import (addons, asvab, backup, videos, board, books, careers, daily, engine, exam, fitness, instructor, integrity, knowledge,
                       lessons, letters, network, live_quiz, pay, pilot, profiles, program_backup, progress, quiz_edits, reports, scenarios, security, service, store, train, voice)
 from vanguard.brain import Brain
 from vanguard.faith import Faith
@@ -254,6 +255,41 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                       extra={"Content-Disposition": f'attachment; filename="{f.name}"'})
         with f.open("rb") as fh:
             shutil.copyfileobj(fh, self.wfile, 1 << 20)
+
+    def _video(self, name: str):
+        f = videos.path_for_request(name)
+        if not f:
+            return self._deny(404, "Not found.")
+        size = f.stat().st_size
+        start, end = 0, size - 1
+        rng = re.match(r"bytes=(\d*)-(\d*)$", self.headers.get("Range") or "")
+        if rng and (rng.group(1) or rng.group(2)):
+            if rng.group(1):
+                start = int(rng.group(1))
+                end = min(int(rng.group(2)), size - 1) if rng.group(2) else size - 1
+            else:                                        # "bytes=-500": the last 500 bytes
+                start = max(0, size - int(rng.group(2)))
+            if start > end or start >= size:
+                return self._headers(416, "text/plain", 0, {"Content-Range": f"bytes */{size}"})
+        part = bool(rng and (rng.group(1) or rng.group(2)))
+        length = end - start + 1
+        extra = {"Accept-Ranges": "bytes"}
+        if part:
+            extra["Content-Range"] = f"bytes {start}-{end}/{size}"
+        self._headers(206 if part else 200, "video/mp4", length, extra)
+        with f.open("rb") as fh:
+            fh.seek(start)
+            left = length
+            while left > 0:
+                chunk = fh.read(min(1 << 20, left))
+                if not chunk:
+                    break
+                try:
+                    self.wfile.write(chunk)
+                except (BrokenPipeError, ConnectionResetError):   # the player jumped elsewhere
+                    return None
+                left -= len(chunk)
+        return None
 
     def _get(self, r: str):
         q, app = self._query(), self.app
@@ -545,6 +581,10 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                                              only_meets=q.get("meets") == "1"))
         if r == "/api/asvab":                            # ASVAB practice: sections and this profile's results
             return self._json({"sections": asvab.SECTIONS, "order": asvab.ORDER, "history": asvab.history()})
+        if r == "/api/videos":                           # official videos: saved DVIDS files and YouTube links
+            return self._json(videos.listing())
+        if r.startswith("/videos/"):                     # a saved video, with seeking (HTTP range requests)
+            return self._video(r[len("/videos/"):])
         if r == "/api/books":                            # free, public-domain books on this device
             return self._json(books.shelf())
         if r == "/api/books/read":

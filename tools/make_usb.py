@@ -229,6 +229,14 @@ def main(argv: list[str]) -> int:
                 _retry(shutil.copytree, src, target, dirs_exist_ok=True)
             elif src.exists():
                 _retry(shutil.copy2, src, target)
+        # Official videos saved with tools/fetch_videos.py play from the drive offline. Copy only what's missing:
+        # they're large and never change once saved.
+        vids = ROOT / "videos"
+        if vids.is_dir():
+            (app / "videos").mkdir(exist_ok=True)
+            for f in sorted(vids.glob("dvids-*.mp4")):
+                if not (app / "videos" / f.name).exists():
+                    _retry(shutil.copy2, f, app / "videos" / f.name)
 
     # The installer and zip ride along: on the drive's root for whoever holds it, and in Vanguard\downloads so a
     # Vanguard started from this drive (or a demo Pi set up from it) offers them on /download -- no internet needed.
