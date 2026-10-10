@@ -6,6 +6,7 @@ Start Vanguard.
     python run.py --no-browser don't open a browser window (kiosk / handheld setups)
 """
 import argparse
+import os
 import sys
 import threading
 import webbrowser
@@ -37,18 +38,27 @@ def open_kiosk(url: str) -> None:
 
 def quiet_start() -> None:
     """Started with pythonw.exe (the Windows installer's icon): there's no console, so output goes to a log file
-    in the data folder, and the process id is written next to it so the installer can close Vanguard on update."""
-    import atexit
-    import os
+    in the data folder."""
     from vanguard import store
     store.DATA.mkdir(parents=True, exist_ok=True)
     log = store.DATA / "vanguard.log"
     if log.exists() and log.stat().st_size > 1_000_000:
         log.replace(log.with_suffix(".log.old"))
     sys.stdout = sys.stderr = open(log, "a", encoding="utf-8", buffering=1)
+
+
+def write_pid() -> None:
+    """The running server's process id, next to the log, so the installer can close Vanguard before an update.
+    Written only once this process really serves -- a second click that just shows the running Vanguard must never
+    overwrite (and then delete) the running one's id, or an update can't close it."""
+    import atexit
+    import os
+    from vanguard import store
     pid = store.DATA / "vanguard.pid"
     pid.write_text(str(os.getpid()), encoding="ascii")
-    atexit.register(lambda: pid.unlink(missing_ok=True))
+    mine = str(os.getpid())
+    atexit.register(lambda: pid.read_text(encoding="ascii").strip() == mine and pid.unlink(missing_ok=True)
+                    if pid.exists() else None)
 
 
 def main() -> int:
@@ -81,16 +91,32 @@ def main() -> int:
             # program: never show that one -- try the next port.
             other = _vanguard_instance(url)
             if other is not None and other == store.data_id():
-                print(f"Vanguard is already running at {url}")
-                if not args.no_browser:
-                    webbrowser.open(url)
-                return 0
+                if _serves_pages(url):
+                    print(f"Vanguard is already running at {url}")
+                    if not args.no_browser:
+                        webbrowser.open(url)
+                    return 0
+                # Same data folder, but it can't show its pages: a leftover copy whose program files were removed
+                # (an uninstall while it ran). Close it and take its place -- otherwise every click would open a
+                # "Not Found" page forever.
+                print(f"A Vanguard at {url} isn't working (its pages are missing) — closing it.")
+                if _close_broken(url, port):
+                    try:
+                        httpd = serve(host, port, lan=args.lan)
+                        args.port = port
+                        break
+                    except OSError:
+                        pass
+                print(f"  Couldn't close it — using port {port + 1} instead.")
+                continue
             what = "another Vanguard (different data)" if other is not None else "another program"
             print(f"Port {port} is used by {what} — trying {port + 1}.")
     if httpd is None:
         print(f"Ports {args.port}–{args.port + 9} are all in use. Close another program, or choose one: "
               f"python run.py --port 8800")
         return 1
+    if sys.stdout is not None and getattr(sys.stdout, "name", "").endswith("vanguard.log"):
+        write_pid()                                 # the icon's quiet Vanguard: the installer closes it by this id
     stats = httpd.RequestHandlerClass.app.library.stats()
     print(f"Vanguard is running at {url}")
     print(f"  Library: {stats['cards']} study cards, {len(stats['documents'])} documents, "
@@ -153,6 +179,50 @@ def _vanguard_instance(url: str) -> str | None:
             return str(json.loads(r.read()).get("instance") or "")
     except Exception:
         return ""
+
+
+def _serves_pages(url: str) -> bool:
+    """The Vanguard at `url` can show its app page (a leftover whose program files were deleted can't)."""
+    import urllib.request
+    try:
+        with urllib.request.urlopen(url + "/", timeout=5) as r:
+            return r.status == 200 and b"<html" in r.read(4096).lower()
+    except Exception:
+        return False
+
+
+def _close_broken(url: str, port: int) -> bool:
+    """Close a broken Vanguard that uses our data folder. First politely (/api/quit answers this computer); for an
+    older version, end the process that owns the port -- only after checking it's Vanguard with our data folder."""
+    import json
+    import time
+    import urllib.request
+    try:
+        req = urllib.request.Request(url + "/api/quit", data=b"{}", headers={"Content-Type": "application/json"})
+        urllib.request.urlopen(req, timeout=5).read()
+    except Exception:
+        pass
+    for _ in range(10):
+        time.sleep(0.5)
+        if _vanguard_instance(url) is None:
+            return True
+    if sys.platform != "win32":
+        return False
+    import subprocess
+    try:                                             # who owns the port (Windows has no lsof)
+        out = subprocess.run(["netstat", "-ano", "-p", "TCP"], capture_output=True, text=True, timeout=10).stdout
+    except (OSError, subprocess.SubprocessError):
+        return False
+    pids = {line.split()[-1] for line in out.splitlines()
+            if "LISTENING" in line and line.split()[1:2] and line.split()[1].endswith(f":{port}")}
+    for pid in pids:
+        if pid.isdigit() and int(pid) != os.getpid():
+            subprocess.run(["taskkill", "/PID", pid, "/F"], capture_output=True, timeout=10)
+    for _ in range(10):
+        time.sleep(0.5)
+        if _vanguard_instance(url) is None:
+            return True
+    return False
 
 
 def _is_vanguard(url: str) -> bool:
