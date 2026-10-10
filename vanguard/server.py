@@ -26,7 +26,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from vanguard import (addons, backup, board, books, careers, daily, engine, exam, fitness, instructor, integrity, knowledge,
-                      lessons, letters, live_quiz, pay, pilot, profiles, program_backup, progress, quiz_edits, reports, scenarios, security, service, store, train, voice)
+                      lessons, letters, network, live_quiz, pay, pilot, profiles, program_backup, progress, quiz_edits, reports, scenarios, security, service, store, train, voice)
 from vanguard.brain import Brain
 from vanguard.faith import Faith
 from vanguard.knowledge import Library
@@ -38,8 +38,10 @@ DOWNLOAD_TYPES = {".exe": "application/octet-stream", ".zip": "application/zip",
                   ".pdf": "application/pdf", ".txt": "text/plain"}
 mimetypes.add_type("application/manifest+json", ".webmanifest")
 PUBLIC_GET = {"/", "/index.html", "/icon.svg", "/api/lock",       # the app shell: installable before sign-in
+              "/join", "/api/classroom", "/api/join-code",    # the class Join screen and its QR code (no names, no records)
               "/manifest.webmanifest", "/icon-192.png", "/icon-512.png", "/icon-maskable-512.png", "/apple-touch-icon.png"}       # reachable while locked (plus the page's scripts in /js/)
-PUBLIC_POST = {"/api/unlock", "/api/profiles/create", "/api/recover"}
+PUBLIC_POST = {"/api/unlock", "/api/profiles/create", "/api/recover",
+               "/api/quit"}                 # End class on the Join screen: this computer (or an instructor) only
 
 
 
@@ -203,6 +205,11 @@ class Handler(BaseHTTPRequestHandler):
         finally:
             self._done()
 
+    def _file_joins(self, priv: bytes) -> None:
+        """Cadets who joined with a code since the class records were last open: into the roster now."""
+        for pid in instructor.apply_joins(priv):
+            lessons.sync_cadet(priv, pid)
+
     def _local(self) -> bool:
         """The request comes from this computer (not another device on the classroom network)."""
         return self.client_address[0] in ("127.0.0.1", "::1", "::ffff:127.0.0.1")
@@ -259,9 +266,10 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
         if r.startswith("/api/instructor/"):            # instructor only: profile role + Instructor PIN this session
             priv = self._program_key()
             if not priv:
-                return self._json({"error": "Instructor only. Open Instructor and enter the Instructor PIN."}, 403)
+                return self._json({"error": "Instructor only. Open Instructor and enter the Class PIN."}, 403)
+            self._file_joins(priv)
             if r == "/api/instructor/overview":
-                return self._json(instructor.overview(priv))
+                return self._json({**instructor.overview(priv), "me": self._pid})
             if r == "/api/instructor/scenarios":
                 cadets = [p for p in profiles.all_profiles() if p["kind"] == "cadet"]
                 logs = {p["id"]: instructor.read_class_file(priv, p["id"], "scenarios.jsonl", []) for p in cadets}
@@ -286,7 +294,11 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                                    "questions": [{"id": f"{c.id}#{i}", "q": qq, "a": aa, "edit": edits.get(f"{c.id}#{i}", {})}
                                                  for i, (qq, aa) in enumerate(c.quiz)]})
             if r == "/api/instructor/dashboard":
-                dash = reports.dashboard(priv, app.library, str(q.get("unit", ""))[:10])
+                unit = str(q.get("unit", ""))[:10]
+                if unit == "mine":                       # "My Cadets": the units this instructor teaches
+                    dash = reports.dashboard(priv, app.library, owner=self._pid)
+                else:
+                    dash = reports.dashboard(priv, app.library, unit)
                 if not q.get("unit") and pilot.config().get("start"):
                     pilot.take_snapshot(dash)            # about weekly during a pilot: change over time
                 return self._json(dash)
@@ -294,7 +306,10 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                 return self._json({**pilot.report(reports.dashboard(priv, app.library)), "survey": pilot.SURVEY,
                                    "scale": pilot.SCALE})
             if r == "/api/instructor/report.csv":       # an explicit export, only for the instructor
-                body = reports.to_csv(reports.cadet_rows(priv, app.library, str(q.get("unit", ""))[:10])).encode("utf-8-sig")
+                unit = str(q.get("unit", ""))[:10]
+                rows = (reports.cadet_rows(priv, app.library, owner=self._pid) if unit == "mine"
+                        else reports.cadet_rows(priv, app.library, unit))
+                body = reports.to_csv(rows).encode("utf-8-sig")
                 self._headers(200, "text/csv; charset=utf-8", len(body), {
                     "Content-Disposition": f'attachment; filename="vanguard-class-report-{time.strftime("%Y-%m-%d")}.csv"'})
                 self.wfile.write(body)
@@ -397,6 +412,23 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                 return self._json(lessons.open_lesson(self._pid or "", str(q.get("a", ""))[:12]))
             except LookupError as e:
                 return self._json({"error": str(e)}, 404)
+        if r == "/join":                                 # the class Join screen (a QR code for the projector)
+            return self._static("/join.html")
+        if r == "/api/classroom":
+            # What the Join screen shows: the addresses Cadets open. Join codes only for an instructor with the class
+            # records open (the screen is projected; a code puts a new Cadet in that unit).
+            out = {"lan": app.lan, "urls": network.class_urls(app.port) if app.lan else [],
+                   "local": self._local(), "cadets": sum(1 for p in profiles.all_profiles() if p["kind"] == "cadet")}
+            priv = self._program_key()
+            if priv:
+                self._file_joins(priv)
+                ov = instructor.overview(priv)
+                mine = [u for u in ov["units"] if u.get("owner") == self._pid]
+                out["units"] = [{"id": u["id"], "name": u["name"], "code": u["code"]} for u in (mine or ov["units"])]
+            return self._json(out)
+        if r == "/api/join-code":                        # the signup form names the unit a code joins
+            u = instructor.unit_for_code(q.get("c", ""))
+            return self._json({"name": u["name"]} if u else {})
         if r == "/api/lock":
             # Before sign-in, other devices on the classroom network see shortened names ("Ana R."), never full names.
             short = self.app.lan and not self._local() and not self._pid
@@ -408,7 +440,7 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                    "downloads": bool(_download_files())}
             if self._pid:
                 cur = profiles.get(self._pid)
-                out.update({"current": {"id": cur["id"], "name": cur["name"]}, "pin_set": security.pin_set(),
+                out.update({"current": {"id": cur["id"], "name": cur["name"], "joined": cur.get("joined", "")}, "pin_set": security.pin_set(),
                             "idle_minutes": security.idle_minutes(),
                             "encrypted": security.session_key(self._token()) is not None,
                             "has_recovery": security.has_recovery(), "admin_set": security.admin_set()})
@@ -559,17 +591,33 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
             if not token:
                 return self._json({"ok": False, "error": msg}, 401)
             return self._json({"ok": True}, extra={"Set-Cookie": security.cookie_header(token)})
+        if r == "/api/join":                             # Me -> Join a class: a signed-in Cadet types a join code
+            if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
+                return self._json({"error": "Join codes are for Cadet profiles."}, 400)
+            join = instructor.unit_for_code(b.get("code"))
+            if not join:
+                return self._json({"error": "That join code isn't right. Check it with your instructor."}, 400)
+            instructor.request_join(self._pid, join["unit"])
+            lessons.sync_unit(self._pid, join["unit"])
+            profiles.set_joined(self._pid, join["name"])
+            return self._json({"ok": True, "joined": join["name"]})
         if r == "/api/profiles/create":
             try:
                 kind = profiles.role_of(str(b.get("kind", "cadet")))
+                join = None
+                if kind == "cadet" and instructor.clean_code(b.get("join")):
+                    join = instructor.unit_for_code(b.get("join"))
+                    if not join:
+                        return self._json({"ok": False, "error": "That join code isn't right. Check it with your "
+                                                                 "instructor, or leave it blank."}, 400)
                 if kind == "instructor":                 # only the Instructor PIN can make an instructor
                     admin = str(b.get("admin", ""))[:32]
                     if not security.admin_set():
                         # first-time setup: the first instructor chooses the Instructor PIN -- on the laptop itself,
                         # never over the classroom network (a Cadet must not be able to claim it first)
                         if not self._local():
-                            return self._json({"ok": False, "error": "Set up the first instructor on the instructor's "
-                                                                     "own computer."}, 403)
+                            return self._json({"ok": False, "error": "Set up the first instructor on the "
+                                                                     "instructor's own computer first."}, 403)
                         err = security.set_admin_pin(admin)
                     else:
                         err = security.check_admin(admin)
@@ -581,7 +629,7 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                 if self.app.lan:                         # on the classroom network every profile needs a PIN
                     err = security.valid_new_pin(str(b.get("pin", "")))
                     if err:
-                        return self._json({"ok": False, "error": "On the classroom network every profile needs a PIN. "
+                        return self._json({"ok": False, "error": "When class is open, every profile needs a PIN. "
                                                                  + err}, 400)
                 p = profiles.create(str(b.get("name", "")), kind)
             except ValueError as e:
@@ -594,8 +642,14 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                 if err:
                     profiles.delete(p["id"])
                     return self._json({"ok": False, "error": err}, 400)
+            if join:                                     # placed in the instructor's unit, with its lessons
+                instructor.request_join(p["id"], join["unit"])
+                lessons.sync_unit(p["id"], join["unit"])
+                profiles.set_joined(p["id"], join["name"])
             token, _ = security.unlock(p["id"], pin)
-            return self._json({"ok": True, "profile": p, "recovery": code},
+            if kind == "instructor":                     # they just typed the Class PIN: their class opens now
+                security.unlock_program(token, str(b.get("admin", ""))[:32])
+            return self._json({"ok": True, "profile": p, "recovery": code, "joined": join["name"] if join else ""},
                               extra={"Set-Cookie": security.cookie_header(token)})
         if r == "/api/recover":
             token, msg, code = security.recover(str(b.get("profile", ""))[:12], str(b.get("code", ""))[:40],
@@ -634,7 +688,7 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
             return self._json({"recovery": code} if code else {"error": "Wrong PIN."}, 200 if code else 401)
         if r == "/api/pin/remove":
             if self.app.lan:
-                return self._json({"ok": False, "error": "On the classroom network every profile keeps its PIN."}, 403)
+                return self._json({"ok": False, "error": "When class is open, every profile keeps its PIN."}, 403)
             if (profiles.get(self._pid or "") or {}).get("kind") == "instructor":
                 return self._json({"ok": False, "error": "An instructor profile always keeps its PIN."}, 403)
             err = security.remove_pin(str(b.get("current", "")))
@@ -854,12 +908,19 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
         if r.startswith("/api/instructor/"):
             priv = self._program_key()
             if not priv:
-                return self._json({"error": "Instructor only. Open Instructor and enter the Instructor PIN."}, 403)
+                return self._json({"error": "Instructor only. Open Instructor and enter the Class PIN."}, 403)
+            self._file_joins(priv)
             try:
                 if r == "/api/instructor/unit":
                     act = str(b.get("action", ""))
                     if act == "add":
-                        return self._json(instructor.add_unit(priv, b.get("name"), str(b.get("kind", "")), str(b.get("parent", ""))[:10]))
+                        return self._json(instructor.add_unit(priv, b.get("name"), str(b.get("kind", "")),
+                                                              str(b.get("parent", ""))[:10], self._pid or ""))
+                    if act == "code":                    # a fresh join code; the old one stops working
+                        return self._json({"code": instructor.new_code(priv, str(b.get("id", ""))[:10])})
+                    if act == "owner":
+                        instructor.set_owner(priv, str(b.get("id", ""))[:10], str(b.get("owner", ""))[:12])
+                        return self._json({"ok": True})
                     if act == "rename":
                         instructor.rename_unit(priv, str(b.get("id", ""))[:10], b.get("name"))
                         return self._json({"ok": True})
@@ -1122,6 +1183,9 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
             except ValueError as e:
                 return self._json({"error": str(e)}, 400)
         if r == "/api/quit":                             # Me -> Quit Vanguard (there's no console window to close)
+            # a Cadet's phone on the class Wi-Fi must not be able to end class for everyone
+            if not self._local() and (profiles.get(self._pid or "") or {}).get("kind") != "instructor":
+                return self._json({"error": "Only your instructor can close Vanguard for the class."}, 403)
             self._json({"ok": True})
             threading.Thread(target=self.server.shutdown, daemon=True).start()
             return None

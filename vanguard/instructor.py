@@ -10,6 +10,8 @@ files (owner's decision, 2026-10-08: class records only).
 from __future__ import annotations
 
 import json
+import re
+import secrets
 import threading
 import time
 import uuid
@@ -52,7 +54,120 @@ def _clean_name(name) -> str:
     return name
 
 
-def add_unit(priv: bytes, name, kind, parent: str = "") -> dict:
+# ── join codes ──────────────────────────────────────────────────────────────
+# Every class, platoon and squad has a short join code. A Cadet who types it (or scans the class QR code) is put in
+# that unit -- no instructor clicks. The codes are in program/join_codes.json in the clear, with the unit's name:
+# a Cadet's session has no program key, so it can't open the sealed roster. A code only lets someone put their *own*
+# new profile in a unit; it never opens anything. The roster itself stays sealed: a join waits in
+# program/joins.json until an instructor's session (which can open the roster) files it.
+JOIN_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"      # no 0/O, 1/I/L: easy to read off a projector
+JOIN_LEN = 6
+
+
+def _program_file(name: str):
+    return store.DATA / "program" / name
+
+
+def _read_plain(name: str, default):
+    try:
+        return json.loads(_program_file(name).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return default
+
+
+def _write_plain(name: str, data) -> None:
+    path = _program_file(name)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(".tmp")
+    tmp.write_text(json.dumps(data), encoding="utf-8")
+    tmp.replace(path)
+
+
+def clean_code(code) -> str:
+    return re.sub(r"[^A-Z0-9]", "", str(code or "").upper())[:12]
+
+
+def _new_code(taken: set) -> str:
+    while True:
+        code = "".join(secrets.choice(JOIN_ALPHABET) for _ in range(JOIN_LEN))
+        if code not in taken:
+            return code
+
+
+def _publish_codes(r: dict) -> None:
+    _write_plain("join_codes.json", {u["code"]: {"unit": u["id"], "name": u["name"]} for u in r["units"] if u.get("code")})
+
+
+def _ensure_codes(r: dict) -> bool:
+    taken, changed = {u.get("code") for u in r["units"]}, False
+    for u in r["units"]:
+        if not u.get("code"):
+            u["code"] = _new_code(taken)
+            taken.add(u["code"])
+            changed = True
+    return changed
+
+
+def unit_for_code(code) -> dict | None:
+    """{"unit": id, "name": ...} for a join code, or None."""
+    return _read_plain("join_codes.json", {}).get(clean_code(code))
+
+
+def request_join(pid: str, unit: str) -> None:
+    """A Cadet used a join code: filed into the roster the next time an instructor opens class records."""
+    with _lock:
+        joins = _read_plain("joins.json", {})
+        joins[pid] = unit
+        _write_plain("joins.json", joins)
+
+
+def apply_joins(priv: bytes) -> list[str]:
+    """Files waiting joins into the sealed roster. Returns the Cadets placed in a unit."""
+    with _lock:
+        joins = _read_plain("joins.json", {})
+        if not joins:
+            return []
+        _write_plain("joins.json", {})
+    units = {u["id"] for u in roster(priv)["units"]}
+    placed = []
+    for pid, unit in joins.items():
+        if unit in units and (profiles.get(pid) or {}).get("kind") == "cadet":
+            assign(priv, pid, unit)
+            placed.append(pid)
+    return placed
+
+
+def new_code(priv: bytes, uid: str) -> str:
+    """A fresh join code for one unit (the old one stops working) -- e.g. after it was shared too widely."""
+    with _lock:
+        r = roster(priv)
+        unit = next((u for u in r["units"] if u["id"] == uid), None)
+        if not unit:
+            raise ValueError("No such unit.")
+        unit["code"] = _new_code({u.get("code") for u in r["units"]})
+        _save(priv, r)
+        _publish_codes(r)
+    return unit["code"]
+
+
+def set_owner(priv: bytes, uid: str, owner: str) -> None:
+    """Which instructor teaches a unit ("" = shared). Lets each instructor filter to "My Cadets"."""
+    if owner and (profiles.get(owner) or {}).get("kind") != "instructor":
+        raise ValueError("No such instructor.")
+    with _lock:
+        r = roster(priv)
+        unit = next((u for u in r["units"] if u["id"] == uid), None)
+        if not unit:
+            raise ValueError("No such unit.")
+        unit["owner"] = owner
+        _save(priv, r)
+
+
+def units_of(priv: bytes, owner: str) -> list[str]:
+    return [u["id"] for u in roster(priv)["units"] if u.get("owner") == owner]
+
+
+def add_unit(priv: bytes, name, kind, parent: str = "", owner: str = "") -> dict:
     kind = kind if kind in UNIT_KINDS else "class"
     with _lock:
         r = roster(priv)
@@ -60,9 +175,11 @@ def add_unit(priv: bytes, name, kind, parent: str = "") -> dict:
             raise ValueError("That parent unit doesn't exist.")
         if len(r["units"]) >= 100:
             raise ValueError("A program can have up to 100 classes, platoons and squads.")
-        unit = {"id": uuid.uuid4().hex[:10], "name": _clean_name(name), "kind": kind, "parent": parent or ""}
+        unit = {"id": uuid.uuid4().hex[:10], "name": _clean_name(name), "kind": kind, "parent": parent or "",
+                "owner": owner, "code": _new_code({u.get("code") for u in r["units"]})}
         r["units"].append(unit)
         _save(priv, r)
+        _publish_codes(r)
     return unit
 
 
@@ -74,6 +191,7 @@ def rename_unit(priv: bytes, uid: str, name) -> None:
             raise ValueError("No such unit.")
         unit["name"] = _clean_name(name)
         _save(priv, r)
+        _publish_codes(r)
 
 
 def delete_unit(priv: bytes, uid: str) -> None:
@@ -91,6 +209,7 @@ def delete_unit(priv: bytes, uid: str) -> None:
             if c.get("unit") == uid:
                 c["unit"] = ""
         _save(priv, r)
+        _publish_codes(r)
 
 
 def assign(priv: bytes, pid: str, unit: str | None = None, let: int | None = None) -> dict:
@@ -158,7 +277,11 @@ def records(priv: bytes, pid: str) -> dict:
 
 
 def overview(priv: bytes) -> dict:
-    r = roster(priv)
+    with _lock:                                  # units made before join codes existed get one now
+        r = roster(priv)
+        if _ensure_codes(r):
+            _save(priv, r)
+            _publish_codes(r)
     cadets = []
     for p in profiles.all_profiles():
         if p["kind"] != "cadet":
@@ -169,4 +292,5 @@ def overview(priv: bytes) -> dict:
                        "status": rec["status"], "questions_known": rec.get("questions_known", 0),
                        "exams": len(rec.get("exams", [])), "last_study": rec.get("last_study", ""),
                        "scenarios": rec.get("scenarios", 0)})
-    return {"units": r["units"], "cadets": cadets, "unit_kinds": UNIT_KINDS, "let_levels": LET_LEVELS}
+    return {"units": r["units"], "cadets": cadets, "unit_kinds": UNIT_KINDS, "let_levels": LET_LEVELS,
+            "instructors": [{"id": p["id"], "name": p["name"]} for p in profiles.all_profiles() if p["kind"] == "instructor"]}

@@ -245,7 +245,12 @@ def recipients(a: dict) -> list[str]:
 def sync_cadet(priv: bytes, pid: str) -> list[str]:
     """A Cadet just joined a unit: give them that unit's existing assignments -- once, and only them. Other Cadets'
     lists don't change. A lesson they already have from another assignment isn't added again."""
-    unit = (instructor.roster(priv)["cadets"].get(pid) or {}).get("unit")
+    return sync_unit(pid, (instructor.roster(priv)["cadets"].get(pid) or {}).get("unit") or "")
+
+
+def sync_unit(pid: str, unit: str) -> list[str]:
+    """The same, given the unit -- a Cadet who joins with a join code gets the unit's lessons right away (the
+    assignment lists its units; the roster isn't needed)."""
     if not unit:
         return []
     added = []

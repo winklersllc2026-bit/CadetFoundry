@@ -99,7 +99,7 @@ class ClassKeyTests(unittest.TestCase):
         self.assertIn("Only an instructor", security.unlock_program(ctok, INSTRUCTOR_PIN))
         self.assertIsNone(security.session_program_key(ctok))
         _i, itok = self.cadet("736281", kind="instructor")
-        self.assertIn("Wrong", security.unlock_program(itok, "000000"))
+        self.assertIn("isn't right", security.unlock_program(itok, "000000"))
         self.assertIsNone(security.session_program_key(itok))
         self.assertIsNone(security.unlock_program(itok, INSTRUCTOR_PIN))
         self.assertEqual(len(security.session_program_key(itok)), 32)

@@ -82,8 +82,8 @@ python tools/make_usb.py E:\                  # app + its own Python + the libra
 python tools/make_usb.py E:\ --with-ai        # also the offline AI, copied from this computer (adds about 1–2 GB)
 ```
 
-On the drive, double-click **Start Vanguard.bat** (this computer only) or **Start Vanguard (classroom).bat** (Cadets
-connect over the classroom network). Keep the window open while you use it; close it or use Me → Quit Vanguard
+On the drive, double-click **Start Vanguard.bat** (this computer only) or **Start Classroom.bat** (Cadets
+join from their phones on the same Wi-Fi — it opens a Join screen with a QR code). Keep the window open while you use it; close it or use Me → Quit Vanguard
 before unplugging. Run the command again to update the drive — the `VanguardData` folder is never touched.
 Linux / Mac: `sh start-vanguard-usb.sh` on the drive. `START HERE.html` on the drive explains which file does what.
 

@@ -44,9 +44,12 @@ def _last_active(pid: str) -> str:
     return max(dates) if dates else ""
 
 
-def cadet_rows(priv: bytes, library, unit: str = "") -> list[dict]:
+def cadet_rows(priv: bytes, library, unit: str = "", owner: str = "") -> list[dict]:
+    """unit: one unit and its sub-units. owner: an instructor's profile id -- "My Cadets" (their units)."""
     r = instructor.roster(priv)
     keep = _units_under(r, unit) if unit else None
+    if owner:
+        keep = set().union(*[_units_under(r, u["id"]) for u in r["units"] if u.get("owner") == owner]) or set()
     names = {u["id"]: u["name"] for u in r["units"]}
     today = time.strftime("%Y-%m-%d")
     cutoff = time.strftime("%Y-%m-%d", time.localtime(time.time() - ACTIVE_DAYS * 86400))
@@ -80,8 +83,8 @@ def cadet_rows(priv: bytes, library, unit: str = "") -> list[dict]:
     return rows
 
 
-def dashboard(priv: bytes, library, unit: str = "") -> dict:
-    rows = cadet_rows(priv, library, unit)
+def dashboard(priv: bytes, library, unit: str = "", owner: str = "") -> dict:
+    rows = cadet_rows(priv, library, unit, owner)
     shared = [x for x in rows if x["shared"]]
     assigned = sum(x["lessons_assigned"] for x in shared)
     completed = sum(x["lessons_completed"] for x in shared)

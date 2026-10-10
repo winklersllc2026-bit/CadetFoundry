@@ -4,7 +4,7 @@
 const $ = s => document.querySelector(s);
 const api = async (path, body) => {
   const r = await fetch(path, body === undefined ? {} : { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-  if (r.status === 401 && !['/api/unlock', '/api/recover', '/api/pin/recovery', '/api/pin/remove', '/api/pin/set', '/api/profiles/delete', '/api/profiles/create'].includes(path)) {
+  if (r.status === 401 && !['/api/unlock', '/api/recover', '/api/pin/recovery', '/api/pin/remove', '/api/pin/set', '/api/profiles/delete', '/api/profiles/create', '/api/join'].includes(path)) {
     showLock();                                   // session expired or locked
     throw new Error('locked');
   }
@@ -12,15 +12,15 @@ const api = async (path, body) => {
 };
 
 // ── Profiles + PIN lock screen ──
-// A recovery code is shown exactly once. It's the Soldier's spare key to their encrypted files.
+// A backup code is shown exactly once. It's the spare key to a profile's protected files.
 function showRecoveryCode(code, done) {
   const o = document.createElement('div');
   o.style.cssText = 'position:fixed;inset:0;z-index:200;background:var(--bg);overflow:auto;padding:16px;display:grid;place-items:center';
   o.innerHTML = `<div class="card" style="width:100%;max-width:420px;text-align:center">
-      <div style="font-size:28px">🔑</div><h2>Your recovery code</h2>
-      <p>If you ever forget your PIN, this code is the <b>only</b> way back into your files.</p>
+      <div style="font-size:28px">🔑</div><h2>Your backup code</h2>
+      <p>If you ever forget your PIN, this code is the <b>only</b> way back in.</p>
       <div style="font:700 24px ui-monospace,Consolas,monospace;letter-spacing:.08em;padding:14px;border:2px dashed var(--line);border-radius:10px;margin:12px 0;user-select:all">${esc(code)}</div>
-      <p class="faint">Write it down and keep it somewhere safe — not on this device. It won't be shown again. Nobody, including whoever runs this device, can recover your files without your PIN or this code.</p>
+      <p class="faint">Write it down and keep it somewhere safe — not on this device. It won't be shown again. Nobody, not even your instructor, can open your files without your PIN or this code.</p>
       <label style="display:flex;gap:8px;align-items:center;justify-content:center"><input type="checkbox" id="rcOk" style="width:auto"> I wrote it down</label>
       <button class="btn primary" id="rcDone" style="width:100%;margin-top:10px" disabled>Continue</button></div>`;
   document.body.appendChild(o);
@@ -28,7 +28,11 @@ function showRecoveryCode(code, done) {
   o.querySelector('#rcDone').onclick = () => { o.remove(); done && done(); };
 }
 
-// Each Soldier on this device picks their profile and enters their PIN (if they set one).
+const PIN_INPUT = (id, ph) => `<input id="${id}" type="password" inputmode="numeric" maxlength="12" autocomplete="new-password" placeholder="${ph}"
+  style="font-size:20px;letter-spacing:.2em">`;
+
+// Who's using Vanguard: pick your name and type your PIN; a new Cadet joins in about 30 seconds (name, PIN, done);
+// the very first time on the instructor's computer, a short setup walks the instructor through it.
 async function showLock(msg) {
   if (document.getElementById('lockScreen')) return;
   const s = await (await fetch('/api/lock')).json();
@@ -37,29 +41,35 @@ async function showLock(msg) {
   d.style.cssText = 'position:fixed;inset:0;z-index:100;background:var(--bg);overflow:auto;padding:16px;display:grid;place-items:center';
   document.body.appendChild(d);
   const go = () => location.replace('/');
+  const want = new URLSearchParams(location.search);
+  const joinCode = (want.get('join') || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 12);
+  history.replaceState(null, '', '/');
   // a demo box says so, and any Vanguard with installers on it offers them (both on every sign-in screen)
   const extras = (s.demo ? '<p class="faint" style="border-top:1px solid var(--line);padding-top:10px;text-align:center">🧪 <b>Demo unit.</b> This small, portable Vanguard runs on a Raspberry Pi — about 10 Cadets at a time. Please sign in a few at a time.</p>' : '')
     + (s.downloads ? '<p style="margin:6px 0 0;text-align:center"><a href="/download" style="color:var(--tan)">⬇ Get Vanguard for your own computer</a></p>' : '');
+  const pinRule = s.lan || s.profiles.length ? 'required' : 'recommended';
   const pick = () => {
-    d.innerHTML = `<div class="card" style="width:100%;max-width:380px;text-align:center">
+    d.innerHTML = `<div class="card" style="width:100%;max-width:400px;text-align:center">
         <div style="font-size:28px">✦</div><h2>Who's using Vanguard?</h2>
-        <div style="display:grid;gap:8px;margin:12px 0">${s.profiles.map(p =>
-          `<button class="btn" data-p="${esc(p.id)}" style="text-align:left">${p.kind === 'guardian' ? '👪' : '👤'} ${esc(p.name)} ${p.has_pin ? '<span class="faint">🔒</span>' : ''}</button>`).join('')}</div>
-        <button class="btn small" id="newProf">+ New profile</button>
+        <button class="btn primary" id="newProf" style="width:100%;min-height:52px;font-size:18px">I'm new — join</button>
+        <p class="faint" style="margin:14px 0 6px">Or tap your name:</p>
+        <div style="display:grid;gap:8px;margin:0 0 12px">${s.profiles.map(p =>
+          `<button class="btn" data-p="${esc(p.id)}" style="text-align:left;min-height:48px">${p.kind === 'guardian' ? '👪' : p.kind === 'instructor' ? '🎓' : '👤'} ${esc(p.name)} ${p.has_pin ? '<span class="faint">🔒</span>' : ''}</button>`).join('')}</div>
         <p class="faint">${esc(msg || '')}</p>${extras}</div>`;
     d.querySelectorAll('[data-p]').forEach(b => b.onclick = () => {
       const p = s.profiles.find(x => x.id === b.dataset.p);
       p.has_pin ? pinFor(p) : api('/api/unlock', { profile: p.id, pin: '' }).then(r => r.ok && go());
     });
-    $('#newProf').onclick = newProfile;
+    $('#newProf').onclick = () => newProfile();
   };
   const pinFor = p => {
     d.innerHTML = `<form class="card" id="unlockForm" style="width:100%;max-width:340px;text-align:center">
         <div style="font-size:28px">🔒</div><h2>${esc(p.name)}</h2>
-        <input id="pinIn" type="password" inputmode="numeric" autocomplete="off" maxlength="12" placeholder="PIN" style="text-align:center;font-size:22px;letter-spacing:.3em">
-        <button class="btn primary" style="width:100%;margin-top:10px">Unlock</button>
-        <p class="faint" id="unlockMsg">${p.lockout ? `Too many wrong PINs. Try again in ${p.lockout} seconds.` : ''}</p>
-        <button type="button" class="btn small" id="forgotPin">Forgot PIN?</button>
+        <label for="pinIn">Your PIN</label>
+        <input id="pinIn" type="password" inputmode="numeric" autocomplete="off" maxlength="12" style="text-align:center;font-size:22px;letter-spacing:.3em">
+        <button class="btn primary" style="width:100%;margin-top:10px">Sign in</button>
+        <p class="faint" id="unlockMsg" role="alert">${p.lockout ? `Too many wrong PINs. Wait ${p.lockout} seconds and try again.` : ''}</p>
+        <button type="button" class="btn small" id="forgotPin">Forgot your PIN?</button>
         ${s.profiles.length > 1 ? '<button type="button" class="btn small" id="backPick">← Someone else</button>' : ''}</form>`;
     $('#pinIn').focus();
     if ($('#backPick')) $('#backPick').onclick = pick;
@@ -73,11 +83,11 @@ async function showLock(msg) {
   const recoverFor = p => {
     d.innerHTML = `<form class="card" id="recForm" style="width:100%;max-width:380px">
         <h2>🔑 Forgot your PIN?</h2>
-        <p class="faint">Enter the recovery code you wrote down when you set your PIN, then choose a new PIN. Your files stay encrypted the whole time.</p>
-        <label>Recovery code</label><input id="recCode" autocomplete="off" maxlength="40" placeholder="XXXXX-XXXXX-XXXXX-XXXXX" style="font-family:ui-monospace,Consolas,monospace;text-transform:uppercase">
-        <label>New PIN (6–12 digits)</label><input id="recPin" type="password" inputmode="numeric" maxlength="12" autocomplete="off">
+        <p class="faint">Type the backup code you wrote down when you made your PIN, then choose a new PIN. Your files stay protected the whole time.</p>
+        <label for="recCode">Backup code</label><input id="recCode" autocomplete="off" maxlength="40" placeholder="XXXXX-XXXXX-XXXXX-XXXXX" style="font-family:ui-monospace,Consolas,monospace;text-transform:uppercase">
+        <label for="recPin">New PIN (6–12 digits)</label>${PIN_INPUT('recPin', '')}
         <button class="btn primary" style="width:100%;margin-top:12px">Set new PIN</button>
-        <p class="faint" id="recMsg">No recovery code? Restore your encrypted backup into a new profile, or ask for help — nobody can open these files without the PIN or the code.</p>
+        <p class="faint" id="recMsg" role="alert">No backup code? Ask your instructor for help — nobody can open these files without the PIN or the code.</p>
         <button type="button" class="btn small" id="recBack">← Back</button></form>`;
     $('#recCode').focus();
     $('#recBack').onclick = () => pinFor(p);
@@ -87,41 +97,131 @@ async function showLock(msg) {
       if (r.ok) showRecoveryCode(r.recovery, go); else $('#recMsg').textContent = r.error;
     };
   };
-  const newProfile = () => {
-    d.innerHTML = `<form class="card" id="newForm" style="width:100%;max-width:380px">
-        <h2>${s.profiles.length ? 'New profile' : 'Welcome to Vanguard'}</h2>
-        <p class="faint">Your logbook, letters and progress stay in your own profile on this device.</p>
-        <label>Your name</label><input id="npName" maxlength="40" autocomplete="off">
-        <label>This profile is for</label><select id="npKind"><option value="cadet">A Cadet</option><option value="guardian">A parent or guardian</option><option value="instructor">An instructor</option></select>
-        <div id="npAdmBox" hidden>${s.admin_set
-          ? `<label>Instructor PIN</label><input id="npAdm" type="password" inputmode="numeric" maxlength="12" autocomplete="off">
-             <p class="faint">Instructor profiles need the Instructor PIN and their own PIN.</p>`
-          : `<label>Choose the Instructor PIN (6–12 digits)</label><input id="npAdm" type="password" inputmode="numeric" maxlength="12" autocomplete="off">
-             <p class="faint">First-time setup. The Instructor PIN opens class records and controls settings for the whole device. Keep it different from your own PIN below, and don't share it with Cadets.</p>`}</div>
-        <label>PIN (6–12 digits)${s.lan ? ' — required' : s.profiles.length ? '' : ' — recommended'}</label>
-        <input id="npPin" type="password" inputmode="numeric" maxlength="12" autocomplete="off" placeholder="${s.lan ? 'Required on the classroom network' : s.profiles.length ? 'Strongly recommended on a shared device' : 'Optional'}">
-        <p class="faint">With a PIN, your files are encrypted on this device. You'll get a <b>recovery code</b> in case you ever forget it.</p>
-        <button class="btn primary" style="width:100%;margin-top:12px">Create profile</button>
-        <p class="faint" id="npMsg"></p>
+  // A new profile: name, PIN, (join code) -- everything else is optional, under "More options" or later in 👤 Me.
+  const newProfile = (kind = 'cadet') => {
+    d.innerHTML = `<form class="card" id="newForm" style="width:100%;max-width:400px">
+        <h2>${s.profiles.length ? 'Join Vanguard' : 'Welcome to Vanguard'}</h2>
+        <p class="faint">Your work stays in your own profile on this device. It takes about 30 seconds.</p>
+        <label for="npName">What's your name?</label><input id="npName" maxlength="40" autocomplete="off" placeholder="First and last name">
+        <label for="npPin">Choose a PIN (6–12 digits)${pinRule === 'recommended' ? ' — recommended' : ''}</label>${PIN_INPUT('npPin', '')}
+        <label for="npPin2">Type it again</label>${PIN_INPUT('npPin2', '')}
+        <p class="faint">Only you will know it. You'll use it to sign in.</p>
+        <div id="npJoinBox"><label for="npJoin">Join code from your instructor <span class="faint">(if you have one)</span></label>
+          <input id="npJoin" maxlength="12" autocomplete="off" value="${esc(joinCode)}" placeholder="e.g. K7M2QD" style="font-family:ui-monospace,Consolas,monospace;text-transform:uppercase;letter-spacing:.15em">
+          <p class="faint" id="npJoinName" role="status"></p></div>
+        <details id="npMore" ${kind !== 'cadet' ? 'open' : ''}><summary class="faint" style="cursor:pointer;min-height:36px">More options</summary>
+          <label for="npKind">This profile is for</label><select id="npKind"><option value="cadet">A Cadet</option><option value="guardian">A parent or guardian</option><option value="instructor">An instructor</option></select>
+          <div id="npAdmBox" hidden><label for="npAdm">Class PIN</label>${PIN_INPUT('npAdm', '')}
+            <p class="faint">${s.admin_set ? 'An instructor profile needs the Class PIN (set up on this computer) plus its own PIN.'
+              : 'Set up the instructor on the instructor\'s computer first — it chooses the Class PIN.'}</p></div></details>
+        <button class="btn primary" style="width:100%;margin-top:12px;min-height:50px;font-size:18px">Start</button>
+        <p class="faint" id="npMsg" role="alert"></p>
         ${s.profiles.length ? '<button type="button" class="btn small" id="backPick">← Back</button>' : ''}${extras}</form>`;
+    $('#npKind').value = kind;
     $('#npName').focus();
     if ($('#backPick')) $('#backPick').onclick = pick;
-    $('#npKind').addEventListener('change', () => { $('#npAdmBox').hidden = $('#npKind').value !== 'instructor'; });
+    const kindChanged = () => {
+      const k = $('#npKind').value;
+      $('#npAdmBox').hidden = k !== 'instructor';
+      $('#npJoinBox').hidden = k !== 'cadet';
+    };
+    $('#npKind').addEventListener('change', kindChanged); kindChanged();
+    let lookT = null;
+    const lookUp = async () => {
+      const c = $('#npJoin').value.trim();
+      if (!c) { $('#npJoinName').textContent = ''; return; }
+      const r = await api('/api/join-code?c=' + encodeURIComponent(c));
+      $('#npJoinName').textContent = r.name ? `✓ You'll join: ${r.name}` : (c.replace(/[^A-Za-z0-9]/g, '').length >= 6 ? 'That code isn\'t right — check it with your instructor.' : '');
+    };
+    $('#npJoin').addEventListener('input', () => { clearTimeout(lookT); lookT = setTimeout(lookUp, 350); });
+    if (joinCode) lookUp();
     $('#newForm').onsubmit = async ev => {
       ev.preventDefault();
-      const r = await api('/api/profiles/create', { name: $('#npName').value, pin: $('#npPin').value, kind: $('#npKind').value, admin: $('#npAdm').value });
-      if (r.ok) (r.recovery ? showRecoveryCode(r.recovery, go) : go()); else $('#npMsg').textContent = r.error;
+      const k = $('#npKind').value;
+      if ($('#npPin').value !== $('#npPin2').value) { $('#npMsg').textContent = "The two PINs don't match. Type them again."; $('#npPin2').value = ''; return; }
+      const r = await api('/api/profiles/create', { name: $('#npName').value, pin: $('#npPin').value, kind: k,
+        admin: $('#npAdm').value, join: k === 'cadet' ? $('#npJoin').value : '' });
+      if (!r.ok) { $('#npMsg').textContent = r.error; return; }
+      const done = () => r.joined ? joinedNote(r.joined) : go();
+      r.recovery ? showRecoveryCode(r.recovery, done) : done();
     };
   };
-  const want = new URLSearchParams(location.search);
-  history.replaceState(null, '', '/');
-  if (!s.profiles.length || want.has('new')) newProfile();
+  const joinedNote = name => {
+    d.innerHTML = `<div class="card" style="width:100%;max-width:380px;text-align:center"><div style="font-size:34px">✅</div>
+      <h2>You're in</h2><p>You joined <b>${esc(name)}</b>. Your instructor will see your class work — never your private notes.</p>
+      <button class="btn primary" id="jnGo" style="width:100%;min-height:50px">Let's go</button></div>`;
+    $('#jnGo').onclick = go;
+  };
+  // First time on the instructor's computer: Welcome → Class PIN → your name and PIN → backup code → ready.
+  const setup = () => {
+    let classPin = '';
+    const step = html => { d.innerHTML = `<div class="card" style="width:100%;max-width:440px">${html}</div>`; };
+    const welcome = () => {
+      step(`<div style="font-size:30px;text-align:center">✦</div><h2 style="text-align:center">Welcome to Vanguard</h2>
+        <p>Vanguard stays on this computer. Cadets can join from phones on the same Wi-Fi. Nothing is sent to the internet.</p>
+        <button class="btn primary" id="suInst" style="width:100%;min-height:52px;font-size:18px">I'm the instructor — set up this class</button>
+        <button class="btn small" id="suJustMe" style="width:100%;margin-top:10px">Just me — I'm a Cadet using this on my own</button>${extras}`);
+      $('#suInst').onclick = pinStep;
+      $('#suJustMe').onclick = () => newProfile('cadet');
+    };
+    const pinStep = () => {
+      step(`<div class="faint">Step 1 of 3</div><h2>Class PIN</h2>
+        <p>Only you (and any other instructors) should know this. It protects the whole class and the settings. Use 6–12 digits.</p>
+        <form id="suPinForm"><label for="suPin">Class PIN</label>${PIN_INPUT('suPin', '')}
+        <label for="suPin2">Type it again</label>${PIN_INPUT('suPin2', '')}
+        <button class="btn primary" style="width:100%;margin-top:12px">Next</button></form>
+        <p class="faint" id="suMsg" role="alert"></p><button type="button" class="btn small" id="suBack">← Back</button>`);
+      $('#suPin').value = classPin; $('#suPin').focus();
+      $('#suBack').onclick = welcome;
+      $('#suPinForm').onsubmit = ev => {
+        ev.preventDefault();
+        const a = $('#suPin').value, b = $('#suPin2').value;
+        if (!/^\d{6,12}$/.test(a)) { $('#suMsg').textContent = 'Use 6 to 12 digits.'; return; }
+        if (a !== b) { $('#suMsg').textContent = "The two PINs don't match."; $('#suPin2').value = ''; return; }
+        classPin = a; meStep();
+      };
+    };
+    const meStep = () => {
+      step(`<div class="faint">Step 2 of 3</div><h2>Your screen</h2>
+        <form id="suMeForm"><label for="suName">Your name</label><input id="suName" maxlength="40" autocomplete="off" placeholder="e.g. SFC Rivera">
+        <label for="suMyPin">Your PIN (6–12 digits)</label>${PIN_INPUT('suMyPin', '')}
+        <label for="suMyPin2">Type it again</label>${PIN_INPUT('suMyPin2', '')}
+        <p class="faint">Your PIN opens your own screen. Make it different from the Class PIN.</p>
+        <button class="btn primary" style="width:100%;margin-top:12px">Next</button></form>
+        <p class="faint" id="suMsg" role="alert"></p><button type="button" class="btn small" id="suBack">← Back</button>`);
+      $('#suName').focus();
+      $('#suBack').onclick = pinStep;
+      $('#suMeForm').onsubmit = async ev => {
+        ev.preventDefault();
+        if ($('#suMyPin').value !== $('#suMyPin2').value) { $('#suMsg').textContent = "The two PINs don't match."; $('#suMyPin2').value = ''; return; }
+        if ($('#suMyPin').value === classPin) { $('#suMsg').textContent = 'Make your PIN different from the Class PIN.'; return; }
+        const r = await api('/api/profiles/create', { name: $('#suName').value, pin: $('#suMyPin').value, kind: 'instructor', admin: classPin });
+        if (!r.ok) { $('#suMsg').textContent = r.error; return; }
+        showRecoveryCode(r.recovery, ready);         // Step 3: the backup code
+      };
+    };
+    const ready = () => {
+      step(`<div style="font-size:34px;text-align:center">✅</div><h2 style="text-align:center">You're ready</h2>
+        <p>How do you want to use Vanguard right now?</p>
+        <button class="btn primary" id="suClass" style="width:100%;min-height:52px;font-size:18px">Open it for the class</button>
+        <button class="btn" id="suLocal" style="width:100%;margin-top:10px;min-height:48px">Use it on this computer only</button>
+        <p class="faint" id="suMsg" role="status"></p>`);
+      $('#suLocal').onclick = go;
+      $('#suClass').onclick = () => {
+        if (s.lan) { location.replace('/join'); return; }
+        $('#suMsg').innerHTML = 'To let phones join: close Vanguard (👤 Me → Quit Vanguard), then open <b>Start Classroom</b> from the desktop or Start menu. It shows a QR code for the class to scan.';
+      };
+    };
+    welcome();
+  };
+  if (!s.profiles.length) (s.on_this_computer ? setup() : newProfile());
+  else if (joinCode || want.has('new')) newProfile();
   else if (want.has('pick')) pick();
-  else if (s.profiles.length === 1 && !s.profiles[0].has_pin) {
+  else if (s.profiles.length === 1 && !s.profiles[0].has_pin && s.on_this_computer) {
     const r = await api('/api/unlock', { profile: s.profiles[0].id, pin: '' });
     if (r.ok) { go(); return; }
     pick();
-  } else if (s.profiles.length === 1) pinFor(s.profiles[0]);
+  } else if (s.profiles.length === 1 && s.on_this_computer) pinFor(s.profiles[0]);
   else pick();
 }
 // The app starts only once a profile is unlocked.

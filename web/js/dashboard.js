@@ -12,7 +12,8 @@ async function instructorDashboard(box, ov, unit = '') {
   const d = await api('/api/instructor/dashboard?unit=' + encodeURIComponent(unit));
   if (d.error || !box) return;
   box.id = 'dashCard';
-  const opts = `<option value="">Whole program</option>` + ov.units.map(u => `<option value="${esc(u.id)}" ${u.id === unit ? 'selected' : ''}>${esc(u.name)}</option>`).join('');
+  const mine = ov.units.some(u => u.owner && u.owner === ov.me);      // "My Cadets": the units this instructor teaches
+  const opts = (mine ? `<option value="mine" ${unit === 'mine' ? 'selected' : ''}>My Cadets</option>` : '') + `<option value="" ${unit === '' ? 'selected' : ''}>Whole program</option>` + ov.units.map(u => `<option value="${esc(u.id)}" ${u.id === unit ? 'selected' : ''}>${esc(u.name)}</option>`).join('');
   box.innerHTML = `<div class="card" style="border-color:var(--tan)">
       <div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:8px"><h3 style="margin:0">📊 Dashboard</h3>
         <select id="dUnit" aria-label="Show" style="max-width:220px">${opts}</select></div>
@@ -44,7 +45,7 @@ async function instructorDashboard(box, ov, unit = '') {
   box.querySelector('#dUnit').addEventListener('change', e => instructorDashboard(box, ov, e.target.value));
   box.querySelectorAll('[data-dprog]').forEach(b => b.addEventListener('click', () => instructorProgress(b.dataset.dprog)));
   $('#dPrint').addEventListener('click', () => {
-    const unitName = unit ? (ov.units.find(u => u.id === unit) || {}).name : 'Whole program';
+    const unitName = unit === 'mine' ? 'My Cadets' : unit ? (ov.units.find(u => u.id === unit) || {}).name : 'Whole program';
     const rows = d.rows.map(r => `<tr><td>${esc(r.name)}</td><td>${esc(r.unit || '')}</td><td>${r.shared ? `${r.lessons_completed}/${r.lessons_assigned}` : '—'}</td>
       <td>${r.shared ? dPct(r.lesson_score_pct) : '—'}</td><td>${r.shared ? r.scenarios : '—'}</td><td>${r.shared ? r.service_hours : '—'}</td>
       <td>${r.shared ? dSigned(r.fitness_improvement_pct) : '—'}</td><td>${esc(r.last_active || '')}</td></tr>`).join('');
@@ -72,7 +73,7 @@ function instructorBackup(body) {
     <label for="pbPass">Backup password (at least 10 characters)</label><input id="pbPass" type="password" autocomplete="new-password" maxlength="200">
     <div class="row" style="flex-wrap:wrap;gap:8px;margin-top:8px"><button class="btn small" id="pbSave">⬇ Download program backup</button>
       <label class="btn small" style="margin:0;color:var(--text)">⬆ Restore a program backup<input type="file" id="pbFile" accept=".json,application/json" hidden></label></div>
-    <p class="faint" id="pbMsg" role="alert">Restoring replaces this device's program with the backup, including its Instructor PIN.</p>`;
+    <p class="faint" id="pbMsg" role="alert">Restoring replaces this device's program with the backup, including its Class PIN.</p>`;
   body.appendChild(sec);
   $('#pbSave').addEventListener('click', async () => {
     const r = await api('/api/instructor/program-backup', { password: $('#pbPass').value });
@@ -84,12 +85,12 @@ function instructorBackup(body) {
   });
   $('#pbFile').addEventListener('change', async e => {
     const f = e.target.files[0]; if (!f) return;
-    if (!confirm('Replace this device\'s program (classes, lessons, settings and Instructor PIN) with this backup?')) return;
+    if (!confirm('Replace this device\'s program (classes, lessons, settings and Class PIN) with this backup?')) return;
     let file;
     try { file = JSON.parse(await f.text()); } catch (err) { $('#pbMsg').textContent = 'That file isn\'t a Vanguard program backup.'; return; }
     const r = await api('/api/instructor/program-restore', { file, password: $('#pbPass').value });
     if (r.error) { $('#pbMsg').textContent = r.error; return; }
-    alert('Restored. Enter the Instructor PIN from the backup to open class records again.');
+    alert('Restored. Enter the Class PIN from the backup to open your class again.');
     loaders.instructor();
   });
 }

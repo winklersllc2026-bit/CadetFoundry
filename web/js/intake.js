@@ -82,7 +82,7 @@ const intake = {
   },
   pin() {
     if (this.lock.pin_set) return this.adminPin();
-    const box = addMsg('ai', md('Last step: **protect your profile with a PIN** (6–12 digits). It locks Vanguard when you walk away and **encrypts your files** on this device. Nobody — not even the person who set up this device — can read them without it.'));
+    const box = addMsg('ai', md('Last step: **protect your profile with a PIN** (6–12 digits). It locks Vanguard when you walk away and **protects your files** on this device. Nobody — not even the person who set up this device — can read them without it.'));
     box.insertAdjacentHTML('beforeend', `<div class="row" style="margin-top:8px">
       <input id="inPin1" type="password" inputmode="numeric" maxlength="12" placeholder="New PIN" style="flex:1" autocomplete="new-password">
       <input id="inPin2" type="password" inputmode="numeric" maxlength="12" placeholder="Same PIN again" style="flex:1" autocomplete="new-password">
@@ -90,10 +90,10 @@ const intake = {
     $('#inPin1').focus();
     $('#inPinGo').onclick = async () => {
       if ($('#inPin1').value !== $('#inPin2').value) { $('#inPinMsg').textContent = "The two PINs don't match."; return; }
-      $('#inPinGo').disabled = true; $('#inPinMsg').textContent = 'Setting your PIN and encrypting your files…';
+      $('#inPinGo').disabled = true; $('#inPinMsg').textContent = 'Setting your PIN and protecting your files…';
       const r = await api('/api/pin/set', { new: $('#inPin1').value, current: '' });
       if (!r.ok) { $('#inPinGo').disabled = false; $('#inPinMsg').textContent = r.error; return; }
-      box.querySelector('.row').remove(); $('#inPinMsg').textContent = '✓ PIN set. Your files are encrypted.';
+      box.querySelector('.row').remove(); $('#inPinMsg').textContent = '✓ PIN set. Your files are protected.';
       const next = () => this.adminPin();
       if (r.recovery) showRecoveryCode(r.recovery, next); else next();
     };

@@ -51,18 +51,24 @@ loaders.serve = async () => {
 
 // My Progress: web/js/progress.js
 
-// ── Instructor ── (instructor profile + Instructor PIN; Cadets only see an explanation)
+// ── Instructor ── (instructor profile + Class PIN; Cadets only see an explanation)
+// One section at a time, picked from a short menu: Today (where class starts), Class, Lessons, Present, Reports,
+// Settings -- instead of one long page of everything.
 const KIND_NAME = { class: 'Class', platoon: 'Platoon', squad: 'Squad' };
 const STATUS_NAME = {
   shared: ['✅', 'Records shared'],
-  open: ['ℹ️', 'No PIN on this profile — records aren’t encrypted'],
+  open: ['ℹ️', 'No PIN on this profile — records aren’t protected'],
   waiting: ['⏳', 'Waiting — shares records the next time this Cadet signs in'],
 };
+const INST_SECTIONS = [['today', '🏠', 'Today'], ['class', '👥', 'Class'], ['lessons', '📋', 'Lessons'],
+  ['present', '🖥️', 'Present'], ['reports', '📊', 'Reports'], ['settings', '⚙️', 'Settings']];
+let instSection = 'today';
 
 // Each load gets a number; an older, slower load stops drawing and its sections land in containers that are
 // no longer on the page (the screen used to show some sections twice when opened twice quickly).
 let instructorRun = 0;
-loaders.instructor = async () => {
+loaders.instructor = async (section) => {
+  if (typeof section === 'string') instSection = section;
   const run = ++instructorRun;
   const body = $('#instructorBody');
   if (STATUS.kind !== 'instructor') {
@@ -73,11 +79,10 @@ loaders.instructor = async () => {
   }
   const ov = await api('/api/instructor/overview');
   if (ov.error) {                                  // signed in as an instructor, but the class records are locked
-    body.innerHTML = `<h2>Instructor</h2><div class="card"><h3>🔐 Open class records</h3>
-      <p>Enter the Instructor PIN to see your classes and Cadets' class records on this device. It stays open until
-      you sign out.</p>
+    body.innerHTML = `<h2>Instructor</h2><div class="card"><h3>🔐 Open your class</h3>
+      <p>Enter the Class PIN to open instructor tools. It stays open until you sign out.</p>
       <div class="row" style="flex-wrap:wrap;gap:8px"><input id="insPin" type="password" inputmode="numeric" maxlength="12"
-        placeholder="Instructor PIN" aria-label="Instructor PIN" style="flex:1;min-width:160px">
+        placeholder="Class PIN" aria-label="Class PIN" style="flex:1;min-width:160px;font-size:20px;letter-spacing:.2em">
       <button class="btn primary" id="insGo">Open</button></div><p class="faint" id="insMsg" role="alert"></p></div>`;
     const go = async () => {
       const r = await api('/api/instructor/unlock', { admin: $('#insPin').value });
@@ -85,20 +90,72 @@ loaders.instructor = async () => {
     };
     $('#insGo').addEventListener('click', go);
     $('#insPin').addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
+    $('#insPin').focus();
     return;
   }
+  if (run !== instructorRun) return;                // a newer load of this screen is already drawing
+  body.innerHTML = `<h2>Instructor</h2>
+    <nav class="row" id="instNav" aria-label="Instructor sections" style="flex-wrap:wrap;gap:6px;margin-bottom:12px">
+      ${INST_SECTIONS.map(([id, ic, name]) => `<button class="btn${id === instSection ? ' primary' : ''}" data-isec="${id}"
+        ${id === instSection ? 'aria-current="page"' : ''}>${ic} ${name}</button>`).join('')}</nav>
+    <div id="instSec"></div>`;
+  body.querySelectorAll('[data-isec]').forEach(b => b.addEventListener('click', () => loaders.instructor(b.dataset.isec)));
+  const sec = $('#instSec');
+  const steps = { today: instToday, class: instClass, lessons: instLessons, present: instPresent, reports: instReports,
+    settings: instSettings }[instSection] || instToday;
+  await steps(sec, ov, run);
+};
+
+// Today: is class open, the join codes, what needs you, and one-tap starts for class.
+async function instToday(sec, ov) {
+  const mine = ov.units.filter(u => u.owner === ov.me), units = mine.length ? mine : ov.units;
+  const d = await api('/api/instructor/dashboard?unit=' + (mine.length ? 'mine' : ''));
+  const needs = [d.service_pending && `<b>${d.service_pending}</b> service entr${d.service_pending === 1 ? 'y' : 'ies'} to review`,
+    d.lessons_overdue && `<b>${d.lessons_overdue}</b> overdue lesson${d.lessons_overdue === 1 ? '' : 's'}`,
+    d.waiting_to_share && `<b>${d.waiting_to_share}</b> Cadet${d.waiting_to_share === 1 ? '' : 's'} not sharing records yet`].filter(Boolean);
+  sec.innerHTML = `
+    <div class="card" style="border-color:var(--tan)">${STATUS.lan
+      ? `<h3>✅ Class is open</h3><p class="faint">Cadets on the same Wi-Fi can join from their phones.</p>
+         <button class="btn primary" id="tJoin">Show the Join screen</button>`
+      : `<h3>💻 This computer only</h3><p class="faint">To let Cadets join from their phones: close Vanguard (👤 Me → Quit Vanguard), then open <b>Start Classroom</b>.</p>`}</div>
+    <div class="card"><h3>👥 ${mine.length ? 'My Cadets' : 'Cadets'}</h3>
+      ${d.cadets ? `<p><b>${d.cadets}</b> Cadet${d.cadets === 1 ? '' : 's'} · ${d.active} active in the last ${d.active_days} days</p>`
+        : `<p><b>No Cadets yet.</b> ${STATUS.lan ? 'Open the Join screen and have Cadets scan the code.' : 'Cadets make their own profile with a PIN the first time they open Vanguard.'}</p>`}
+      ${units.length ? `<div class="faint">Join codes — a Cadet who types one (or scans it on the Join screen) lands in that class:</div>
+        ${units.map(u => `<div class="row" style="justify-content:space-between;margin:6px 0"><span>${esc(u.name)}</span>
+          <b class="mono" style="letter-spacing:.15em;color:var(--tan2)">${esc(u.code || '')}</b></div>`).join('')}`
+        : '<p class="faint">Add a class or platoon in 👥 Class to get a join code for it.</p>'}
+      ${needs.length ? `<p style="margin:10px 0 0">Needs you: ${needs.join(' · ')}</p>` : ''}</div>
+    <div class="card"><h3>Start something</h3><div class="tiles" style="margin:0">
+      <button class="tile" data-tgo="present"><span>📡</span>Ask a live question<small>Cadets answer on their phones</small></button>
+      <button class="tile" data-tgo="present"><span>🗳️</span>Present a scenario<small>The class votes, then discusses</small></button>
+      <button class="tile" data-tgo="lessons"><span>📋</span>Assign a lesson<small>Write it once, assign it to a class</small></button>
+      <button class="tile" data-tgo="reports"><span>📊</span>See how they're doing<small>Dashboard and reports</small></button></div></div>`;
+  if ($('#tJoin')) $('#tJoin').addEventListener('click', () => window.open('/join', '_blank', 'noopener'));
+  sec.querySelectorAll('[data-tgo]').forEach(b => b.addEventListener('click', () => loaders.instructor(b.dataset.tgo)));
+}
+
+// Class: units with their join codes and teachers, the Cadets, and their fitness and service records.
+async function instClass(sec, ov, run) {
   const units = ov.units, unitName = id => (units.find(u => u.id === id) || {}).name || '';
   const unitOpts = (sel, blank) => `<option value="">${blank}</option>` +
     units.map(u => `<option value="${esc(u.id)}" ${u.id === sel ? 'selected' : ''}>${esc(KIND_NAME[u.kind] || '')}: ${esc(u.name)}</option>`).join('');
-  if (run !== instructorRun) return;                // a newer load of this screen is already drawing
-  body.innerHTML = `<h2>Instructor</h2>${STATUS.lan ? `<div class="card" style="border-color:var(--tan)"><h3>📡 Classroom network is on</h3>
-      <p class="faint">Anyone on this Wi-Fi can open Vanguard's sign-in screen (they see shortened names, and every profile needs a PIN).
-      For a pilot, use a <b>dedicated hotspot</b> only your class joins — not the school's open or guest Wi-Fi. Close Vanguard
-      (Me → Quit) when class ends. Details: SECURITY.md → "The classroom network".</p></div>` : ''}<div data-top></div>
+  const instOpts = sel => `<option value="">Shared — any instructor</option>` + (ov.instructors || []).map(i =>
+    `<option value="${esc(i.id)}" ${i.id === sel ? 'selected' : ''}>${esc(i.name)}${i.id === ov.me ? ' (me)' : ''}</option>`).join('');
+  sec.innerHTML = `${STATUS.lan ? `<div class="card"><h3>📡 Class is open</h3>
+      <p class="faint">Anyone on this Wi-Fi can reach Vanguard's sign-in screen (they see shortened names, and every profile needs a PIN).
+      For a pilot, use a <b>dedicated hotspot</b> only your class joins — not the school's open or guest Wi-Fi. End class
+      (Join screen → End class, or Me → Quit) when you're done. Details: SECURITY.md → "The classroom network".</p></div>` : ''}
     <div class="card"><h3>Classes, platoons and squads</h3>
-      ${units.length ? `<ul style="padding-left:18px;margin:0 0 10px">${units.map(u => `<li style="margin:6px 0">
-        ${esc(KIND_NAME[u.kind])}: <b>${esc(u.name)}</b>${u.parent ? ` <span class="faint">(in ${esc(unitName(u.parent))})</span>` : ''}
-        <button class="btn small" data-del="${esc(u.id)}" aria-label="Remove ${esc(u.name)}">Remove</button></li>`).join('')}</ul>`
+      <p class="faint">Each one has a <b>join code</b>. Cadets who type it when they sign up — or scan the QR code on the Join screen — are placed in it automatically.</p>
+      ${units.length ? units.map(u => `<div class="card" style="margin:8px 0;padding:12px">
+        <div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:6px">
+          <span>${esc(KIND_NAME[u.kind])}: <b>${esc(u.name)}</b>${u.parent ? ` <span class="faint">(in ${esc(unitName(u.parent))})</span>` : ''}</span>
+          <span>Join code <b class="mono" style="letter-spacing:.15em;color:var(--tan2)">${esc(u.code || '')}</b></span></div>
+        <div class="row" style="flex-wrap:wrap;gap:8px;margin-top:8px">
+          <label class="faint" style="margin:0">Taught by</label><select data-owner="${esc(u.id)}" aria-label="Instructor for ${esc(u.name)}" style="flex:1;min-width:160px">${instOpts(u.owner)}</select>
+          <button class="btn small" data-newcode="${esc(u.id)}">New code</button>
+          <button class="btn small" data-del="${esc(u.id)}" aria-label="Remove ${esc(u.name)}">Remove</button></div></div>`).join('')
         : '<p class="faint">None yet. Add your first class or platoon.</p>'}
       <div class="row" style="flex-wrap:wrap;gap:8px">
         <input id="uName" placeholder="Name (e.g. Alpha Platoon)" aria-label="Unit name" maxlength="40" style="flex:2;min-width:160px">
@@ -116,66 +173,78 @@ loaders.instructor = async () => {
         </div>
         <div class="faint" style="margin-top:6px">${c.status === 'waiting' ? '' : `Quiz questions known: ${c.questions_known} · Exams: ${c.exams}${c.last_study ? ` · Last studied ${esc(c.last_study)}` : ''}`}</div>
         ${c.status === 'waiting' ? '' : `<button class="btn small" data-prog="${esc(c.id)}" style="margin-top:8px">📈 Progress and portfolio</button>`}
-      </div>`).join('') : '<p class="faint">No Cadet profiles on this device yet. Cadets create their own profile with a PIN when they first open Vanguard.</p>'}
+      </div>`).join('') : `<p><b>No Cadets yet.</b> ${STATUS.lan ? 'Open the Join screen and have Cadets scan the code.' : 'Cadets make their own profile with a PIN the first time they open Vanguard.'}</p>`}
       <p class="faint">You see class records only. Cadets' private check-ins, chats and notes are never shown.</p></div>`;
   $('#uAdd').addEventListener('click', async () => {
     const r = await api('/api/instructor/unit', { action: 'add', name: $('#uName').value, kind: $('#uKind').value, parent: $('#uParent').value });
     if (r.error) $('#uMsg').textContent = r.error; else loaders.instructor();
   });
-  body.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', async () => {
-    if (!confirm('Remove this unit? Its Cadets become unassigned; nothing else is deleted.')) return;
+  sec.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', async () => {
+    if (!confirm('Remove this unit? Its Cadets become unassigned and its join code stops working; nothing else is deleted.')) return;
     await api('/api/instructor/unit', { action: 'delete', id: b.dataset.del }); loaders.instructor();
   }));
-  body.querySelectorAll('[data-unit]').forEach(s => s.addEventListener('change', () => api('/api/instructor/assign', { cadet: s.dataset.unit, unit: s.value })));
-  body.querySelectorAll('[data-prog]').forEach(b => b.addEventListener('click', () => instructorProgress(b.dataset.prog)));
-  body.querySelectorAll('[data-let]').forEach(s => s.addEventListener('change', () => s.value && api('/api/instructor/assign', { cadet: s.dataset.let, let: Number(s.value) })));
-  // Learn categories for every Cadet on this device (spec §7). Basic Training & Beyond still needs each Cadet's own opt-in.
+  sec.querySelectorAll('[data-newcode]').forEach(b => b.addEventListener('click', async () => {
+    if (!confirm('Make a new join code? The old one stops working. Cadets already in this unit stay in it.')) return;
+    await api('/api/instructor/unit', { action: 'code', id: b.dataset.newcode }); loaders.instructor();
+  }));
+  sec.querySelectorAll('[data-owner]').forEach(s => s.addEventListener('change', () => api('/api/instructor/unit', { action: 'owner', id: s.dataset.owner, owner: s.value })));
+  sec.querySelectorAll('[data-unit]').forEach(s => s.addEventListener('change', () => api('/api/instructor/assign', { cadet: s.dataset.unit, unit: s.value })));
+  sec.querySelectorAll('[data-prog]').forEach(b => b.addEventListener('click', () => instructorProgress(b.dataset.prog)));
+  sec.querySelectorAll('[data-let]').forEach(s => s.addEventListener('change', () => s.value && api('/api/instructor/assign', { cadet: s.dataset.let, let: Number(s.value) })));
+  const extra = document.createElement('div');
+  sec.appendChild(extra);
+  for (const step of [() => typeof instructorTrain === 'function' && instructorTrain(extra),        // train.js
+    () => typeof instructorService === 'function' && instructorService(extra)]) {                   // service.js
+    if (run !== instructorRun) return;
+    await step();
+  }
+}
+
+async function instLessons(sec, ov) {
+  if (typeof instructorLessons === 'function') await instructorLessons(sec, ov);     // lessons.js
+}
+
+async function instPresent(sec, ov, run) {
+  if (typeof instructorQuizzes === 'function') await instructorQuizzes(sec, ov);     // dashboard.js: live questions, pop quiz
+  if (run !== instructorRun) return;
+  if (typeof instructorLeadership === 'function') await instructorLeadership(sec);   // scenarios.js: present, class vote
+}
+
+async function instReports(sec, ov, run) {
+  const top = document.createElement('div');
+  sec.appendChild(top);
+  if (typeof instructorDashboard === 'function') await instructorDashboard(top, ov);  // dashboard.js
+  if (run !== instructorRun) return;
+  if (typeof instructorPilot === 'function') await instructorPilot(sec);             // pilot.js
+}
+
+function instSettings(sec) {
+  // Learn sections for every Cadet on this device. Basic Training & Beyond still needs each Cadet's own opt-in.
   const CAT_NAMES = { leadership: 'Leadership', citizenship: 'Citizenship', military: 'Military Knowledge', health: 'Health & Fitness',
     careers: 'Careers', explore: 'Explore Military Service', basic: 'Basic Training & Beyond (only for Cadets who opt in)' };
   const on = STATUS.categories_enabled || Object.keys(CAT_NAMES);
-  const catCard = document.createElement('div');
-  catCard.className = 'card';
-  catCard.innerHTML = `<h3>📘 What Cadets can study</h3><p class="faint">Turn sections of Learn on or off for every Cadet on this device.</p>
-    ${Object.entries(CAT_NAMES).map(([k, v]) => `<label style="display:flex;gap:10px;align-items:center;min-height:44px">
-      <input type="checkbox" data-cat="${k}" ${on.includes(k) ? 'checked' : ''} style="width:22px;height:22px"> ${esc(v)}</label>`).join('')}
-    <p class="faint" id="catMsg" role="status"></p>`;
-  body.appendChild(catCard);
-  catCard.querySelectorAll('[data-cat]').forEach(cb => cb.addEventListener('change', async () => {
-    const cats = [...catCard.querySelectorAll('[data-cat]:checked')].map(x => x.dataset.cat);
+  const MODS = { faith: 'Faith texts (scripture lookup and reading plans)', letters: 'Letters and address book', voice: 'Talk to Vanguard (offline voice)' };
+  const modsOff = STATUS.modules_off || [];
+  sec.innerHTML = `<div class="card"><h3>📘 What Cadets can study</h3><p class="faint">Turn sections of Learn on or off for every Cadet on this device.</p>
+      ${Object.entries(CAT_NAMES).map(([k, v]) => `<label style="display:flex;gap:10px;align-items:center;min-height:44px">
+        <input type="checkbox" data-cat="${k}" ${on.includes(k) ? 'checked' : ''} style="width:22px;height:22px"> ${esc(v)}</label>`).join('')}
+      <p class="faint" id="catMsg" role="status"></p></div>
+    <div class="card"><h3>🧰 Optional tools</h3><p class="faint">Turn optional tools on or off for every profile on this device.</p>
+      ${Object.entries(MODS).map(([k, v]) => `<label style="display:flex;gap:10px;align-items:center;min-height:44px">
+        <input type="checkbox" data-mod="${k}" ${modsOff.includes(k) ? '' : 'checked'} style="width:22px;height:22px"> ${esc(v)}</label>`).join('')}
+      <p class="faint" id="modMsg" role="status"></p></div>
+    <p class="faint">The Class PIN and the AI setting are in 👤 Me.</p>`;
+  sec.querySelectorAll('[data-cat]').forEach(cb => cb.addEventListener('change', async () => {
+    const cats = [...sec.querySelectorAll('[data-cat]:checked')].map(x => x.dataset.cat);
     const r = await api('/api/instructor/categories', { categories: cats });
     $('#catMsg').textContent = r.error || 'Saved.';
     if (!r.error) STATUS.categories_enabled = r.categories_enabled;
   }));
-  // Optional tools on or off for every profile on this device (the server refuses a switched-off tool's routes)
-  const MODS = { faith: 'Faith texts (scripture lookup and reading plans)', letters: 'Letters and address book', voice: 'Talk to Vanguard (offline voice)' };
-  const modsOff = STATUS.modules_off || [];
-  const modCard = document.createElement('div');
-  modCard.className = 'card';
-  modCard.innerHTML = `<h3>🧰 Optional tools</h3><p class="faint">Turn optional tools on or off for every profile on this device.</p>
-    ${Object.entries(MODS).map(([k, v]) => `<label style="display:flex;gap:10px;align-items:center;min-height:44px">
-      <input type="checkbox" data-mod="${k}" ${modsOff.includes(k) ? '' : 'checked'} style="width:22px;height:22px"> ${esc(v)}</label>`).join('')}
-    <p class="faint" id="modMsg" role="status"></p>`;
-  body.appendChild(modCard);
-  modCard.querySelectorAll('[data-mod]').forEach(cb => cb.addEventListener('change', async () => {
-    const off = [...modCard.querySelectorAll('[data-mod]')].filter(x => !x.checked).map(x => x.dataset.mod);
+  sec.querySelectorAll('[data-mod]').forEach(cb => cb.addEventListener('change', async () => {
+    const off = [...sec.querySelectorAll('[data-mod]')].filter(x => !x.checked).map(x => x.dataset.mod);
     const r = await api('/api/instructor/modules', { off });
     $('#modMsg').textContent = r.error || 'Saved. Profiles see the change the next time they open Vanguard.';
     if (!r.error) STATUS.modules_off = r.modules_off;
   }));
-  const extra = document.createElement('div');       // this load's own container for the sections below
-  body.appendChild(extra);
-  const steps = [
-    () => typeof instructorDashboard === 'function' && instructorDashboard(body.querySelector('[data-top]'), ov),   // dashboard.js
-    () => typeof instructorLessons === 'function' && instructorLessons(extra, ov),          // lessons.js
-    () => typeof instructorLeadership === 'function' && instructorLeadership(extra),        // scenarios.js
-    () => typeof instructorTrain === 'function' && instructorTrain(extra),                  // train.js
-    () => typeof instructorService === 'function' && instructorService(extra),              // service.js
-    () => typeof instructorQuizzes === 'function' && instructorQuizzes(extra, ov),          // dashboard.js
-    () => typeof instructorPilot === 'function' && instructorPilot(extra),                  // pilot.js
-    () => typeof instructorBackup === 'function' && instructorBackup(extra),                // dashboard.js
-  ];
-  for (const step of steps) {
-    if (run !== instructorRun) return;
-    await step();
-  }
-};
+  if (typeof instructorBackup === 'function') instructorBackup(sec);                 // dashboard.js
+}

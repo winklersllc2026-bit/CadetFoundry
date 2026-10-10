@@ -13,7 +13,7 @@ Run it again to update the drive: the app is replaced, the data (VanguardData) i
 
 On the drive:
     Start Vanguard.bat                 this computer only
-    Start Vanguard (classroom).bat     Cadets on the classroom network can connect too
+    Start Classroom.bat                Cadets on the same Wi-Fi join from their phones
     start-vanguard-usb.sh              Linux / Mac (uses that computer's python3)
     START HERE.html                    which file does what (opens in any browser)
     Vanguard\\                          the app, with python\\ (and ollama\\ with --with-ai)
@@ -34,7 +34,8 @@ sys.path.insert(0, str(ROOT / "site"))
 import build  # noqa: E402  (site/build.py: the same file list and bundled Python as the installer)
 
 APP_ITEMS = ["vanguard", "web", "tools", "library", "books", "faith", "python", "run.py", "README.md", "LIBRARY.md",
-             "SECURITY.md", "install-vanguard.bat", "install-vanguard.sh", "start-vanguard.bat", "start-vanguard.sh"]
+             "SECURITY.md", "install-vanguard.bat", "install-vanguard.sh", "start-vanguard.bat", "start-vanguard.sh",
+             "start-classroom.bat", "start-classroom.sh"]
 
 START_BAT = r"""@echo off
 title Vanguard
@@ -85,10 +86,10 @@ th { background: #efe8d6; } .tip { color: #444; font-size: 15px; } code { font-f
 Vanguard runs from this drive and opens in this computer's browser. <b>Only this computer can use it.</b><br>
 Use it to look around, prepare lessons, check records, or for one person studying.</div>
 
-<div class="box"><h3>▶ <span class="file">Start Vanguard (classroom).bat</span> — the whole class</h3>
+<div class="box"><h3>▶ <span class="file">Start Classroom.bat</span> — the whole class</h3>
 This computer becomes the classroom's Vanguard. <b>Cadets use it from their own phones, tablets or laptops</b> on the
-same Wi-Fi: the black window shows the address to type (for example <code>http://10.0.0.65:8780</code>).<br>
-Every profile needs a PIN in classroom mode. If Windows asks whether to allow Python on networks, choose
+same Wi-Fi: it opens a <b>Join screen</b> with a big QR code to put on the projector — Cadets scan it and pick a name and a PIN.<br>
+Every profile needs a PIN when class is open. If Windows asks whether to allow Python on networks, choose
 <b>Allow</b> (private networks). If Cadets can't connect, the school Wi-Fi may block devices from reaching each other —
 ask IT, or use a phone hotspot or the Vanguard demo box.</div>
 
@@ -102,8 +103,8 @@ Installs Vanguard on this Windows computer (a Vanguard icon on the desktop and i
 isn't needed. If Windows says <i>"Windows protected your PC"</i>, choose <b>More info → Run anyway</b>.</div>
 
 <table>
-<tr><th></th><th>Start Vanguard</th><th>Start Vanguard (classroom)</th><th>Install …exe</th></tr>
-<tr><td>Who can use it</td><td>This computer only</td><td>This computer + Cadets' devices on the same Wi-Fi</td><td>That computer (classroom mode from its menu)</td></tr>
+<tr><th></th><th>Start Vanguard</th><th>Start Classroom</th><th>Install …exe</th></tr>
+<tr><td>Who can use it</td><td>This computer only</td><td>This computer + Cadets' devices on the same Wi-Fi</td><td>That computer (Vanguard Classroom in its Start menu)</td></tr>
 <tr><td>Where the data lives</td><td colspan="2">On this drive (<span class="file">VanguardData</span>)</td><td>On that computer</td></tr>
 <tr><td>Installs anything?</td><td colspan="2">No — runs from the drive</td><td>Yes</td></tr>
 <tr><td>Best for</td><td>Preparing, one person</td><td>Teaching a class</td><td>A computer used every day</td></tr>
@@ -111,22 +112,22 @@ isn't needed. If Windows says <i>"Windows protected your PC"</i>, choose <b>More
 
 <h2>The first time</h2>
 <ol>
-<li>Open <span class="file">Start Vanguard.bat</span> (or the classroom one).</li>
-<li>Instructor: tap <b>+ New profile</b>, choose <b>An instructor</b>, choose the <b>Instructor PIN</b> (it opens class records — don't share it) and your own PIN.</li>
-<li>Open <b>🎓 Instructor</b> to add classes and Cadets' units. Cadets create their own profiles with their own PIN.</li>
-<li>Write down each <b>recovery code</b> Vanguard shows — it's the way back if a PIN is forgotten.</li>
+<li>Open <span class="file">Start Vanguard.bat</span> (or <span class="file">Start Classroom.bat</span>).</li>
+<li>Instructor: choose <b>I'm the instructor — set up this class</b>. Pick a <b>Class PIN</b> (it opens your class — don't share it with Cadets), then your name and your own PIN.</li>
+<li>Open <b>🎓 Instructor → 👥 Class</b> and add your class or platoons. Each gets a <b>join code</b>; Cadets who use it land in that class.</li>
+<li>Write down each <b>backup code</b> Vanguard shows — it's the way back if a PIN is forgotten.</li>
 </ol>
 
 <h2>While it runs and when you're done</h2>
 <ul>
 <li>A black window stays open while Vanguard runs — <b>leave it open</b>.</li>
-<li>To stop: <b>Me → Quit Vanguard</b>, or close the black window. Wait a moment, then unplug the drive.</li>
+<li>To stop: <b>End class</b> on the Join screen, <b>Me → Quit Vanguard</b>, or close the black window. Wait a moment, then unplug the drive.</li>
 <li>The offline AI (if this drive has it) starts and stops with Vanguard. Its first answer can take a minute.</li>
 </ul>
 
 <h2>Your data</h2>
 <ul>
-<li>Everything — profiles, class records, lessons, settings — is in <span class="file">VanguardData</span>. Each profile is encrypted with its own PIN, and class records also need the Instructor PIN, so a lost drive doesn't expose anyone's data.</li>
+<li>Everything — profiles, class records, lessons, settings — is in <span class="file">VanguardData</span>. Each profile is encrypted with its own PIN, and class records also need the Class PIN, so a lost drive doesn't expose anyone's data.</li>
 <li><b>Back it up:</b> copy the <span class="file">VanguardData</span> folder somewhere safe now and then.</li>
 <li><b>Move everyone to an installed computer:</b> with Vanguard closed on both, copy <span class="file">VanguardData</span> into
 <code>C:\\Users\\&lt;name&gt;\\.vanguard</code> on that computer (before anyone makes profiles there — it replaces them).</li>
@@ -245,7 +246,8 @@ def main(argv: list[str]) -> int:
     else:
         print(f"Note: no installer for {version} in site/dist — run  python site/build.py  first to put it on the drive.")
     (drive / "VanguardData").mkdir(exist_ok=True)
-    for name, args_ in (("Start Vanguard.bat", ""), ("Start Vanguard (classroom).bat", "--lan")):
+    (drive / "Start Vanguard (classroom).bat").unlink(missing_ok=True)   # renamed in 0.2: Start Classroom
+    for name, args_ in (("Start Vanguard.bat", ""), ("Start Classroom.bat", "--lan")):
         (drive / name).write_bytes(START_BAT.replace("{args}", args_).replace("\r\n", "\n").replace("\n", "\r\n").encode("ascii"))
     (drive / "start-vanguard-usb.sh").write_bytes(START_SH.encode("ascii"))
     (drive / "README-USB.txt").unlink(missing_ok=True)          # replaced by START HERE.html

@@ -11,6 +11,7 @@ import threading
 import webbrowser
 
 from vanguard import store
+from vanguard.network import lan_addresses
 from vanguard.server import serve
 
 
@@ -95,7 +96,7 @@ def main() -> int:
     print(f"  Library: {stats['cards']} study cards, {len(stats['documents'])} documents, "
           f"{stats['quiz_questions']} quiz questions")
     if args.lan:
-        addrs = _lan_addresses()
+        addrs = lan_addresses()
         if addrs:
             print("  Cadets: join the same Wi-Fi as this computer, then open in a browser:")
             for a in addrs:
@@ -103,34 +104,18 @@ def main() -> int:
         else:
             print("  Other devices on this network can connect to this computer's address, port", args.port)
     print("  Press Ctrl+C to stop (or Me > Quit Vanguard).")
+    # Start Classroom opens the Join screen (a big QR code for the projector); the app is one click from it.
+    show = url + ("/join" if args.lan else "/")
     if args.kiosk:
         threading.Timer(0.8, lambda: open_kiosk(url)).start()
     elif not args.no_browser:
-        threading.Timer(0.8, lambda: webbrowser.open(url)).start()
+        threading.Timer(0.8, lambda: webbrowser.open(show)).start()
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
         pass
     httpd.server_close()
     return 0
-
-
-def _lan_addresses() -> list[str]:
-    """This computer's addresses on its networks (what Cadets type), best guess first. Sends nothing anywhere."""
-    import socket
-    found: list[str] = []
-    try:                                             # the address the default route would use (UDP connect sends nothing)
-        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
-            s.connect(("10.255.255.255", 1))
-            found.append(s.getsockname()[0])
-    except OSError:
-        pass
-    try:
-        for info in socket.getaddrinfo(socket.gethostname(), None, socket.AF_INET):
-            found.append(info[4][0])
-    except OSError:
-        pass
-    return [a for a in dict.fromkeys(found) if not a.startswith(("127.", "169.254.", "0."))]
 
 
 def _start_portable_ai() -> None:

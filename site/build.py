@@ -31,7 +31,7 @@ LATEST = "Vanguard-Setup-latest.exe"            # uploaded with every release (p
 LATEST_URL = f"{REPO}/releases/latest/download/{LATEST}"
 
 INCLUDE_DIRS = ["vanguard", "web", "tools", "tests", "faith", "library", "books"]
-INCLUDE_FILES = ["run.py", "start-vanguard.bat", "start-vanguard.sh", "install-vanguard.bat", "install-vanguard.sh", "README.md", "LIBRARY.md", "SECURITY.md"]
+INCLUDE_FILES = ["run.py", "start-vanguard.bat", "start-vanguard.sh", "start-classroom.bat", "start-classroom.sh", "install-vanguard.bat", "install-vanguard.sh", "README.md", "LIBRARY.md", "SECURITY.md"]
 
 ROADMAP = [
     (True, "Roles: Cadet, guardian and instructor profiles; Instructor PIN; class records only for the instructor"),
@@ -239,7 +239,7 @@ classroom network — no cloud, no outside accounts, no advertising, no tracking
 <li>Download and open <b>Vanguard-Setup</b>. If Windows says <i>"Windows protected your PC"</i> (the installer isn't code-signed yet), click <b>More info → Run anyway</b>.</li>
 <li>Click through the installer — no admin rights needed. It puts a <b>Vanguard</b> icon on the desktop and in the Start menu.</li>
 <li>Set the <b>Instructor PIN</b>, create your instructor profile, and open <b>🎓 Instructor</b>.</li>
-<li>For the classroom, start Vanguard in classroom-network mode (<code>python run.py --lan</code>); Cadets open the address it shows and create their own profile with a PIN.</li>
+<li>For the classroom, open <b>Vanguard Classroom</b> (or <code>start-classroom</code>). It shows a Join screen with a QR code; Cadets scan it and pick a name and a PIN.</li>
 </ol><p class="faint">Updating: run the newer installer — profiles and class records are kept. Data lives in <code>%USERPROFILE%\\.vanguard</code>.<br>
 Zip instead: unzip, double-click <code>install-vanguard.bat</code>. Linux / Raspberry Pi: <code>sh install-vanguard.sh</code>, then <code>sh start-vanguard.sh</code>.</p></div>
 

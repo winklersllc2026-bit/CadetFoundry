@@ -296,7 +296,7 @@ class SecurityTests(unittest.TestCase):
         post = lambda r, b: self.req("POST", r, b, {"Cookie": cookie})
         s, _, raw = post("/api/update", {"zip": "", "sig": "", "admin": "482915"})
         self.assertEqual(s, 403)
-        self.assertIn("Instructor PIN first", json.loads(raw)["error"])
+        self.assertIn("Class PIN on this computer first", json.loads(raw)["error"])
         self.assertEqual(post("/api/admin/pin", {"new": "111111"})[0], 400)                # too easy
         self.assertEqual(post("/api/admin/pin", {"new": "905172"})[0], 200)
         self.assertNotIn(b"905172", path.read_bytes())                                       # stored as a hash only

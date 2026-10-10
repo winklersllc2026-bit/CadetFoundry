@@ -86,6 +86,16 @@ def rename(pid: str, name: str) -> None:
         _save(idx)
 
 
+def set_joined(pid: str, unit_name: str) -> None:
+    """The unit a Cadet joined with a join code -- shown to them in Me (a Cadet can't read the sealed roster)."""
+    with _lock:
+        idx = _index()
+        for p in idx["profiles"]:
+            if p["id"] == pid:
+                p["joined"] = str(unit_name)[:40]
+        _save(idx)
+
+
 def set_kind(pid: str, kind: str) -> None:
     with _lock:
         idx = _index()

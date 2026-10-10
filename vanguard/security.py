@@ -252,10 +252,10 @@ def check_admin(pin: str) -> str | None:
     with _lock:
         st = _admin()
         if not st.get("hash"):
-            return "Set an Instructor PIN first (Me → Instructor PIN)."
+            return "Set the Class PIN on this computer first (👤 Me → Class PIN)."
         wait = int(st.get("locked_until", 0) - time.time())
         if wait > 0:
-            return f"Too many wrong Instructor PINs. Try again in {wait} seconds."
+            return f"Too many wrong Class PINs. Wait {wait} seconds and try again."
         if _verify(str(pin or ""), st):
             if st.get("failures"):
                 st["failures"] = 0
@@ -269,7 +269,7 @@ def check_admin(pin: str) -> str | None:
         if fails >= 5:
             st["locked_until"] = time.time() + min(3600, 30 * 2 ** (fails - 5))
         _admin_save(st)
-        return "Wrong Instructor PIN."
+        return "That Class PIN isn't right."
 
 
 def set_admin_pin(new: str, current: str = "") -> str | None:
@@ -309,7 +309,7 @@ def unlock(pid: str, pin: str) -> tuple[str | None, str]:
         st = _state()
         wait = int(st.get("locked_until", 0) - time.time())
         if wait > 0:
-            return None, f"Too many wrong PINs. Try again in {wait} seconds."
+            return None, f"Too many wrong PINs. Wait {wait} seconds and try again."
         if _verify(pin, st):
             if st.get("failures") or st.get("locked_until"):
                 st["failures"] = 0
@@ -330,7 +330,7 @@ def unlock(pid: str, pin: str) -> tuple[str | None, str]:
             st["locked_until"] = time.time() + min(3600, 30 * 2 ** (fails - 5))
         _save(st)
         left = 5 - fails
-        return None, ("Wrong PIN." + (f" {left} tries before a lockout." if left > 0 else " Locked for a while."))
+        return None, ("That PIN isn't right." + (f" {left} tries left before a short wait." if left > 0 else " Wait a little, then try again."))
 
 
 def session_profile(token: str | None) -> str | None:
@@ -496,7 +496,7 @@ def recover(pid: str, code: str, new_pin: str) -> tuple[str | None, str, str | N
         if wait > 0:
             return None, f"Too many wrong tries. Try again in {wait} seconds.", None
         if not st.get("recovery"):
-            return None, "This profile has no recovery code.", None
+            return None, "This profile has no backup code.", None
         err = valid_new_pin(new_pin)
         if err:
             return None, err, None
@@ -508,7 +508,7 @@ def recover(pid: str, code: str, new_pin: str) -> tuple[str | None, str, str | N
             if fails >= 5:
                 st["locked_until"] = time.time() + min(3600, 30 * 2 ** (fails - 5))
             _save(st)
-            return None, "That recovery code doesn't match.", None
+            return None, "That backup code doesn't match.", None
         salt = secrets.token_bytes(16)
         st.update({"salt": salt.hex(), "hash": _hash(new_pin, salt), "iterations": ITERATIONS,
                    "vault": vault.wrap(key, new_pin), "failures": 0})

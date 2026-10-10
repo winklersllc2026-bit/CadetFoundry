@@ -56,8 +56,8 @@ Type: filesandordirs; Name: "{app}"
 
 [Icons]
 Name: "{autoprograms}\{#AppName}"; Filename: "{app}\python\pythonw.exe"; Parameters: """{app}\run.py"""; WorkingDir: "{app}"; IconFilename: "{app}\web\icon.ico"
-; The whole class: a window shows the address Cadets type on their own devices (same Wi-Fi). Close it to stop.
-Name: "{autoprograms}\{#AppName} (classroom)"; Filename: "{app}\python\python.exe"; Parameters: """{app}\run.py"" --lan"; WorkingDir: "{app}"; IconFilename: "{app}\web\icon.ico"
+; The whole class: opens the Join screen (a QR code Cadets scan on the same Wi-Fi). End class there to stop.
+Name: "{autoprograms}\{#AppName} Classroom"; Filename: "{app}\python\pythonw.exe"; Parameters: """{app}\run.py"" --lan"; WorkingDir: "{app}"; IconFilename: "{app}\web\icon.ico"
 Name: "{autodesktop}\{#AppName}"; Filename: "{app}\python\pythonw.exe"; Parameters: """{app}\run.py"""; WorkingDir: "{app}"; IconFilename: "{app}\web\icon.ico"; Tasks: desktopicon
 
 [Run]

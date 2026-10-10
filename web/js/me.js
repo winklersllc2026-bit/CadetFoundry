@@ -19,7 +19,7 @@ async function showAddons() {
   if (!card) { $('#meBody').insertAdjacentHTML('beforeend', '<div class="card" id="addonsCard"></div>'); card = $('#addonsCard'); }
   card.innerHTML = html;
   card.querySelectorAll('[data-addon]').forEach(b => b.onclick = async () => {
-    const admin = (await api('/api/lock')).admin_set ? prompt('Instructor PIN (installing changes this device):') : '';
+    const admin = (await api('/api/lock')).admin_set ? prompt('Class PIN (installing changes this device):') : '';
     if (admin === null) return;
     const r = await api('/api/addons/install', { name: b.dataset.addon, admin });
     if (r.error) alert(r.error);
@@ -40,23 +40,23 @@ async function showIntegrity() {
   $('#meBody').insertAdjacentHTML('beforeend', `<div class="card" id="integrityCard"><h3>🔒 Library check and updates</h3>
     <p>${icon} ${esc(st.message)}</p>${list('Changed', st.changed)}${list('Missing', st.missing)}${list('New, not fingerprinted', st.added)}
     <div class="row"><button class="btn small" id="intCheck">Check again</button></div>
-    <h4>Instructor PIN</h4>
-    <p class="faint">${adm ? 'Set. It opens class records in 🎓 Instructor and controls the AI setting, Learn categories, updates and the library. It is separate from every profile PIN.' : 'Not set. Installing updates needs an Instructor PIN, so one profile can\'t change Vanguard for everyone on a shared device. Whoever looks after this device should set it.'}</p>
-    <div class="row">${adm ? '<input id="admCur" type="password" inputmode="numeric" maxlength="12" placeholder="Current Instructor PIN" style="flex:1">' : ''}
-      <input id="admNew" type="password" inputmode="numeric" maxlength="12" placeholder="New Instructor PIN (6–12 digits)" style="flex:1">
-      <button class="btn small" id="admSave">${adm ? 'Change' : 'Set Instructor PIN'}</button></div><p class="faint" id="admMsg"></p>
+    <h4>Class PIN</h4>
+    <p class="faint">${adm ? 'Set. It opens your class in 🎓 Instructor and controls the AI setting, Learn sections, updates and the library. It is separate from everyone\'s own PIN.' : 'Not set. Installing updates needs a Class PIN, so one profile can\'t change Vanguard for everyone on a shared device. Whoever looks after this device should set it.'}</p>
+    <div class="row">${adm ? '<input id="admCur" type="password" inputmode="numeric" maxlength="12" placeholder="Current Class PIN" style="flex:1">' : ''}
+      <input id="admNew" type="password" inputmode="numeric" maxlength="12" placeholder="New Class PIN (6–12 digits)" style="flex:1">
+      <button class="btn small" id="admSave">${adm ? 'Change' : 'Set Class PIN'}</button></div><p class="faint" id="admMsg"></p>
     <h4>AI setting</h4>
     <p class="faint">Applies to every profile on this device. <b>Off:</b> no AI writing — ✅ checked answers and the exact library text only. <b>Library only</b> (recommended for class): the AI may only explain what the library holds, and says so when it holds nothing. <b>Library + AI:</b> broader explanations, always labeled as AI.</p>
     <div class="row" role="radiogroup" aria-label="AI setting">${[['off', 'Off'], ['library', 'Library only'], ['ai', 'Library + AI']].map(([v, t]) =>
       `<label style="margin-right:12px"><input type="radio" name="aiMode" value="${v}" ${aiMode === v ? 'checked' : ''} ${adm ? '' : 'disabled'}> ${t}</label>`).join('')}</div>
-    <div class="row"><input id="libAdm" type="password" inputmode="numeric" maxlength="12" placeholder="Instructor PIN" style="flex:1" ${adm ? '' : 'disabled'}>
+    <div class="row"><input id="libAdm" type="password" inputmode="numeric" maxlength="12" placeholder="Class PIN" style="flex:1" ${adm ? '' : 'disabled'}>
       <button class="btn small" id="aiSave" ${adm ? '' : 'disabled'}>Save AI setting</button></div>
-    <p class="faint" id="libMsg">${adm ? '' : 'Set an Instructor PIN above first.'}</p>
+    <p class="faint" id="libMsg">${adm ? '' : 'Set a Class PIN above first.'}</p>
     <p class="faint">Vanguard ${esc(st.version)}. ${st.update_key ? 'Updates must be signed by the publisher.' : 'No release key on this copy — signed updates aren\'t set up yet.'}</p>
     ${st.update_key ? `<details><summary>Install an update from a USB stick</summary>
       <label>Update file (.zip)</label><input type="file" id="updZip" accept=".zip">
       <label>Signature (.sig)</label><input type="file" id="updSig" accept=".sig">
-      <label>Instructor PIN</label><input type="password" id="updAdmin" inputmode="numeric" maxlength="12">
+      <label>Class PIN</label><input type="password" id="updAdmin" inputmode="numeric" maxlength="12">
       <div class="row" style="margin-top:8px"><button class="btn primary" id="updGo">Check and install</button></div><p id="updMsg"></p></details>` : ''}</div>`);
   $('#intCheck').onclick = async () => { await api('/api/integrity/check', {}); showIntegrity(); };
   $('#aiSave').onclick = async () => {
@@ -106,6 +106,11 @@ loaders.me = async () => {
         <button class="btn small" id="renameProf" aria-label="Rename this profile" style="margin-left:6px">✎ Rename</button></div></div>
       <div class="row" style="gap:6px"><button class="btn small" id="switchProf">⇄ Switch profile</button><button class="btn small" id="addProf">+ Add profile</button><button class="btn small danger" id="delProf">Delete profile</button></div></div>
       <p class="faint">Everyone on this device has their own profile, locked by their own PIN. Other Cadets can never see yours.</p></div>
+    ${isCadet ? `<div class="card"><h3>🎓 My class</h3>
+      <p class="faint">${lock.current.joined ? `You joined <b>${esc(lock.current.joined)}</b> with a join code.` : 'Your instructor can put you in a class, or you can join one with the code they give you.'}</p>
+      <div class="row" style="flex-wrap:wrap;gap:8px"><input id="joinIn" maxlength="12" placeholder="Join code" aria-label="Join code" autocomplete="off"
+        style="flex:1;min-width:140px;font-family:ui-monospace,Consolas,monospace;text-transform:uppercase;letter-spacing:.15em">
+        <button class="btn small primary" id="joinGo">Join</button></div><p class="faint" id="joinMsg" role="status"></p></div>` : ''}
     <form class="card" id="profForm">
       <div class="row" style="flex-wrap:wrap;gap:8px"><div style="flex:2;min-width:180px"><label>Name</label><input name="name" value="${esc(p.name)}"></div>
       ${isCadet ? `<div style="flex:1;min-width:140px"><label>Grade</label><select name="grade">${gradeOpts}</select></div>` : ''}</div>
@@ -115,7 +120,7 @@ loaders.me = async () => {
       ${isCadet && (STATUS.categories_enabled || []).includes('basic') ? `<label style="display:flex;gap:10px;align-items:flex-start;margin-top:10px;color:var(--text)">
         <input type="checkbox" id="mtBox" ${p.military_track === 'yes' ? 'checked' : ''} style="width:22px;height:22px;flex:none">
         <span>I plan to join the military <span class="faint">— adds the 🪖 Basic Training &amp; Beyond study guide to Learn</span></span></label>` : ''}
-      ${isInst ? '<p class="faint">Program settings — Instructor PIN and the AI setting — are further down this page; classes, lessons and Cadets are in 🎓 Instructor.</p>' : ''}
+      ${isInst ? '<p class="faint">Program settings — the Class PIN and the AI setting — are further down this page; classes, lessons and Cadets are in 🎓 Instructor.</p>' : ''}
       ${cat.length ? `<label>My faith texts (optional — used first in the Faith tab and when you ask about a passage)</label><div>${faithBoxes}</div>` : ''}
       <div class="row" style="margin-top:10px"><button class="btn primary">Save</button><span class="faint" id="profSaved"></span></div>
     </form>
@@ -123,8 +128,8 @@ loaders.me = async () => {
       ${mems.length ? mems.map(m => `<div class="row" style="justify-content:space-between;border-bottom:1px solid var(--line);padding:6px 0"><span>${esc(m.text)}</span><button class="btn small danger" data-forget="${esc(m.id)}">Forget</button></div>`).join('') : '<p class="faint">Nothing yet. Vanguard learns as you talk, or add something:</p>'}
       <div class="row" style="margin-top:8px"><input id="memIn" placeholder="e.g. I'm working on my plank time" style="flex:1"><button class="btn small" id="memAdd">Add</button></div></div>`}
     <div class="card"><h3>Security</h3>
-      <p class="muted">${lock.pin_set ? `A PIN protects Vanguard. It locks after <b>${lock.idle_minutes}</b> minutes without use.${lock.encrypted ? ' Your files are <b>encrypted</b> on this device.' : ''}` : 'No PIN set — anyone who picks up this device can open Vanguard, and your files are not encrypted. Set a PIN of 6–12 digits.'}</p>
-      <p class="faint">Your PIN and your <b>recovery code</b> are the only keys to your encrypted files. If you forget your PIN, use "Forgot PIN?" on the lock screen. Lost your code? Make a new one here (it replaces the old one).</p>
+      <p class="muted">${lock.pin_set ? `A PIN protects Vanguard. It locks after <b>${lock.idle_minutes}</b> minutes without use.${lock.encrypted ? ' Your files are <b>protected with your PIN</b> on this device.' : ''}` : 'No PIN set — anyone who picks up this device can open Vanguard, and your files are not protected. Set a PIN of 6–12 digits.'}</p>
+      <p class="faint">Your PIN and your <b>backup code</b> are the only keys to your protected files. If you forget your PIN, use "Forgot your PIN?" on the sign-in screen. Lost your code? Make a new one here (it replaces the old one).</p>
       <div class="row">
         ${lock.pin_set ? '<input id="pinCur" type="password" inputmode="numeric" maxlength="12" placeholder="Current PIN" style="flex:1">' : ''}
         <input id="pinNew" type="password" inputmode="numeric" maxlength="12" placeholder="${lock.pin_set ? 'New PIN' : 'New PIN (6–12 digits)'}" style="flex:1">
@@ -132,7 +137,7 @@ loaders.me = async () => {
       </div>
       ${lock.pin_set ? `<div class="row" style="margin-top:8px">
         <label style="margin:0">Lock after</label><select id="idleSel" style="width:auto">${[5, 10, 15, 30, 60].map(m => `<option ${m === lock.idle_minutes ? 'selected' : ''}>${m}</option>`).join('')}</select><span class="faint">minutes</span>
-        <button class="btn small" id="lockNow">🔒 Lock now</button><button class="btn small" id="newCode">🔑 New recovery code</button>${isInst ? '' : '<button class="btn small danger" id="pinRemove">Remove PIN</button>'}</div>` : ''}
+        <button class="btn small" id="lockNow">🔒 Lock now</button><button class="btn small" id="newCode">🔑 New backup code</button>${isInst ? '' : '<button class="btn small danger" id="pinRemove">Remove PIN</button>'}</div>` : ''}
       ${isInst ? '<p class="faint">An instructor profile always keeps its PIN.</p>' : ''}
       <p class="faint" id="pinMsg"></p>
       <p class="faint">For full protection if the device is lost, also turn on disk encryption (BitLocker on Windows) — see SECURITY.md.</p>
@@ -234,7 +239,7 @@ loaders.me = async () => {
     document.body.innerHTML = '<div style="display:grid;place-items:center;height:100vh;padding:16px;text-align:center"><div><h2>Vanguard is closed.</h2><p>Open it again from the <b>Vanguard</b> icon. You can close this tab.</p></div></div>';
   };
   $('#reloadLib').onclick = async () => {
-    const admin = (await api('/api/lock')).admin_set ? prompt('Instructor PIN:') : '';
+    const admin = (await api('/api/lock')).admin_set ? prompt('Class PIN:') : '';
     if (admin === null) return;
     const r = await api('/api/library/reload', { admin });
     if (r.error) alert(r.error); else loaders.me();
@@ -275,7 +280,10 @@ async function tour(pid) {
 }
 unlocked.then(async s => {
   if (!s || !s.current) return;
-  if ((await api('/api/status')).profile.intake_done !== 'yes') return intake.start();   // the tour follows it
+  if ((await api('/api/status')).profile.intake_done !== 'yes') {
+    if (!s.pin_set) return intake.start();                       // no PIN yet: the short interview ends with one
+    await api('/api/profile', { intake_done: 'yes' });            // 30-second join: grade and goals are optional, in Me
+  }
   let seen = '1';
   try { seen = localStorage.getItem('tour:' + s.current.id); } catch (e) { }
   if (!seen) tour(s.current.id);
@@ -283,5 +291,11 @@ unlocked.then(async s => {
 
 unlocked.then(s => s && refreshStatus());
 
+// Me -> My class: join (or change to) a class with the instructor's join code.
+$('#meBody').addEventListener('click', async e => {
+  if (!e.target.closest('#joinGo')) return;
+  const r = await api('/api/join', { code: $('#joinIn').value });
+  $('#joinMsg').textContent = r.error || `✓ You joined ${r.joined}. Your instructor sees it the next time they open class records.`;
+});
 // Me tiles: Progress, Train, Serve and the logbook live under Me (the bottom bar keeps four tabs).
 $('#meBody').addEventListener('click', e => { const b = e.target.closest('[data-go-view]'); if (b) openView(b.dataset.goView); });
