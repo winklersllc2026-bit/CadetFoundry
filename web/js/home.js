@@ -37,7 +37,9 @@ loaders.home = async () => {
   const st = dly.status || {};
   const due = (ls.assignments || []).filter(a => a.state !== 'complete');
   const ac = pg.academics, stat = (n, label) => `<div><div style="font-size:24px;font-weight:700">${n}</div><div class="faint">${label}</div></div>`;
-  body.innerHTML = `<h2>Hi${first ? ', ' + esc(first) : ''}</h2>
+  const title = STATUS.cadet_title || {};
+  body.innerHTML = `<h2 style="margin-bottom:2px">Hi${first ? ', ' + esc(first) : ''}</h2>
+    ${title.rank || title.billet ? `<p class="faint" style="margin:0 0 12px">${[title.rank, title.billet].filter(Boolean).map(esc).join(' · ')}</p>` : ''}
     <div id="homeLive"></div>
     ${cadet ? `<div class="card"><h3>📋 Due</h3>
       ${due.length ? due.slice(0, 4).map(a => `<div class="row" style="justify-content:space-between;gap:10px;margin:8px 0">

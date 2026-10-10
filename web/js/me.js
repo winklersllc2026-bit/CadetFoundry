@@ -157,7 +157,7 @@ loaders.me = async () => {
       <div class="row" style="margin-top:8px"><button class="btn small" id="bkSave">⬇ Download encrypted backup</button>
         <label class="btn small" style="margin:0;color:var(--text)">⬆ Restore from backup<input type="file" id="restoreFile" accept=".json,application/json" hidden></label></div>
       <p class="faint" id="restoreMsg">Restoring replaces what's on this device with the backup. Without the backup password, nobody can open the file.</p></div>
-    <p class="faint">Vanguard is designed to support JROTC instruction. It isn't an official JROTC, Army or school source — your instructor and official sources come first. Everything you enter stays on this device; there is no tracking.</p>`;
+    <p class="faint">Vanguard is designed to support JROTC instruction. It isn't an official JROTC, military or school source — your instructor and official sources come first. Everything you enter stays on this device; there is no tracking.</p>`;
   $('#profForm').onsubmit = async ev => {
     ev.preventDefault();
     const data = Object.fromEntries(new FormData(ev.target));

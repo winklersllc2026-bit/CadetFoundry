@@ -212,13 +212,34 @@ def delete_unit(priv: bytes, uid: str) -> None:
         _publish_codes(r)
 
 
-def assign(priv: bytes, pid: str, unit: str | None = None, let: int | None = None) -> dict:
+def _clean_title(v) -> str:
+    return " ".join(str(v or "").split())[:40]
+
+
+def cadet_title(pid: str) -> dict:
+    """A Cadet's own cadet rank and billet (their job in the cadet corps), for their Home screen. Kept in the clear in
+    program/cadet_titles.json because a Cadet's session can't open the sealed roster; it holds nothing else."""
+    return _read_plain("cadet_titles.json", {}).get(pid) or {}
+
+
+def assign(priv: bytes, pid: str, unit: str | None = None, let: int | None = None,
+           rank: str | None = None, billet: str | None = None) -> dict:
     p = profiles.get(pid)
     if not p or p["kind"] != "cadet":
         raise ValueError("No such Cadet.")
     with _lock:
         r = roster(priv)
         c = r["cadets"].setdefault(pid, {"unit": "", "let": None})
+        if rank is not None or billet is not None:
+            if rank is not None:
+                c["rank"] = _clean_title(rank)
+            if billet is not None:
+                c["billet"] = _clean_title(billet)
+            titles = _read_plain("cadet_titles.json", {})
+            titles[pid] = {k: c.get(k, "") for k in ("rank", "billet") if c.get(k)}
+            if not titles[pid]:
+                titles.pop(pid)
+            _write_plain("cadet_titles.json", titles)
         if unit is not None:
             if unit and not any(u["id"] == unit for u in r["units"]):
                 raise ValueError("No such unit.")
@@ -289,6 +310,7 @@ def overview(priv: bytes) -> dict:
         meta = r["cadets"].get(p["id"], {})
         rec = records(priv, p["id"])
         cadets.append({"id": p["id"], "name": p["name"], "unit": meta.get("unit", ""), "let": meta.get("let"),
+                       "rank": meta.get("rank", ""), "billet": meta.get("billet", ""),
                        "status": rec["status"], "questions_known": rec.get("questions_known", 0),
                        "exams": len(rec.get("exams", [])), "last_study": rec.get("last_study", ""),
                        "scenarios": rec.get("scenarios", 0)})

@@ -211,7 +211,8 @@ class LibraryTests(unittest.TestCase):
         with mock.patch("vanguard.engine.stream", fake), mock.patch.object(Brain, "_learn", lambda *a: None):
             events = list(Brain(self.lib).chat("im just getting there, what do i need to know?"))
         self.assertIn("AIT = advanced individual training", seen["system"])
-        self.assertIn("never call it the PFT", seen["system"])
+        self.assertIn("Army Fitness Test (AFT), never the APFT", seen["system"])
+        self.assertIn("rate = a Navy job", seen["system"])               # every service's terms, not only the Army's
         cites = events[-1]["cites"]
         self.assertTrue(all("FM 7-22" in c["source"] for c in cites), [c["source"] for c in cites])
 

@@ -154,25 +154,37 @@ async function showLock(msg) {
   };
   // First time on the instructor's computer: Welcome → Class PIN → your name and PIN → backup code → ready.
   const setup = () => {
-    let classPin = '';
+    let classPin = '', program = '';
     const step = html => { d.innerHTML = `<div class="card" style="width:100%;max-width:440px">${html}</div>`; };
     const welcome = () => {
       step(`<div style="font-size:30px;text-align:center">✦</div><h2 style="text-align:center">Welcome to Vanguard</h2>
         <p>Vanguard stays on this computer. Cadets can join from phones on the same Wi-Fi. Nothing is sent to the internet.</p>
         <button class="btn primary" id="suInst" style="width:100%;min-height:52px;font-size:18px">I'm the instructor — set up this class</button>
         <button class="btn small" id="suJustMe" style="width:100%;margin-top:10px">Just me — I'm a Cadet using this on my own</button>${extras}`);
-      $('#suInst').onclick = pinStep;
+      $('#suInst').onclick = programStep;
       $('#suJustMe').onclick = () => newProfile('cadet');
     };
+    // Which program: sets the words Vanguard uses (LET / NS / LE / Year) and puts that branch first in Learn.
+    const PROGS = [['army', '⭐', 'Army JROTC'], ['navy', '⚓', 'Navy JROTC'], ['air_force', '✈️', 'Air Force JROTC'],
+      ['marine_corps', '🦅', 'Marine Corps JROTC'], ['space_force', '🚀', 'Space Force JROTC'], ['coast_guard', '🛟', 'Coast Guard JROTC'],
+      ['', '🎖️', 'More than one / not sure']];
+    const programStep = () => {
+      step(`<div class="faint">Step 1 of 4</div><h2>Your program</h2>
+        <p>Which JROTC program is this? Cadets can still explore every branch — this just sets the words Vanguard uses.</p>
+        <div class="tiles" style="margin:0">${PROGS.map(([k, ic, name]) => `<button class="tile" data-prog="${k}"><span>${ic}</span>${name}</button>`).join('')}</div>
+        <button type="button" class="btn small" id="suBack" style="margin-top:10px">← Back</button>`);
+      $('#suBack').onclick = welcome;
+      d.querySelectorAll('[data-prog]').forEach(b => { b.onclick = () => { program = b.dataset.prog; pinStep(); }; });
+    };
     const pinStep = () => {
-      step(`<div class="faint">Step 1 of 3</div><h2>Class PIN</h2>
+      step(`<div class="faint">Step 2 of 4</div><h2>Class PIN</h2>
         <p>Only you (and any other instructors) should know this. It protects the whole class and the settings. Use 6–12 digits.</p>
         <form id="suPinForm"><label for="suPin">Class PIN</label>${PIN_INPUT('suPin', '')}
         <label for="suPin2">Type it again</label>${PIN_INPUT('suPin2', '')}
         <button class="btn primary" style="width:100%;margin-top:12px">Next</button></form>
         <p class="faint" id="suMsg" role="alert"></p><button type="button" class="btn small" id="suBack">← Back</button>`);
       $('#suPin').value = classPin; $('#suPin').focus();
-      $('#suBack').onclick = welcome;
+      $('#suBack').onclick = programStep;
       $('#suPinForm').onsubmit = ev => {
         ev.preventDefault();
         const a = $('#suPin').value, b = $('#suPin2').value;
@@ -182,7 +194,7 @@ async function showLock(msg) {
       };
     };
     const meStep = () => {
-      step(`<div class="faint">Step 2 of 3</div><h2>Your screen</h2>
+      step(`<div class="faint">Step 3 of 4</div><h2>Your screen</h2>
         <form id="suMeForm"><label for="suName">Your name</label><input id="suName" maxlength="40" autocomplete="off" placeholder="e.g. SFC Rivera">
         <label for="suMyPin">Your PIN (6–12 digits)</label>${PIN_INPUT('suMyPin', '')}
         <label for="suMyPin2">Type it again</label>${PIN_INPUT('suMyPin2', '')}
@@ -197,7 +209,8 @@ async function showLock(msg) {
         if ($('#suMyPin').value === classPin) { $('#suMsg').textContent = 'Make your PIN different from the Class PIN.'; return; }
         const r = await api('/api/profiles/create', { name: $('#suName').value, pin: $('#suMyPin').value, kind: 'instructor', admin: classPin });
         if (!r.ok) { $('#suMsg').textContent = r.error; return; }
-        showRecoveryCode(r.recovery, ready);         // Step 3: the backup code
+        if (program) await api('/api/instructor/program', { program });   // the class is already open for them
+        showRecoveryCode(r.recovery, ready);         // Step 4: the backup code
       };
     };
     const ready = () => {
@@ -316,7 +329,7 @@ document.querySelectorAll('[data-open]').forEach(b => b.addEventListener('click'
 
 // ── status ──
 let STATUS = {};
-const FAMILY_SUGGEST = ['What is JROTC?', 'What does LET level mean?', 'What are the Army Values?',
+const FAMILY_SUGGEST = ['What is JROTC?', 'Does joining JROTC mean my Cadet has to join the military?', 'What are the core values of each service?',
   'What do military ranks mean?', 'How can I support my Cadet?']
 let landed = false;
 async function refreshStatus() {

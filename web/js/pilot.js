@@ -18,7 +18,7 @@ async function instructorPilot(body) {
     <details ${c.start ? '' : 'open'}><summary><b>Pilot setup</b></summary>
       <label for="plSchool">School</label><input id="plSchool" maxlength="100" value="${esc(c.school || '')}">
       <div class="row" style="flex-wrap:wrap;gap:8px">
-        <div style="flex:1;min-width:150px"><label for="plProg">Program</label><input id="plProg" maxlength="60" value="${esc(c.program || 'Army JROTC')}"></div>
+        <div style="flex:1;min-width:150px"><label for="plProg">Program</label><input id="plProg" maxlength="60" value="${esc(c.program || (STATUS.programs || {})[STATUS.program] || 'JROTC')}"></div>
         <div style="flex:1;min-width:150px"><label for="plInst">Instructor</label><input id="plInst" maxlength="80" value="${esc(c.instructor || '')}"></div></div>
       <div class="row" style="flex-wrap:wrap;gap:8px">
         <div style="flex:1;min-width:140px"><label for="plStart">Start</label><input id="plStart" type="date" value="${esc(c.start || '')}"></div>
@@ -91,7 +91,7 @@ function printPilotReport(d) {
     ${base ? `<p style="font-size:12px">Change is measured from the first snapshot (${esc(base.date)}).</p>` : `<p style="font-size:12px">${(d.cannot_measure || []).map(esc).join(' ')}</p>`}
     ${survey}${ins}
     ${c.notes ? `<h2>Notes</h2><p>${esc(c.notes)}</p>` : ''}
-    <p style="font-size:11px;margin-top:20px">Every number comes from records kept on the instructor's device. Vanguard is designed to support JROTC instruction; it is not an official JROTC, Army or school product.</p></div>`;
+    <p style="font-size:11px;margin-top:20px">Every number comes from records kept on the instructor's device. Vanguard is designed to support JROTC instruction; it is not an official JROTC, military or school product.</p></div>`;
   window.print();
 }
 

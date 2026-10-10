@@ -61,6 +61,7 @@ def cadet_rows(priv: bytes, library, unit: str = "", owner: str = "") -> list[di
         if keep is not None and meta.get("unit") not in keep:
             continue
         row = {"id": p["id"], "name": p["name"], "unit": names.get(meta.get("unit", ""), ""), "let": meta.get("let"),
+               "rank": meta.get("rank", ""), "billet": meta.get("billet", ""),
                "shared": True}
         ck, status = instructor.class_key(priv, p["id"])
         if status == "waiting":
@@ -102,7 +103,7 @@ def dashboard(priv: bytes, library, unit: str = "", owner: str = "") -> dict:
             "rows": rows}
 
 
-CSV_COLUMNS = [("name", "Cadet"), ("unit", "Unit"), ("let", "LET"), ("lessons_completed", "Lessons completed"),
+CSV_COLUMNS = [("name", "Cadet"), ("rank", "Cadet rank"), ("billet", "Billet"), ("unit", "Unit"), ("let", "Year"), ("lessons_completed", "Lessons completed"),
                ("lessons_assigned", "Lessons assigned"), ("lessons_overdue", "Lessons overdue"),
                ("lesson_score_pct", "Lesson score %"), ("cards_mastered", "Study cards mastered"),
                ("scenarios", "Leadership scenarios"), ("fitness_improvement_pct", "Fitness improvement %"),

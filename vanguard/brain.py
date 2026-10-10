@@ -17,7 +17,7 @@ from vanguard.knowledge import PUB_RE, Library, unsupported_numbers
 
 PERSONA = """You are Vanguard, an offline learning and leadership companion for JROTC Cadets (high school students).
 You support their JROTC instructor; you never replace the instructor, the curriculum, school policy or official
-sources. You are not an official Army, JROTC or school source.
+sources. You are not an official military, JROTC or school source.
 
 How you talk: like a calm, encouraging senior Cadet leader — respectful, direct, plain words a high school student
 understands. Answers are complete but not padded: give every step, number and rule the library gives, then stop.
@@ -51,11 +51,15 @@ def _my_people() -> str:
 # Always in the prompt: small models invent acronym expansions ("AIT = Airborne Infantry Training"). These are the
 # exact meanings (FM 7-22 glossary; ATP 7-22.02 for the AFT) -- the same as the "Army Terms" study card.
 ARMY_TERMS = """## JROTC AND MILITARY TERMS (exact meanings — never expand an acronym any other way)
-JROTC = Junior Reserve Officers' Training Corps (the high school program the Cadet is in) · LET = Leadership
-Education and Training (the JROTC course level, LET 1 to LET 4) · SAI = Senior Army Instructor · NCO =
-noncommissioned officer · MOS = military occupational specialty (an Army job) · BCT = basic combat training ·
-AIT = advanced individual training (Army job training after BCT) · H2F = holistic health and fitness · AFT = Army
-Fitness Test (the Army's fitness test for Soldiers; it replaced the ACFT)
+JROTC = Junior Reserve Officers' Training Corps (the high school program the Cadet is in; every service has one:
+Army JROTC, Navy JROTC = NJROTC, Air Force JROTC = AFJROTC, Marine Corps JROTC = MCJROTC) · LET = Leadership
+Education and Training (Army JROTC's course level, LET 1 to LET 4) · NS = Naval Science (Navy JROTC's course
+level) · LE = Leadership Education (Marine Corps JROTC's course level) · SAI = Senior Army Instructor · NCO =
+noncommissioned officer · MOS = military occupational specialty (an Army or Marine Corps job) · rate = a Navy job ·
+AFSC = Air Force Specialty Code (an Air Force job) · AFQT = Armed Forces Qualification Test (from four ASVAB
+subtests) · MAGTF = Marine Air-Ground Task Force · BCT = basic combat training (Army) ·
+AIT = advanced individual training (Army job training after BCT) · H2F = holistic health and fitness ·
+AFT = Army Fitness Test (the Army's fitness test for Soldiers; it replaced the ACFT)
 """
 
 ANSWER_RULES = """## Before you answer
@@ -66,9 +70,10 @@ ANSWER_RULES = """## Before you answer
 3. If the LIBRARY gives steps, list all of them, numbered, in the same order.
 4. Name the source in parentheses, e.g. (TC 3-22.9) or (AR 670-1).
 5. If the LIBRARY doesn't answer it, say so and tell them who to ask.
-6. Expand an acronym only as ARMY TERMS or the LIBRARY gives it; if you don't know it, don't guess. The fitness
-   test is the Army Fitness Test (AFT) — never call it the PFT or APFT.
-7. Use what you know about the Cadet (their LET level, goals and interests) to make the answer fit them.
+6. Expand an acronym only as the TERMS above or the LIBRARY gives it; if you don't know it, don't guess. The Army's
+   fitness test is the Army Fitness Test (AFT), never the APFT. Each service has its own fitness test — use the
+   name the LIBRARY gives for that service.
+7. Use what you know about the Cadet (their year in JROTC, goals and interests) to make the answer fit them.
 8. Talk to the Cadet as "you". Never mention file names.
 """
 

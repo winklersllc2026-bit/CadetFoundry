@@ -31,7 +31,7 @@ async function instructorDashboard(box, ov, unit = '') {
       <details style="margin-top:10px"><summary>Each Cadet</summary>
         ${d.rows.map(r => `<div style="border-top:1px solid var(--line);padding:8px 0">
           <div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:6px"><b>${esc(r.name)}</b>
-            <span class="faint">${[r.unit, r.let ? 'LET ' + r.let : ''].filter(Boolean).map(esc).join(' · ')}</span></div>
+            <span class="faint">${[r.rank, r.billet, r.unit, r.let ? (STATUS.level_label || 'Year') + ' ' + r.let : ''].filter(Boolean).map(esc).join(' · ')}</span></div>
           ${r.shared ? `<div class="faint">Lessons ${r.lessons_completed}/${r.lessons_assigned}${r.lessons_overdue ? ` (${r.lessons_overdue} overdue)` : ''}
             · score ${dPct(r.lesson_score_pct)} · scenarios ${r.scenarios} · service ${r.service_hours} hrs
             · fitness ${dSigned(r.fitness_improvement_pct)} · last active ${esc(r.last_active || '—')}</div>
@@ -58,7 +58,7 @@ async function instructorDashboard(box, ov, unit = '') {
         · ${d.service_hours} service hours · ${d.scenarios} leadership scenarios</p>
       <table style="width:100%;border-collapse:collapse;font-size:12px" border="1" cellpadding="4">
         <tr><th>Cadet</th><th>Unit</th><th>Lessons</th><th>Score</th><th>Scenarios</th><th>Service hrs</th><th>Fitness</th><th>Last active</th></tr>${rows}</table>
-      <p style="font-size:11px">Vanguard is designed to support JROTC instruction; it is not an official JROTC, Army or school record.</p></div>`;
+      <p style="font-size:11px">Vanguard is designed to support JROTC instruction; it is not an official JROTC, military or school record.</p></div>`;
     window.print();
   });
 }

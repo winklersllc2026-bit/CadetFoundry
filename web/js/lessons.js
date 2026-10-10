@@ -30,7 +30,7 @@ async function openLesson(aid) {
   const r = await api('/api/lesson?a=' + encodeURIComponent(aid));
   if (r.error) { box.innerHTML = `<p>${esc(r.error)}</p>`; return; }
   const L = r.lesson, done = r.work.state === 'complete', key = r.answers || [], mine = r.work.answers || [];
-  const meta = [L.let_level && `LET ${L.let_level}`, L.competency, r.assignment.due && `Due ${r.assignment.due}`].filter(Boolean);
+  const meta = [L.let_level && `${STATUS.level_label || 'Year'} ${L.let_level}`, L.competency, r.assignment.due && `Due ${r.assignment.due}`].filter(Boolean);
   box.innerHTML = `<button class="btn small" id="lessonBack">← Learn</button>
     <h2 style="margin-top:12px">${esc(L.title)}</h2>
     ${meta.length ? `<p class="faint">${meta.map(esc).join(' · ')}</p>` : ''}
@@ -80,7 +80,7 @@ async function instructorLessons(body, ov) {
         : '<p class="faint">No assignments yet. Write a lesson, then assign it.</p>'}</div>
     <div class="card"><h3>📚 Lessons</h3>
       ${data.lessons.map(l => `<div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:6px;margin:8px 0">
-        <span><b>${esc(l.title)}</b> <span class="faint">${[l.let_level && 'LET ' + l.let_level, l.competency, `${l.questions.length} questions`].filter(Boolean).map(esc).join(' · ')}</span></span>
+        <span><b>${esc(l.title)}</b> <span class="faint">${[l.let_level && (STATUS.level_label || 'Year') + ' ' + l.let_level, l.competency, `${l.questions.length} questions`].filter(Boolean).map(esc).join(' · ')}</span></span>
         <span class="row" style="gap:6px"><button class="btn small" data-ledit="${esc(l.id)}">Edit</button>
         <button class="btn small primary" data-lassign="${esc(l.id)}">Assign</button></span></div>`).join('') || '<p class="faint">No lessons yet.</p>'}
       <button class="btn primary" id="lNew" style="margin-top:8px">＋ New lesson</button>
@@ -91,7 +91,7 @@ async function instructorLessons(body, ov) {
       <h3>${l.id ? 'Edit lesson' : 'New lesson'}</h3>
       <label>Title</label><input id="lTitle" maxlength="100" value="${esc(l.title || '')}">
       <div class="row" style="flex-wrap:wrap;gap:8px">
-        <div style="flex:1;min-width:120px"><label>LET level</label><select id="lLet"><option value="">Any</option>${[1, 2, 3, 4].map(n => `<option value="${n}" ${l.let_level === n ? 'selected' : ''}>LET ${n}</option>`).join('')}</select></div>
+        <div style="flex:1;min-width:120px"><label>Year</label><select id="lLet"><option value="">Any</option>${[1, 2, 3, 4].map(n => `<option value="${n}" ${l.let_level === n ? 'selected' : ''}>${esc(STATUS.level_label || 'Year')} ${n}</option>`).join('')}</select></div>
         <div style="flex:2;min-width:160px"><label>Competency</label><input id="lComp" maxlength="80" value="${esc(l.competency || '')}" placeholder="e.g. Leadership"></div></div>
       <label>Learning objective</label><input id="lObj" maxlength="500" value="${esc(l.objective || '')}">
       <label>Source</label><input id="lSrc" maxlength="200" value="${esc(l.source || '')}" placeholder="Where this comes from (your curriculum, a manual…)">

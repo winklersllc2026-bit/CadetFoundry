@@ -518,6 +518,25 @@ def visible_categories(kind: str) -> list[str]:
     return cats
 
 
+# The JROTC program this device serves (the instructor's choice). Labels follow it -- the year a Cadet is in is
+# "LET 1" in Army JROTC, "NS 1" in Navy JROTC, "LE 1" in Marine Corps JROTC; Air Force JROTC courses rotate, so
+# "Year 1". The content stays all-service: a Cadet in any program can explore every branch.
+PROGRAMS = {"army": ("Army JROTC", "LET"), "navy": ("Navy JROTC", "NS"), "air_force": ("Air Force JROTC", "Year"),
+            "marine_corps": ("Marine Corps JROTC", "LE"), "space_force": ("Space Force JROTC", "Year"),
+            "coast_guard": ("Coast Guard JROTC", "Year")}
+PROGRAM_SERVICE = {"army": "army", "navy": "navy", "air_force": "air_force", "marine_corps": "marine_corps",
+                   "space_force": "space_force", "coast_guard": "coast_guard"}
+
+
+def program() -> str:
+    p = config().get("program")
+    return p if p in PROGRAMS else ""
+
+
+def level_label() -> str:
+    return PROGRAMS[program()][1] if program() else "Year"
+
+
 def ai_mode() -> str:
     """The instructor's AI setting: "off" (no AI writing at all), "library" (default: the AI may only explain what
     the library holds, and says so when it holds nothing) or "ai" (broader explanations, labeled as AI)."""
@@ -530,13 +549,16 @@ def ai_mode() -> str:
 
 def save_config(data: dict) -> dict:
     c = config()
-    for k in ("model", "groq_key", "gemini_key", "online", "ai_mode", "categories", "portfolio_sections", "modules_off", "demo"):
+    for k in ("model", "groq_key", "gemini_key", "online", "ai_mode", "categories", "portfolio_sections", "modules_off", "demo",
+              "program"):
         if k in data:
             c[k] = data[k]
     if c.get("ai_mode") not in AI_MODES:
         c.pop("ai_mode", None)
     if "categories" in c and not (isinstance(c["categories"], list) and all(x in ALL_CATEGORIES for x in c["categories"])):
         c.pop("categories", None)
+    if "program" in c and c["program"] not in PROGRAMS:
+        c.pop("program", None)
     if "demo" in c and not isinstance(c["demo"], bool):
         c.pop("demo", None)
     if "modules_off" in c and not (isinstance(c["modules_off"], list) and all(x in MODULES for x in c["modules_off"])):

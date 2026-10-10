@@ -5,8 +5,9 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-# "recruiter", "recruiting", "recruits" are ordinary words; "Seaman Recruit" is the Navy's E-1 rank (defense.gov)
-OLD = re.compile(r"cursiv|(?<!seaman )recruit(?!er|ing|ment|s)", re.I)
+# "recruiter", "recruiting", "recruits", "recruit training" are ordinary words; "Seaman Recruit" is the Navy's E-1
+# rank (defense.gov)
+OLD = re.compile(r"cursiv|(?<!seaman )recruit(?!er|ing|ment|s|[- _]training)", re.I)
 # Historical planning notes from the fork (docs/history/) describe the earlier product by name, on purpose.
 ALLOWED = {"docs/history/HANDOFF.md", "docs/history/REUSE_PLAN.md", "docs/history/MIGRATION_PLAN.md", "tests/test_brand.py"}
 

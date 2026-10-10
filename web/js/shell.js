@@ -73,7 +73,7 @@ loaders.instructor = async (section) => {
   const body = $('#instructorBody');
   if (STATUS.kind !== 'instructor') {
     body.innerHTML = `<h2>Instructor</h2><div class="card"><h3>🎓 For instructors</h3>
-      <p>This area is for your JROTC instructor: classes, assignments and progress. Your private check-ins and chats
+      <p>This area is for your instructor: classes, assignments and progress. Your private check-ins and chats
       are never shown here — only class records like lessons, quizzes, fitness and service.</p></div>`;
     return;
   }
@@ -168,8 +168,12 @@ async function instClass(sec, ov, run) {
           <span class="faint" title="${esc(STATUS_NAME[c.status][1])}">${STATUS_NAME[c.status][0]} ${esc(STATUS_NAME[c.status][1])}</span></div>
         <div class="row" style="flex-wrap:wrap;gap:8px;margin-top:8px">
           <select data-unit="${esc(c.id)}" aria-label="Unit for ${esc(c.name)}" style="flex:2;min-width:150px">${unitOpts(c.unit, 'No unit')}</select>
-          <select data-let="${esc(c.id)}" aria-label="LET level for ${esc(c.name)}" style="flex:1;min-width:110px">
-            <option value="">LET level…</option>${ov.let_levels.map(l => `<option value="${l}" ${c.let === l ? 'selected' : ''}>LET ${l}</option>`).join('')}</select>
+          <select data-let="${esc(c.id)}" aria-label="Year for ${esc(c.name)}" style="flex:1;min-width:110px">
+            <option value="">${esc(STATUS.level_label || 'Year')}…</option>${ov.let_levels.map(l => `<option value="${l}" ${c.let === l ? 'selected' : ''}>${esc(STATUS.level_label || 'Year')} ${l}</option>`).join('')}</select>
+        </div>
+        <div class="row" style="flex-wrap:wrap;gap:8px;margin-top:8px">
+          <input data-rank="${esc(c.id)}" value="${esc(c.rank || '')}" maxlength="40" placeholder="Cadet rank" aria-label="Cadet rank for ${esc(c.name)}" style="flex:1;min-width:130px">
+          <input data-billet="${esc(c.id)}" value="${esc(c.billet || '')}" maxlength="40" placeholder="Billet (job in the cadet corps)" aria-label="Billet for ${esc(c.name)}" style="flex:2;min-width:170px">
         </div>
         <div class="faint" style="margin-top:6px">${c.status === 'waiting' ? '' : `Quiz questions known: ${c.questions_known} · Exams: ${c.exams}${c.last_study ? ` · Last studied ${esc(c.last_study)}` : ''}`}</div>
         ${c.status === 'waiting' ? '' : `<button class="btn small" data-prog="${esc(c.id)}" style="margin-top:8px">📈 Progress and portfolio</button>`}
@@ -191,6 +195,9 @@ async function instClass(sec, ov, run) {
   sec.querySelectorAll('[data-unit]').forEach(s => s.addEventListener('change', () => api('/api/instructor/assign', { cadet: s.dataset.unit, unit: s.value })));
   sec.querySelectorAll('[data-prog]').forEach(b => b.addEventListener('click', () => instructorProgress(b.dataset.prog)));
   sec.querySelectorAll('[data-let]').forEach(s => s.addEventListener('change', () => s.value && api('/api/instructor/assign', { cadet: s.dataset.let, let: Number(s.value) })));
+  // cadet rank and billet: saved when the instructor leaves the box; the Cadet sees them on Home
+  sec.querySelectorAll('[data-rank]').forEach(i => i.addEventListener('change', () => api('/api/instructor/assign', { cadet: i.dataset.rank, rank: i.value })));
+  sec.querySelectorAll('[data-billet]').forEach(i => i.addEventListener('change', () => api('/api/instructor/assign', { cadet: i.dataset.billet, billet: i.value })));
   const extra = document.createElement('div');
   sec.appendChild(extra);
   for (const step of [() => typeof instructorTrain === 'function' && instructorTrain(extra),        // train.js
@@ -225,7 +232,13 @@ function instSettings(sec) {
   const on = STATUS.categories_enabled || Object.keys(CAT_NAMES);
   const MODS = { faith: 'Faith texts (scripture lookup and reading plans)', letters: 'Letters and address book', voice: 'Talk to Vanguard (offline voice)' };
   const modsOff = STATUS.modules_off || [];
-  sec.innerHTML = `<div class="card"><h3>📘 What Cadets can study</h3><p class="faint">Turn sections of Learn on or off for every Cadet on this device.</p>
+  const progs = STATUS.programs || {};
+  sec.innerHTML = `<div class="card"><h3>🎖️ Your JROTC program</h3>
+      <p class="faint">Sets the words Vanguard uses (for example, the year a Cadet is in: LET 1 in Army JROTC, NS 1 in Navy JROTC, LE 1 in Marine Corps JROTC, Year 1 in Air Force JROTC) and puts your branch first in Learn. Cadets can still explore every branch.</p>
+      <select id="progPick" aria-label="JROTC program" style="width:100%;min-height:46px"><option value="">Not set / more than one program</option>
+        ${Object.entries(progs).map(([k, v]) => `<option value="${k}" ${STATUS.program === k ? 'selected' : ''}>${esc(v)}</option>`).join('')}</select>
+      <p class="faint" id="progMsg" role="status"></p></div>
+    <div class="card"><h3>📘 What Cadets can study</h3><p class="faint">Turn sections of Learn on or off for every Cadet on this device.</p>
       ${Object.entries(CAT_NAMES).map(([k, v]) => `<label style="display:flex;gap:10px;align-items:center;min-height:44px">
         <input type="checkbox" data-cat="${k}" ${on.includes(k) ? 'checked' : ''} style="width:22px;height:22px"> ${esc(v)}</label>`).join('')}
       <p class="faint" id="catMsg" role="status"></p></div>
@@ -246,5 +259,10 @@ function instSettings(sec) {
     $('#modMsg').textContent = r.error || 'Saved. Profiles see the change the next time they open Vanguard.';
     if (!r.error) STATUS.modules_off = r.modules_off;
   }));
+  $('#progPick').addEventListener('change', async e => {
+    const r = await api('/api/instructor/program', { program: e.target.value });
+    $('#progMsg').textContent = r.error || 'Saved.';
+    if (!r.error) { STATUS.program = r.program; STATUS.level_label = r.level_label; }
+  });
   if (typeof instructorBackup === 'function') instructorBackup(sec);                 // dashboard.js
 }

@@ -488,8 +488,73 @@ def _save_jobs(service: str, site: str, urls: list[str], read, minimum: int) -> 
     return f"{site} jobs: {len(jobs)}"
 
 
+# ── Reference pages for Ask, every service (0.2) ────────────────────────────────────────────────────────────────
+# Official recruiting and testing sites (the .mil sites refuse scripted downloads; these allow them). Pages that
+# explain -- history, values, ranks, training, ways to join, education, pay -- not ads or news.
+SERVICE_PAGES = {
+    "AirForce_com_Air_Force.md": ("U.S. Air Force — mission, joining, training and life (airforce.com)", "https://www.airforce.com", [
+        "/mission", "/vision", "/education", "/education/college", "/how-to-join", "/how-to-join/join-the-air-force",
+        "/how-to-join/join-the-air-national-guard", "/how-to-join/join-the-air-force-reserve",
+        "/frequently-asked-questions/paths-processes/how-things-work", "/frequently-asked-questions/paths-processes/enlisted-path",
+        "/frequently-asked-questions/paths-processes/officer-path", "/frequently-asked-questions/requirements-eligibility/physical",
+        "/frequently-asked-questions/requirements-eligibility/academic", "/frequently-asked-questions/requirements-eligibility/character",
+        "/frequently-asked-questions/education-training/high-school", "/frequently-asked-questions/education-training/military-training",
+        "/frequently-asked-questions/education-training/college", "/frequently-asked-questions/education-training/technical-training",
+        "/frequently-asked-questions/ways-to-serve/air-force-active-duty", "/frequently-asked-questions/ways-to-serve/air-force-reserve",
+        "/frequently-asked-questions/ways-to-serve/air-national-guard", "/frequently-asked-questions/careers-benefits/pay",
+        "/frequently-asked-questions/careers-benefits/education-benefits", "/frequently-asked-questions/lifestyle-locations/whats-it-like",
+        "/frequently-asked-questions/information-for-families/support"]),
+    "Navy_com_Navy.md": ("U.S. Navy — Navy life, ranks, joining and education (navy.com)", "https://www.navy.com", [
+        "/navy-life/who-we-are", "/navy-life/boot-camp", "/navy-life/ship", "/navy-life/base", "/navy-life/what-families-can-expect",
+        "/careers-benefits/navy-ranks", "/careers-benefits/pay", "/careers-benefits/education", "/careers-benefits/education/nrotc",
+        "/careers-benefits/education/naval-academy", "/careers-benefits/education/college-scholarships", "/joining/requirements",
+        "/joining/ways-to-join/enlisted", "/joining/ways-to-join/officer", "/joining/ways-to-join/reserve", "/joining/prepare-to-join"]),
+    "Marines_com_Marine_Corps.md": ("U.S. Marine Corps — ethos, history, ranks and becoming a Marine (marines.com)", "https://www.marines.com", [
+        "/ethos.html", "/ethos/values.html", "/ethos/history.html", "/ethos/mottos.html", "/ethos/uniforms.html", "/ethos/ranks.html",
+        "/ethos/articles/eagle-globe-anchor.html", "/ethos/articles/blood-stripe.html", "/ethos/articles/mameluke-sword.html",
+        "/mission.html", "/mission/air-ground-task-force.html", "/become/requirements.html", "/become/recruit-training.html",
+        "/become/marine-officer.html", "/become/marine-officer/officer-candidate-school.html",
+        "/become/marine-officer/the-basic-school.html", "/become/marine-corps-reserve.html", "/become/benefits/education.html",
+        "/faq-for-parents.html"]),
+    "SpaceForce_com_Space_Force.md": ("U.S. Space Force — about, history, training and joining (spaceforce.com)", "https://www.spaceforce.com", [
+        "/about", "/history", "/capabilities", "/training", "/fitness", "/life-as-a-guardian", "/how-to-join/enlisted-guardians",
+        "/how-to-join/officer", "/education/enlisted", "/education/officer"]),
+    "OfficialASVAB_com.md": ("The ASVAB — official information (officialasvab.com)", "https://www.officialasvab.com", [
+        "/applicants/what-to-expect/", "/applicants/scores/", "/applicants/prepare/", "/applicants/cat-asvab/", "/applicants/faqs/",
+        "/applicants/asvab-test-preparation-disclaimer/", "/counselors-educators/asvab-career-exploration-program/",
+        "/counselors-educators/asvab-subtests/"]),
+}
+
+
+def service_pages() -> str:
+    from collections import Counter
+    done = []
+    for fname, (heading, site, paths) in SERVICE_PAGES.items():
+        parts, failed = [], []
+        for path in paths:
+            url = site + path
+            try:
+                title, desc, body = _page_to_markdown(_get_page(url))
+                if len(body) < 300:                       # a page that only draws itself with scripts
+                    raise ValueError("no readable text")
+                parts.append(f"# {title or path}\n\nSource: {url}\n\n{desc}\n\n{body}")
+            except Exception:
+                failed.append(path)
+            time.sleep(0.5)
+        if not parts:
+            continue
+        counts = Counter(l for p in parts for l in set(p.splitlines()) if l.strip() and not l.startswith("#"))
+        limit = max(3, len(parts) // 3)                   # menus and footers repeat on every page
+        parts = ["\n".join(l for l in p.splitlines() if l.startswith(("#", "Source:")) or counts[l] < limit) for p in parts]
+        (LIB / fname).write_text(f"# {heading}\n\nOfficial public information.\n\n" + "\n\n".join(parts), encoding="utf-8")
+        done.append(f"{fname} {len(parts)}" + (f" (failed {len(failed)})" if failed else ""))
+    if not done:
+        raise RuntimeError("no service pages could be read")
+    return "service pages: " + "; ".join(done)
+
+
 JOBS = [ucmj, tsp_summary, army_publications, goarmy_pages, va_gi_bill, goarmy_jobs, airforce_jobs, navy_jobs,
-        spaceforce_jobs, marines_jobs, convert_local_pdfs]
+        spaceforce_jobs, marines_jobs, service_pages, convert_local_pdfs]
 
 
 def main(argv: list[str]) -> int:

@@ -32,7 +32,8 @@ loaders.study = async (pick) => {
 
   // The sections: each branch with cards, then the shared subjects, then Faith and the Library.
   const sections = [];
-  Object.keys(svcs).filter(s => s !== 'joint' && all.some(c => c.service === s)).forEach(s => sections.push({
+  const mineFirst = (a, b) => (b === STATUS.program) - (a === STATUS.program);      // this program's branch first
+  Object.keys(svcs).filter(s => s !== 'joint' && all.some(c => c.service === s)).sort(mineFirst).forEach(s => sections.push({
     id: 'svc:' + s, icon: SERVICE_ICON[s] || '🎖️', name: svcs[s], blurb: `Ranks, customs, jobs and training in the ${svcs[s]}.`,
     count: all.filter(c => c.service === s).length }));
   ['leadership', 'citizenship', 'military', 'health', 'careers', 'explore'].filter(c => c in cats).forEach(c => sections.push({
@@ -134,7 +135,7 @@ async function booksShelf(q = '') {
       <span class="faint" style="white-space:nowrap">${b.at != null ? `Continue · ${b.at + 1}/${b.chapters.length}` : `${b.chapters.length} ${b.chapters.length === 1 ? 'part' : 'parts'}`}</span></div></div>`;
   studyBody.innerHTML = `<button class="btn small" id="backStudy">← Study</button>
     <div class="card" style="margin-top:12px"><h3>📚 Books</h3>
-      <p class="faint">Free, public-domain books kept on this device. They're for reading — Ask answers only from official Army sources.</p>
+      <p class="faint">Free, public-domain books kept on this device. They're for reading — Ask answers only from official sources.</p>
       <div class="row"><input id="bookQ" type="search" value="${esc(q)}" placeholder="Search the books (a word or phrase)" style="flex:1"><button class="btn primary" id="bookGo">Search</button></div></div>
     ${hits ? `<div class="card"><h4>${hits.length ? `Found in ${hits.length} place${hits.length === 1 ? '' : 's'}` : 'Not found in the books on this device.'}</h4>
       ${hits.map((h, n) => `<div data-hit="${n}" style="cursor:pointer;border-top:1px solid var(--line);padding:8px 0"><b>${esc(h.title)}</b> <span class="faint">· ${esc(h.chapter)}</span><div class="faint">…${esc(h.snippet)}…</div></div>`).join('')}</div>` : ''}

@@ -455,6 +455,10 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                                "categories": {c: knowledge.CATEGORIES[c] for c in store.visible_categories(
                                    (profiles.get(self._pid) or {}).get("kind", "cadet"))},
                                "categories_enabled": store.categories_enabled(),
+                               "program": store.program(), "level_label": store.level_label(),
+                               "programs": {k: v[0] for k, v in store.PROGRAMS.items()},
+                               "cadet_title": instructor.cadet_title(self._pid or "")
+                               if (profiles.get(self._pid or "") or {}).get("kind") == "cadet" else {},
                                "kind": (profiles.get(self._pid) or {}).get("kind", "cadet")})
         if r == "/api/topics":
             prog = app.brain.progress()
@@ -1053,6 +1057,16 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                         return self._json({"error": "Unknown tool."}, 400)
                     store.save_config({"modules_off": [m for m in store.MODULES if m in off]})
                     return self._json({"modules_off": [m for m in store.MODULES if not store.module_on(m)]})
+                if r == "/api/instructor/program":       # which JROTC program this device serves (labels only)
+                    prog = str(b.get("program", ""))
+                    if prog and prog not in store.PROGRAMS:
+                        return self._json({"error": "Unknown program."}, 400)
+                    c = store.config()
+                    c.pop("program", None)
+                    store.write_json("config.json", c)
+                    if prog:
+                        store.save_config({"program": prog})
+                    return self._json({"program": store.program(), "level_label": store.level_label()})
                 if r == "/api/instructor/categories":    # which Learn categories Cadets get on this device
                     cats = b.get("categories")
                     if not isinstance(cats, list) or not all(c in store.ALL_CATEGORIES for c in cats):
@@ -1116,7 +1130,9 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                 if r == "/api/instructor/assign":
                     let, pid = b.get("let"), str(b.get("cadet", ""))[:12]
                     out = instructor.assign(priv, pid, None if b.get("unit") is None else str(b.get("unit"))[:10],
-                                            None if let in (None, "") else int(let))
+                                            None if let in (None, "") else int(let),
+                                            None if b.get("rank") is None else str(b.get("rank")),
+                                            None if b.get("billet") is None else str(b.get("billet")))
                     if b.get("unit"):                    # joining a unit brings that unit's assignments, to this Cadet only
                         out = {**out, "new_assignments": lessons.sync_cadet(priv, pid)}
                     return self._json(out)
