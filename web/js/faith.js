@@ -3,6 +3,7 @@
 
 // ── FAITH ──
 const faithBody = $('#faithBody');
+faithBody.addEventListener('click', e => { if (e.target.closest('[data-back-learn]')) openView('study'); });
 loaders.faith = async () => {
   const cat = await api('/api/faith/catalog');
   if (!cat.installed.length) {
@@ -12,7 +13,7 @@ loaders.faith = async () => {
   }
   const mine = new Set((STATUS.profile && STATUS.profile.faith_texts || '').split(',').filter(Boolean));
   const opts = cat.installed.map(t => `<option value="${esc(t.id)}" ${mine.has(t.id) ? 'selected' : ''}>${esc(t.name)} — ${esc(t.tradition)}</option>`).join('');
-  faithBody.innerHTML = `<h2>Faith</h2>
+  faithBody.innerHTML = `<button class="btn small" data-back-learn>← Learn</button><h2 style="margin-top:12px">Faith</h2>
     <div class="card"><label for="ftr">Text</label><select id="ftr">${opts}</select>
       <label for="fref">Look up a passage</label>
       <div class="row"><input id="fref" placeholder="e.g. John 3:16, Psalm 23, Gita 2:47, Quran 2:255" style="flex:1"><button class="btn primary" id="fgo">Read</button></div>

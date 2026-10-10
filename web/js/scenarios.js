@@ -154,7 +154,9 @@ async function instructorLeadership(body) {
         <span>${esc(c.name)} <span class="faint">${c.shared ? `${c.count} scenario${c.count === 1 ? '' : 's'}` : 'waiting to share'}</span></span>
         ${c.count ? `<button class="btn small" data-ilog="${esc(c.id)}">View log</button>` : ''}</div><div data-ilogout="${esc(c.id)}"></div>`).join('') || '<p class="faint">No Cadets yet.</p>'}</div>
     <div class="card"><h3>Scenarios</h3>
-      ${d.scenarios.map(s => `<div style="margin:10px 0"><b>${esc(s.title)}</b> <span class="faint">${esc(s.competency)} · ${s.origin === 'practice' ? 'practice' : 'yours'} · done ${s.done}×</span>
+      <p class="faint">Tick the scenarios for today's class, then present them in order — Next and Previous on the projector.</p>
+      <button class="btn primary" id="presentSel" disabled>🖥️ Present selected (0)</button>
+      ${d.scenarios.map(s => `<div style="margin:10px 0"><label style="display:inline-flex;gap:8px;align-items:center;cursor:pointer"><input type="checkbox" data-pick="${esc(s.id)}" style="width:22px;height:22px"> <b>${esc(s.title)}</b></label> <span class="faint">${esc(s.competency)} · ${s.origin === 'practice' ? 'practice' : 'yours'} · done ${s.done}×</span>
         <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:6px"><button class="btn small primary" data-present="${esc(s.id)}">🖥️ Present to class</button>
         <button class="btn small" data-sedit="${esc(s.id)}">${s.origin === 'practice' ? 'Copy and edit' : 'Edit'}</button></div></div>`).join('')}
       <button class="btn primary" id="sNew">＋ New scenario</button><div id="sForm"></div></div>`;
@@ -180,16 +182,29 @@ async function instructorLeadership(body) {
   };
   $('#sNew').addEventListener('click', () => form(null));
   sec.querySelectorAll('[data-sedit]').forEach(b => b.addEventListener('click', () => form(byId(b.dataset.sedit))));
-  sec.querySelectorAll('[data-present]').forEach(b => b.addEventListener('click', async () => {
-    await api('/api/instructor/live', { action: 'start', scenario: b.dataset.present });
-    classroomMode();
+  sec.querySelectorAll('[data-present]').forEach(b => b.addEventListener('click', () => presentScenarios([b.dataset.present])));
+  const picked = () => [...sec.querySelectorAll('[data-pick]:checked')].map(x => x.dataset.pick);
+  sec.querySelectorAll('[data-pick]').forEach(cb => cb.addEventListener('change', () => {
+    const n = picked().length;
+    $('#presentSel').disabled = !n;
+    $('#presentSel').textContent = `🖥️ Present selected (${n})`;
   }));
+  $('#presentSel').addEventListener('click', () => presentScenarios(picked()));
   sec.querySelectorAll('[data-ilog]').forEach(b => b.addEventListener('click', async () => {
     const out = sec.querySelector(`[data-ilogout="${b.dataset.ilog}"]`);
     if (out.innerHTML) { out.innerHTML = ''; return; }
     const r = await api('/api/instructor/leadership-log?id=' + encodeURIComponent(b.dataset.ilog));
     out.innerHTML = (r.entries || []).map(logEntryHtml).join('');
   }));
+}
+
+// A run of scenarios for one class: the projector steps through them; each one starts a fresh vote.
+let presentQueue = [], presentAt = 0;
+async function presentScenarios(ids, at = 0) {
+  if (!ids.length) return;
+  presentQueue = ids; presentAt = Math.max(0, Math.min(at, ids.length - 1));
+  await api('/api/instructor/live', { action: 'start', scenario: presentQueue[presentAt] });
+  classroomMode();
 }
 
 // ── Classroom mode: big type for the projector, live anonymous vote counts ──
@@ -202,7 +217,9 @@ async function classroomMode() {
     const sc = lv.scenario, max = Math.max(1, ...lv.counts);
     box.innerHTML = `<div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
         <span class="faint">CLASSROOM MODE · ${lv.votes} vote${lv.votes === 1 ? '' : 's'} · Cadets vote in 🧭 Lead</span>
-        <span class="row" style="gap:8px"><button class="btn small" id="cmReveal">${lv.revealed ? 'Hide guidance' : 'Reveal discussion guidance'}</button>
+        <span class="row" style="gap:8px">${presentQueue.length > 1 ? `<button class="btn small" id="cmPrev" ${presentAt === 0 ? 'disabled' : ''}>◀ Previous</button>
+          <span class="faint">${presentAt + 1} of ${presentQueue.length}</span>
+          <button class="btn small primary" id="cmNext" ${presentAt >= presentQueue.length - 1 ? 'disabled' : ''}>Next ▶</button>` : ''}<button class="btn small" id="cmReveal">${lv.revealed ? 'Hide guidance' : 'Reveal discussion guidance'}</button>
         <button class="btn small" id="cmStop">End</button></span></div>
       <h1 style="font-size:clamp(26px,4vw,44px);margin:14px 0 6px">${esc(sc.title)}</h1>
       <p style="font-size:clamp(18px,2.4vw,28px);white-space:pre-wrap;line-height:1.4">${esc(sc.situation)}</p>
@@ -214,7 +231,9 @@ async function classroomMode() {
       ${lv.revealed ? `<div class="card" style="font-size:clamp(15px,1.6vw,20px)"><b>Leadership principles</b><ul>${lv.guidance.principles.map(p => `<li>${esc(p)}</li>`).join('')}</ul>
         ${lv.guidance.alternatives ? `<b>Other approaches</b><div style="white-space:pre-wrap">${esc(lv.guidance.alternatives)}</div>` : ''}</div>` : ''}`;
     $('#cmReveal').addEventListener('click', async () => { await api('/api/instructor/live', { action: 'reveal', on: !lv.revealed }); draw(); });
-    $('#cmStop').addEventListener('click', async () => { await api('/api/instructor/live', { action: 'stop' }); draw(); });
+    $('#cmStop').addEventListener('click', async () => { presentQueue = []; await api('/api/instructor/live', { action: 'stop' }); draw(); });
+    if ($('#cmNext')) $('#cmNext').addEventListener('click', () => presentScenarios(presentQueue, presentAt + 1));
+    if ($('#cmPrev')) $('#cmPrev').addEventListener('click', () => presentScenarios(presentQueue, presentAt - 1));
   };
   await draw();
   clearInterval(livePoll);

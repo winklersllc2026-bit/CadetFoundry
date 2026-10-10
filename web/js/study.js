@@ -48,6 +48,8 @@ loaders.study = async () => {
     ${order.map(section).join('')}
     <div class="card"><div class="row" style="justify-content:space-between"><div><h3>📚 Books</h3><div class="faint">The Constitution and founding documents, American military history, and classics — free on this device.</div></div>
       <button class="btn small" id="booksGo">Open</button></div></div>
+    ${(STATUS.modules_off || []).includes('faith') ? '' : `<div class="card"><div class="row" style="justify-content:space-between"><div><h3>📖 Faith texts</h3><div class="faint">Optional: read and search public-domain scripture — the Bible, Tanakh, Quran, Book of Mormon, Bhagavad Gita and more. Pick yours in 👤 Me.</div></div>
+      <button class="btn small" data-open-faith>Open</button></div></div>`}
     <form class="card" id="libSearch" role="search"><h3>🔎 Search the library</h3>
       <div class="row" style="flex-wrap:nowrap"><input id="libQ" type="search" placeholder="e.g. Bill of Rights, salute, sleep" aria-label="Search the library" style="flex:1"><button class="btn primary">Search</button></div>
       <div class="faint">Searches the study cards and documents on this device — instant, no AI. Tap a result to read it.</div>
@@ -58,6 +60,7 @@ loaders.study = async () => {
   const on = (id, fn) => { const el = $('#' + id); if (el) el.onclick = fn; };
   $('#dailyGo').onclick = () => chooseQuiz('', true);
   on('navGo', landNav); on('examGo', examSetup); on('jobsGo', () => jobsExplorer()); on('booksGo', () => booksShelf());
+  document.querySelectorAll('[data-open-faith]').forEach(b => { b.onclick = () => openView('faith'); });
   on('toLead', () => openView('lead')); on('toServe', () => openView('serve'));
   on('printGo', pocketCards); on('bpUniform', uniformCheck); on('bpBoard', () => mockBoard()); on('bpCreed', creedDrill);
   on('nineGo', nineLine); on('saluteGo', saluteDrill); on('laceGo', () => sortDrill('LACE'));

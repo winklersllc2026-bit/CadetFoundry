@@ -8,7 +8,7 @@
 #define AppVer  "@VERSION@"
 
 [Setup]
-AppId={{6B0E2F3C-8C1D-4E57-9A3B-2D7F4C1E9A60}
+AppId={{CCA61B30-FC01-4C21-82E5-13E09D1E9C40}
 AppName={#AppName}
 AppVersion={#AppVer}
 AppVerName={#AppName} {#AppVer}
