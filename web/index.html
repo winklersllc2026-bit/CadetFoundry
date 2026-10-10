@@ -69,6 +69,16 @@ h3 { font-size: 16px; margin: 0 0 6px; }
 .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; margin-bottom: 12px; }
 .muted { color: var(--muted); } .faint { color: var(--faint); font-size: 14px; }
 blockquote { margin: 10px 0; padding: 6px 0 6px 14px; border-left: 3px solid var(--tan); font-style: italic; }
+/* instructor: the scenario list -- one compact row each, tick to include, small actions on the right */
+.sc-bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 10px 0; }
+.sc-list { border: 1px solid var(--line2); border-radius: 12px; overflow: hidden; }
+.sc-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-top: 1px solid var(--line); }
+.sc-row:first-child { border-top: 0; } .sc-row.on { background: rgba(205, 181, 124, .10); }
+.sc-pick { display: flex; gap: 12px; align-items: center; flex: 1; min-width: 0; cursor: pointer; margin: 0; }
+.sc-pick input { width: 20px; height: 20px; flex: none; }
+.sc-title { display: block; font-weight: 600; font-size: 16px; color: var(--text); } .sc-meta { display: block; color: var(--faint); font-size: 13px; }
+.sc-act { display: flex; gap: 6px; flex: none; }
+@media (max-width: 520px) { .sc-row { flex-wrap: wrap; } .sc-act { width: 100%; justify-content: flex-end; } }
 .btn { border: 1px solid var(--line2); background: var(--card2); border-radius: 10px; padding: 10px 14px; }
 .btn.primary { background: var(--tan); color: #1b1608; border-color: var(--tan); font-weight: 700; }
 .btn:disabled { opacity: .45; cursor: not-allowed; }

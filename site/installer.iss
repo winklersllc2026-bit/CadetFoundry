@@ -74,9 +74,24 @@ begin
     Exec(ExpandConstant('{sys}\taskkill.exe'), '/F /FI "IMAGENAME eq pythonw.exe" /PID ' + Trim(Pid), '', SW_HIDE, ewWaitUntilTerminated, Code);
 end;
 
+// Vanguard 0.1.0-0.1.3 were installed under an older program ID (shared by mistake with another product). Remove such
+// an old Vanguard first -- only when that entry's name is exactly "Vanguard" -- so its uninstaller can never later delete
+// this installation's folder.
+procedure RemoveOldVanguard();
+var
+  Key, Name, Cmd: String;
+  Code: Integer;
+begin
+  Key := 'Software\Microsoft\Windows\CurrentVersion\Uninstall\{6B0E2F3C-8C1D-4E57-9A3B-2D7F4C1E9A60}_is1';
+  if RegQueryStringValue(HKCU, Key, 'DisplayName', Name) and (Name = 'Vanguard') and
+     RegQueryStringValue(HKCU, Key, 'UninstallString', Cmd) then
+    Exec(RemoveQuotes(Cmd), '/VERYSILENT /SUPPRESSMSGBOXES /NORESTART', '', SW_HIDE, ewWaitUntilTerminated, Code);
+end;
+
 function PrepareToInstall(var NeedsRestart: Boolean): String;
 begin
   StopVanguard();
+  RemoveOldVanguard();
   Result := '';
 end;
 

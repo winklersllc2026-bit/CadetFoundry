@@ -154,12 +154,16 @@ async function instructorLeadership(body) {
         <span>${esc(c.name)} <span class="faint">${c.shared ? `${c.count} scenario${c.count === 1 ? '' : 's'}` : 'waiting to share'}</span></span>
         ${c.count ? `<button class="btn small" data-ilog="${esc(c.id)}">View log</button>` : ''}</div><div data-ilogout="${esc(c.id)}"></div>`).join('') || '<p class="faint">No Cadets yet.</p>'}</div>
     <div class="card"><h3>Scenarios</h3>
-      <p class="faint">Tick the scenarios for today's class, then present them in order — Next and Previous on the projector.</p>
-      <button class="btn primary" id="presentSel" disabled>🖥️ Present selected (0)</button>
-      ${d.scenarios.map(s => `<div style="margin:10px 0"><label style="display:inline-flex;gap:8px;align-items:center;cursor:pointer"><input type="checkbox" data-pick="${esc(s.id)}" style="width:22px;height:22px"> <b>${esc(s.title)}</b></label> <span class="faint">${esc(s.competency)} · ${s.origin === 'practice' ? 'practice' : 'yours'} · done ${s.done}×</span>
-        <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:6px"><button class="btn small primary" data-present="${esc(s.id)}">🖥️ Present to class</button>
-        <button class="btn small" data-sedit="${esc(s.id)}">${s.origin === 'practice' ? 'Copy and edit' : 'Edit'}</button></div></div>`).join('')}
-      <button class="btn primary" id="sNew">＋ New scenario</button><div id="sForm"></div></div>`;
+      <p class="faint">Tick the ones for today's class and present them in order — Next and Previous on the projector.</p>
+      <div class="sc-bar"><button class="btn primary" id="presentSel" disabled>🖥️ Present selected (0)</button>
+        <button class="btn small" id="pickAll">Select all</button><button class="btn small" id="pickNone">Clear</button></div>
+      <div class="sc-list">${d.scenarios.map(s => `<div class="sc-row">
+        <label class="sc-pick"><input type="checkbox" data-pick="${esc(s.id)}" aria-label="Include ${esc(s.title)}">
+          <span><span class="sc-title">${esc(s.title)}</span>
+          <span class="sc-meta">${esc(s.competency)} · ${s.origin === 'practice' ? 'practice' : 'yours'}${s.done ? ` · used ${s.done}×` : ''}</span></span></label>
+        <span class="sc-act"><button class="btn small" data-present="${esc(s.id)}" title="Present just this one">▶ Present</button>
+          <button class="btn small" data-sedit="${esc(s.id)}" title="${s.origin === 'practice' ? 'Make your own copy to edit' : 'Edit'}">${s.origin === 'practice' ? 'Copy' : 'Edit'}</button></span></div>`).join('')}</div>
+      <button class="btn primary" id="sNew" style="margin-top:12px">＋ New scenario</button><div id="sForm"></div></div>`;
   const byId = id => d.scenarios.find(s => s.id === id);
   const TEMPLATE = 'Title: \nCompetency: \nSituation:\n\nChoice: \nOutcome: \nStrengths: \nWeaknesses: \nChoice: \nOutcome: \nStrengths: \nWeaknesses: \nPrinciples:\n- \nOther approaches:\n\nReflection: What would you do differently next time?';
   const form = s => {
@@ -184,11 +188,17 @@ async function instructorLeadership(body) {
   sec.querySelectorAll('[data-sedit]').forEach(b => b.addEventListener('click', () => form(byId(b.dataset.sedit))));
   sec.querySelectorAll('[data-present]').forEach(b => b.addEventListener('click', () => presentScenarios([b.dataset.present])));
   const picked = () => [...sec.querySelectorAll('[data-pick]:checked')].map(x => x.dataset.pick);
-  sec.querySelectorAll('[data-pick]').forEach(cb => cb.addEventListener('change', () => {
+  const count = () => {
     const n = picked().length;
     $('#presentSel').disabled = !n;
-    $('#presentSel').textContent = `🖥️ Present selected (${n})`;
-  }));
+    $('#presentSel').textContent = n ? `🖥️ Present selected (${n})` : '🖥️ Present selected';
+    sec.querySelectorAll('.sc-row').forEach(r => r.classList.toggle('on', r.querySelector('[data-pick]').checked));
+  };
+  const pickAll = on => { sec.querySelectorAll('[data-pick]').forEach(x => { x.checked = on; }); count(); };
+  sec.querySelectorAll('[data-pick]').forEach(cb => cb.addEventListener('change', count));
+  $('#pickAll').addEventListener('click', () => pickAll(true));
+  $('#pickNone').addEventListener('click', () => pickAll(false));
+  count();
   $('#presentSel').addEventListener('click', () => presentScenarios(picked()));
   sec.querySelectorAll('[data-ilog]').forEach(b => b.addEventListener('click', async () => {
     const out = sec.querySelector(`[data-ilogout="${b.dataset.ilog}"]`);
