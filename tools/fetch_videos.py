@@ -35,6 +35,9 @@ def _pick(files: list[dict]) -> dict | None:
 
 
 def main(argv: list[str]) -> int:
+    for stream in (sys.stdout, sys.stderr):           # some Windows consoles can't print ✓ -- never crash on it
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(errors="replace")
     entries = [v for v in videos.catalog() if v["kind"] == "dvids"]
     if "--list" in argv:
         for v in entries:
