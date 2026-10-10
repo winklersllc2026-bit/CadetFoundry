@@ -214,7 +214,14 @@ async function showLock(msg) {
     };
     welcome();
   };
-  if (!s.profiles.length) (s.on_this_computer ? setup() : newProfile());
+  const notYet = () => {                         // a phone arrived before the instructor set up the class
+    d.innerHTML = `<div class="card" style="width:100%;max-width:380px;text-align:center"><div style="font-size:30px">⏳</div>
+      <h2>Not set up yet</h2><p>Your instructor sets up Vanguard on their computer first. Then come back and join.</p>
+      <button class="btn primary" id="nyAgain" style="width:100%;min-height:48px">Try again</button>${extras}</div>`;
+    $('#nyAgain').onclick = () => location.reload();
+  };
+  if (!s.on_this_computer && !s.admin_set && !s.demo) notYet();
+  else if (!s.profiles.length) (s.on_this_computer ? setup() : newProfile());
   else if (joinCode || want.has('new')) newProfile();
   else if (want.has('pick')) pick();
   else if (s.profiles.length === 1 && !s.profiles[0].has_pin && s.on_this_computer) {

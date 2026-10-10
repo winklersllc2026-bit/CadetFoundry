@@ -626,6 +626,12 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                     err = security.valid_new_pin(str(b.get("pin", "")))
                     if err:
                         return self._json({"ok": False, "error": "An instructor profile needs its own PIN. " + err}, 400)
+                if (kind != "instructor" and not security.admin_set() and not self._local()
+                        and not store.config().get("demo")):
+                    # the instructor's laptop is the first device: no Cadet profiles from phones before the
+                    # instructor has set up the class (a demo box with no screen is the one exception)
+                    return self._json({"ok": False, "error": "Your instructor hasn't set up Vanguard yet. Ask them "
+                                                             "to set it up on their computer first."}, 403)
                 if self.app.lan:                         # on the classroom network every profile needs a PIN
                     err = security.valid_new_pin(str(b.get("pin", "")))
                     if err:

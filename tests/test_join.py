@@ -155,6 +155,18 @@ class JoinCodeTests(unittest.TestCase):
         units = self.req("GET", "/api/classroom", cookie=t1)[1]["units"]
         self.assertTrue(units and all(set(u) == {"id", "name", "code"} for u in units))
 
+    def test_phones_cant_make_profiles_before_the_instructor_sets_up(self):
+        """The instructor's laptop is the first device: until a Class PIN exists, other devices can't sign up."""
+        from unittest import mock
+        from vanguard.server import Handler
+        with mock.patch.object(Handler, "_local", lambda self: False),                 mock.patch.object(security, "admin_set", lambda: False):
+            st, r, _ = self.new_cadet()
+            self.assertEqual(st, 403)
+            self.assertIn("instructor", r["error"])
+            st, r, _ = self.req("POST", "/api/profiles/create", {"name": "Sneaky", "pin": "482915", "kind": "instructor",
+                                                                "admin": "111222"})
+            self.assertEqual(st, 403)                     # nor claim the Class PIN from a phone
+
 
 class QrTests(unittest.TestCase):
     def test_qr_maker_draws_a_valid_symbol(self):
