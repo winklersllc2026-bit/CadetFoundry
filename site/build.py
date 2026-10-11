@@ -78,7 +78,7 @@ def make_zip(dest: Path) -> int:
         for d in INCLUDE_DIRS:
             for p in sorted((ROOT / d).rglob("*")):
                 if p.is_file() and "__pycache__" not in p.parts:
-                    if d == "books" and p.suffix.lower() == ".pdf":
+                    if d in ("books", "library") and p.suffix.lower() == ".pdf":
                         continue                  # the converted text ships; a saved source PDF stays on the build PC
                     if p.suffix == ".sh":             # shell scripts run on Linux / a Pi: LF, whatever the build PC did
                         z.writestr(f"Vanguard/{p.relative_to(ROOT).as_posix()}", p.read_bytes().replace(b"\r\n", b"\n"))
