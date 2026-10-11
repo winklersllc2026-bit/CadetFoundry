@@ -28,6 +28,7 @@ from pathlib import Path
 
 from vanguard import (addons, asvab, backup, videos, board, books, careers, daily, engine, exam, fitness, instructor, integrity, knowledge,
                       lessons, letters, network, live_quiz, pay, pilot, profiles, program_backup, progress, quiz_edits, reports, scenarios, security, service, store, train, voice)
+from vanguard import sample
 from vanguard.brain import Brain
 from vanguard.faith import Faith
 from vanguard.knowledge import Library
@@ -39,9 +40,10 @@ DOWNLOAD_TYPES = {".exe": "application/octet-stream", ".zip": "application/zip",
                   ".pdf": "application/pdf", ".txt": "text/plain"}
 mimetypes.add_type("application/manifest+json", ".webmanifest")
 PUBLIC_GET = {"/", "/index.html", "/icon.svg", "/api/lock",       # the app shell: installable before sign-in
-              "/join", "/api/classroom", "/api/join-code",    # the class Join screen and its QR code (no names, no records)
+              "/join", "/api/classroom", "/api/join-code", "/api/sample/status",    # the class Join screen and its QR code (no names, no records)
               "/manifest.webmanifest", "/icon-192.png", "/icon-512.png", "/icon-maskable-512.png", "/apple-touch-icon.png"}       # reachable while locked (plus the page's scripts in /js/)
 PUBLIC_POST = {"/api/unlock", "/api/profiles/create", "/api/recover",
+               "/api/sample/start", "/api/sample/enter", "/api/sample/leave",   # the sample class: this computer only
                "/api/quit"}                 # End class on the Join screen: this computer (or an instructor) only
 
 
@@ -145,6 +147,8 @@ class Handler(BaseHTTPRequestHandler):
         On success, the request runs with the session's profile as the only reachable data folder."""
         self._ctx, self._kctx, self._cctx, self._pid, self._body_read = None, None, None, None, False
         self._catctx = None
+        if sample.ACTIVE:
+            sample.touch()
         host = self.headers.get("Host")
         if not security.host_ok(host, self.app.port, self.app.lan, self._server_ip()):
             self._deny(421, "Wrong host.")                  # DNS-rebinding protection
@@ -227,6 +231,8 @@ class Handler(BaseHTTPRequestHandler):
         not. Once a Class PIN exists, only an instructor profile may try it here -- a Cadet's guesses never reach
         check_admin, so a Cadet can't lock the instructor out with wrong PINs. Before any Class PIN exists, only this
         computer (the first-run setup), never a device on the network."""
+        if sample.ACTIVE:
+            return "This is the sample class: device settings can't be changed here."
         if not security.admin_set():
             return None if self._local() else "Set up Vanguard on the instructor's computer first."
         if (profiles.get(self._pid or "") or {}).get("kind") != "instructor":
@@ -358,7 +364,7 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                 return self._json(dash)
             if r == "/api/instructor/pilot":
                 return self._json({**pilot.report(priv, reports.dashboard(priv, app.library)), "survey": pilot.SURVEY,
-                                   "scale": pilot.SCALE})
+                                   "scale": pilot.SCALE, "stored": pilot.stored(priv)})
             if r == "/api/instructor/report.csv":       # an explicit export, only for the instructor
                 unit = str(q.get("unit", ""))[:10]
                 rows = (reports.cadet_rows(priv, app.library, owner=self._pid) if unit == "mine"
@@ -466,6 +472,8 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                 return self._json(lessons.open_lesson(self._pid or "", str(q.get("a", ""))[:12]))
             except LookupError as e:
                 return self._json({"error": str(e)}, 404)
+        if r == "/api/sample/status":                    # is the sample class built yet? (no names, no records)
+            return self._json(sample.status())
         if r == "/join":                                 # the class Join screen (a QR code for the projector)
             return self._static("/join.html")
         if r == "/api/classroom":
@@ -501,6 +509,7 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                                 if not (remote and not security.has_pin(p["id"]))],
                    "unlocked": bool(self._pid), "admin_set": security.admin_set(),
                    "on_this_computer": self._local(), "demo": bool(store.config().get("demo")), "lan": self.app.lan, "instance": store.data_id(),
+                   "sample": sample.ACTIVE, "sample_back": sample.BACK if sample.ACTIVE else "",
                    "downloads": bool(_download_files())}
             if self._pid:
                 cur = profiles.get(self._pid)
@@ -512,7 +521,7 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
         if r == "/api/status":
             return self._json({"engine": engine.status(), "library": app.library.stats(),
                                "profile": store.profile(), "grades": store.GRADES, "interests": store.INTERESTS, "log_kinds": store.LOG_KINDS,
-                               "lan": app.lan, "voice": voice.available() and store.module_on("voice"),
+                               "lan": app.lan, "sample": sample.ACTIVE, "voice": voice.available() and store.module_on("voice"),
                                "modules_off": [m for m in store.MODULES if not store.module_on(m)],
                                "ai_mode": store.ai_mode(), "library_only": store.ai_mode() == "off",
                                "services": knowledge.SERVICES,
@@ -1004,6 +1013,8 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                 return self._json({"error": "Open your class first (Class PIN)."}, 403)
             if not self._local():                        # never from a device on the network
                 return self._json({"error": "Open or close class on the instructor's own computer."}, 403)
+            if sample.ACTIVE:
+                return self._json({"error": "The sample class stays on this computer."}, 403)
             want = bool(b.get("open"))
             if want == bool(app.lan):
                 return self._json({"ok": True, "lan": want})
@@ -1036,6 +1047,18 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                     return self._json({"error": "Choose add, rename or delete."}, 400)
                 if r == "/api/instructor/pilot":
                     return self._json(pilot.save_config(priv, b))
+                if r == "/api/instructor/pilot/mode":    # Pilot mode: online AI stays off, "what's stored", End pilot
+                    store.save_config({"pilot_mode": bool(b.get("on"))})
+                    return self._json(pilot.stored(priv))
+                if r == "/api/instructor/pilot/end":     # permanently remove the pilot's Cadets and class data
+                    if not self._local():
+                        return self._json({"error": "End the pilot on the instructor's own computer."}, 403)
+                    if str(b.get("confirm", "")) != "DELETE":
+                        return self._json({"error": "Type DELETE to confirm."}, 400)
+                    err = security.check_admin(str(b.get("admin", ""))[:32])
+                    if err:
+                        return self._json({"error": err}, 403)
+                    return self._json(pilot.end(priv))
                 if r == "/api/instructor/pilot/snapshot":
                     return self._json(pilot.take_snapshot(priv, reports.dashboard(priv, app.library), force=True))
                 if r == "/api/instructor/pilot/survey":
@@ -1312,6 +1335,26 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                 return self._json(addons.install(str(b.get("name", ""))))
             except ValueError as e:
                 return self._json({"error": str(e)}, 400)
+        if r == "/api/sample/start":                     # "See a sample class": a separate copy with made-up Cadets
+            if sample.ACTIVE:
+                return self._json({"error": "This is already the sample class."}, 400)
+            if not self._local():
+                return self._json({"error": "The sample class opens on the instructor's own computer."}, 403)
+            try:
+                return self._json({"url": sample.start(f"http://127.0.0.1:{self.app.port}/")})
+            except (OSError, RuntimeError) as e:
+                return self._json({"error": str(e)}, 500)
+        if r == "/api/sample/enter":                     # in the sample: straight in as its made-up instructor
+            token = sample.enter() if self._local() else None
+            if not token:
+                return self._json({"error": "The sample class isn't ready."}, 403)
+            return self._json({"ok": True}, extra={"Set-Cookie": security.cookie_header(token)})
+        if r == "/api/sample/leave":                     # close the sample; the visitor goes back to their Vanguard
+            if not (sample.ACTIVE and self._local()):
+                return self._json({"error": "Not the sample class."}, 400)
+            self._json({"ok": True, "back": sample.BACK})
+            threading.Thread(target=self.server.shutdown, daemon=True).start()
+            return None
         if r == "/api/quit":                             # Me -> Quit Vanguard (there's no console window to close)
             # a Cadet's phone on the class Wi-Fi must not be able to end class for everyone
             if not self._local() and (profiles.get(self._pid or "") or {}).get("kind") != "instructor":

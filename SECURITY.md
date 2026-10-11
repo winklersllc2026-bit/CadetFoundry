@@ -84,6 +84,8 @@ checklist and hasn't been run yet.
 ## Online AI (off by default)
 **Vanguard is offline-first: no student data leaves the instructor's device unless an instructor or IT operator explicitly enables an online AI provider.** There is no switch for it in the app's screens. An operator enables it only by editing `config.json` in the data folder (`"online": true` plus a Groq or Gemini key; the key is stored there in plain text). Leave it off on devices meant to stay fully offline, and read the provider's terms (data retention, use of minors' data) before turning it on.
 
+**Pilot mode** (Instructor → Reports → Pilot) overrides that file: while it's on, nothing goes online, whatever `config.json` says (`engine.online_ready`; tested in `tests/test_sample_and_pilot.py`).
+
 When it is on, exactly this goes to the provider (security review, 2026-10-11 — tested in `tests/test_outbound_ai.py`):
 - **Ask, ordinary questions only:** the question, Vanguard's rules, and the public library passages that matched.
   **Not** the Cadet's name, profile, remembered facts, logbook or earlier chat.
@@ -180,6 +182,10 @@ Vanguard is Python's standard library plus one package, `cryptography` (PyCA). E
 **Python itself:** the 3.12 line stopped getting Windows builds at 3.12.10, so later 3.12 security fixes never reached the installer; the installer moved to 3.14 (the current line with Windows builds) on 2026-10-11. When 3.14 reaches its security-only phase, move to the next line the same way.
 
 **Secrets:** the repository is checked by `tests/test_security.py` for a release private key, and history was searched for keys and passwords during the 2026-10 review (see the review report). If a secret is ever found, rotate it first — removing it from the files doesn't un-publish it.
+
+## Sample class and End pilot (added 2026-10-11)
+- **Sample class** (`vanguard/sample.py`): a separate Vanguard process on this computer only (127.0.0.1, its own port), with its own data folder next to the real one (`<data>-sample`, marked by `SAMPLE_DATA.txt`; only a marked folder is ever deleted, and it's rebuilt from scratch each time). Its people are made up, it uses its own cookie name so it never signs anyone out of the real Vanguard, it refuses device settings and opening to the network, and it closes itself after 45 idle minutes or on Leave sample. Only the library's public search index is copied in; nothing is read from or written to the real data. Starting it is allowed only from the instructor's own computer.
+- **End pilot** (`pilot.end`): instructor session with the Class PIN open, **on the instructor's own computer**, the Class PIN typed again, and the word DELETE. It removes every Cadet and guardian profile (via `profiles.delete`, which deletes the whole profile folder), their sessions, assignments, the roster's Cadets, titles and pending joins, live answers, the pilot's files, and `program.before-restore-*` safety copies; units keep going with new join codes. It doesn't touch personal or program backups already saved elsewhere, and it doesn't wipe free disk space.
 
 ## For military IT: adding CAC sign-in
 Vanguard deliberately ships without CAC/PIV sign-in so that it can be configured by the Army's own IT, with its certificate validation and approval. All sign-in logic is in `vanguard/security.py`: a profile is unlocked by `unlock(profile, secret)`, which creates a session bound to that one profile. A smart-card provider would (1) have the card sign a random challenge with its PIV authentication key, (2) validate the certificate chain against the DoD PKI roots (and revocation, where a network is available), and (3) map the certificate to a profile by a hash of the certificate — never storing the DoD ID number. Nothing else in Vanguard needs to change.

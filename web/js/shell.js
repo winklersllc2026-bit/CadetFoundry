@@ -117,6 +117,11 @@ async function classSetup(box, ov, reload, { compactWhenReady = false } = {}) {
   const noPinNote = short => noPin.length ? `<p style="margin:10px 0 0">⚠ <b>No PIN yet:</b> ${noPin.map(esc).join(', ')}. <span class="faint">Phones can't open ${noPin.length === 1 ? 'this profile' : 'these profiles'}${short ? '' : ` until ${noPin.length === 1 ? 'it has' : 'they have'} a PIN`}. Sign in to ${noPin.length === 1 ? 'it' : 'each one'} on this computer, then 👤 Me → Security → Set a PIN.</span></p>` : '';
   const step = (done, title, body) => `<div class="row" style="align-items:flex-start;gap:12px;margin:12px 0;flex-wrap:nowrap">
       <span style="font-size:22px;line-height:1.2">${done ? '✅' : '⬜'}</span><div style="flex:1"><b>${title}</b>${body ? `<div style="margin-top:6px">${body}</div>` : ''}</div></div>`;
+  if (STATUS.sample && ov.units.length && !loose.length) {   // the sample class stays on this computer: nothing to open
+    box.innerHTML = `<div class="card"><span>✅ <b>The sample class is set up.</b> <span class="faint">${ov.units.map(u => esc(u.name)).join(' · ')}.
+      In your own Vanguard, step 3 opens class to phones so Cadets can join; the sample stays on this computer.</span></span></div>`;
+    return true;
+  }
   if (ready && compactWhenReady) {
     box.innerHTML = `<div class="card"><div class="row" style="justify-content:space-between;gap:10px;flex-wrap:wrap">
       <span>✅ <b>Class is open.</b> <span class="faint">${ov.units.map(u => `${esc(u.name)} · code <b class="mono" style="letter-spacing:.12em;color:var(--tan2)">${esc(u.code || '')}</b>`).join(' · ')}</span></span>

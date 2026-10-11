@@ -15,6 +15,7 @@ async function instructorPilot(body) {
   sec.id = 'pilotCard';
   sec.innerHTML = `<h3>🧪 Pilot program</h3>
     <p class="faint">Make the pilot measurable: set it up, take a starting snapshot, open the Cadet survey near the end, add your own feedback, and print the report.</p>
+    ${plModeHtml(d.stored)}
     <details ${c.start ? '' : 'open'}><summary><b>Pilot setup</b></summary>
       <label for="plSchool">School</label><input id="plSchool" maxlength="100" value="${esc(c.school || '')}">
       <div class="row" style="flex-wrap:wrap;gap:8px">
@@ -45,6 +46,7 @@ async function instructorPilot(body) {
       <button class="btn primary" id="plFb" style="margin-top:8px">Save my feedback</button><p class="faint" id="plFbMsg" role="alert"></p>
       ${fb.instructor.length ? `<p class="faint">Saved ${fb.instructor.length} time${fb.instructor.length === 1 ? '' : 's'}; latest ${esc(fb.latest_instructor.date)}: satisfaction ${fb.latest_instructor.satisfaction}/5, next semester: ${esc(fb.latest_instructor.use_again)}.</p>` : ''}</details>` : ''}`;
   body.appendChild(sec);
+  plModeWire(sec, d);
   $('#plSave').addEventListener('click', async () => {
     const r = await api('/api/instructor/pilot', { school: $('#plSchool').value, program: $('#plProg').value, instructor: $('#plInst').value,
       start: $('#plStart').value, end: $('#plEnd').value, cadets_planned: $('#plN').value, notes: $('#plNotes').value,
@@ -121,5 +123,63 @@ async function cadetSurvey(container) {
     const r = await api('/api/pilot/survey', { answers, comment: box.querySelector('#svCom').value });
     if (r.error) { box.querySelector('#svMsg').textContent = r.error; return; }
     box.innerHTML = '<p style="margin:0">📝 Thanks for answering the Vanguard survey!</p>';
+  });
+}
+
+// ── Pilot mode: online AI stays off, what's stored on this device, and End pilot ──
+function plModeHtml(st) {
+  const n = (v, one, many) => `${v} ${v === 1 ? one : many}`;
+  return `<div style="border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:10px 0">
+    <label style="display:flex;gap:10px;align-items:center;min-height:44px"><input type="checkbox" id="plMode" ${st.pilot_mode ? 'checked' : ''} style="width:24px;height:24px">
+      <span><b>Pilot mode</b> <span class="faint">— recommended while you run a pilot</span></span></label>
+    <p class="faint" style="margin:4px 0">Every question stays on this device (online AI is off, whatever the settings say), you can see what's stored, and you can delete the pilot's data in one step when it ends.</p>
+    ${st.pilot_mode ? `<div style="margin-top:8px"><b>What's stored on this device now</b>
+      <ul style="margin:6px 0 6px 18px;padding:0">
+        <li>${n(st.cadets, 'Cadet profile', 'Cadet profiles')}${st.guardians ? `, ${n(st.guardians, 'guardian profile', 'guardian profiles')}` : ''}, ${n(st.instructors, 'instructor profile', 'instructor profiles')}</li>
+        <li>${n(st.units, 'class or squad', 'classes and squads')}, ${n(st.lessons, 'lesson', 'lessons')}, ${n(st.assignments, 'assignment', 'assignments')}</li>
+        <li>Pilot: ${n(st.snapshots, 'snapshot', 'snapshots')}, ${n(st.survey_answers, 'survey answer', 'survey answers')} (no names), ${n(st.instructor_feedback, 'feedback entry', 'feedback entries')} from you</li>
+        <li>Online AI: <b>${st.online_ai ? 'on' : 'off'}</b> · Folder: <code>${esc(st.folder)}</code> (${st.size_mb} MB)</li></ul>
+      <p class="faint" style="margin:4px 0">Cadets' chats, notes and check-ins: only that Cadet can open them. Class records: you, with the Class PIN. Nothing is sent anywhere.</p>
+      <button class="btn small danger" id="plEnd">End pilot…</button><div id="plEndBox"></div></div>` : ''}</div>`;
+}
+
+function plModeWire(sec, d) {
+  $('#plMode').addEventListener('change', async ev => {
+    await api('/api/instructor/pilot/mode', { on: ev.target.checked });
+    loaders.instructor();
+  });
+  const end = $('#plEnd');
+  if (!end) return;
+  end.addEventListener('click', () => {
+    const st = d.stored, box = $('#plEndBox');
+    end.hidden = true;
+    box.innerHTML = `<div class="card" style="border-color:var(--red,#c0392b);margin-top:10px">
+      <h3>End the pilot?</h3>
+      <p>This <b>permanently removes</b> from this device: ${st.cadets} Cadet profile${st.cadets === 1 ? '' : 's'} (their class records and private files)${st.guardians ? `, ${st.guardians} guardian profile${st.guardians === 1 ? '' : 's'}` : ''}, ${st.assignments} assignment${st.assignments === 1 ? '' : 's'}, and the pilot's setup, snapshots and survey answers. It can't be undone.</p>
+      <p class="faint">Kept: instructor profiles, the Class PIN, your lessons, and your classes and squads (with new join codes).</p>
+      <p><b>1. Save what the school keeps first.</b></p>
+      <div class="row" style="flex-wrap:wrap;gap:8px"><a class="btn small" href="/api/instructor/report.csv" download>⬇ Class report (spreadsheet)</a>
+        <button class="btn small" id="plEndPrint">🖨️ Print pilot report</button></div>
+      <label style="display:flex;gap:10px;align-items:center;min-height:44px;margin-top:8px"><input type="checkbox" id="plEndSaved" style="width:22px;height:22px"> I've saved what the school keeps.</label>
+      <p><b>2. Confirm.</b></p>
+      <label for="plEndPin">Class PIN</label>${PIN_INPUT('plEndPin', '')}
+      <label for="plEndWord">Type DELETE</label><input id="plEndWord" autocomplete="off" maxlength="10">
+      <div class="row" style="gap:8px;margin-top:10px"><button class="btn danger" id="plEndGo">Delete pilot data</button><button class="btn" id="plEndNo">Cancel</button></div>
+      <p class="faint" id="plEndMsg" role="alert"></p></div>`;
+    $('#plEndPrint').addEventListener('click', () => printPilotReport(d));
+    $('#plEndNo').addEventListener('click', () => { box.innerHTML = ''; end.hidden = false; });
+    $('#plEndGo').addEventListener('click', async () => {
+      if (!$('#plEndSaved').checked) { $('#plEndMsg').textContent = "Save what the school keeps first, then tick the box."; return; }
+      if ($('#plEndWord').value.trim() !== 'DELETE') { $('#plEndMsg').textContent = 'Type DELETE to confirm.'; return; }
+      $('#plEndGo').disabled = true;
+      const r = await api('/api/instructor/pilot/end', { admin: $('#plEndPin').value, confirm: 'DELETE' });
+      if (r.error) { $('#plEndMsg').textContent = r.error; $('#plEndGo').disabled = false; return; }
+      box.innerHTML = `<div class="card" style="margin-top:10px"><div style="font-size:30px">✅</div><h3>Pilot data deleted</h3>
+        <p>Removed from this device: ${r.cadets} Cadet profile${r.cadets === 1 ? '' : 's'}${r.guardians ? `, ${r.guardians} guardian profile${r.guardians === 1 ? '' : 's'}` : ''}, ${r.assignments} assignment${r.assignments === 1 ? '' : 's'}, and the pilot's setup, snapshots and survey answers.</p>
+        <p>Still on this device: ${r.remaining_profiles.map(p => esc(p.name)).join(', ') || 'no profiles'}, your lessons, and your classes (with new join codes).</p>
+        <p class="faint">Deleted files can still be recovered from a disk that isn't encrypted — keep BitLocker on.</p>
+        <button class="btn primary" id="plEndDone">Done</button></div>`;
+      $('#plEndDone').addEventListener('click', () => loaders.instructor());
+    });
   });
 }

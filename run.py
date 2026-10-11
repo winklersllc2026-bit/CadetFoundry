@@ -11,7 +11,7 @@ import sys
 import threading
 import webbrowser
 
-from vanguard import store
+from vanguard import sample, store
 from vanguard.network import lan_addresses
 from vanguard.server import reopen, serve
 
@@ -98,7 +98,8 @@ def main() -> int:
 
     host = "0.0.0.0" if args.lan else "127.0.0.1"
     url = f"http://127.0.0.1:{args.port}"
-    _start_portable_ai()
+    if not sample.ACTIVE:                          # the sample class never starts the AI or anything else
+        _start_portable_ai()
     httpd = None
     for port in range(args.port, args.port + 10):
         url = f"http://127.0.0.1:{port}"
@@ -136,6 +137,9 @@ def main() -> int:
         print(f"Ports {args.port}–{args.port + 9} are all in use. Close another program, or choose one: "
               f"python run.py --port 8800")
         return 1
+    if sample.ACTIVE:                               # a separate copy with made-up Cadets (vanguard/sample.py)
+        threading.Thread(target=sample.build, args=(args.port, httpd.RequestHandlerClass.app), daemon=True).start()
+        sample.watch_idle(httpd)
     if sys.stdout is not None and getattr(sys.stdout, "name", "").endswith("vanguard.log"):
         write_pid()                                 # the icon's quiet Vanguard: the installer closes it by this id
     stats = httpd.RequestHandlerClass.app.library.stats()
@@ -173,6 +177,7 @@ def main() -> int:
         print("Class is now " + ("OPEN to phones on this Wi-Fi." if args.lan else "on this computer only."))
         _print_mode(args.lan, args.port)
     httpd.server_close()
+    sample.stop_child()                             # a sample class this Vanguard opened closes with it
     return 0
 
 

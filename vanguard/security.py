@@ -26,6 +26,7 @@ import contextlib
 import hashlib
 import hmac
 import json
+import os
 import secrets
 import threading
 import time
@@ -33,7 +34,9 @@ import time
 from vanguard import profiles, store, vault
 
 ITERATIONS = 400_000
-COOKIE = "vanguard_session"
+# The sample class (vanguard/sample.py) runs beside the real Vanguard on this computer: its own cookie, so visiting
+# it never signs anyone out of the real one (cookies are shared across ports).
+COOKIE = "vanguard_sample" if os.environ.get("VANGUARD_SAMPLE") == "1" else "vanguard_session"
 _lock = threading.Lock()
 # token -> [profile id, last activity, data key, class key, program private key (instructor, after the Instructor PIN)]
 _sessions: dict[str, list] = {}

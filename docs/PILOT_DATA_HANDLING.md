@@ -36,6 +36,9 @@ put other people's private information in notes or letters.
 message sounds like someone is unsafe. It **notifies no one**, so a Cadet in danger must still tell a trusted adult.
 Instructors should say this to the class in plain words.
 
+**Pilot mode** (Instructor → Reports → Pilot) keeps online AI off whatever the configuration says, lists what is
+stored on the device in counts, and offers End pilot (below). Recommended for every pilot.
+
 **Online AI** is off unless the device owner turns it on in the configuration. When it is on, ordinary Ask questions
 go to that service without the Cadet's name, notes or earlier chats; anything about feeling unsafe, grading and
 letters never do. Before turning it on, the school should read that provider's terms for minors' data.
@@ -58,9 +61,13 @@ letters never do. Before turning it on, the school should read that provider's t
   `python tools/remove_profile.py "Cadet Name"` and types DELETE. From a USB drive, use the drive's own Python:
   `Vanguard\python\python.exe Vanguard\tools\remove_profile.py "Cadet Name" --data VanguardData`. Or keep the
   profile until the school's retention period ends; decide this before the pilot (below).
-- **End of the pilot:** export what the school will keep (report CSV, pilot report), then delete the data folder,
-  or uninstall Vanguard and delete the folder. Deleting a file on a laptop doesn't wipe the disk, so full-disk
-  encryption (BitLocker) on the instructor's laptop is what protects deleted data.
+- **End of the pilot:** turn on **Pilot mode** (Instructor → Reports → Pilot) and use **End pilot**. It asks you to
+  save the class report and the pilot report first, then needs the Class PIN and the word DELETE, and works only on
+  the instructor's own computer. It permanently removes every Cadet and guardian profile (private files and class
+  records), the assignments, the pilot's setup, snapshots and survey answers, pending joins, and program safety
+  copies; it keeps instructor profiles, the Class PIN, your lessons and your classes (with new join codes). To remove
+  everything, uninstall Vanguard and delete the data folder instead. Deleting a file doesn't wipe the disk, so
+  full-disk encryption (BitLocker) on the instructor's laptop is what protects deleted data.
 - **Lost or stolen laptop or USB drive:** private files and class records stay encrypted without the PINs. Names in
   the profile list and program data in the clear (lesson text, units) are readable. Change the Class PIN and treat
   it as a data incident under the school's policy.

@@ -55,7 +55,9 @@ async function showLock(msg) {
         <p class="faint" style="margin:14px 0 6px">Or tap your name:</p>
         <div style="display:grid;gap:8px;margin:0 0 12px">${s.profiles.map(p =>
           `<button class="btn" data-p="${esc(p.id)}" style="text-align:left;min-height:48px">${p.kind === 'guardian' ? '👪' : p.kind === 'instructor' ? '🎓' : '👤'} ${esc(p.name)} ${p.has_pin ? '<span class="faint">🔒</span>' : ''}</button>`).join('')}</div>
-        <p class="faint">${esc(msg || '')}</p>${extras}</div>`;
+        <p class="faint">${esc(msg || '')}</p>${extras}
+        ${s.on_this_computer && !s.sample ? '<button class="btn small" id="pickSample" style="margin-top:6px">🧪 See a sample class</button><p class="faint" id="pickSampleMsg" role="status"></p>' : ''}</div>`;
+    if ($('#pickSample')) $('#pickSample').onclick = () => startSample($('#pickSample'), $('#pickSampleMsg'));
     d.querySelectorAll('[data-p]').forEach(b => b.onclick = () => {
       const p = s.profiles.find(x => x.id === b.dataset.p);
       p.has_pin ? pinFor(p) : api('/api/unlock', { profile: p.id, pin: '' }).then(r => r.ok && go());
@@ -160,8 +162,11 @@ async function showLock(msg) {
       step(`<div style="font-size:30px;text-align:center">✦</div><h2 style="text-align:center">Welcome to Vanguard</h2>
         <p>Vanguard stays on this computer. Cadets can join from phones on the same Wi-Fi. Nothing is sent to the internet.</p>
         <button class="btn primary" id="suInst" style="width:100%;min-height:52px;font-size:18px">I'm the instructor — set up this class</button>
-        <button class="btn small" id="suJustMe" style="width:100%;margin-top:10px">Just me — I'm a Cadet using this on my own</button>${extras}`);
+        <button class="btn small" id="suJustMe" style="width:100%;margin-top:10px">Just me — I'm a Cadet using this on my own</button>
+        <button class="btn small" id="suSample" style="width:100%;margin-top:10px">🧪 Just looking? See a sample class first</button>
+        <p class="faint" id="suSampleMsg" role="status" style="text-align:center"></p>${extras}`);
       $('#suInst').onclick = programStep;
+      $('#suSample').onclick = () => startSample($('#suSample'), $('#suSampleMsg'));
       $('#suJustMe').onclick = () => newProfile('cadet');
     };
     // Which program: sets the words Vanguard uses (LET / NS / LE / Year) and puts that branch first in Learn.
@@ -243,6 +248,7 @@ async function showLock(msg) {
       <button class="btn primary" id="nyAgain" style="width:100%;min-height:48px">Try again</button>${extras}</div>`;
     $('#nyAgain').onclick = () => location.reload();
   };
+  if (s.sample) { sampleArrive(d, s); return; }
   if (!s.on_this_computer && !s.admin_set && !s.demo) notYet();
   else if (!s.profiles.length) (s.on_this_computer ? setup() : newProfile());
   else if (joinCode || want.has('new')) newProfile();
@@ -254,12 +260,58 @@ async function showLock(msg) {
   } else if (s.profiles.length === 1 && s.on_this_computer) pinFor(s.profiles[0]);
   else pick();
 }
+// ── The sample class (vanguard/sample.py): a separate copy of Vanguard with made-up Cadets ──
+async function startSample(btn, msgEl) {
+  if (btn) btn.disabled = true;
+  if (msgEl) msgEl.textContent = 'Opening the sample class…';
+  const r = await api('/api/sample/start', {});
+  if (r.error || !r.url) {
+    if (msgEl) msgEl.textContent = r.error || "The sample class couldn't open.";
+    if (btn) btn.disabled = false;
+    return;
+  }
+  location.href = r.url;
+}
+
+async function sampleArrive(d, s) {
+  d.innerHTML = `<div class="card" style="width:100%;max-width:420px;text-align:center"><div style="font-size:34px">🧪</div>
+    <h2>Building a sample class</h2><p>Eight made-up Cadets, two squads, lessons, scenarios and a pilot in progress. Your own Vanguard isn't touched.</p>
+    <p class="faint" id="smStep" role="status">Starting…</p></div>`;
+  for (;;) {
+    let st = {};
+    try { st = await (await fetch('/api/sample/status', { cache: 'no-store' })).json(); } catch (e) { }
+    if (st.error) {
+      $('#smStep').innerHTML = `${esc(st.error)}<br><a href="${esc(s.sample_back || '/')}">Back to my Vanguard</a>`;
+      return;
+    }
+    if (st.ready) break;
+    if (st.step) $('#smStep').textContent = st.step + '…';
+    await new Promise(r => setTimeout(r, 700));
+  }
+  const r = await api('/api/sample/enter', {});
+  if (r.ok) location.replace('/'); else $('#smStep').textContent = r.error || 'Try reloading the page.';
+}
+
+function sampleBanner(back) {
+  const bar = document.createElement('div');
+  bar.id = 'sampleBar';
+  bar.setAttribute('role', 'note');
+  bar.style.cssText = 'position:sticky;top:0;z-index:60;background:var(--tan);color:#111;padding:8px 12px;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:15px';
+  bar.innerHTML = '<span>🧪 <b>Sample class</b> — made-up Cadets. Try anything; changes here are thrown away.</span><button class="btn small" id="sampleLeave" style="background:#fff;color:#111">Leave sample</button>';
+  document.body.prepend(bar);
+  $('#sampleLeave').addEventListener('click', async () => {
+    const r = await api('/api/sample/leave', {});
+    location.href = (r && r.back) || back || '/';
+  });
+}
+
 // The app starts only once a profile is unlocked.
 const unlocked = (async () => {
   // Wait until every script in web/js/ has run, so nothing here races ahead of a later file.
   if (document.readyState === 'loading') await new Promise(r => document.addEventListener('DOMContentLoaded', r));
   const s = await (await fetch('/api/lock')).json();
   if (!s.unlocked) { showLock(); return null; }
+  if (s.sample) sampleBanner(s.sample_back);
   return s;
 })();
 const heightText = n => (+n > 0 ? `${Math.floor(+n / 12)}'${+n % 12}"` : '');   // inches -> 5'10"

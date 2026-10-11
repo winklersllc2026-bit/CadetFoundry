@@ -51,8 +51,11 @@ async function classDayHome() {
       <button class="tile" data-cdgo="class"><span>👥</span>Class<small>Cadets, units, ranks</small></button>
       <button class="tile" data-cdgo="lessons"><span>📋</span>Lessons<small>Write and assign</small></button>
       <button class="tile" data-cdgo="present"><span>🖥️</span>Present<small>Scenarios, live questions</small></button>
-      <button class="tile" data-cdgo="reports"><span>📊</span>Reports<small>How they're doing</small></button></div></div>`;
+      <button class="tile" data-cdgo="reports"><span>📊</span>Reports<small>How they're doing</small></button>
+      ${lock.sample ? '' : '<button class="tile" id="cdSample"><span>🧪</span>Sample class<small>See it with made-up Cadets</small></button>'}</div>
+      <p class="faint" id="cdSampleMsg" role="status"></p></div>`;
   body.querySelectorAll('[data-cdgo]').forEach(b => b.addEventListener('click', () => { openView('instructor'); loaders.instructor(b.dataset.cdgo); }));
+  if ($('#cdSample')) $('#cdSample').addEventListener('click', () => startSample($('#cdSample'), $('#cdSampleMsg')));
   const ready = await classSetup($('#cdSetup'), ov, classDayHome, { compactWhenReady: true });
   const main = $('#cdMain');
   if (plan) return runSheet(main, plan, ov);

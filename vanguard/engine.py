@@ -66,7 +66,7 @@ def status() -> dict:
         "ollama": tags is not None,
         "model": pick_model() if tags else None,
         "models": tags or [],
-        "online_enabled": bool(c.get("online")),
+        "online_enabled": bool(c.get("online")) and not c.get("pilot_mode"),
         "online_keys": [k for k in ("groq_key", "gemini_key") if c.get(k)],
     }
 
@@ -152,6 +152,8 @@ def warm_up() -> bool:
 def online_ready() -> bool:
     """An instructor/IT operator turned online AI on and gave a provider key (config.json)."""
     c = store.config()
+    if c.get("pilot_mode"):                       # Pilot mode keeps every question on this device
+        return False
     return bool(c.get("online")) and any(c.get(k) for k in ("groq_key", "gemini_key"))
 
 

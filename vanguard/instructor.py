@@ -246,6 +246,21 @@ def delete_unit(priv: bytes, uid: str) -> None:
         _publish_codes(r)
 
 
+def forget_cadets(priv: bytes) -> None:
+    """End of a pilot: the roster keeps its units but no Cadets; every unit gets a new join code (the old ones were
+    shared with the class); titles and pending joins go too."""
+    with _lock:
+        r = roster(priv)
+        r["cadets"] = {}
+        for u in r["units"]:
+            u["code"] = ""
+        _ensure_codes(r)
+        _save(priv, r)
+        _publish_codes(r)
+        _write_plain("cadet_titles.json", {})
+        _program_file("joins.json").unlink(missing_ok=True)
+
+
 def _clean_title(v) -> str:
     return " ".join(str(v or "").split())[:40]
 

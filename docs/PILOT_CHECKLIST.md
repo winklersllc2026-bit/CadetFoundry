@@ -16,6 +16,9 @@ One page to go through before, during and after a classroom pilot. Data rules: [
 
 ## Dry run (with fictional profiles, never real Cadets)
 
+- [ ] Optional first look: **See a sample class** (on the welcome screen, or the 🧪 tile on the instructor's Home). It
+      opens a separate copy of Vanguard with eight made-up Cadets; Leave sample closes it and nothing of yours changes.
+
 - [ ] Set the Class PIN, then make an instructor profile with its own PIN.
 - [ ] Make a class, open class to phones, and join from two phones as "Cadet Alpha" and "Cadet Bravo".
 - [ ] Assign a lesson. Complete it on one phone; check the score on the instructor's screen.
@@ -31,7 +34,7 @@ One page to go through before, during and after a classroom pilot. Data rules: [
 - [ ] Tell them in plain words: your chats in Ask are private and **nobody is watching them**. If you're not safe,
       tell an adult you trust or call or text 988 (911 in an emergency).
 - [ ] Tell them: pick a PIN nobody can guess, don't share it, and keep the backup code somewhere safe.
-- [ ] Take the pilot snapshot (Instructor → Reports → Pilot).
+- [ ] Turn on **Pilot mode** and take the pilot snapshot (Instructor → Reports → Pilot).
 
 ## Every week
 
@@ -40,4 +43,5 @@ One page to go through before, during and after a classroom pilot. Data rules: [
 ## After
 
 - [ ] Open the Cadet survey, then close it. Print the pilot report.
-- [ ] Export what the school keeps; delete the rest per the retention decision (PILOT_DATA_HANDLING.md).
+- [ ] Export what the school keeps, then **End pilot** (Instructor → Reports → Pilot) per the retention decision
+      (PILOT_DATA_HANDLING.md).

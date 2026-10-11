@@ -40,6 +40,11 @@ Version 0.2.2. What's built and what's next: ROADMAP.md. How it fits together: A
 - **Live pop quiz:** put any quiz question (or your own) on the projector as multiple choice or typed. Cadets answer
   once in 🧭 Lead; Vanguard grades each answer. Results stay hidden until you reveal the answer, and you see how many
   got it right — never who.
+- **Sample class:** see Vanguard with eight made-up Cadets before setting anything up (welcome screen, or 🧪 on
+  Home). It's a separate copy with its own throwaway folder; your data is never touched.
+- **Pilot mode and End pilot:** online AI stays off, the Pilot screen shows what's stored on the device, and End
+  pilot permanently removes the pilot's Cadets and class data (after you save the reports) while keeping your
+  lessons and classes.
 - **AI setting** for the whole device: **Off**, **Library only** (default — the AI may only explain what the library
   holds), or **Library + AI**.
 

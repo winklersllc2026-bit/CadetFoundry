@@ -34,6 +34,10 @@ roll back if interrupted, and the updater accepts real releases again · Python 
 installer · online AI only for ordinary Ask questions, without personal context · a broader safety check on Ask ·
 one Cadet's damaged records no longer break the class overview · 208 tests. Details: SECURITY.md and
 docs/SECURITY_REVIEW_2026-10.md. **0.2.2 installs must be reinstalled** (their updater refuses every real release).
+Also in 0.2.3 (batch 1 of the instructor-experience list): **See a sample class** (a separate copy with eight made-up
+Cadets, two squads and a pilot in progress; Leave sample closes it) · **Pilot mode** (online AI stays off, "what's
+stored on this device") · **End pilot** (save the reports, Class PIN, DELETE: removes the pilot's Cadets and class
+data, keeps your lessons and classes).
 
 ## Next: Cadet drives that sync
 

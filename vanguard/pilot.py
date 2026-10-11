@@ -301,3 +301,57 @@ def report(priv: bytes, dash: dict) -> dict:
             "lessons_assigned": len(in_window), "snapshots": snaps, "feedback": fb,
             "engagement": [{"date": s["date"], "active": s.get("active"), "cadets": s.get("cadets")} for s in snaps],
             "cannot_measure": [] if first else ["Change over the pilot needs a starting snapshot — take one at the start."]}
+
+
+# ── Pilot mode: what's stored, and ending the pilot ─────────────────────────
+PILOT_FILES = ("pilot.json", "pilot_snapshots.json", "feedback_cadets.json", "feedback_instructor.json",
+               "pilot_survey.json")
+
+
+def stored(priv: bytes) -> dict:
+    """What this device holds right now, in counts -- for the instructor's "What's stored" panel. No names."""
+    from vanguard import engine, instructor, profiles
+    every = profiles.all_profiles()
+    count = lambda kind: sum(1 for p in every if p["kind"] == kind)   # noqa: E731
+    size = 0
+    for f in store.DATA.rglob("*"):
+        try:
+            size += f.stat().st_size if f.is_file() else 0
+        except OSError:
+            pass
+    return {"folder": str(store.DATA), "size_mb": round(size / 2 ** 20, 1),
+            "cadets": count("cadet"), "guardians": count("guardian"), "instructors": count("instructor"),
+            "units": len(instructor.roster(priv)["units"]), "lessons": len(lessons.all_lessons()),
+            "assignments": len(lessons.all_assignments()), "snapshots": len(snapshots(priv)),
+            "survey_answers": len(_survey_rows_raw()["sealed"]) + len(_survey_rows_raw()["plain"]),
+            "instructor_feedback": len(_read(priv, "feedback_instructor.json", [])),
+            "online_ai": engine.online_ready(), "pilot_mode": bool(store.config().get("pilot_mode"))}
+
+
+def end(priv: bytes) -> dict:
+    """End the pilot: permanently remove every Cadet and guardian profile (private files and class records), the
+    assignments, the roster's Cadets, pending joins, live answers, the pilot's setup, snapshots and feedback, and
+    program safety copies that could still hold any of it. Kept: instructor profiles, the Class PIN, the instructor's
+    own lessons, scenarios, projects and units (with NEW join codes -- the old ones were shared with the class)."""
+    import shutil
+    from vanguard import instructor, live_quiz, profiles, scenarios
+    gone = [p for p in profiles.all_profiles() if p["kind"] in ("cadet", "guardian")]
+    for p in gone:
+        security.end_sessions(p["id"])
+        profiles.delete(p["id"])
+    assignments = lessons.all_assignments()
+    for a in assignments:
+        lessons.delete_assignment(a["id"])
+    instructor.forget_cadets(priv)
+    scenarios.live_stop()
+    live_quiz.stop()
+    with _lock:
+        for name in PILOT_FILES:
+            _path(name).unlink(missing_ok=True)
+    copies = sorted(store.DATA.glob("program.before-restore-*"))
+    for d in copies:                              # a restore's safety copy can hold the same records
+        shutil.rmtree(d, ignore_errors=True)
+    return {"cadets": sum(1 for p in gone if p["kind"] == "cadet"),
+            "guardians": sum(1 for p in gone if p["kind"] == "guardian"),
+            "assignments": len(assignments), "safety_copies": len(copies),
+            "remaining_profiles": [{"name": p["name"], "kind": p["kind"]} for p in profiles.all_profiles()]}
