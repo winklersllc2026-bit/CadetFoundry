@@ -171,7 +171,7 @@ async function showLock(msg) {
     };
     // Which program: sets the words Vanguard uses (LET / NS / LE / Year) and puts that branch first in Learn.
     const PROGS = [['army', '⭐', 'Army JROTC'], ['navy', '⚓', 'Navy JROTC'], ['air_force', '✈️', 'Air Force JROTC'],
-      ['marine_corps', '🦅', 'Marine Corps JROTC'], ['space_force', '🚀', 'Space Force JROTC'], ['coast_guard', '🛟', 'Coast Guard JROTC'],
+      ['marine_corps', '🦅', 'Marine Corps JROTC'], ['space_force', '🚀', 'Space Force JROTC'], ['coast_guard', '🛟', 'Coast Guard JROTC<small>No Coast Guard study cards yet — Cadets see every other branch</small>'],
       ['', '🎖️', 'More than one / not sure']];
     const programStep = () => {
       step(`<div class="faint">Step 1 of 4</div><h2>Your program</h2>

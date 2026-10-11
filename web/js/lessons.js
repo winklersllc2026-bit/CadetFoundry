@@ -78,6 +78,7 @@ async function instructorLessons(body, ov) {
         <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:8px"><button class="btn small" data-adet="${esc(a.id)}">Details</button>
           <button class="btn small" data-adel="${esc(a.id)}">Remove</button></div><div data-aout="${esc(a.id)}"></div></div>`).join('')
         : '<p class="faint">No assignments yet. Write a lesson, then assign it.</p>'}</div>
+    ${starterLessonsHtml(data.starters, data.lessons.length)}
     <div class="card"><h3>📚 Lessons</h3>
       ${data.lessons.map(l => `<div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:6px;margin:8px 0">
         <span><b>${esc(l.title)}</b> <span class="faint">${[l.let_level && (STATUS.level_label || 'Year') + ' ' + l.let_level, l.competency, `${l.questions.length} questions`].filter(Boolean).map(esc).join(' · ')}</span></span>
@@ -85,6 +86,7 @@ async function instructorLessons(body, ov) {
         <button class="btn small primary" data-lassign="${esc(l.id)}">Assign</button></span></div>`).join('') || '<p class="faint">No lessons yet.</p>'}
       <button class="btn primary" id="lNew" style="margin-top:8px">＋ New lesson</button>
       <div id="lForm"></div></div>`;
+  starterLessonsWire(sec, () => loaders.instructor());
 
   const form = (l = {}) => {
     $('#lForm').innerHTML = `<div class="card" style="margin-top:12px">
@@ -153,4 +155,31 @@ async function instructorLessons(body, ov) {
       <b>${esc(c.name)}</b> <span class="faint">${esc(STATE_NAME[c.state] || c.state)}${c.state === 'complete' && c.total ? ` · ${c.score}/${c.total}` : ''}${c.completed ? ` · ${esc(c.completed)}` : ''}</span>
       ${c.reflection ? `<div style="margin-top:4px;white-space:pre-wrap">${esc(c.reflection)}</div>` : ''}</div>`).join('');
   }));
+}
+
+// ── Starter lessons: ready to assign on day one, built from cited study cards ──
+function starterLessonsHtml(starters, have) {
+  const left = (starters || []).filter(s => !s.added);
+  if (!left.length) return '';
+  return `<div class="card" id="starterCard" style="border-color:var(--tan)"><h3>📦 Starter lessons</h3>
+    <p class="faint">${left.length} ready-to-assign lessons built from Vanguard's cited study cards, each with four questions and a reflection.
+      ${have ? '' : 'A quick way to assign something today. '}Once added they're yours to edit or delete. The ${esc(STATUS.level_label || 'Year')} levels are suggestions.</p>
+    <div style="max-height:300px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:4px 10px">${left.map(s => `<label style="display:flex;gap:10px;align-items:center;min-height:44px">
+      <input type="checkbox" data-starter="${esc(s.key)}" checked style="width:22px;height:22px;flex:none">
+      <span>${esc(s.title)} <span class="faint">${esc(STATUS.level_label || 'Year')} ${s.let_level} · ${esc(s.competency)}</span></span></label>`).join('')}</div>
+    <button class="btn primary" id="starterAdd" style="margin-top:8px">Add selected lessons</button><p class="faint" id="starterMsg" role="status"></p></div>`;
+}
+
+function starterLessonsWire(root, done) {
+  const btn = root.querySelector('#starterAdd');
+  if (!btn) return;
+  btn.addEventListener('click', async () => {
+    const keys = [...root.querySelectorAll('[data-starter]:checked')].map(x => x.dataset.starter);
+    if (!keys.length) { root.querySelector('#starterMsg').textContent = 'Tick at least one lesson.'; return; }
+    btn.disabled = true;
+    root.querySelector('#starterMsg').textContent = 'Adding…';
+    const r = await api('/api/instructor/lessons/starter', { keys });
+    if (r.error) { root.querySelector('#starterMsg').textContent = r.error; btn.disabled = false; return; }
+    done(r);
+  });
 }

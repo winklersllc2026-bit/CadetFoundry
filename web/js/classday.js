@@ -114,7 +114,8 @@ async function planner(main, ov, prev) {
     <div class="card"><h3>📋 Assign — a lesson</h3>
       ${lessons.length ? `<div style="${box}">${pick('lesson', '', 'No lesson today', '', !(was.items || []).some(i => i.type === 'lesson'), 'radio', 'cdLesson')}
         ${lessons.map(l => pick('lesson', l.id, esc(l.title), [l.let_level && `${STATUS.level_label || 'Year'} ${l.let_level}`, l.questions.length && `${l.questions.length} questions`].filter(Boolean).map(esc).join(' · '), had('lesson', l.id), 'radio', 'cdLesson')).join('')}</div>`
-        : '<p class="faint">No lessons yet.</p>'}
+        : `<p class="faint">No lessons yet. Add Vanguard's starter lessons — ready to assign, built from cited study cards — or write your own.</p>
+           <button class="btn small primary" id="cdStarters">📦 Add the starter lessons</button>`}
       <button class="btn small" id="cdNewLesson" style="margin-top:8px">＋ Write a new lesson</button></div>
     ${cdPromptCard('close', '🚪 Close', 'An exit question on the projector before the bell.', was, CD_CLOSERS)}
     <div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:20px"><button class="btn primary" id="cdBuild" style="flex:1;min-height:56px;font-size:19px">Build today's class →</button>
@@ -141,6 +142,13 @@ async function planner(main, ov, prev) {
     drawQ();
   });
   $('#cdNewLesson').addEventListener('click', () => { openView('instructor'); loaders.instructor('lessons'); });
+  if ($('#cdStarters')) $('#cdStarters').addEventListener('click', async () => {
+    $('#cdStarters').disabled = true;
+    $('#cdStarters').textContent = 'Adding…';
+    const r = await api('/api/instructor/lessons/starter', {});
+    if (r.error) { $('#cdMsg').textContent = r.error; $('#cdStarters').disabled = false; return; }
+    planner(main, ov, prev);                        // the same plan, now with lessons to pick from
+  });
   $('#cdCancel').addEventListener('click', classDayHome);
   $('#cdBuild').addEventListener('click', () => {
     const items = [];

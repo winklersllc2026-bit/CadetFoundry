@@ -44,6 +44,9 @@ is — and isn't** in Settings and Me.
 Batch 3: **after-class feedback** (how useful today, 1–5; would you use it again; four optional questions — nothing
 about Cadets) · **pilot results** on the Pilot screen · **one-page pilot summary** to print · a sample class closes
 itself if the Vanguard that opened it is gone.
+Also: **12 starter lessons** from cited cards (one click; right answers from each card's own quiz) · the OCS card checked
+against goarmy.com and the Minnesota National Guard (GT 110, bachelor's degree) · Coast Guard JROTC says plainly there are
+no Coast Guard cards yet. Still unchecked: `land_navigation` (its manual, TC 3-25.26, wasn't readable from a public copy).
 
 ## Next: Cadet drives that sync
 

@@ -6,6 +6,10 @@ below do. Before each school year (suggested: **every July**), open each source,
 
 Last full check: **2026-10-09** (Phase 11).
 
+Starter lessons (`vanguard/data/starter_lessons.json`): each copies its card's text and source **when an instructor
+adds it**, so a later card fix doesn't change lessons already added. If you correct one of those 12 cards, check the
+matching starter questions too; instructors can re-add a lesson after deleting their copy.
+
 Per-card dates: 52 of the 202 cards (the newer branch cards) carry `checked YYYY-MM-DD` in their `source:` line; the
 other 150 were covered by the full check above but don't record their own date yet. When you next open one of those
 sources, add `, checked YYYY-MM-DD` to its card so the next reviewer can see how fresh each fact is (noted in the

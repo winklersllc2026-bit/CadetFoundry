@@ -25,6 +25,7 @@ import re
 import threading
 import time
 import uuid
+from pathlib import Path
 
 from vanguard import instructor, profiles, store, vault
 
@@ -378,3 +379,51 @@ def submit(pid: str, aid: str, answers: dict, reflection: str) -> dict:
         store.write_json("assignments.json", work)
     return {"score": right, "total": len(lesson["questions"]), "answers": [q["answer"] for q in lesson["questions"]],
             "chosen": chosen}
+
+
+# ── starter lessons: ready to assign on day one (owner, 2026-10-11) ─────────
+# Each is built from a cited study card when the instructor adds it: the card's text and source become the lesson's
+# content, and the questions (right answers from the card's own quiz) come from vanguard/data/starter_lessons.json.
+# Once added it's the instructor's own lesson: edit it, assign it, delete it.
+STARTER_FILE = Path(__file__).resolve().parent / "data" / "starter_lessons.json"
+
+
+def starters() -> list[dict]:
+    try:
+        return json.loads(STARTER_FILE.read_text(encoding="utf-8"))["lessons"]
+    except (OSError, ValueError, KeyError):
+        return []
+
+
+def starter_list(library) -> list[dict]:
+    have = {x.get("starter") for x in all_lessons()}
+    out = []
+    for s in starters():
+        card = library.card(s["card"])
+        if card and card.verified:
+            out.append({"key": s["key"], "title": card.title, "let_level": s["let_level"], "competency": s["competency"],
+                        "added": s["key"] in have})
+    return out
+
+
+def add_starters(priv: bytes, library, keys: list | None = None) -> dict:
+    """Add the starter lessons that aren't here yet (all of them, or just `keys`). Returns how many were added."""
+    have = {x.get("starter") for x in all_lessons()}
+    added = 0
+    for s in starters():
+        if s["key"] in have or (keys is not None and s["key"] not in keys):
+            continue
+        card = library.card(s["card"])
+        if not card or not card.verified:              # never build a lesson from a card that couldn't be checked
+            continue
+        lesson = save_lesson(priv, {"title": card.title, "let_level": s["let_level"], "competency": s["competency"],
+                                    "objective": s["objective"], "source": card.source[:200], "content": card.body,
+                                    "questions": s["questions"], "reflection": s["reflection"]})
+        with _lock:
+            ls = all_lessons()
+            for x in ls:
+                if x["id"] == lesson["id"]:
+                    x["starter"] = s["key"]
+            _write("lessons.json", ls)
+        added += 1
+    return {"added": added}

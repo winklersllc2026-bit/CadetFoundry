@@ -413,7 +413,7 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
             if r == "/api/instructor/live-quiz":
                 return self._json(live_quiz.for_instructor())
             if r == "/api/instructor/lessons":
-                return self._json(lessons.for_instructor(priv))
+                return self._json({**lessons.for_instructor(priv), "starters": lessons.starter_list(app.library)})
             if r == "/api/instructor/assignment":
                 try:
                     return self._json(lessons.details(priv, str(q.get("id", ""))[:12]))
@@ -1231,6 +1231,10 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                         lessons.delete_lesson(priv, str(b.get("id", ""))[:12])
                         return self._json({"ok": True})
                     return self._json(lessons.save_lesson(priv, b))
+                if r == "/api/instructor/lessons/starter":   # ready-made lessons from cited study cards
+                    keys = b.get("keys")
+                    keys = [str(k)[:40] for k in keys][:50] if isinstance(keys, list) else None
+                    return self._json(lessons.add_starters(priv, app.library, keys))
                 if r == "/api/instructor/assign-lesson":
                     as_list = lambda v: [str(x)[:12] for x in v][:200] if isinstance(v, list) else []
                     return self._json(lessons.assign(priv, str(b.get("lesson", ""))[:12], bool(b.get("everyone")),

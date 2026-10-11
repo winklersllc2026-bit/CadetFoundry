@@ -349,6 +349,7 @@ function instSettings(sec) {
       <p class="faint">Sets the words Vanguard uses (for example, the year a Cadet is in: LET 1 in Army JROTC, NS 1 in Navy JROTC, LE 1 in Marine Corps JROTC, Year 1 in Air Force JROTC) and puts your branch first in Learn. Cadets can still explore every branch.</p>
       <select id="progPick" aria-label="JROTC program" style="width:100%;min-height:46px"><option value="">Not set / more than one program</option>
         ${Object.entries(progs).map(([k, v]) => `<option value="${k}" ${STATUS.program === k ? 'selected' : ''}>${esc(v)}</option>`).join('')}</select>
+      ${STATUS.program === 'coast_guard' ? '<p class="faint">Vanguard has no Coast Guard study cards yet. Cadets still see every other branch, and the shared lessons, scenarios and subjects.</p>' : ''}
       <p class="faint" id="progMsg" role="status"></p></div>
     <div class="card"><h3>📘 What Cadets can study</h3><p class="faint">Turn sections of Learn on or off for every Cadet on this device.</p>
       ${Object.entries(CAT_NAMES).map(([k, v]) => `<label style="display:flex;gap:10px;align-items:center;min-height:44px">

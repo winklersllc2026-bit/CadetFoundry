@@ -34,6 +34,9 @@ Version 0.2.2. What's built and what's next: ROADMAP.md. How it fits together: A
 - **Lessons:** write a lesson (objective, content, questions, vocabulary, reflection prompt, private notes) and assign
   it to everyone, to units, or to individual Cadets with a due date. See who's complete, in progress or not started,
   with scores and reflections. Cadets who join a unit later get its lessons automatically.
+- **Starter lessons:** 12 ready-to-assign lessons (citizenship, leadership, values, communication, money, study
+  skills), each built from a cited study card with four questions and a reflection — one click on Lessons or in Start
+  class. Once added they're yours to edit.
 - **Start class:** the instructor's Home plans today in named steps — Opening (a question on the projector), Learn
   (videos), Discuss (scenarios with a class vote), Engage (live questions), Assign (a lesson), Close (an exit question)
   — then runs them from one run sheet and ends on Progress (who's done).

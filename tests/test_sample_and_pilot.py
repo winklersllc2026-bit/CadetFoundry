@@ -192,6 +192,35 @@ class SampleClassTests(unittest.TestCase):
                                                   "pin": sample.CADET_PIN})[2]
         self.assertEqual(self.call("POST", "/api/instructor/pilot/daily", {"useful": 5}, cadet)[0], 403)
 
+    def test_1c_starter_lessons_add_once_and_work_like_any_lesson(self):
+        ck = self.enter()
+        before = self.get("/api/instructor/lessons", ck)[1]
+        self.assertEqual(len(before["starters"]), 12)
+        self.assertFalse(any(x["added"] for x in before["starters"]))
+        first = [before["starters"][0]["key"], before["starters"][1]["key"]]
+        self.assertEqual(self.call("POST", "/api/instructor/lessons/starter", {"keys": first}, ck)[1]["added"], 2)
+        self.assertEqual(self.call("POST", "/api/instructor/lessons/starter", {"keys": first}, ck)[1]["added"], 0)   # once
+        self.assertEqual(self.call("POST", "/api/instructor/lessons/starter", {}, ck)[1]["added"], 10)
+        after = self.get("/api/instructor/lessons", ck)[1]
+        self.assertTrue(all(x["added"] for x in after["starters"]))
+        mine = [x for x in after["lessons"] if x.get("starter")]
+        self.assertEqual(len(mine), 12)
+        branches = next(x for x in mine if x["starter"] == "starter_three_branches")
+        self.assertIn("usa.gov", branches["source"])                       # the card's source and text came along
+        self.assertIn("checks and balances", branches["content"].lower())
+        # it assigns, opens without the answer key, and grades like any lesson
+        cadet = self.get("/api/instructor/overview", ck)[1]["cadets"][0]["id"]
+        asg = self.call("POST", "/api/instructor/assign-lesson", {"lesson": branches["id"], "cadets": [cadet], "due": ""}, ck)[1]
+        aid = asg.get("id") or asg["assignment"]["id"]
+        cck = self.call("POST", "/api/unlock", {"profile": cadet, "pin": sample.CADET_PIN})[2]
+        lz = self.get(f"/api/lesson?a={aid}", cck)[1]
+        self.assertNotIn("answers", lz)
+        self.assertNotIn("answer", json.dumps(lz["lesson"]["questions"]))
+        right = {str(i): q["answer"] for i, q in enumerate(branches["questions"])}
+        out = self.call("POST", "/api/lesson/submit", {"a": aid, "answers": right, "reflection": "Congress can override a veto."}, cck)[1]
+        self.assertEqual((out["score"], out["total"]), (4, 4))
+        self.assertEqual(self.call("POST", "/api/instructor/lessons/starter", {}, cck)[0], 403)   # a Cadet can't add them
+
     def test_2_the_real_data_folder_is_never_touched(self):
         self.assertEqual([p["id"] for p in profiles.all_profiles()], self.before)
         self.assertNotEqual(sample.folder(), store.DATA)
@@ -209,7 +238,7 @@ class SampleClassTests(unittest.TestCase):
         st = self.call("POST", "/api/instructor/pilot/mode", {"on": True}, ck)[1]
         self.assertTrue(st["pilot_mode"])
         self.assertFalse(st["online_ai"])
-        self.assertEqual((st["cadets"], st["instructors"], st["lessons"]), (len(sample.CADETS), 1, 2))
+        self.assertEqual((st["cadets"], st["instructors"], st["lessons"]), (len(sample.CADETS), 1, 2 + 12))
         self.assertGreater(st["assignments"], 0)
         self.assertTrue(self.get("/api/instructor/pilot", ck)[1]["stored"]["pilot_mode"])
 
@@ -238,7 +267,7 @@ class SampleClassTests(unittest.TestCase):
         self.assertIsNone(self.get(f"/api/join-code?c={old_code}")[1].get("name"))   # ...with new join codes
         stored = self.get("/api/instructor/pilot", ck)[1]
         self.assertEqual((stored["stored"]["cadets"], stored["stored"]["assignments"], stored["stored"]["lessons"]),
-                         (0, 0, 2))                                           # the instructor's lessons stay
+                         (0, 0, 2 + 12))                                      # the instructor's lessons stay
         self.assertEqual(stored["config"], {})                                # the pilot's setup is gone
         self.assertEqual(stored["snapshots"], [])
         self.assertEqual(stored["metrics"]["rating_days"], 0)                 # after-class feedback went too
