@@ -62,6 +62,7 @@ def seed() -> dict:
     r = inst.call("POST", "/api/profiles/create", {"name": "Ms. Rivera", "kind": "instructor", "pin": INSTRUCTOR_PIN,
                                                    "admin": CLASS_PIN})
     assert r.get("ok"), r
+    inst.call("POST", "/api/terms/accept", {})          # as the instructor does on first run (the "I agree" box)
     inst.call("POST", "/api/instructor/program", {"program": "army"})
     unit = inst.call("POST", "/api/instructor/unit", {"action": "add", "name": "LET 1 · 3rd Period", "kind": "class"})
     cadets = []
