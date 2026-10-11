@@ -21,3 +21,13 @@ books/*
 downloads/
 # Official DVIDS videos saved by tools/fetch_videos.py (large; copied to a USB drive by make_usb.py)
 videos/
+
+# Never commit keys, certificates or local secrets (security review 2026-10). The release key lives in ~/.vanguard-release.
+*.pem
+*.key
+*.pfx
+*.p12
+.env
+.env.*
+.dev.vars
+node_modules/

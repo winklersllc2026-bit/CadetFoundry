@@ -54,6 +54,9 @@ sources (Enlisted Force Structure, Air Force Symbol, SPFMAN 36-2905, Marine Corp
    certificate in the company's name; then sign `Vanguard-Setup-*.exe` in `site/build.py`).
 3. ~~Raspberry Pi demo box~~ — no Pi now (2026-10-10); the instructor's laptop is the first device. The Pi tools stay in the repo.
 4. **Walk the pilot flow once by hand** on the classroom setup you'll use (below).
+5. **Decide retention, the device owner, the parent notice and online AI**, and publish a security contact —
+   docs/PILOT_DATA_HANDLING.md and docs/PILOT_CHECKLIST.md (2026-10-11).
+6. **Release 0.2.3** (the security review) and reinstall any 0.2.2 copies.
 
 ## Next work
 

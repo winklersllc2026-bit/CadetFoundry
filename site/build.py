@@ -419,15 +419,16 @@ def security_page() -> str:
     body = """<section class="hero"><div class="wrap" style="max-width:860px">
 <p class="kicker">Privacy and security</p><h1 style="font-size:clamp(32px,5vw,52px)">Built for minors' data from the start</h1>
 <ul class="checks">
-<li><b>Everything stays on the instructor's laptop</b> (or the Cadet's own USB drive). No cloud, no outside accounts, no tracking, no advertising.</li>
+<li><b>Everything is stored on the instructor's laptop</b> (or the USB drive Vanguard runs from). No cloud, no outside accounts, no tracking, no advertising.</li>
 <li><b>Each profile has its own PIN, and its files are encrypted</b> (AES-256-GCM, with the key locked by the PIN).</li>
 <li><b>The instructor sees class records only</b> — lessons, quizzes, exams, leadership scenarios, fitness and service. A Cadet's private check-ins, chats and notes are sealed with that Cadet's own key; the instructor can't open them.</li>
 <li><b>Two keys for class records:</b> the instructor's own PIN and the Class PIN.</li>
 <li><b>Cadets never see another Cadet's work</b>, and there are no public leaderboards. Class votes show totals only.</li>
-<li><b>Quizzes can't be faked:</b> Cadets type or pick answers and Vanguard grades them; the answer isn't sent to the screen early.</li>
-<li><b>Minimal data about minors:</b> a name and a PIN. No email, phone number, photos, body data or sex.</li>
-<li><b>The classroom network:</b> other devices on the Wi-Fi see shortened names before sign-in, and a profile without a PIN can only be opened on the instructor's own computer. Requests from other websites are refused.</li>
-<li><b>No internet unless you choose it:</b> Vanguard never connects to the internet on its own. Optional online AI is off unless the instructor turns it on with their own key.</li>
+<li><b>Assigned quizzes can't be faked:</b> Cadets type or pick answers and Vanguard grades them; the answer isn't sent to the screen early.</li>
+<li><b>Minimal data about minors:</b> Vanguard asks for a name and a PIN — no email, phone number, photos or birth date. Whatever else a Cadet types stays in their own encrypted files.</li>
+<li><b>The classroom network:</b> other devices on the Wi-Fi see shortened names before sign-in, and a profile without a PIN can only be opened on the instructor's own computer. Requests from other websites, and from addresses other than the laptop's own, are refused. Traffic on that network isn't encrypted (plain HTTP), so use a hotspot only your class joins.</li>
+<li><b>No internet unless you choose it:</b> Vanguard never connects to the internet on its own. Optional online AI is off unless the device owner turns it on with their own key; then only ordinary Ask questions go to it, without names, notes or earlier chats.</li>
+<li><b>Ask is private, not monitored:</b> a safety check shows help numbers (988, 911) when a message sounds unsafe. It notifies no one.</li>
 <li><b>Forgotten PIN:</b> each person gets a one-time backup code. There is no master key for private files — not even for us.</li>
 </ul>
 <div class="tip"><b>For school IT:</b> turn on full-disk encryption (BitLocker) on the instructor's laptop, keep Windows updated, and use a standard (non-admin) account day to day. For the classroom, a dedicated hotspot or travel router that only the class joins is better than open or guest Wi-Fi. Full technical details — threats, protections and the automated attack tests — are in SECURITY.md with the code.</div>
