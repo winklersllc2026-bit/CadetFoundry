@@ -260,7 +260,7 @@ async function instClass(sec, ov, run) {
           <input data-rank="${esc(c.id)}" value="${esc(c.rank || '')}" maxlength="40" placeholder="Cadet rank" aria-label="Cadet rank for ${esc(c.name)}" style="flex:1;min-width:130px">
           <input data-billet="${esc(c.id)}" value="${esc(c.billet || '')}" maxlength="40" placeholder="Billet (job in the cadet corps)" aria-label="Billet for ${esc(c.name)}" style="flex:2;min-width:170px">
         </div>
-        <div class="faint" style="margin-top:6px">${c.status === 'waiting' ? '' : `Quiz questions known: ${c.questions_known} · Exams: ${c.exams}${c.last_study ? ` · Last studied ${esc(c.last_study)}` : ''}`}</div>
+        <div class="faint" style="margin-top:6px">${c.status === 'waiting' ? '' : c.status === 'damaged' ? 'This Cadet’s class records couldn’t be read (a damaged file). The rest of the class is unaffected.' : `Quiz questions known: ${c.questions_known} · Exams: ${c.exams}${c.last_study ? ` · Last studied ${esc(c.last_study)}` : ''}`}</div>
         ${c.status === 'waiting' ? '' : `<button class="btn small" data-prog="${esc(c.id)}" style="margin-top:8px">📈 Progress and portfolio</button>`}
       </div>`).join('') : `<p><b>No Cadets yet.</b> ${STATUS.lan ? 'Open the Join screen and have Cadets scan the code.' : 'Cadets make their own profile with a PIN the first time they open Vanguard.'}</p>`}
       <p class="faint">You see class records only. Cadets' private check-ins, chats and notes are never shown.</p></div>`;

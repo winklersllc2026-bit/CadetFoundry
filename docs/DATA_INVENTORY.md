@@ -66,6 +66,8 @@ computer.
 
 - **Personal backup** (Me → Download encrypted backup): that person's files, sealed with a backup password (scrypt +
   AES-256-GCM). Never includes anyone else's files.
+  Restoring is selective (only the files in the backup are replaced) and never touches device settings, assigned-lesson
+  grades or the profile's kind. Practice history it restores (`study.json`, `exams.jsonl`) is self-reported.
 - **Program backup** (Instructor → Settings): the program folder, `program.json` and `admin.json`, sealed with a
   backup password. Never includes any Cadet's files. Sealed files inside stay sealed.
 - **Class report CSV**: plain text the instructor downloads on purpose. It holds class records; treat it like a

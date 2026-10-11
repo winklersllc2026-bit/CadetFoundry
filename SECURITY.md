@@ -38,6 +38,8 @@ Also: keep the OS updated, use a standard (non-admin) account for daily use, and
 ## Backups
 **Me → Download encrypted backup** saves one file (profile, logbook, letters, address book, study progress, memory), encrypted with AES-256-GCM under a **backup password of at least 10 characters** that the Cadet chooses (a backup can be attacked offline, so a 6-digit PIN isn't enough). Without the password the file can't be opened. Device settings (AI model, online switch, keys) are never included, and restoring a backup can never change them.
 
+A backup is a file its owner controls, so restoring one is treated as the owner's own word: it can never change device settings, make anyone an instructor, or write assigned-lesson grades (`assignments.json` isn't in a backup), and a file of the wrong shape is skipped. It **can** bring back the owner's own practice history (`study.json`, `exams.jsonl`), which instructors also see — so practice counts and practice-exam scores are self-reported, while assigned-lesson scores are graded by Vanguard. Restoring is selective: files in the backup replace the matching files; files it doesn't hold are left as they are.
+
 ## Library tamper check
 When the library is installed, Vanguard records a SHA-256 fingerprint of every manual (`library/integrity.json`). At startup it recomputes them: **Me → Library check** says whether every file still matches, and search marks any result from a changed file. If the publisher signed the list (`tools/sign.py library` → `integrity.json.sig`), the signature is checked too, so editing a manual *and* its fingerprint doesn't go unnoticed.
 

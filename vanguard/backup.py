@@ -48,6 +48,16 @@ def open_any(data: dict, password: str = "") -> dict:
     return data
 
 
+def _shape_ok(name: str, value) -> bool:
+    """A backup is a file its owner controls. Every file is an object or a list, and study.json -- a class record the
+    instructor's views read -- is an object of objects, so one Cadet's backup can't break the class overview."""
+    if not isinstance(value, (dict, list)):
+        return False
+    if name == "study.json":
+        return isinstance(value, dict) and all(isinstance(r, dict) for r in value.values())
+    return True
+
+
 def restore(data: dict) -> dict:
     """Replace this device's data with the backup's. Returns what was restored."""
     if not isinstance(data, dict) or data.get("vanguard_backup") != VERSION:
@@ -55,7 +65,7 @@ def restore(data: dict) -> dict:
     restored = []
     for f in JSON_FILES:                             # config.json is never restored (device settings)
         v = data.get("json", {}).get(f)
-        if v is None:
+        if v is None or not _shape_ok(f, v):         # a damaged or hand-made file is skipped, never written
             continue
         store.write_json(f, v)
         restored.append(f)

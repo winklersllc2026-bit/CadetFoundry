@@ -11,7 +11,7 @@ import csv
 import io
 import time
 
-from vanguard import instructor, lessons, profiles, progress, security, service, store
+from vanguard import instructor, lessons, profiles, progress, security, service, store, vault
 
 ACTIVE_DAYS = 14
 
@@ -31,7 +31,7 @@ def _last_active(pid: str) -> str:
     """The latest date of any class-record activity (inside that Cadet's class-key context)."""
     dates = []
     study = store.read_json("study.json", {})
-    stamps = [r.get("last", 0) for r in study.values() if r.get("last")]
+    stamps = [r["last"] for r in study.values() if isinstance(r, dict) and isinstance(r.get("last"), (int, float))]
     if stamps:
         dates.append(time.strftime("%Y-%m-%d", time.localtime(max(stamps))))
     for w in store.read_json("assignments.json", {}).values():
@@ -67,14 +67,18 @@ def cadet_rows(priv: bytes, library, unit: str = "", owner: str = "") -> list[di
         if status == "waiting":
             rows.append({**row, "shared": False})
             continue
-        with security.as_profile(p["id"], None, ck):
-            pf = progress.portfolio(library, p["id"])
-            work = store.read_json("assignments.json", {})
-            mine = [a for a in lessons.all_assignments() if p["id"] in lessons.recipients(a)]
-            overdue = sum(1 for a in mine if a.get("due") and a["due"] < today
-                          and (work.get(a["id"]) or {}).get("state") != "complete")
-            last = _last_active(p["id"])
-            pending = sum(1 for e in service.entries() if e.get("status") == "pending")
+        try:
+            with security.as_profile(p["id"], None, ck):
+                pf = progress.portfolio(library, p["id"])
+                work = store.read_json("assignments.json", {})
+                mine = [a for a in lessons.all_assignments() if p["id"] in lessons.recipients(a)]
+                overdue = sum(1 for a in mine if a.get("due") and a["due"] < today
+                              and (work.get(a["id"]) or {}).get("state") != "complete")
+                last = _last_active(p["id"])
+                pending = sum(1 for e in service.entries() if e.get("status") == "pending")
+        except (vault.VaultError, AttributeError, TypeError, ValueError, KeyError):
+            rows.append({**row, "shared": False, "damaged": True})   # one Cadet's damaged files never stop the report
+            continue
         ac, ft, sv = pf["academics"], pf["fitness"], pf["service"]
         rows.append({**row, "lessons_assigned": ac["lessons_assigned"], "lessons_completed": ac["lessons_completed"],
                      "lessons_overdue": overdue, "lesson_score_pct": ac["lesson_score_pct"],

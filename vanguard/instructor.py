@@ -323,9 +323,10 @@ def records(priv: bytes, pid: str) -> dict:
         study = store.read_json("study.json", {})
         exams = store.read_lines("exams.jsonl")
         scen = store.read_lines("scenarios.jsonl")
-    answered = len(study)
-    right = sum(1 for r in study.values() if r.get("right"))
-    last = max((r.get("last", 0) for r in study.values()), default=0)
+    rows = [r for r in study.values() if isinstance(r, dict)] if isinstance(study, dict) else []
+    answered = len(rows)
+    right = sum(1 for r in rows if r.get("right"))
+    last = max((r.get("last", 0) for r in rows if isinstance(r.get("last", 0), (int, float))), default=0)
     return {"status": status, "questions_practiced": answered, "questions_known": right,
             "last_study": time.strftime("%Y-%m-%d", time.localtime(last)) if last else "",
             "exams": list(reversed(exams[-10:])), "scenarios": len(scen)}
@@ -344,7 +345,10 @@ def overview(priv: bytes) -> dict:
         if p["kind"] != "cadet":
             continue
         meta = r["cadets"].get(p["id"], {})
-        rec = records(priv, p["id"])
+        try:
+            rec = records(priv, p["id"])
+        except (vault.VaultError, AttributeError, TypeError, ValueError, KeyError):
+            rec = {"status": "damaged"}          # one Cadet's damaged files never hide the rest of the class
         cadets.append({"id": p["id"], "name": p["name"], "unit": meta.get("unit", ""), "let": meta.get("let"),
                        "rank": meta.get("rank", ""), "billet": meta.get("billet", ""),
                        "status": rec["status"], "questions_known": rec.get("questions_known", 0),
