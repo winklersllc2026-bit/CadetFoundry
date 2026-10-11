@@ -585,6 +585,100 @@ class IntegrityAndUpdateTests(unittest.TestCase):
         self.assertEqual(self.integrity.current_version(root), "1.0.0")     # nothing was installed
         self.assertFalse((root / "web").exists())
 
+    def test_more_refusals_fail_closed(self):
+        """Security review, Phase 4: malformed signatures, equal versions, Windows stream names, no public key."""
+        root, data = self._root(), self._zip()
+        for sig in ("not base64 !!", "AAAA", self.sign(data)[:-8], self.sign(data) + "AA", "\n"):
+            with self.assertRaises(ValueError, msg=repr(sig)):
+                self.integrity.install_update(data, sig, root, self.pub)
+        same = self._zip("1.0.0")
+        with self.assertRaises(ValueError):
+            self.integrity.install_update(same, self.sign(same), root, self.pub)
+        for bad in ({"Vanguard/vanguard/server.py:hidden": "x"}, {"Vanguard/web/C:/x.js": "x"},
+                    {"Vanguard/web/a\x01.js": "x"}):
+            z = self._zip(extra=bad)
+            with self.assertRaises(ValueError, msg=str(bad)):
+                self.integrity.install_update(z, self.sign(z), root, self.pub)
+        # no public key on this copy: refused even with a "valid" signature (fail closed)
+        from unittest import mock
+        with mock.patch.object(self.integrity, "public_key", lambda: None):
+            self.assertFalse(self.integrity.signature_ok(data, self.sign(data)))
+            with self.assertRaises(ValueError):
+                self.integrity.install_update(data, self.sign(data), root)
+        self.assertEqual(self.integrity.current_version(root), "1.0.0")
+
+    def test_a_failed_or_interrupted_update_puts_the_app_back(self):
+        from unittest import mock
+        root = self._root()
+        (root / "web").mkdir()
+        (root / "web" / "app.js").write_text("// old\n")
+        data = self._zip(extra={"Vanguard/web/new.js": "// added\n"})
+        real = Path.replace
+        calls = {"n": 0}
+
+        def flaky(self_path, target):                    # the 2nd file can't be replaced (in use)
+            calls["n"] += 1
+            if calls["n"] == 2:
+                raise PermissionError("in use")
+            return real(self_path, target)
+        with mock.patch.object(Path, "replace", flaky), self.assertRaises(ValueError):
+            self.integrity.install_update(data, self.sign(data), root, self.pub)
+        self.assertEqual(self.integrity.current_version(root), "1.0.0")
+        self.assertEqual((root / "web" / "app.js").read_text(), "// old\n")
+        self.assertFalse((root / "web" / "new.js").exists())
+        self.assertFalse((root / ".update-previous").exists())
+        # interrupted (the process died): the next start rolls back
+        calls["n"] = 0
+
+        def die(self_path, target):
+            calls["n"] += 1
+            if calls["n"] == 2:
+                raise SystemExit("power cut")
+            return real(self_path, target)
+        with mock.patch.object(Path, "replace", die), self.assertRaises(SystemExit):
+            self.integrity.install_update(data, self.sign(data), root, self.pub)
+        self.assertTrue(self.integrity.finish_pending_update(root))
+        self.assertEqual(self.integrity.current_version(root), "1.0.0")
+        self.assertEqual((root / "web" / "app.js").read_text(), "// old\n")
+        self.assertFalse((root / "web" / "new.js").exists())
+        self.assertFalse(self.integrity.finish_pending_update(root))        # nothing left to do
+
+    def test_a_real_release_zip_signed_and_installed_end_to_end(self):
+        """The release chain with the real build: site/build.py's zip, signed (throwaway key), verified, installed.
+        Found by this test (2026-10-11): the updater refused every real release (start-classroom.*, books/ weren't
+        on its list)."""
+        sys.path.insert(0, str(ROOT / "site"))
+        import build
+        z = self.tmp / "Vanguard-release.zip"
+        build.make_zip(z)
+        data = z.read_bytes()
+        root = self._root()
+        (root / "vanguard" / "__init__.py").write_text('__version__ = "0.0.1"\n')
+        r = self.integrity.install_update(data, self.sign(data), root, self.pub)
+        self.assertEqual(r["version"], self.integrity.current_version(ROOT))
+        self.assertTrue((root / "run.py").exists() and (root / "start-classroom.bat").exists())
+        self.assertGreater(r["files"], 100)
+        # and the same zip with one byte changed is refused
+        bad = data[:-10] + bytes([data[-10] ^ 1]) + data[-9:]
+        root2 = self.tmp / "app2"
+        (root2 / "vanguard").mkdir(parents=True)
+        (root2 / "vanguard" / "__init__.py").write_text('__version__ = "0.0.1"\n')
+        with self.assertRaises(ValueError):
+            self.integrity.install_update(bad, self.sign(data), root2, self.pub)
+
+    def test_the_private_signing_key_is_never_in_the_repo_or_a_build(self):
+        import subprocess
+        tracked = subprocess.run(["git", "ls-files"], cwd=ROOT, capture_output=True, text=True).stdout.splitlines()
+        self.assertFalse([f for f in tracked if f.endswith((".pem", ".key", ".p12", ".pfx"))])
+        marker = "PRIVATE" + " KEY-----"                  # (spelled in two parts so this file doesn't match itself)
+        for f in tracked:
+            p = ROOT / f
+            if p.suffix in (".py", ".md", ".json", ".txt", ".js", ".html", ".pub", ".iss", ".toml") and p.is_file():
+                self.assertNotIn(marker, p.read_text(encoding="utf-8", errors="ignore"), f)
+        pub = ROOT / "vanguard" / "data" / "release_key.pub"
+        if pub.exists():                                                      # 32 raw bytes: a public key, nothing more
+            self.assertEqual(len(self.b64.b64decode(pub.read_text().strip())), 32)
+
 
 if __name__ == "__main__":
     unittest.main()

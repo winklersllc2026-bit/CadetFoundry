@@ -1386,6 +1386,7 @@ def reopen(port: int, lan: bool, wait: float = 20.0) -> ThreadingHTTPServer:
 def serve(host: str = "127.0.0.1", port: int = 8780, lan: bool = False) -> ThreadingHTTPServer:
     profiles.migrate_legacy()
     program_backup.finish_pending()              # a program restore that was interrupted: finish it or roll it back
+    integrity.finish_pending_update()            # an update that stopped part-way: put the app back as it was
     # Class opens even if some profiles on this device have no PIN yet (owner's decision, 2026-10-10): those can only
     # be opened on this computer -- /api/unlock refuses them from other devices and /api/lock hides them there.
     httpd = _Server((host, port), Handler)                 # take the port first: if it's busy, change nothing

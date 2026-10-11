@@ -31,10 +31,11 @@ PUBLIC_KEY = Path(__file__).resolve().parent / "data" / "release_key.pub"
 MANIFEST = "integrity.json"
 _SKIP = {MANIFEST, MANIFEST + ".sig", "README.md"}
 
-# What an update may contain (inside the zip's "Vanguard/" folder). Anything else is refused.
-_ALLOWED_DIRS = ("vanguard/", "web/", "tools/", "tests/", "library/", "faith/")
-_ALLOWED_FILES = {"run.py", "start-vanguard.bat", "start-vanguard.sh", "install-vanguard.bat", "install-vanguard.sh",
-                  "README.md", "LIBRARY.md", "SECURITY.md"}
+# What an update may contain (inside the zip's "Vanguard/" folder). Anything else is refused. It must cover everything
+# site/build.py puts in a release (tests/test_security.py builds a real release zip and installs it to check).
+_ALLOWED_DIRS = ("vanguard/", "web/", "tools/", "tests/", "library/", "faith/", "books/")
+_ALLOWED_FILES = {"run.py", "start-vanguard.bat", "start-vanguard.sh", "start-classroom.bat", "start-classroom.sh",
+                  "install-vanguard.bat", "install-vanguard.sh", "README.md", "LIBRARY.md", "SECURITY.md"}
 
 
 # ── fingerprints ────────────────────────────────────────────────────────────
@@ -72,9 +73,12 @@ def public_key():
 def signature_ok(data: bytes, sig_b64: str, key=None) -> bool:
     try:
         key = key or public_key()
-        if key is None:
+        if key is None:                             # no public key on this copy: nothing verifies (fail closed)
             return False
-        key.verify(base64.b64decode(sig_b64.strip()), data)
+        sig = base64.b64decode(sig_b64.strip(), validate=True)    # strict: no junk around the signature
+        if len(sig) != 64:                          # an Ed25519 signature is exactly 64 bytes
+            return False
+        key.verify(sig, data)
         return True
     except Exception:                               # bad signature, bad encoding, no cryptography package
         return False
@@ -130,7 +134,8 @@ def inspect_update(zip_bytes: bytes, sig_b64: str, root: Path = ROOT, key=None) 
         name = info.filename
         if info.is_dir():
             continue
-        if not name.startswith("Vanguard/") or ".." in Path(name).parts or name.startswith("/") or "\\" in name:
+        if (not name.startswith("Vanguard/") or ".." in Path(name).parts or name.startswith("/") or "\\" in name
+                or ":" in name or any(ord(c) < 32 for c in name)):   # ':' = a drive or a Windows alternate stream
             raise ValueError(f"Unsafe path in the update: {name}")
         rel = name[len("Vanguard/"):]
         if not (rel in _ALLOWED_FILES or rel.startswith(_ALLOWED_DIRS)):
@@ -148,21 +153,70 @@ def inspect_update(zip_bytes: bytes, sig_b64: str, root: Path = ROOT, key=None) 
     return {"version": new, "current": cur, "files": len(files), "_zip": z, "_files": files}
 
 
+_PREVIOUS, _INCOMPLETE = ".update-previous", "_INCOMPLETE"
+
+
 def install_update(zip_bytes: bytes, sig_b64: str, root: Path = ROOT, key=None) -> dict:
+    """Install a signed update. Everything is unpacked first; every file it replaces is copied aside first; if any
+    step fails the app is put back exactly as it was (and if Vanguard stops part-way, finish_pending_update() puts it
+    back at the next start). Fails closed: no signature, a wrong one, or no public key -> nothing changes."""
     info = inspect_update(zip_bytes, sig_b64, root, key)
     z, files = info.pop("_zip"), info.pop("_files")
-    staging = root / ".update-staging"
+    finish_pending_update(root)
+    staging, previous = root / ".update-staging", root / _PREVIOUS
     shutil.rmtree(staging, ignore_errors=True)
     for zi, rel in files:                            # unpack everything first, so a failure leaves the app as it was
         dest = staging / rel
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_bytes(z.read(zi))
+    shutil.rmtree(previous, ignore_errors=True)       # the files this update replaces, for rollback
+    previous.mkdir(parents=True)
+    added = [rel for _zi, rel in files if not (root / rel).exists()]
+    (previous / _INCOMPLETE).write_text(json.dumps({"added": added}), encoding="utf-8")
     for _zi, rel in files:
-        dest = root / rel
-        dest.parent.mkdir(parents=True, exist_ok=True)
-        (staging / rel).replace(dest)
+        if (root / rel).exists():
+            (previous / rel).parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(root / rel, previous / rel)
+    try:
+        for _zi, rel in files:
+            dest = root / rel
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            (staging / rel).replace(dest)
+    except OSError:
+        _rollback_update(root)
+        shutil.rmtree(staging, ignore_errors=True)
+        raise ValueError("The update couldn't be installed (a file was in use?). Vanguard was put back as it was.") from None
+    (previous / _INCOMPLETE).unlink()
+    shutil.rmtree(previous, ignore_errors=True)
     shutil.rmtree(staging, ignore_errors=True)
     rels = {rel for _zi, rel in files}
     if any(r.startswith("library/") for r in rels) and f"library/{MANIFEST}" not in rels and (root / "library").exists():
         write_manifest(root / "library")             # the update was signed, so its library files are the new baseline
     return {**info, "ok": True, "restart": True}
+
+
+def _rollback_update(root: Path) -> None:
+    """Put back every file an unfinished update replaced, and remove the ones it added."""
+    previous = root / _PREVIOUS
+    try:
+        added = json.loads((previous / _INCOMPLETE).read_text(encoding="utf-8")).get("added", [])
+    except (OSError, ValueError):
+        added = []
+    for f in previous.rglob("*"):
+        if f.is_file() and f.name != _INCOMPLETE:
+            rel = f.relative_to(previous)
+            (root / rel).parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(f, root / rel)
+    for rel in added:
+        if ".." not in Path(rel).parts:
+            (root / rel).unlink(missing_ok=True)
+    shutil.rmtree(previous, ignore_errors=True)
+
+
+def finish_pending_update(root: Path = ROOT) -> bool:
+    """At start: an update that stopped part-way is rolled back. True if one was."""
+    if (root / _PREVIOUS / _INCOMPLETE).exists():
+        _rollback_update(root)
+        shutil.rmtree(root / ".update-staging", ignore_errors=True)
+        return True
+    return False

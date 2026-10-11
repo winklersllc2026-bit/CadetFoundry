@@ -42,20 +42,42 @@ Also: keep the OS updated, use a standard (non-admin) account for daily use, and
 When the library is installed, Vanguard records a SHA-256 fingerprint of every manual (`library/integrity.json`). At startup it recomputes them: **Me → Library check** says whether every file still matches, and search marks any result from a changed file. If the publisher signed the list (`tools/sign.py library` → `integrity.json.sig`), the signature is checked too, so editing a manual *and* its fingerprint doesn't go unnoticed.
 
 ## Signed offline updates
-An update is the normal release zip plus a `.sig` file. On a device: **Me → Install an update from a USB stick**, choose both files. Vanguard installs it only if:
-- the signature matches the publisher's public key (`vanguard/data/release_key.pub`, Ed25519);
-- it's a **newer** version (no downgrades);
-- every file is inside the app's own folders (no unexpected or `..` paths).
-Cadets' data (`~/.vanguard`) is never touched. Then restart Vanguard.
+An update is the normal release zip plus a `.sig` file. On a device: **Me → Install an update from a USB stick**, choose both files, and give the Class PIN (instructor profiles only). Vanguard installs it only if:
+- the signature is a well-formed Ed25519 signature (exactly 64 bytes, strict base64) that matches the publisher's public key (`vanguard/data/release_key.pub`);
+- it's a **newer** version (no downgrades, no reinstalling the same version);
+- every file is inside the app's own folders (no unexpected names, `..`, drive letters, `:` stream names or control characters).
+
+A copy without a public key refuses every update (fail closed). Everything is unpacked before anything changes, and
+every file the update replaces is copied aside first: if a step fails, the app is put back exactly as it was, and if
+Vanguard stops part-way, the next start rolls it back. Cadets' data (`~/.vanguard`) is never touched. Then restart
+Vanguard. Tested in `tests/test_security.py` (valid, tampered, unsigned, malformed, wrong key, downgrade, equal
+version, unsafe paths, no public key, failed and interrupted installs).
+
+**The release chain.** `python site/build.py` → the release zip (and the Windows installer) → signed with the private
+key into `<zip>.sig` → both published on the public releases page → a device verifies the `.sig` against the public
+key it already has, then installs. The public key ships inside the app; a device trusts only the key it was installed
+with. Note: the Windows **installer** (`Vanguard-Setup-*.exe`) is a separate, first-time install path — it is not
+checked by this key. Windows code signing (a paid certificate in the company's name) is what makes Windows trust the
+installer itself; it's an owner action that hasn't been done yet, so Windows shows "Windows protected your PC".
 
 **For the publisher (build machine only):**
-1. Once: `python tools/sign.py keygen` — writes the private key to `~/.vanguard-release/release_key.pem` (keep it safe and **off every device**; back it up) and the public key to `vanguard/data/release_key.pub` (commit it, so devices get it with the next install).
-2. Each release: `python site/build.py` signs the zip automatically when that key is present (`tools/sign.py sign <zip>` does it by hand). Optionally `python tools/sign.py library` before building, to ship a signed library list.
+1. **Create (once):** `python tools/sign.py keygen` — writes the private key to `~/.vanguard-release/release_key.pem`
+   and the public key to `vanguard/data/release_key.pub`. Commit only the `.pub`. Done by the owner on 2026-10-11.
+2. **Store:** keep `release_key.pem` only on the build computer (BitLocker on, standard account), never in git, a
+   zip, a USB that goes to schools, chat or email. A test checks that no private key is tracked in the repository.
+3. **Back up:** one offline copy (a password manager's secure file, or an encrypted USB kept locked away). Without it
+   no further update can be signed for devices already installed.
+4. **Each release:** `python site/build.py --release` signs the zip automatically when the key is present ("Signed:" in
+   the output; `tools/sign.py sign <zip>` does it by hand). Optionally `python tools/sign.py library` first, to ship a
+   signed library list.
+5. **Rotate or recover:** if the key is lost or may have been copied, make a new one (`keygen --force`), commit the new
+   `.pub` and release a new version. Devices with the old key can't verify updates signed with the new one, so they
+   must be reinstalled from the new installer (their data folder is kept). Tell schools when this happens.
 Anyone who has the private key can sign updates — treat it like a password.
 
-**Status (0.1.4):** Vanguard's own key has **not been created yet**. The public key the project was forked with
-belonged to the earlier product and was removed in 0.1.4, so devices currently refuse every signed update (fail
-closed). Step 1 above creates Vanguard's key.
+**Status (2026-10-11):** the owner created Vanguard's key; `release_key.pub` is in the app. Releases from now on are
+signed. A full end-to-end check (build → sign → install on a clean device from the signed zip) is on the pilot
+checklist and hasn't been run yet.
 
 ## Online AI (off by default)
 **Vanguard is offline-first: no student data leaves the instructor's device unless an instructor or IT operator explicitly enables an online AI provider.** There is no switch for it in the app's screens. An operator enables it only by editing `config.json` in the data folder (`"online": true` plus a Groq or Gemini key). From then on, questions typed into Ask are sent to that provider. Quizzes, lessons, class records and grading never use it. Leave it off on devices meant to stay fully offline.
