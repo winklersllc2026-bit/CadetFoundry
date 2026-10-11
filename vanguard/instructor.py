@@ -337,6 +337,8 @@ def overview(priv: bytes) -> dict:
         if _ensure_codes(r):
             _save(priv, r)
             _publish_codes(r)
+        elif r["units"] and not _program_file("join_codes.json").exists():
+            _publish_codes(r)                    # e.g. after restoring an older backup that didn't carry them
     cadets = []
     for p in profiles.all_profiles():
         if p["kind"] != "cadet":

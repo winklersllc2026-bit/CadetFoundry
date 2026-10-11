@@ -435,11 +435,33 @@ SECURITY_HEADERS = {
 }
 
 
-def host_ok(host: str | None, port: int, lan: bool) -> bool:
-    """Block DNS rebinding: only Vanguard's own addresses (any address in LAN mode, which requires PINs)."""
-    if lan:
+def host_ok(host: str | None, port: int, lan: bool, local_ip: str | None = None) -> bool:
+    """Block DNS rebinding: the Host header must name Vanguard itself, with Vanguard's port.
+
+    This computer: 127.0.0.1, localhost or [::1]. Classroom mode also accepts this computer's own IP address -- the
+    exact address the device connected to (local_ip, from the socket), which is what the QR code and the Join screen
+    show. A domain name is refused in classroom mode: DNS rebinding (a website pointing its own name at this
+    computer, so a Cadet's browser treats Vanguard as that site) needs one. Security review, 2026-10-11 -- before,
+    classroom mode accepted any Host."""
+    h = (host or "").strip()
+    if h.startswith("["):                                   # [IPv6]:port
+        name, _, rest = h.partition("]")
+        name, p = name + "]", rest[1:] if rest.startswith(":") else ""
+    elif h.count(":") == 1:
+        name, p = h.split(":")
+    else:
+        name, p = h, ""
+    if p != str(port) and not (p == "" and port == 80):
+        return False
+    name = name.lower()
+    if name in ("127.0.0.1", "localhost", "[::1]"):
         return True
-    return (host or "") in (f"127.0.0.1:{port}", f"localhost:{port}", f"[::1]:{port}")
+    if not lan or not local_ip:
+        return False
+    lip = local_ip.lower()
+    if lip.startswith("::ffff:"):                          # an IPv4 client on a dual-stack socket
+        lip = lip[7:]
+    return name in (lip, f"[{lip}]")
 
 
 def origin_ok(origin: str | None, host: str | None) -> bool:

@@ -60,7 +60,7 @@ closed). Step 1 above creates Vanguard's key.
 ## Online AI (off by default)
 **Vanguard is offline-first: no student data leaves the instructor's device unless an instructor or IT operator explicitly enables an online AI provider.** There is no switch for it in the app's screens. An operator enables it only by editing `config.json` in the data folder (`"online": true` plus a Groq or Gemini key). From then on, questions typed into Ask are sent to that provider. Quizzes, lessons, class records and grading never use it. Leave it off on devices meant to stay fully offline.
 
-## The classroom network (Start Classroom: `--lan`, the Vanguard Classroom shortcut, the USB's Start Classroom file, the Pi demo box)
+## The classroom network (Open class to phones on the instructor's Home; `--lan`, the Vanguard Classroom shortcut, the USB's Start Classroom file, the Pi demo box)
 
 In the app this is called **class is open**; the **Class PIN** is the code this document also calls the Instructor PIN.
 
@@ -68,16 +68,37 @@ In classroom mode the instructor's computer accepts connections from other devic
 
 | Who | Can | Can't |
 |---|---|---|
-| Any device on the same Wi-Fi | Open the sign-in screen and the Join screen (`/join`: the class address and a QR code; how many Cadet profiles exist); see **shortened** profile names ("Ana R.") and whether a profile has a PIN; look up which unit a join code belongs to; download the installer if offered | Read anything without a profile's PIN (every profile must have one in classroom mode — enforced at start and when a profile is made); remove a PIN; reach instructor routes |
-| A Cadet signed in | Their own work, assignments, live votes and questions; join a unit with its join code | Another Cadet's anything; the instructor's tools (HTTP 403 even with the Instructor PIN); end class for everyone (Quit works only from the instructor's computer or an instructor profile) |
-| The instructor, signed in **and** with the Instructor PIN | Class records of every Cadet | Any Cadet's private files |
+| Any device on the same Wi-Fi | Open the sign-in screen and the Join screen (`/join`: the class address and a QR code; how many Cadet profiles exist); see **shortened** profile names ("Ana R.") of profiles that have a PIN; look up which unit a join code belongs to; download the installer if offered | Read anything without a profile's PIN; see or open a profile that has **no PIN** (those open only on the instructor's own computer, and the instructor is told which ones they are); remove a PIN; reach instructor routes; try the Class PIN |
+| A Cadet signed in | Their own work, assignments, live votes and questions; join a unit with its join code | Another Cadet's anything; the instructor's tools (HTTP 403); change device settings or guess the Class PIN (only instructor profiles may try it, so a Cadet can't lock the instructor out); end class for everyone (Quit works only from the instructor's computer or an instructor profile) |
+| The instructor, signed in **and** with the Class PIN | Class records of every Cadet; open or close class to phones (from their own computer only) | Any Cadet's private files |
+
+**Which addresses Vanguard answers to** (security review, 2026-10-11). Every request's `Host` header must name
+Vanguard itself with Vanguard's port: `127.0.0.1`, `localhost` or `[::1]` from this computer, and in classroom mode
+also this computer's own IP address — exactly the address the device connected to (what the QR code shows). A domain
+name is refused in classroom mode, which blocks DNS rebinding (a website pointing its own name at the instructor's
+computer so a Cadet's browser would treat Vanguard as that site). Before this fix, classroom mode accepted any Host.
+Requests that carry an `Origin` must come from Vanguard's own address; POSTs must be JSON (which forces browsers to
+ask first, and Vanguard refuses those preflights); the session cookie is `HttpOnly; SameSite=Strict` with no
+`Domain`. Tested in `tests/test_network.py`.
 
 Known limits, and what to do about them:
-- **Traffic is plain HTTP.** Someone capturing Wi-Fi traffic on the same network could read pages and PINs as they're typed. **Recommended pilot setup: a dedicated hotspot with a WPA2/WPA3 password that only the class joins** (a phone hotspot, a travel router, or the Vanguard Pi demo box) — not the school's open or guest Wi-Fi. HTTPS for the classroom network is on the roadmap.
+- **Traffic is plain HTTP.** Someone capturing Wi-Fi traffic on the same network could read pages and PINs as they're
+  typed. A protected Wi-Fi network is a mitigation, not a replacement for encryption in transit.
+  **Restricted pilot configuration until HTTPS exists:** a dedicated hotspot or travel router with a WPA2/WPA3
+  password that only the class joins — not the school's open or guest Wi-Fi; Cadets use PINs they don't use anywhere
+  else; and **fictional test profiles**, not real Cadets, until the school approves the data practices.
+- **Why there is no HTTPS switch yet** (evaluated 2026-10-11): a classroom server has no public name, so a normal
+  certificate can't be issued for it. A self-signed certificate makes every Cadet's phone show a full-page security
+  warning that has to be clicked through, which trains people to ignore warnings and doesn't stop an active
+  attacker; installing a classroom certificate authority on every Cadet's personal phone isn't practical. The
+  workable design is the one some media servers use: a public domain the publisher controls with a per-installation
+  name that resolves to the laptop's private address, and a real certificate for it issued through DNS validation.
+  That needs publisher-run infrastructure (a domain, DNS, certificate issuance and renewal) and is an owner decision.
+  Until then Vanguard doesn't offer an HTTPS option that would leave PINs exposed or produce unusable warnings.
 - **PIN guessing** is slowed by growing lockouts (5 wrong PINs → a lockout that doubles, up to an hour, surviving restarts) and scrypt.
 - **School Wi-Fi often blocks devices from reaching each other** ("client isolation") — then Cadets can't connect at all; use the dedicated hotspot.
-- Close Vanguard when class ends (**End class** on the Join screen, or Me → Quit). Instructor → Today shows "Class is open" while it runs.
-- **Join codes** (0.2) are short codes (6 characters from 31, about 887 million combinations) that put a *new* Cadet's own profile in a class, platoon or squad and give it that unit's lessons. They're kept in the clear in `program/join_codes.json` with the unit's name, because a Cadet's session has no program key; they open nothing else and never reveal any Cadet or record. The join waits in `program/joins.json` until an instructor's session (which can open the sealed roster) files it. An instructor can replace a code (the old one stops working). The Join screen shows codes only to an instructor whose class is open.
+- Close Vanguard when class ends (**End class** on the Join screen, **Close to phones** on Home, or Me → Quit). The instructor's Home shows "Class is open" while it runs.
+- **Join codes** (0.2) are short codes (6 characters from 31, about 887 million combinations) that put a *new* Cadet's own profile in a class, platoon or squad and give it that unit's lessons. They're kept in the clear in `program/join_codes.json` with the unit's name, because a Cadet's session has no program key; they open nothing else and never reveal any Cadet or record, and they're not secret (they're on the projector, and in the QR code's `?join=` link). The join request is sealed to the program key in `program/joins.json` until an instructor's session files it. An instructor can replace a code (the old one stops working). The Join screen shows codes on the instructor's own computer, never to other devices.
 
 ## For military IT: adding CAC sign-in
 Vanguard deliberately ships without CAC/PIV sign-in so that it can be configured by the Army's own IT, with its certificate validation and approval. All sign-in logic is in `vanguard/security.py`: a profile is unlocked by `unlock(profile, secret)`, which creates a session bound to that one profile. A smart-card provider would (1) have the card sign a random challenge with its PIV authentication key, (2) validate the certificate chain against the DoD PKI roots (and revocation, where a network is available), and (3) map the certificate to a profile by a hash of the certificate — never storing the DoD ID number. Nothing else in Vanguard needs to change.

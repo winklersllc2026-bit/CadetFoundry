@@ -28,6 +28,9 @@ class DemoBoxTests(unittest.TestCase):
         cls.port = cls.httpd.server_address[1]
         app = cls.httpd.RequestHandlerClass.app
         app.port, app.lan = cls.port, True                   # behave like a demo box on its own Wi-Fi
+        # requests below say Host 10.42.0.1 (the demo box's address); a real phone connects to that address too
+        cls.ip_patch = mock.patch.object(server.Handler, "_server_ip", lambda self: "10.42.0.1")
+        cls.ip_patch.start()
         threading.Thread(target=cls.httpd.serve_forever, daemon=True).start()
         cls.dl = tempfile.TemporaryDirectory()
         Path(cls.dl.name, "Vanguard-Setup-9.9.9.exe").write_bytes(b"MZ" + b"x" * 1000)
@@ -38,6 +41,7 @@ class DemoBoxTests(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         cls.httpd.shutdown()
+        cls.ip_patch.stop()
         server.DOWNLOADS = cls.old_downloads
         cls.dl.cleanup()
         store.save_config({"demo": False})

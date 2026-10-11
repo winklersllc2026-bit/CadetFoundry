@@ -146,7 +146,7 @@ class Handler(BaseHTTPRequestHandler):
         self._ctx, self._kctx, self._cctx, self._pid, self._body_read = None, None, None, None, False
         self._catctx = None
         host = self.headers.get("Host")
-        if not security.host_ok(host, self.app.port, self.app.lan):
+        if not security.host_ok(host, self.app.port, self.app.lan, self._server_ip()):
             self._deny(421, "Wrong host.")                  # DNS-rebinding protection
             return False
         if not security.origin_ok(self.headers.get("Origin"), host):
@@ -210,6 +210,13 @@ class Handler(BaseHTTPRequestHandler):
         """Cadets who joined with a code since the class records were last open: into the roster now."""
         for pid in instructor.apply_joins(priv):
             lessons.sync_cadet(priv, pid)
+
+    def _server_ip(self) -> str | None:
+        """This computer's address that the device connected to (for the Host check)."""
+        try:
+            return self.connection.getsockname()[0]
+        except OSError:
+            return None
 
     def _local(self) -> bool:
         """The request comes from this computer (not another device on the classroom network)."""
@@ -1378,6 +1385,7 @@ def reopen(port: int, lan: bool, wait: float = 20.0) -> ThreadingHTTPServer:
 
 def serve(host: str = "127.0.0.1", port: int = 8780, lan: bool = False) -> ThreadingHTTPServer:
     profiles.migrate_legacy()
+    program_backup.finish_pending()              # a program restore that was interrupted: finish it or roll it back
     # Class opens even if some profiles on this device have no PIN yet (owner's decision, 2026-10-10): those can only
     # be opened on this computer -- /api/unlock refuses them from other devices and /api/lock hides them there.
     httpd = _Server((host, port), Handler)                 # take the port first: if it's busy, change nothing
