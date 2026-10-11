@@ -80,7 +80,45 @@ signed. A full end-to-end check (build → sign → install on a clean device fr
 checklist and hasn't been run yet.
 
 ## Online AI (off by default)
-**Vanguard is offline-first: no student data leaves the instructor's device unless an instructor or IT operator explicitly enables an online AI provider.** There is no switch for it in the app's screens. An operator enables it only by editing `config.json` in the data folder (`"online": true` plus a Groq or Gemini key). From then on, questions typed into Ask are sent to that provider. Quizzes, lessons, class records and grading never use it. Leave it off on devices meant to stay fully offline.
+**Vanguard is offline-first: no student data leaves the instructor's device unless an instructor or IT operator explicitly enables an online AI provider.** There is no switch for it in the app's screens. An operator enables it only by editing `config.json` in the data folder (`"online": true` plus a Groq or Gemini key; the key is stored there in plain text). Leave it off on devices meant to stay fully offline, and read the provider's terms (data retention, use of minors' data) before turning it on.
+
+When it is on, exactly this goes to the provider (security review, 2026-10-11 — tested in `tests/test_outbound_ai.py`):
+- **Ask, ordinary questions only:** the question, Vanguard's rules, and the public library passages that matched.
+  **Not** the Cadet's name, profile, remembered facts, logbook or earlier chat.
+- **Never:** a message that shows signs of crisis or harm (answered on this device only), grading of typed quiz answers
+  (it carries answer keys), memory learning from chats, letter drafts, "say it simpler", lessons, class records,
+  instructor notes, PINs or anything about other Cadets.
+
+**Corrected 2026-10-11:** before this, every AI task tried the online provider first, with the full personal context
+(profile, remembered facts, logbook, the last 8 chat messages) — including crisis messages, grading and letters —
+even though this section said grading never used it.
+
+## Safety check on Ask (what it does and doesn't do)
+
+Every message typed into **Ask** is checked against patterns for self-harm, suicide, abuse, sexual assault and
+hazing (`vanguard/safety.py`). What happens:
+- **A first-person disclosure** ("I want to…", "my dad hits me"): help comes first — call or text 988, text HOME to
+  741741, RAINN, Childhelp, 911, and the Cadet's own trusted people if they added any — then a short, caring reply that
+  encourages them to reach a person now. It works with no internet and no AI (a fixed caring message).
+- **The topic only** ("explain the suicide prevention brief"): a short neutral line (988, a trusted adult, 911), then a
+  normal answer.
+
+What it **doesn't** do:
+- **It notifies no one.** No instructor, parent, counselor or Winklers LLC is told. Nothing is flagged or reported;
+  the conversation stays in the Cadet's own private, encrypted chat history, which the instructor can't read.
+- **It is best-effort pattern matching, not a crisis detector.** It misses indirect or new wording ("I just want
+  everything to stop"), can't know anyone's intent, and sometimes shows resources when someone is joking.
+  `tests/test_safety.py` lists what it catches, accepted false positives and known misses.
+- **It only checks Ask.** Check-ins, journal notes, reflections and survey comments are not scanned.
+
+Schools must fit Vanguard into their own safeguarding and incident-response procedures; Vanguard is not one of them.
+Tell Cadets plainly: Vanguard is not monitored — if you're in danger or thinking about hurting yourself, tell an adult
+or call 988 or 911.
+
+**What's private, in plain words (tell Cadets):** your check-ins, notes, chats with Ask and letters are yours alone
+— not even your instructor can open them. Your instructor can see class work: lessons, quizzes, exams, leadership
+log, fitness and service. Votes in class are anonymous (counts only). Vanguard doesn't watch or read your private
+things, and no one is alerted by anything you type.
 
 ## The classroom network (Open class to phones on the instructor's Home; `--lan`, the Vanguard Classroom shortcut, the USB's Start Classroom file, the Pi demo box)
 

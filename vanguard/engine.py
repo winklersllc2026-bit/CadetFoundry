@@ -149,10 +149,18 @@ def warm_up() -> bool:
         return False
 
 
-def stream(messages: list[dict], max_tokens: int = 1200) -> Generator[str, None, None]:
-    """Answer with the first engine that works. Online only if enabled in settings."""
+def online_ready() -> bool:
+    """An instructor/IT operator turned online AI on and gave a provider key (config.json)."""
     c = store.config()
-    if c.get("online"):
+    return bool(c.get("online")) and any(c.get(k) for k in ("groq_key", "gemini_key"))
+
+
+def stream(messages: list[dict], max_tokens: int = 1200, online: bool = False) -> Generator[str, None, None]:
+    """Answer with the first engine that works. On this device (Ollama) unless the CALLER passes online=True and
+    online AI is enabled in settings (security review, 2026-10-11): only Ask's ordinary answers opt in, with no
+    personal context. Crisis replies, grading (which carries answer keys), memories and letters never go online."""
+    c = store.config()
+    if online and c.get("online"):
         for key_name, fn in (("groq_key", _groq), ("gemini_key", _gemini)):
             if c.get(key_name):
                 try:
@@ -173,8 +181,9 @@ def stream(messages: list[dict], max_tokens: int = 1200) -> Generator[str, None,
 
 
 def quick(messages: list[dict], max_tokens: int = 300) -> str:
-    """Small background jobs (learning memories). Empty string if nothing is available."""
+    """Small jobs (learning memories, grading). On this device only -- never online. Empty string if nothing is
+    available."""
     try:
-        return "".join(stream(messages, max_tokens)).strip()
+        return "".join(stream(messages, max_tokens, online=False)).strip()
     except Exception:
         return ""

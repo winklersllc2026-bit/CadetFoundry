@@ -12,14 +12,37 @@ from __future__ import annotations
 
 import re
 
+# Best-effort pattern matching (security review, 2026-10-11): it can miss indirect or novel wording and it can't know
+# anyone's intent. It decides only what Vanguard shows; it never notifies anyone and records nothing beyond the
+# person's own private chat. Two levels:
+#   * a DISCLOSURE (first person: "I want to...", "my dad hits me") -> help resources first, then a caring reply;
+#   * the TOPIC only ("what's the punishment for hazing?", "explain the suicide prevention brief") -> a short,
+#     neutral help line, then a normal answer.
+# tests/test_safety.py lists what's caught, the false positives accepted on purpose, and known misses.
 CRISIS_RE = re.compile(
-    r"\b(kill(ing)? myself|suicid\w*|end (it all|my life)|take my (own )?life|don'?t want to (live|be alive|wake up)|"
-    r"want to die|better off dead|no reason to live|hurt(ing)? myself|self[- ]harm|cut(ting)? myself|"
-    r"overdos\w*|hang myself|shoot myself|can'?t go on|nobody would (care|miss me))\b",
+    r"\b(kill(ing)? myself|kms|unalive( myself)?|end myself|take my (own )?life|"
+    r"(want|going|gonna|ready|trying|plan(ning)?) to end (it|it all|my life|everything)|end (it all|my life)|"
+    r"don'?t want to (live|be alive|be here|exist|wake up)|"
+    r"wan(t|na)( to)? die|wish (i|i'?d) (was|were|had been) dead|wish i (wasn'?t|was never) (born|alive|here)|"
+    r"better off (dead|without me)|no (reason|point) (to live|in living|in going on|to go on)|can'?t go on|"
+    r"nobody would (care|miss me)|disappear forever|think(ing)? about (dying|death|killing myself|ending it)|"
+    r"hurt(ing)? myself|self[- ]?harm(ing)?|cut(ting)? myself|overdos\w*|"
+    r"took (a bunch of|too many|all (of )?(my|the)) (pills|meds)|hang myself|shoot myself|"
+    r"(i'?m|i am|i feel|feeling|been feeling) (so |really |kind of )?suicidal|"
+    r"(thinking|thought|thinking about|considering|planning) (about )?(suicide|sucide|suicde|suiside)|"
+    r"(not|don'?t feel) safe at home|(afraid|scared) to go home)\b",
     re.I)
 ASSAULT_RE = re.compile(
-    r"\b(sexually (assaulted|harassed)|raped|rape|molested|groped|forced me to|touched me without|"
-    r"assaulted me|being (harassed|hazed)|hazing)\b", re.I)
+    r"\b((i was|i've been|i got|got|been) (sexually )?(raped|molested|groped|assaulted|abused|harassed)|raped|"
+    r"(sexually )?(assaulted|harassed|molested|groped|abused|raped) me|"
+    r"(he|she|they|someone|somebody|my \w+) (hits|beats|chokes|kicks|abuses|hurts|touches|touched|hit|beat) me|"
+    r"touched me (without|when i didn'?t|and i didn'?t)|forced me to|made me (do|touch)|"
+    r"(is|are|been|being|keeps?|kept) (hazing|harassing|bullying|abusing) me|being (harassed|hazed|bullied|abused))\b",
+    re.I)
+TOPIC_RE = re.compile(r"\b(suicid\w*|sucid\w*|self[- ]?harm|hazing|sexual (assault|harassment)|abuse\w*|rape|988)\b",
+                      re.I)
+TOPIC_BANNER = ("*If this is about you or someone you know: call or text **988** (24/7), or talk to a counselor or an "
+                "adult you trust. In an emergency, call **911**.*\n\n")
 
 CRISIS_BANNER = (
     "**You matter, and help is available right now.**\n"
@@ -69,6 +92,8 @@ def check(text: str) -> dict:
     crisis = bool(CRISIS_RE.search(t))
     assault = bool(ASSAULT_RE.search(t))
     banner = (CRISIS_BANNER if crisis else "") + (ASSAULT_BANNER if assault else "")
+    if not banner and TOPIC_RE.search(t):          # the topic, not a disclosure: a neutral line, then a normal answer
+        banner = TOPIC_BANNER
     return {
         "care": crisis or assault,
         "banner": banner,

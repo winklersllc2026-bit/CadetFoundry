@@ -360,10 +360,16 @@ async function refreshStatus() {
   if ((document.body.dataset.kind = STATUS.kind || 'cadet') === 'guardian') {          // family member's profile
     $('#suggest').innerHTML = FAMILY_SUGGEST.map(q => `<button>${esc(q)}</button>`).join('');
     const hi = document.querySelector('#thread .msg.ai p');
-    if (hi) hi.textContent = "I'm Vanguard — here to help you understand JROTC and support your Cadet. Ask me anything. Everything stays on this device.";
+    if (hi) hi.textContent = "I'm Vanguard — here to help you understand JROTC and support your Cadet. Ask me anything. Your chats are saved on this device.";
   }
   const e = STATUS.engine, el = $('#engine');
   const online = e.online_enabled && e.online_keys.length;
+  const hi = document.querySelector('#thread .msg.ai p');
+  if (online && hi && !hi.dataset.online) {        // say plainly what leaves the device (SECURITY.md, Online AI)
+    hi.dataset.online = '1';
+    hi.insertAdjacentHTML('afterend', '<p class="faint">This device uses an online AI service for ordinary questions: '
+      + 'your question goes to it, but not your name, notes or earlier chats. Anything about feeling unsafe stays on this device.</p>');
+  }
   el.innerHTML = e.model
     ? `<span class="dot ok"></span><span>Offline AI: ${esc(e.model)}${online ? ' + online' : ''}</span>`
     : online ? '<span class="dot ok"></span><span>Online AI</span>'

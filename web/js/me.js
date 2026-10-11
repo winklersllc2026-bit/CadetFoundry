@@ -157,7 +157,7 @@ loaders.me = async () => {
       <div class="row" style="margin-top:8px"><button class="btn small" id="bkSave">⬇ Download encrypted backup</button>
         <label class="btn small" style="margin:0;color:var(--text)">⬆ Restore from backup<input type="file" id="restoreFile" accept=".json,application/json" hidden></label></div>
       <p class="faint" id="restoreMsg">Restoring replaces what's on this device with the backup. Without the backup password, nobody can open the file.</p></div>
-    <p class="faint">Vanguard is designed to support JROTC instruction. It isn't an official JROTC, military or school source — your instructor and official sources come first. Everything you enter stays on this device; there is no tracking.</p>`;
+    <p class="faint">Vanguard is designed to support JROTC instruction. It isn't an official JROTC, military or school source — your instructor and official sources come first. What you enter is saved on this device and there is no tracking. If this device uses an online AI service, ordinary Ask questions go to it — without your name, notes or earlier chats.</p>`;
   $('#profForm').onsubmit = async ev => {
     ev.preventDefault();
     const data = Object.fromEntries(new FormData(ev.target));
@@ -269,7 +269,7 @@ async function tour(pid) {
     if (b) b.style.outline = '3px solid var(--tan)';
     o.innerHTML = `<div class="card" role="dialog" aria-modal="true" aria-labelledby="tourH" style="max-width:420px;width:100%">
       <div class="faint">${i + 1} of ${TOUR.length}</div><h3 id="tourH">${name}</h3><p>${text}</p>
-      ${i === TOUR.length - 1 ? '<p class="faint">Everything stays on this device. Vanguard supports your instructor — it doesn’t replace your instructor, your curriculum or official sources.</p>' : ''}
+      ${i === TOUR.length - 1 ? '<p class="faint">Your work is saved on this device. Vanguard supports your instructor — it doesn’t replace your instructor, your curriculum or official sources.</p>' : ''}
       <div class="row"><button class="btn primary" id="tourNext">${i === TOUR.length - 1 ? 'Done' : 'Next'}</button>
       ${i < TOUR.length - 1 ? '<button class="btn small" id="tourSkip">Skip the tour</button>' : ''}</div></div>`;
     $('#tourNext').onclick = () => { i++; show(); };

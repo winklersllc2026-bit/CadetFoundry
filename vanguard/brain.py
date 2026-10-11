@@ -269,7 +269,9 @@ class Brain:
         self.faith = faith
 
     def _messages(self, text: str, care: bool, family: bool = False,
-                  checked: dict | None = None) -> tuple[list[dict], list[dict]]:
+                  checked: dict | None = None, personal: bool = True) -> tuple[list[dict], list[dict]]:
+        """personal=False (an answer that may go to an online provider): no profile, memories, logbook or earlier
+        chat -- only the question, the public library passages and Vanguard's rules."""
         if care:
             system = safety.CARE_PROMPT
             sources: list[dict] = []
@@ -278,13 +280,13 @@ class Brain:
             parts = [PERSONA]
             if family:
                 parts.append(FAMILY_NOTE)
-            prof = store.profile_text()
+            prof = store.profile_text() if personal else ""
             if prof:
                 parts.append("## The Cadet\n" + prof)
-            mems = store.memories()[-25:]
+            mems = store.memories()[-25:] if personal else []
             if mems:
                 parts.append("## What you remember about them\n" + "\n".join(f"- {m['text']}" for m in mems))
-            log = store.log_text(8)
+            log = store.log_text(8) if personal else ""
             if log and re.search(r"\b(pt|score|run|plank|push|deadlift|qual|range|progress|log|goal|improv)\w*", text, re.I):
                 parts.append("## Their logbook (recent)\n" + log)
             if self.faith and self.faith.catalog and store.module_on("faith"):
@@ -303,7 +305,7 @@ class Brain:
         # Earlier answers go back to the model without Vanguard's trust markers -- otherwise it copies
         # "✅ Checked answer:" into its own text, and a made-up answer looks verified.
         msgs += [{"role": m["role"], "content": for_history(m["content"]) if m["role"] == "assistant" else m["content"]}
-                 for m in store.history()[-8:]]
+                 for m in (store.history()[-8:] if personal else [])]
         msgs.append({"role": "user", "content": text})
         return msgs, sources
 
@@ -319,8 +321,8 @@ class Brain:
             yield {"t": APP_HELP}
             yield {"done": True, "sources": [], "cites": []}
             return
-        if check["banner"]:
-            yield {"t": check["banner"] + _my_people(), "banner": True}
+        if check["banner"]:                              # (a topic-only line doesn't add the Cadet's own people)
+            yield {"t": check["banner"] + (_my_people() if check["care"] else ""), "banner": True}
         # Facts come from Vanguard's own data, not the AI: pay, BAS, AFT scores, LES blocks and Army jobs are answered
         # straight from the tables, and a question asked like a study-card quiz question gets that checked answer,
         # word for word. The AI may only add a few sentences of help around it.
@@ -346,7 +348,10 @@ class Brain:
             store.add_history("assistant", gap)
             yield {"done": True, "sources": [], "cites": [], "ai": False}
             return
-        msgs, sources = self._messages(text, check["care"], family, checked)
+        # Online AI (only if an operator enabled it) answers ordinary questions only, and without personal context;
+        # anything in care mode stays on this device.
+        go_online = engine.online_ready() and not check["care"]
+        msgs, sources = self._messages(text, check["care"], family, checked, personal=not go_online)
         reply, fell_back = [], False
         if checked:
             first = f"✅ **Checked answer:** {checked['answer']} — *{checked['source']}*\n\n"
@@ -389,7 +394,8 @@ class Brain:
                 raise RuntimeError("library-only mode")
             clean = MarkerFilter()                       # the AI can never write the ✅ badge or a ⚠️ notice
             gate = SentenceGate(keep if not check["care"] else (lambda s: True))
-            for chunk in engine.stream(msgs, max_tokens=500 if check["care"] else 250 if checked else 1200):
+            for chunk in engine.stream(msgs, max_tokens=500 if check["care"] else 250 if checked else 1200,
+                                       **({"online": True} if go_online else {})):   # default: this device only
                 chunk = gate.feed(clean.feed(chunk))
                 if chunk:
                     reply.append(chunk)
