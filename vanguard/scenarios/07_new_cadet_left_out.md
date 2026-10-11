@@ -21,3 +21,9 @@ Principles:
 Other approaches:
 Do both: welcome the new Cadet and quietly address the jokes. If teasing turns into bullying, tell your instructor.
 Reflection: What would you do differently next time? What did it feel like when you were the new person somewhere?
+Notice: The jokes and the empty lunch seat are the same problem: the team's climate, which the leader shapes.
+Discussion:
+- Why is 'they'll make friends on their own' tempting, and what does it cost?
+- Why correct the jokes privately but include the new Cadet publicly?
+- What small things make someone feel part of a team in their first week?
+Follow-up: As a class, list three things your platoon could do for any new Cadet in their first week, and pick one to start.

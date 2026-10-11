@@ -21,3 +21,9 @@ Principles:
 Other approaches:
 Ask a parent or trusted adult to look over any credit offer with you before you sign — read what happens if you miss the deadline.
 Reflection: What's something you wanted badly that you were glad you didn't buy? What helps you wait?
+Notice: 'No payment for 12 months' sounds free; the question is what it costs later and what the savings were for.
+Discussion:
+- What was the $600 already planned for, and why does that matter?
+- What does waiting 24 hours change about an impulse buy?
+- How do friends affect what we think we need?
+Follow-up: Cadets list one thing they're saving for and one thing they could wait 24 hours on this week.

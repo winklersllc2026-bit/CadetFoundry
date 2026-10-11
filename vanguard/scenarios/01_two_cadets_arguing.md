@@ -22,3 +22,9 @@ Principles:
 Other approaches:
 Give a clear, calm instruction to the whole squad first ("Everyone keep setting up — you two, with me"), then deal with the two Cadets. After the event, check in with both of them so the issue doesn't carry into next week.
 Reflection: What would you do differently next time, and what would you say first?
+Notice: The fastest choice and the fairest choice look different here, but the second one costs only a few minutes and fixes the real problem.
+Discussion:
+- Why does it matter that the rest of the squad stopped working to watch?
+- What's the difference between stopping the noise and solving the problem?
+- When would 'we'll sort it out later' be the right call — and how do you make sure later actually happens?
+Follow-up: In pairs, one Cadet plays the squad leader and two play the arguing Cadets. Run the pull-aside conversation in under three minutes.

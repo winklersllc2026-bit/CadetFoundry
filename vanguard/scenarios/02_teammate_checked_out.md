@@ -22,3 +22,9 @@ Principles:
 Other approaches:
 Check in with Jordan privately first. If it's more than you can help with, encourage Jordan to talk to a counselor or the instructor — and tell your instructor yourself if you're worried about Jordan's safety. Meanwhile, rebalance the work so the team isn't punished for it.
 Reflection: What would you do differently next time? How would you start the conversation with Jordan?
+Notice: Jordan's change in behavior is the most important fact in the situation; the presentation is the second.
+Discussion:
+- What could be behind a sudden change like Jordan's?
+- Why does it matter whether the conversation is private or in front of the team?
+- When should a Cadet leader bring in a trusted adult, and how is that different from 'reporting' someone?
+Follow-up: Each Cadet writes the first two sentences they would say to Jordan, then shares one with a partner.

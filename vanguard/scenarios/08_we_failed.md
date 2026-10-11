@@ -21,3 +21,9 @@ Principles:
 Other approaches:
 Hold a short after-action review: What was supposed to happen? What happened? Why? What will we do differently? Let the team find the answers.
 Reflection: What would you do differently next time? What did you learn from a time you fell short?
+Notice: Everyone is watching the commander to learn how this team handles losing.
+Discussion:
+- Why is blaming one Cadet so tempting after a loss, and why does it hurt the team?
+- What's the difference between reviewing what happened and finding who to blame?
+- What would you say on the bus in the first minute?
+Follow-up: Run a short after-action review on a recent class activity: what was supposed to happen, what happened, why, and what to change.

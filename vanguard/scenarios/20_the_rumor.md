@@ -21,3 +21,9 @@ Principles:
 Other approaches:
 When you're not sure something is true, say so: "I haven't confirmed that — I'm asking the instructor."
 Reflection: Have you ever shared something that turned out to be false? How could you check next time before you share?
+Notice: A squad leader's share carries more weight than a stranger's — so checking first matters more.
+Discussion:
+- How can you tell where a screenshot came from?
+- Why is calling it fake without checking also a problem?
+- How should a leader keep their squad informed while the facts aren't clear?
+Follow-up: Bring one recent post (no names) and, as a class, ask the three questions: who's the source, what's the evidence, do other sources agree?

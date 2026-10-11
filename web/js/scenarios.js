@@ -162,15 +162,16 @@ async function instructorLeadership(body) {
           <span><span class="sc-title">${esc(s.title)}</span>
           <span class="sc-meta">${esc(s.competency)} · ${s.origin === 'practice' ? 'practice' : 'yours'}${s.done ? ` · used ${s.done}×` : ''}</span></span></label>
         <span class="sc-act"><button class="btn small" data-present="${esc(s.id)}" title="Present just this one">▶ Present</button>
-          <button class="btn small" data-sedit="${esc(s.id)}" title="${s.origin === 'practice' ? 'Make your own copy to edit' : 'Edit'}">${s.origin === 'practice' ? 'Copy' : 'Edit'}</button></span></div>`).join('')}</div>
+          <button class="btn small" data-sedit="${esc(s.id)}" title="${s.origin === 'practice' ? 'Make your own copy to edit' : 'Edit'}">${s.origin === 'practice' ? 'Copy' : 'Edit'}</button></span></div>${debriefHtml(s.debrief)}`).join('')}</div>
       <button class="btn primary" id="sNew" style="margin-top:12px">＋ New scenario</button><div id="sForm"></div></div>`;
   const byId = id => d.scenarios.find(s => s.id === id);
-  const TEMPLATE = 'Title: \nCompetency: \nSituation:\n\nChoice: \nOutcome: \nStrengths: \nWeaknesses: \nChoice: \nOutcome: \nStrengths: \nWeaknesses: \nPrinciples:\n- \nOther approaches:\n\nReflection: What would you do differently next time?';
+  const TEMPLATE = 'Title: \nCompetency: \nSituation:\n\nChoice: \nOutcome: \nStrengths: \nWeaknesses: \nChoice: \nOutcome: \nStrengths: \nWeaknesses: \nPrinciples:\n- \nOther approaches:\n\nReflection: What would you do differently next time?\nNotice: \nDiscussion:\n- \nFollow-up: ';
   const form = s => {
     $('#sForm').innerHTML = `<div class="card" style="margin-top:12px"><h3>${s && s.origin === 'instructor' ? 'Edit scenario' : 'New scenario'}</h3>
       ${s && s.origin === 'practice' ? '<p class="faint">This saves your own copy; the practice scenario stays as it is.</p>' : ''}
       <textarea id="sText" rows="18" style="width:100%;font-family:inherit">${esc(s ? s.text : TEMPLATE)}</textarea>
-      <p class="faint">2 to 4 choices. Each choice needs an Outcome; Strengths and Weaknesses are optional. Keep it everyday leadership — not combat.</p>
+      <p class="faint">2 to 4 choices. Each choice needs an Outcome; Strengths and Weaknesses are optional. Keep it everyday leadership — not combat.
+        Notice, Discussion and Follow-up are your debrief: they show only on your screens, never to Cadets or on the projector.</p>
       <div class="row" style="flex-wrap:wrap;gap:8px"><button class="btn primary" id="sSave">Save</button>
         ${s && s.origin === 'instructor' ? '<button class="btn small" id="sDel">Delete</button>' : ''}<button class="btn small" id="sCancel">Cancel</button></div>
       <p class="faint" id="sMsg" role="alert"></p></div>`;
@@ -252,4 +253,15 @@ async function classroomMode() {
     if (!$('#classroom').classList.contains('on')) { clearInterval(livePoll); return; }
     draw().catch(() => clearInterval(livePoll));
   }, 3000);
+}
+
+// The instructor's debrief for a scenario (instructor screens only -- never on the projector or a Cadet's screen).
+function debriefHtml(db) {
+  if (!db || !(db.notice || (db.discussion || []).length || db.follow_up || (db.principles || []).length)) return '';
+  return `<details class="debrief" style="margin:0 0 8px"><summary class="faint" style="cursor:pointer;min-height:32px">📝 Instructor debrief</summary>
+    <div style="font-size:15px;margin:4px 0 8px">
+      ${(db.principles || []).length ? `<div><b>Leadership principles</b><ul style="margin:4px 0 6px 18px;padding:0">${db.principles.map(p => `<li>${esc(p)}</li>`).join('')}</ul></div>` : ''}
+      ${db.notice ? `<div><b>What Cadets should notice</b><p style="margin:4px 0 6px">${esc(db.notice)}</p></div>` : ''}
+      ${(db.discussion || []).length ? `<div><b>Discussion questions</b><ol style="margin:4px 0 6px 18px;padding:0">${db.discussion.map(q => `<li>${esc(q)}</li>`).join('')}</ol></div>` : ''}
+      ${db.follow_up ? `<div><b>Follow-up activity</b> <span class="faint">(optional)</span><p style="margin:4px 0 0">${esc(db.follow_up)}</p></div>` : ''}</div></details>`;
 }

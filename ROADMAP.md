@@ -38,6 +38,9 @@ Also in 0.2.3 (batch 1 of the instructor-experience list): **See a sample class*
 Cadets, two squads and a pilot in progress; Leave sample closes it) · **Pilot mode** (online AI stays off, "what's
 stored on this device") · **End pilot** (save the reports, Class PIN, DELETE: removes the pilot's Cadets and class
 data, keeps your lessons and classes).
+Batch 2: **Start class in named steps** (Opening, Learn, Discuss, Engage, Assign, Close, Progress; opening and exit
+questions for the projector) · **instructor debriefs** on all 20 scenarios (instructor screens only) · **What Vanguard
+is — and isn't** in Settings and Me.
 
 ## Next: Cadet drives that sync
 

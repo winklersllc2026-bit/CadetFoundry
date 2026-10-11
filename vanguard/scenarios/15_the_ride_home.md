@@ -21,3 +21,9 @@ Principles:
 Other approaches:
 Make a deal with a parent or trusted adult ahead of time: you'll call for a ride, no questions that night, and talk about it the next day.
 Reflection: Who could you call at midnight for a safe ride? Have you talked with them about it?
+Notice: The pressure here is time and embarrassment; the risk is everyone's life, not just yours.
+Discussion:
+- Why is refusing to ride but letting the others go only part of the answer?
+- What's your plan if this happens — who would you call, and what would you say?
+- How can a friend help someone who insists they're fine?
+Follow-up: Each Cadet writes down two people they could call for a ride at any hour, and tells them about the plan.

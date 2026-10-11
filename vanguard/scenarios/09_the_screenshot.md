@@ -21,3 +21,9 @@ Principles:
 Other approaches:
 If the post doesn't come down or it keeps happening, tell your instructor. Mocking a teammate online is bullying, and adults can step in in ways you can't.
 Reflection: Have you ever reposted something without thinking about the person in it? What would you want a leader to do if it were you?
+Notice: Likes and reposts make bystanders part of what happened — including Cadets on your own team.
+Discussion:
+- Why might calling out the poster publicly make things worse?
+- What responsibility does a team leader have for what their Cadets repost?
+- How could you check on the Cadet in the photo without making it bigger?
+Follow-up: Before posting anything this week, Cadets ask: who could see this, and does it show dignity and respect? Share one example next class (no names).

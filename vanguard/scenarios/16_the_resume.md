@@ -21,3 +21,9 @@ Principles:
 Other approaches:
 Ask your instructor or a counselor to review your resume. They can help you describe real experience in strong, honest words.
 Reflection: What real experiences do you have that you might be underselling? What would you need to learn to qualify for a job you want?
+Notice: Leaving true experience off a resume is a problem too; the goal is accurate, not modest or inflated.
+Discussion:
+- Why is 'nobody checks' a weak reason to exaggerate?
+- How can you describe real experience so it shows what you can do?
+- If you're missing a skill a job wants, what can you say instead?
+Follow-up: Cadets write three true resume lines about their own JROTC experience: a role, an action and a result.

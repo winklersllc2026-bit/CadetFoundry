@@ -28,7 +28,7 @@ from pathlib import Path
 
 from vanguard import (addons, asvab, backup, videos, board, books, careers, daily, engine, exam, fitness, instructor, integrity, knowledge,
                       lessons, letters, network, live_quiz, pay, pilot, profiles, program_backup, progress, quiz_edits, reports, scenarios, security, service, store, train, voice)
-from vanguard import sample
+from vanguard import __version__, sample
 from vanguard.brain import Brain
 from vanguard.faith import Faith
 from vanguard.knowledge import Library
@@ -334,6 +334,7 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                 cadets = [p for p in profiles.all_profiles() if p["kind"] == "cadet"]
                 logs = {p["id"]: instructor.read_class_file(priv, p["id"], "scenarios.jsonl", []) for p in cadets}
                 return self._json({"scenarios": [{**scenarios.summary(s), "text": scenarios.to_text(s),
+                                                  "debrief": scenarios.debrief(s),     # instructor's screen only
                                                   "done": sum(1 for L in logs.values() for e in (L or []) if e.get("scenario") == s["id"])}
                                                  for s in scenarios.all_scenarios()],
                                    "cadets": [{"id": p["id"], "name": p["name"], "count": len(logs[p["id"]] or []),
@@ -521,7 +522,7 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
         if r == "/api/status":
             return self._json({"engine": engine.status(), "library": app.library.stats(),
                                "profile": store.profile(), "grades": store.GRADES, "interests": store.INTERESTS, "log_kinds": store.LOG_KINDS,
-                               "lan": app.lan, "sample": sample.ACTIVE, "voice": voice.available() and store.module_on("voice"),
+                               "lan": app.lan, "sample": sample.ACTIVE, "version": __version__, "voice": voice.available() and store.module_on("voice"),
                                "modules_off": [m for m in store.MODULES if not store.module_on(m)],
                                "ai_mode": store.ai_mode(), "library_only": store.ai_mode() == "off",
                                "services": knowledge.SERVICES,

@@ -22,3 +22,9 @@ Principles:
 Other approaches:
 Make a simple list on paper or a whiteboard: task, who, when. Ask Cadets to choose tasks first, then assign what's left. Set one short check-in each day until the fair.
 Reflection: What would you do differently next time, and how would you catch the problem earlier?
+Notice: The real problem wasn't time — it was that no task had one person's name on it.
+Discussion:
+- Why does 'everyone owns it' so often mean nobody does?
+- What does a check-in add to a plan that a task list alone doesn't?
+- When is it right to bring a problem to the instructor, and what should you bring with it?
+Follow-up: Take a real upcoming platoon task and build a one-page list: task, one name, deadline, check-in time.

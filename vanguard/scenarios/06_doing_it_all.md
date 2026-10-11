@@ -21,3 +21,9 @@ Principles:
 Other approaches:
 Show the standard once (one inspected uniform as an example), hand each squad leader their squad, and set a time to report. Spot-check, then praise what went well and coach what didn't.
 Reflection: What would you do differently next time? What do you find hardest to hand off?
+Notice: Doing everything yourself feels responsible but keeps the squad leaders from growing — and doesn't scale.
+Discussion:
+- What's the difference between delegating a task and giving up responsibility for it?
+- What makes a standard 'clear' enough for someone else to check against?
+- How does a leader develop the next leaders?
+Follow-up: Write a delegation note for one inspection item: the standard, the deadline, and when you'll check.

@@ -21,3 +21,9 @@ Principles:
 Other approaches:
 Accept the feedback in the moment. If something about it felt unfair (like being corrected in front of others), ask the instructor for a quick word privately afterward — calmly, and after you've already worked on the feedback.
 Reflection: What would you do differently next time? How do you usually react to criticism?
+Notice: Feeling embarrassed is normal; what matters is what you do in the next ten seconds.
+Discussion:
+- Why is 'Roger, I'll work on it' hard to say when you feel embarrassed?
+- How can you raise other factors (like a noisy squad) later without sounding like you're making excuses?
+- What's the cost of quietly stopping volunteering?
+Follow-up: Practice: each Cadet gives one drill command at full volume, and a partner gives one specific, kind piece of feedback.

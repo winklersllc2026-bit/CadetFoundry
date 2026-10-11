@@ -21,3 +21,9 @@ Principles:
 Other approaches:
 Set a quick weekly check-in with each squad leader so problems have a regular place to come up before they become emergencies.
 Reflection: How do you react when someone brings you bad news? What would make people more willing to tell you the truth?
+Notice: The squad leaders stopped bringing bad news because of how the last piece of bad news was received.
+Discussion:
+- How does a leader's reaction to bad news change what they hear next time?
+- Why is apologizing to the squad leader part of fixing the problem?
+- What could a platoon sergeant do to make reporting problems early feel safe?
+Follow-up: Cadets practice receiving bad news: a partner reports a made-up problem, and the leader responds calmly with a question and a next step.

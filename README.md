@@ -34,7 +34,14 @@ Version 0.2.2. What's built and what's next: ROADMAP.md. How it fits together: A
 - **Lessons:** write a lesson (objective, content, questions, vocabulary, reflection prompt, private notes) and assign
   it to everyone, to units, or to individual Cadets with a due date. See who's complete, in progress or not started,
   with scores and reflections. Cadets who join a unit later get its lessons automatically.
+- **Start class:** the instructor's Home plans today in named steps — Opening (a question on the projector), Learn
+  (videos), Discuss (scenarios with a class vote), Engage (live questions), Assign (a lesson), Close (an exit question)
+  — then runs them from one run sheet and ends on Progress (who's done).
 - **Leadership scenarios:** use the twenty practice scenarios or write your own; read each Cadet's leadership log.
+  Each has an **instructor debrief** (principles, what Cadets should notice, discussion questions, a follow-up) on
+  your screen only — never on the projector or a Cadet's device.
+- **What Vanguard is — and isn't:** in Settings and Me, plainly: a supplemental, instructor-controlled, offline-first
+  tool; not official, not a replacement for your program's systems or records, not a grading authority.
 - **Classroom mode:** project a scenario, Cadets vote A–D from their devices (anonymous — you see counts only), then
   reveal the discussion guidance.
 - **Live pop quiz:** put any quiz question (or your own) on the projector as multiple choice or typed. Cadets answer

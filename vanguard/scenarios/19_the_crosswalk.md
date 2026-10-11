@@ -21,3 +21,9 @@ Principles:
 Other approaches:
 You can also write or call your city council member, or ask your school's administration to request the crossing with you.
 Reflection: What's a problem in your community you'd like to see fixed? Who has the power to fix it, and how could you reach them?
+Notice: The anger is fair; the question is which action is most likely to change the road.
+Discussion:
+- Why might an angry video get attention but not a crosswalk?
+- What facts would make the case stronger at a council meeting?
+- Who else could you bring along — and why does that help?
+Follow-up: Find when your local council meets and how residents can speak, and share it with the class.

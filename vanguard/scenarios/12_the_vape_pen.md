@@ -21,3 +21,9 @@ Principles:
 Other approaches:
 Have a simple "no" ready before situations like this. If a teammate wants to quit, point them to free help like SmokefreeTXT for Teens or a trusted adult.
 Reflection: What makes saying no hard in a moment like this? What is your go-to way to say no?
+Notice: The youngest Cadet is watching — the captain's choice teaches them what this team does.
+Discussion:
+- Why can a lecture backfire even when the leader is right?
+- What makes a short, calm 'No thanks' powerful?
+- How do you look out for a younger teammate without embarrassing them?
+Follow-up: Cadets write two ways to say no and change the subject that would sound natural from them.

@@ -26,6 +26,13 @@ Format:
     Other approaches:
     ...
     Reflection: What would you do differently next time?
+    Notice: (instructor only) what Cadets should notice
+    Discussion:
+    - (instructor only) a question for the class
+    Follow-up: (instructor only) an optional activity
+
+Notice, Discussion and Follow-up are the instructor's debrief: shown on the instructor's own screens, never sent to a
+Cadet and never put on the projector.
 """
 from __future__ import annotations
 
@@ -41,14 +48,14 @@ from vanguard import store
 BUILTIN_DIR = Path(__file__).resolve().parent / "scenarios"
 DEFAULT_REFLECTION = "What would you do differently next time?"
 _FIELDS = ("title", "competency", "situation", "choice", "outcome", "strengths", "weaknesses", "principles",
-           "other approaches", "reflection")
+           "other approaches", "reflection", "notice", "discussion", "follow-up")
 _lock = threading.Lock()
 
 
 def parse(text: str) -> dict:
     """The scenario format above -> dict. Raises ValueError with a plain message."""
     sc = {"title": "", "competency": "", "situation": "", "choices": [], "principles": [], "alternatives": "",
-          "reflection": ""}
+          "reflection": "", "notice": "", "discussion": [], "follow_up": ""}
     field, buf = None, []
 
     def flush():
@@ -56,8 +63,12 @@ def parse(text: str) -> dict:
         if field is None:
             if val:
                 raise ValueError("Start with 'Title:'.")
-        elif field in ("title", "competency", "situation", "reflection"):
+        elif field in ("title", "competency", "situation", "reflection", "notice"):
             sc[field] = val
+        elif field == "follow-up":
+            sc["follow_up"] = val
+        elif field == "discussion":
+            sc["discussion"] = [re.sub(r"^[-*•]\s*", "", x).strip() for x in val.splitlines() if x.strip()][:8]
         elif field == "other approaches":
             sc["alternatives"] = val
         elif field == "principles":
@@ -87,7 +98,8 @@ def parse(text: str) -> dict:
     for i, c in enumerate(sc["choices"], 1):
         if not c["text"] or not c["outcome"]:
             raise ValueError(f"Choice {i} needs its text and an Outcome.")
-    for k, n in (("title", 100), ("competency", 60), ("situation", 3000), ("alternatives", 3000), ("reflection", 300)):
+    for k, n in (("title", 100), ("competency", 60), ("situation", 3000), ("alternatives", 3000), ("reflection", 300),
+                 ("notice", 1000), ("follow_up", 1000)):
         sc[k] = sc[k][:n]
     sc["reflection"] = sc["reflection"] or DEFAULT_REFLECTION
     return sc
@@ -106,6 +118,12 @@ def to_text(sc: dict) -> str:
     if sc["alternatives"]:
         out += ["Other approaches:", sc["alternatives"]]
     out.append(f"Reflection: {sc['reflection']}")
+    if sc.get("notice"):
+        out.append(f"Notice: {sc['notice']}")
+    if sc.get("discussion"):
+        out += ["Discussion:"] + [f"- {q}" for q in sc["discussion"]]
+    if sc.get("follow_up"):
+        out.append(f"Follow-up: {sc['follow_up']}")
     return "\n".join(out)
 
 
@@ -194,6 +212,12 @@ def explain(sc: dict, choice: int) -> dict:
     c = sc["choices"][choice]
     return {"choice": choice, "decision": c["text"], "outcome": c["outcome"], "strengths": c["strengths"],
             "weaknesses": c["weaknesses"], "principles": sc["principles"], "alternatives": sc["alternatives"]}
+
+
+def debrief(sc: dict) -> dict:
+    """The instructor's debrief: principles, what to notice, discussion questions, a follow-up. Instructor only."""
+    return {"principles": sc["principles"], "notice": sc.get("notice", ""), "discussion": sc.get("discussion", []),
+            "follow_up": sc.get("follow_up", ""), "alternatives": sc["alternatives"]}
 
 
 def all_outcomes(sc: dict) -> list[dict]:

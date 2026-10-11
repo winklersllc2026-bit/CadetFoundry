@@ -21,3 +21,9 @@ Principles:
 Other approaches:
 Tell your friend first that you won't be part of it and why. If the answers keep spreading, tell your instructor. Doing both is often the strongest path.
 Reflection: What would you do differently next time? What makes this choice hard for you?
+Notice: The pressure comes from a friend and from the group, and the squad leader's silence would also send a message.
+Discussion:
+- Is staying silent and not looking at the answers enough for a squad leader? Why or why not?
+- What makes moral courage harder than physical courage?
+- What does a leader teach the squad by what they accept?
+Follow-up: Cadets write the private message they would send their friend, keeping it respectful and clear.

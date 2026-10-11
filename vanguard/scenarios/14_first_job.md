@@ -21,3 +21,9 @@ Principles:
 Other approaches:
 If coworkers keep pressuring you to break rules, talk to your manager about the rule itself — without making it personal.
 Reflection: What would you want your first boss to say about you to your next employer?
+Notice: It feels like a small favor, but clocking someone in is falsifying a record your manager trusts.
+Discussion:
+- Why do small dishonest acts matter so much early in a job?
+- How can you say no to a coworker and still be a good teammate?
+- What would you want your manager to say about you in a reference?
+Follow-up: Write the text you'd send back to the coworker: firm, friendly and honest.

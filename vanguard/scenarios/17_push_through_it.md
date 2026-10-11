@@ -21,3 +21,9 @@ Principles:
 Other approaches:
 Before a hard training block, tell the whole team up front: report pain early and nobody will be judged for it.
 Reflection: Have you ever hidden pain or a problem so you wouldn't let people down? What would have made it easier to speak up?
+Notice: Keeping the secret feels loyal, but the leader is also responsible for what happens if the injury gets worse.
+Discussion:
+- Why is the runner's request so hard to refuse?
+- Why does it matter that the conversation is private and not in front of the team?
+- What does the whole team learn from how the leader handles this?
+Follow-up: Discuss as a team: what's our rule for reporting injuries, and who do we tell? Write it down.

@@ -21,3 +21,9 @@ Principles:
 Other approaches:
 If the flag is torn or badly soiled, give it to a staff member or your instructor so it can be cleaned or retired properly.
 Reflection: Why do small acts of respect matter when nobody asked you to do them?
+Notice: Nobody assigned the job, and that's the point: initiative means acting without being told.
+Discussion:
+- Why is telling your friends to pick it up different from doing it yourself?
+- Why do so many people walk past something that needs doing?
+- Where else in school do you see 'not my job' moments?
+Follow-up: Review how to handle and fold the flag with your instructor's guidance, and practice once as a class.

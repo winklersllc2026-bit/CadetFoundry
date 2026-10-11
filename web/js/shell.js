@@ -315,6 +315,28 @@ async function instReports(sec, ov, run) {
   if (typeof instructorPilot === 'function') await instructorPilot(sec);             // pilot.js
 }
 
+// What Vanguard is and isn't -- plainly, for instructors (Settings) and everyone (Me). Vanguard supports what a program
+// already does; it never claims to be official or to replace a program's own systems.
+function aboutVanguardHtml(open = false) {
+  const li = xs => xs.map(x => `<li>${x}</li>`).join('');
+  return `<div class="card"><details ${open ? 'open' : ''}><summary style="cursor:pointer;min-height:40px"><b>ℹ️ What Vanguard is — and isn't</b></summary>
+    <div class="row" style="flex-wrap:wrap;gap:16px;align-items:flex-start;margin-top:8px">
+      <div style="flex:1;min-width:230px"><b>Vanguard is</b><ul style="margin:6px 0 0 18px;padding:0">${li([
+        'A supplemental learning and leadership tool for your classroom',
+        'Instructor-controlled — you decide what Cadets get and when',
+        'Offline-first: it runs on this computer, with no student accounts in the cloud',
+        'A leadership and learning resource built from cited public sources',
+        `A pilot product under active development (version ${esc(STATUS.version || '')})`])}</ul></div>
+      <div style="flex:1;min-width:230px"><b>Vanguard isn't</b><ul style="margin:6px 0 0 18px;padding:0">${li([
+        'An official JROTC, military, school or government system — and no one has endorsed it',
+        "A replacement for your program's official systems, curriculum or records",
+        'A grading authority — its scores are for practice and feedback',
+        'A student information system',
+        "A substitute for the instructor's judgment",
+        'A crisis service — the safety check shows help numbers but notifies no one'])}</ul></div></div>
+    <p class="faint" style="margin:10px 0 0">Vanguard complements what your program already does.</p></details></div>`;
+}
+
 function instSettings(sec) {
   // Learn sections for every Cadet on this device. Basic Training & Beyond still needs each Cadet's own opt-in.
   const CAT_NAMES = { leadership: 'Leadership', citizenship: 'Citizenship', military: 'Military Knowledge', health: 'Health & Fitness',
@@ -323,7 +345,7 @@ function instSettings(sec) {
   const MODS = { faith: 'Faith texts (scripture lookup and reading plans)', letters: 'Letters and address book', voice: 'Talk to Vanguard (offline voice)' };
   const modsOff = STATUS.modules_off || [];
   const progs = STATUS.programs || {};
-  sec.innerHTML = `<div class="card"><h3>🎖️ Your JROTC program</h3>
+  sec.innerHTML = `${aboutVanguardHtml(true)}<div class="card"><h3>🎖️ Your JROTC program</h3>
       <p class="faint">Sets the words Vanguard uses (for example, the year a Cadet is in: LET 1 in Army JROTC, NS 1 in Navy JROTC, LE 1 in Marine Corps JROTC, Year 1 in Air Force JROTC) and puts your branch first in Learn. Cadets can still explore every branch.</p>
       <select id="progPick" aria-label="JROTC program" style="width:100%;min-height:46px"><option value="">Not set / more than one program</option>
         ${Object.entries(progs).map(([k, v]) => `<option value="${k}" ${STATUS.program === k ? 'selected' : ''}>${esc(v)}</option>`).join('')}</select>

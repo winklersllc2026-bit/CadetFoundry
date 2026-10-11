@@ -21,3 +21,9 @@ Principles:
 Other approaches:
 Speak to your instructor privately right after class if saying it in front of everyone feels too hard — what matters is that you say it, and soon.
 Reflection: Why is it harder to admit a mistake when nobody knows yet? What does owning it say about you?
+Notice: Nobody knows it was your job — which is exactly when integrity matters.
+Discussion:
+- Why does adding 'but it wasn't really my fault' weaken an apology?
+- Why do leaders who own their mistakes earn more trust?
+- What would you offer to do to make it right?
+Follow-up: Write a three-sentence 'I own it' statement for a small real mistake: what happened, that it was yours, and what you'll do now.

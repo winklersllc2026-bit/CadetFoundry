@@ -14,7 +14,23 @@ const cdLoad = () => {
 };
 const cdSave = p => { try { localStorage.setItem(CD_KEY, JSON.stringify(p)); } catch (e) { } };
 const cdClear = () => { try { localStorage.removeItem(CD_KEY); } catch (e) { } };
-const CD_ICON = { lesson: '📋', scenario: '🗳️', question: '📡', video: '🎬' };
+const CD_ICON = { lesson: '📋', scenario: '🗳️', question: '📡', video: '🎬', prompt: '💬' };
+// Today's class runs in named steps (owner, 2026-10-11): Opening, Learn, Discuss, Engage, Assign, Close, then Progress.
+const CD_PHASES = [['open', 'Opening', 'A question to get them thinking'], ['learn', 'Learn', 'Videos'],
+  ['discuss', 'Discuss', 'Leadership scenarios — the class votes'], ['engage', 'Engage', 'Live questions'],
+  ['assign', 'Assign', "Today's lesson"], ['close', 'Close', 'An exit question']];
+const cdPhase = it => it.type === 'prompt' ? (it.id === 'close' ? 'close' : 'open')
+  : ({ video: 'learn', scenario: 'discuss', question: 'engage', lesson: 'assign' })[it.type] || 'learn';
+// Suggested questions (the instructor can rewrite them). A different one each day.
+const CD_OPENERS = ['Think of a leader you would follow anywhere. What is one thing they do that makes you trust them?',
+  'What is the difference between being in charge and being a leader?',
+  'When did someone\'s small act of respect make a difference to you?',
+  'What is one thing a good teammate does that nobody notices?',
+  'What does "lead by example" look like in this classroom?'];
+const CD_CLOSERS = ['What is one thing from today you will use this week?',
+  'What is one question you still have about today\'s topic?',
+  'If you had to teach today\'s lesson to a new Cadet, what would you say first?'];
+const cdDaily = list => list[Math.floor(Date.now() / 86400000) % list.length];
 
 const homeForCadets = loaders.home;
 loaders.home = async () => {
@@ -81,24 +97,26 @@ async function planner(main, ov, prev) {
       <label for="cdUnit"><b>1. Which class?</b></label>
       ${ov.units.length ? `<select id="cdUnit">${ov.units.map(u => `<option value="${esc(u.id)}" ${u.id === was.unit ? 'selected' : ''}>${esc(u.name)}</option>`).join('')}</select>`
         : '<p class="faint">Make your class first (step 1 above). You can still plan today, and assign the lesson to everyone.</p>'}
-      <p style="margin:18px 0 4px"><b>2. What's on today's plan?</b> <span class="faint">Tick anything — you can skip any of these.</span></p></div>
-    <div class="card"><h3>📋 A lesson to assign</h3>
-      ${lessons.length ? `<div style="${box}">${pick('lesson', '', 'No lesson today', '', !(was.items || []).some(i => i.type === 'lesson'), 'radio', 'cdLesson')}
-        ${lessons.map(l => pick('lesson', l.id, esc(l.title), [l.let_level && `${STATUS.level_label || 'Year'} ${l.let_level}`, l.questions.length && `${l.questions.length} questions`].filter(Boolean).map(esc).join(' · '), had('lesson', l.id), 'radio', 'cdLesson')).join('')}</div>`
-        : '<p class="faint">No lessons yet.</p>'}
-      <button class="btn small" id="cdNewLesson" style="margin-top:8px">＋ Write a new lesson</button></div>
-    <div class="card"><h3>🗳️ Leadership scenarios for the projector</h3>
-      <p class="faint">The class votes on their phones, then you reveal the discussion guidance.</p>
+      <p style="margin:18px 0 4px"><b>2. What's on today's plan?</b> <span class="faint">Class runs in this order. Tick anything — you can skip any step.</span></p></div>
+    ${cdPromptCard('open', '💬 Opening', 'Put a question on the projector. Cadets think for a minute, then a few share.', was, CD_OPENERS)}
+    <div class="card"><h3>🎬 Learn — videos</h3>
+      <div style="${box}">${videos.map(v => pick('video', v.id, esc(v.title), `${esc(svcName(v.service))} · ${v.kind === 'youtube' ? 'YouTube (internet)' : v.local ? `${esc(v.length)} · plays offline` : 'not saved — needs internet'}`, had('video', v.id))).join('') || '<p class="faint">No videos.</p>'}</div></div>
+    <div class="card"><h3>🗳️ Discuss — leadership scenarios</h3>
+      <p class="faint">The class votes on their phones, then you reveal the discussion guidance. Your debrief notes stay on your screen.</p>
       <div style="${box}">${scenarios.map(s => pick('scenario', s.id, esc(s.title), esc(s.competency), had('scenario', s.id))).join('') || '<p class="faint">No scenarios.</p>'}</div></div>
-    <div class="card"><h3>📡 Live questions</h3>
+    <div class="card"><h3>📡 Engage — live questions</h3>
       <p class="faint">Pick a study card. Its questions go on the projector one at a time; Cadets answer on their phones.</p>
       <input id="cdCardFind" placeholder="Search study cards (e.g. salute, ranks, core values)" aria-label="Search study cards">
       <div class="row" style="gap:8px;flex-wrap:wrap;margin-top:6px"><select id="cdCard" aria-label="Study card" style="flex:3;min-width:200px"></select>
         <select id="cdCount" aria-label="How many questions" style="flex:1;min-width:110px">${[1, 2, 3, 4, 5].map(n => `<option value="${n}" ${n === 3 ? 'selected' : ''}>${n} question${n === 1 ? '' : 's'}</option>`).join('')}</select>
         <button class="btn" id="cdAddQ">Add</button></div>
       <div id="cdQList" style="margin-top:8px"></div></div>
-    <div class="card"><h3>🎬 Videos</h3>
-      <div style="${box}">${videos.map(v => pick('video', v.id, esc(v.title), `${esc(svcName(v.service))} · ${v.kind === 'youtube' ? 'YouTube (internet)' : v.local ? `${esc(v.length)} · plays offline` : 'not saved — needs internet'}`, had('video', v.id))).join('') || '<p class="faint">No videos.</p>'}</div></div>
+    <div class="card"><h3>📋 Assign — a lesson</h3>
+      ${lessons.length ? `<div style="${box}">${pick('lesson', '', 'No lesson today', '', !(was.items || []).some(i => i.type === 'lesson'), 'radio', 'cdLesson')}
+        ${lessons.map(l => pick('lesson', l.id, esc(l.title), [l.let_level && `${STATUS.level_label || 'Year'} ${l.let_level}`, l.questions.length && `${l.questions.length} questions`].filter(Boolean).map(esc).join(' · '), had('lesson', l.id), 'radio', 'cdLesson')).join('')}</div>`
+        : '<p class="faint">No lessons yet.</p>'}
+      <button class="btn small" id="cdNewLesson" style="margin-top:8px">＋ Write a new lesson</button></div>
+    ${cdPromptCard('close', '🚪 Close', 'An exit question on the projector before the bell.', was, CD_CLOSERS)}
     <div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:20px"><button class="btn primary" id="cdBuild" style="flex:1;min-height:56px;font-size:19px">Build today's class →</button>
       <button class="btn" id="cdCancel">Cancel</button></div><p class="faint" id="cdMsg" role="alert"></p>`;
   const fillCards = () => {
@@ -126,16 +144,23 @@ async function planner(main, ov, prev) {
   $('#cdCancel').addEventListener('click', classDayHome);
   $('#cdBuild').addEventListener('click', () => {
     const items = [];
-    const lid = (main.querySelector('[data-cd="lesson"]:checked') || {}).value;
-    if (lid) items.push({ type: 'lesson', id: lid, title: lessons.find(l => l.id === lid).title, sub: 'Assign it; Cadets find it on their Home screen' });
-    main.querySelectorAll('[data-cd="scenario"]:checked').forEach(x => {
-      const s = scenarios.find(y => y.id === x.value); items.push({ type: 'scenario', id: s.id, title: s.title, sub: s.competency });
-    });
-    items.push(...questions);
+    const prompt = id => {
+      const on = $(`#cdP-${id}`).checked, text = $(`#cdT-${id}`).value.trim();
+      if (on && text) items.push({ type: 'prompt', id, title: text, sub: id === 'open' ? 'Opening question — on the projector' : 'Exit question — on the projector' });
+    };
+    prompt('open');
     main.querySelectorAll('[data-cd="video"]:checked').forEach(x => {
       const v = videos.find(y => y.id === x.value); items.push({ type: 'video', id: v.id, title: v.title, sub: v.kind === 'youtube' ? 'YouTube (internet)' : v.length });
     });
-    if (!items.length) { $('#cdMsg').textContent = 'Tick at least one thing for today — a lesson, a scenario, a question or a video.'; return; }
+    main.querySelectorAll('[data-cd="scenario"]:checked').forEach(x => {
+      const s = scenarios.find(y => y.id === x.value);
+      items.push({ type: 'scenario', id: s.id, title: s.title, sub: s.competency, debrief: s.debrief });
+    });
+    items.push(...questions);
+    const lid = (main.querySelector('[data-cd="lesson"]:checked') || {}).value;
+    if (lid) items.push({ type: 'lesson', id: lid, title: lessons.find(l => l.id === lid).title, sub: 'Assign it; Cadets find it on their Home screen' });
+    prompt('close');
+    if (!items.length) { $('#cdMsg').textContent = 'Tick at least one thing for today — a question, a video, a scenario, a live question or a lesson.'; return; }
     const keep = Object.fromEntries((was.items || []).filter(i => i.done).map(i => [i.type + ':' + i.id, true]));
     items.forEach(i => { if (keep[i.type + ':' + i.id]) i.done = true; });
     const plan = { date: cdToday(), unit: $('#cdUnit') ? $('#cdUnit').value : '', items };
@@ -146,25 +171,51 @@ async function planner(main, ov, prev) {
   });
 }
 
-// Step 3: the run sheet -- today's plan in order, one button each.
+// The Opening and Close cards: a question for the projector, prefilled with today's suggestion.
+function cdPromptCard(id, heading, help, was, list) {
+  const prev = (was.items || []).find(i => i.type === 'prompt' && i.id === id);
+  const on = prev ? true : !was.items;              // on by default for a new plan
+  return `<div class="card"><h3>${heading}</h3><p class="faint">${help}</p>
+    <label style="display:flex;gap:10px;align-items:center;min-height:44px"><input type="checkbox" id="cdP-${id}" ${on ? 'checked' : ''} style="width:22px;height:22px">
+      ${id === 'open' ? 'Open with a question' : 'Close with a question'}</label>
+    <textarea id="cdT-${id}" rows="2" maxlength="300" aria-label="${id === 'open' ? 'Opening' : 'Exit'} question" style="width:100%">${esc(prev ? prev.title : cdDaily(list))}</textarea></div>`;
+}
+
+// Step 3: the run sheet -- today's plan in order (Opening, Learn, Discuss, Engage, Assign, Close), one button each.
 function runSheet(main, plan, ov) {
   const unit = ov.units.find(u => u.id === plan.unit);
   const done = plan.items.filter(i => i.done).length;
-  const label = { lesson: 'Assign', scenario: '▶ Present', question: '▶ Ask live', video: '▶ Play' };
+  const label = { lesson: 'Assign', scenario: '▶ Present', question: '▶ Ask live', video: '▶ Play', prompt: '▶ Show' };
+  const order = CD_PHASES.map(p => p[0]);
+  const items = plan.items.map((it, i) => ({ it, i })).sort((a, b) => order.indexOf(cdPhase(a.it)) - order.indexOf(cdPhase(b.it)) || a.i - b.i);
+  const row = ({ it, i }) => `<div style="margin:10px 0;${it.done ? 'opacity:.6' : ''}"><div class="row" style="gap:10px;flex-wrap:nowrap">
+        <span style="font-size:22px">${it.done ? '✅' : CD_ICON[it.type]}</span>
+        <div style="flex:1;min-width:0"><b>${esc(it.title)}</b><div class="faint">${esc(it.sub || '')}${it.note ? ' · ' + esc(it.note) : ''}</div></div>
+        <button class="btn ${it.done ? '' : 'primary'}" data-cdrun="${i}" style="white-space:nowrap">${it.done && it.type === 'lesson' ? 'Assigned' : label[it.type]}</button></div>
+        ${it.type === 'scenario' && typeof debriefHtml === 'function' ? `<div style="margin-left:34px">${debriefHtml(it.debrief)}</div>` : ''}</div>`;
+  const phases = CD_PHASES.map(([key, name, what]) => {
+    const mine = items.filter(x => cdPhase(x.it) === key);
+    return mine.length ? `<div style="margin-top:14px;border-top:1px solid var(--line);padding-top:8px"><div class="faint" style="letter-spacing:.12em;font-size:13px">${name.toUpperCase()} · ${esc(what)}</div>${mine.map(row).join('')}</div>` : '';
+  }).join('');
   main.innerHTML = `<div class="card" style="border-color:var(--tan)">
       <div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:8px"><h3 style="margin:0">Today's class${unit ? ' — ' + esc(unit.name) : ''}</h3>
         <span class="faint">${done} of ${plan.items.length} done</span></div>
       ${STATUS.lan ? `<div class="row" style="gap:10px;margin:12px 0;flex-wrap:nowrap"><span style="font-size:22px">📱</span>
         <div style="flex:1"><b>Cadets join</b><div class="faint">Put the Join screen on the projector; Cadets scan the QR code.</div></div>
         <button class="btn" id="cdJoin">Join screen</button></div>` : ''}
-      ${plan.items.map((it, i) => `<div class="row" style="gap:10px;margin:12px 0;flex-wrap:nowrap;${it.done ? 'opacity:.6' : ''}">
-        <span style="font-size:22px">${it.done ? '✅' : CD_ICON[it.type]}</span>
-        <div style="flex:1;min-width:0"><b>${esc(it.title)}</b><div class="faint">${esc(it.sub || '')}${it.note ? ' · ' + esc(it.note) : ''}</div></div>
-        <button class="btn ${it.done ? '' : 'primary'}" data-cdrun="${i}" style="white-space:nowrap">${it.done && it.type === 'lesson' ? 'Assigned' : label[it.type]}</button></div>`).join('')}
+      ${phases}
+      <div style="margin-top:14px;border-top:1px solid var(--line);padding-top:8px"><div class="faint" style="letter-spacing:.12em;font-size:13px">PROGRESS · Who's done</div>
+        <div class="row" style="gap:10px;margin:10px 0;flex-wrap:nowrap"><span style="font-size:22px">📈</span>
+          <div style="flex:1;min-width:0"><b>See who finished today's work</b><div class="faint">Lesson scores and reflections, and the class report.</div></div>
+          <button class="btn" id="cdProgress" style="white-space:nowrap">Open</button></div></div>
       <div class="row" style="gap:8px;flex-wrap:wrap;margin-top:14px"><button class="btn" id="cdEdit">✎ Change the plan</button>
         <button class="btn" id="cdEnd">Finish class</button></div><p class="faint" id="cdRunMsg" role="alert"></p></div>`;
   if ($('#cdJoin')) $('#cdJoin').addEventListener('click', () => window.open('/join', '_blank', 'noopener'));
   $('#cdEdit').addEventListener('click', () => planner(main, ov, plan));
+  $('#cdProgress').addEventListener('click', () => {
+    openView('instructor');
+    loaders.instructor(plan.items.some(i => i.type === 'lesson' && i.done) ? 'lessons' : 'reports');
+  });
   $('#cdEnd').addEventListener('click', () => {
     if (!confirm('Finish today\'s class? The plan is cleared; everything Cadets did is already saved.')) return;
     cdClear(); classDayActive = false; classDayHome();
@@ -184,6 +235,7 @@ async function runItem(plan, i, main, ov) {
     return runSheet(main, plan, ov);
   }
   if (it.type === 'scenario') { mark(); return presentScenarios([it.id]); }
+  if (it.type === 'prompt') { mark(); return projectorPrompt(it); }
   if (it.type === 'question') {
     const r = await api('/api/instructor/live-quiz', { action: 'start', id: it.id, mode: 'mc' });
     if (r.error) return msg(r.error);
@@ -197,6 +249,17 @@ async function runItem(plan, i, main, ov) {
     mark();
     return projectorVideo(v);
   }
+}
+
+// The opening or exit question on the projector: big type, nothing else, and a way back to the run sheet.
+function projectorPrompt(it) {
+  openView('classroom');
+  const box = $('#classroomBody');
+  box.innerHTML = `<div class="row" style="justify-content:space-between;gap:8px;flex-wrap:wrap">
+      <span class="faint">CLASSROOM · ${it.id === 'close' ? 'EXIT QUESTION' : 'OPENING QUESTION'}</span><button class="btn small" id="ppBack">← Back to today's class</button></div>
+    <h1 style="font-size:clamp(30px,5vw,60px);line-height:1.2;margin:8vh 0 4vh">${esc(it.title)}</h1>
+    <p class="faint" style="font-size:20px">${it.id === 'close' ? 'Think about it, then share one answer before you go.' : 'Take a minute to think. Then we\'ll hear a few answers.'}</p>`;
+  $('#ppBack').addEventListener('click', backFromClassroom);
 }
 
 // A video on the projector: big, with the official credit, and a way back to the run sheet.
