@@ -1,6 +1,6 @@
 # Vanguard roadmap
 
-Current version: **0.2.0** (2026-10-10). Released on GitHub (private repo) and vanguard.winklers-llc.com (password).
+Current version: **0.2.1** (2026-10-10). Released on GitHub (private repo) and vanguard.winklers-llc.com (password).
 
 ## Where it stands
 
@@ -16,11 +16,15 @@ quizzes typed and graded by Vanguard · exams · 20 leadership scenarios with a 
 quiz · Train · Serve with instructor verification · Progress and printable portfolio · instructor dashboard and CSV
 report · program backup · pilot tools · Windows installer · USB drive (with optional offline AI) · website.
 
+**0.2.1:** branch cards up toward the Army set: Navy 21, Air Force 21, Space Force 20, Marine Corps 15 (drill,
+ceremonies, ranks, fitness, history, organization, joining), each checked against an official source · official
+military videos in Learn (DVIDS public-domain videos play offline once saved with tools/fetch_videos.py; YouTube
+entries link to each service's own channel) · the desktop icon recovers when its port is held by a broken copy.
+
 ## Next: branch content up to the depth of the Army set
 
-The Army set has 46 cards (values, ranks, customs, drill, uniforms, history, field skills, the opt-in Basic Training
-& Beyond guide). Navy, Air Force, Marine Corps and Space Force are being brought to the same depth, each card checked
-against an official source before it goes in.
+The Army set has 46 cards. Navy, Air Force and Space Force are past 20 and the Marine Corps has 15; more official
+sources (Enlisted Force Structure, Air Force Symbol, SPFMAN 36-2905, Marine Corps manuals) will bring them closer.
 
 ## Before the first classroom pilot (owner)
 

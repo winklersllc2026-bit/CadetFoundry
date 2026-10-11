@@ -38,6 +38,7 @@ ROADMAP = [
     (True, "0.2: simple setup — first-run wizard, Join screen with a QR code, join codes per class or platoon, 30-second sign-up"),
     (True, "0.2: Home screen and a 4-tab bar (Home, Learn, Lead, Me); an instructor menu (Today, Class, Lessons, Present, Reports, Settings)"),
     (True, "0.2: military jobs in every service from official sites; ASVAB practice with exact scoring"),
+    (True, "0.2.1: deeper Navy, Air Force, Space Force and Marine Corps cards; official military videos (offline once saved)"),
     (True, "Roles: Cadet, guardian and instructor profiles; Class PIN; class records only for the instructor"),
     (True, "Classes, platoons and squads; lessons assigned to everyone, units or Cadets (late joiners get them once)"),
     (True, "Learn: 150+ study cards from official U.S. government and military sources, each citing its source"),
