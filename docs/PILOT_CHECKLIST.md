@@ -39,9 +39,10 @@ One page to go through before, during and after a classroom pilot. Data rules: [
 ## Every week
 
 - [ ] Take a snapshot. Close class to phones when class ends.
+- [ ] When you press **Finish class**, answer "How useful was Vanguard today?" (a few seconds; you can skip it).
 
 ## After
 
-- [ ] Open the Cadet survey, then close it. Print the pilot report.
+- [ ] Open the Cadet survey, then close it. Print the **one-page summary** (and the full pilot report if the school wants it).
 - [ ] Export what the school keeps, then **End pilot** (Instructor → Reports → Pilot) per the retention decision
       (PILOT_DATA_HANDLING.md).

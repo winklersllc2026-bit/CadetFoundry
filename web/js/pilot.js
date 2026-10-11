@@ -15,6 +15,9 @@ async function instructorPilot(body) {
   sec.id = 'pilotCard';
   sec.innerHTML = `<h3>🧪 Pilot program</h3>
     <p class="faint">Make the pilot measurable: set it up, take a starting snapshot, open the Cadet survey near the end, add your own feedback, and print the report.</p>
+    ${plMetricsHtml(d.metrics, c)}
+    <div class="row" style="flex-wrap:wrap;gap:8px"><button class="btn small primary" id="plOnePage">🖨️ One-page summary</button>
+      <button class="btn small" id="plToday">💬 Feedback about today</button></div><div id="plTodayBox"></div>
     ${plModeHtml(d.stored)}
     <details ${c.start ? '' : 'open'}><summary><b>Pilot setup</b></summary>
       <label for="plSchool">School</label><input id="plSchool" maxlength="100" value="${esc(c.school || '')}">
@@ -47,6 +50,8 @@ async function instructorPilot(body) {
       ${fb.instructor.length ? `<p class="faint">Saved ${fb.instructor.length} time${fb.instructor.length === 1 ? '' : 's'}; latest ${esc(fb.latest_instructor.date)}: satisfaction ${fb.latest_instructor.satisfaction}/5, next semester: ${esc(fb.latest_instructor.use_again)}.</p>` : ''}</details>` : ''}`;
   body.appendChild(sec);
   plModeWire(sec, d);
+  $('#plOnePage').addEventListener('click', () => printPilotSummary(d));
+  $('#plToday').addEventListener('click', () => classFeedbackForm($('#plTodayBox'), () => loaders.instructor(), { skipLabel: 'Cancel' }));
   $('#plSave').addEventListener('click', async () => {
     const r = await api('/api/instructor/pilot', { school: $('#plSchool').value, program: $('#plProg').value, instructor: $('#plInst').value,
       start: $('#plStart').value, end: $('#plEnd').value, cadets_planned: $('#plN').value, notes: $('#plNotes').value,
@@ -182,4 +187,73 @@ function plModeWire(sec, d) {
       $('#plEndDone').addEventListener('click', () => loaders.instructor());
     });
   });
+}
+
+// ── After class: how useful was Vanguard today? (product feedback -- never about a Cadet) ──
+const PL_DAILY_Q = { goal: 'What were you trying to accomplish today?', worked: 'What worked?',
+  confusing: 'What was confusing?', change: 'What would you change?' };
+
+function classFeedbackForm(box, onDone, { skipLabel = 'Skip' } = {}) {
+  box.innerHTML = `<div class="card" style="border-color:var(--tan)"><h3>💬 How useful was Vanguard today?</h3>
+    <div class="row" style="gap:8px;flex-wrap:wrap" role="radiogroup" aria-label="How useful, 1 to 5">${[1, 2, 3, 4, 5].map(n => `<label style="display:flex;gap:6px;align-items:center;min-height:44px;margin-right:6px">
+      <input type="radio" name="cfUse" value="${n}" style="width:22px;height:22px"> ${n}${n === 1 ? ' — not useful' : n === 5 ? ' — very useful' : ''}</label>`).join('')}</div>
+    <div style="margin-top:8px">Would you use Vanguard again?</div>
+    <div class="row" style="gap:12px">${['yes', 'maybe', 'no'].map(v => `<label style="display:flex;gap:6px;align-items:center;min-height:44px"><input type="radio" name="cfAgain" value="${v}" style="width:22px;height:22px"> ${v[0].toUpperCase() + v.slice(1)}</label>`).join('')}</div>
+    <details style="margin-top:6px"><summary style="cursor:pointer;min-height:40px">A few more questions <span class="faint">(optional)</span></summary>
+      ${Object.entries(PL_DAILY_Q).map(([k, q]) => `<label for="cf-${k}">${esc(q)}</label><textarea id="cf-${k}" rows="2" maxlength="1000" style="width:100%"></textarea>`).join('')}</details>
+    <p class="faint">This is about Vanguard, not your Cadets — please don't name anyone. It stays on this computer.</p>
+    <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn primary" id="cfSave">Save</button><button class="btn" id="cfSkip">${esc(skipLabel)}</button></div>
+    <p class="faint" id="cfMsg" role="alert"></p></div>`;
+  box.querySelector('#cfSkip').addEventListener('click', () => onDone(false));
+  box.querySelector('#cfSave').addEventListener('click', async () => {
+    const use = box.querySelector('[name=cfUse]:checked'), again = box.querySelector('[name=cfAgain]:checked');
+    if (!use) { box.querySelector('#cfMsg').textContent = 'Pick 1 to 5 — or ' + skipLabel + '.'; return; }
+    const body = { useful: use.value, again: again ? again.value : '' };
+    Object.keys(PL_DAILY_Q).forEach(k => { body[k] = box.querySelector('#cf-' + k).value; });
+    const r = await api('/api/instructor/pilot/daily', body);
+    if (r.error) { box.querySelector('#cfMsg').textContent = r.error; return; }
+    onDone(true);
+  });
+}
+
+// ── The pilot's headline numbers ──
+function plMetricsHtml(m, c) {
+  const tile = (big, label, note = '') => `<div style="flex:1;min-width:140px;border:1px solid var(--line);border-radius:10px;padding:10px">
+    <div style="font-size:26px;font-weight:700">${big}</div><div>${label}</div>${note ? `<div class="faint" style="font-size:13px">${note}</div>` : ''}</div>`;
+  return `<div style="margin:10px 0"><b>Pilot results so far</b>
+    <div class="row" style="flex-wrap:wrap;gap:8px;margin-top:6px">
+      ${tile(m.cadets, 'Cadets enrolled', c.cadets_planned ? `${c.cadets_planned} planned` : '')}
+      ${tile(`${m.active} of ${m.cadets}`, `active in the last ${m.active_days || 14} days`)}
+      ${tile(m.assignments_pct == null ? '—' : `${m.assignments_pct}%`, 'lesson assignments completed', `${m.assignments_completed} of ${m.assignments}`)}
+      ${tile(`${m.cadets_with_scenario} of ${m.cadets}`, 'Cadets did a leadership scenario', `${m.scenarios} scenarios in all`)}
+      ${tile(m.rating == null ? '—' : `${m.rating}/5`, 'how useful you rated it', m.rating_days ? `from ${m.rating_days} class day${m.rating_days === 1 ? '' : 's'}` : 'rate it when you finish class')}
+      ${tile(m.would_continue ? m.would_continue.toUpperCase() : '—', 'would you continue?', 'your latest answer')}
+      ${m.cadet_responses ? tile(`${m.cadet_keep_using}/5`, 'Cadets: “I’d like to keep using it”', `${m.cadet_responses} anonymous answer${m.cadet_responses === 1 ? '' : 's'}`) : ''}</div>
+    <p class="faint" style="margin:6px 0 0">These numbers show how Vanguard was used. They don't show that it improved learning — that takes a comparison over time, and more than one pilot.</p></div>`;
+}
+
+// ── One page to hand to a principal or program manager ──
+function printPilotSummary(d) {
+  const c = d.config || {}, m = d.metrics, fb = d.feedback;
+  const quote = [...(d.class_feedback || [])].reverse().map(r => r.worked).find(Boolean)
+    || ((fb.instructor || []).slice().reverse().find(r => r.comment) || {}).comment || '';
+  const row = (k, v) => `<tr><td style="width:45%">${k}</td><td><b>${v}</b></td></tr>`;
+  let area = $('#printArea');
+  if (!area) { area = document.createElement('div'); area.id = 'printArea'; document.body.appendChild(area); }
+  area.innerHTML = `<div style="font-family:Georgia,serif;color:#000;max-width:7in">
+    <div style="letter-spacing:.2em;font-weight:700">VANGUARD</div><h1 style="margin:4px 0 12px">Pilot Summary</h1>
+    <table border="1" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:14px">
+      ${row('Program', esc([c.school, c.program].filter(Boolean).join(' · ') || '—'))}
+      ${row('Pilot dates', esc(c.start ? `${c.start} to ${c.end || 'ongoing'}` : '—') + (d.weeks != null ? ` (${d.weeks} weeks)` : ''))}
+      ${row('Cadets', `${m.cadets}${c.cadets_planned ? ` (${c.cadets_planned} planned)` : ''}`)}
+      ${row(`Active in the last ${m.active_days || 14} days`, `${m.active} of ${m.cadets}`)}
+      ${row('Lesson assignments completed', m.assignments ? `${m.assignments_completed} of ${m.assignments} (${m.assignments_pct}%)` : '—')}
+      ${row('Average lesson score', m.avg_lesson_score_pct == null ? '—' : m.avg_lesson_score_pct + '%')}
+      ${row('Leadership scenarios', `${m.scenarios} completed · ${m.cadets_with_scenario} of ${m.cadets} Cadets took part`)}
+      ${row('Instructor: how useful (1–5)', m.rating == null ? '—' : `${m.rating} (${m.rating_days} class day${m.rating_days === 1 ? '' : 's'})`)}
+      ${row('Instructor: would continue using Vanguard', m.would_continue ? m.would_continue.toUpperCase() : '—')}
+      ${m.cadet_responses ? row('Cadets: “I’d like to keep using Vanguard” (1–5)', `${m.cadet_keep_using} (${m.cadet_responses} anonymous answers)`) : ''}</table>
+    ${quote ? `<h3 style="margin:16px 0 4px">Instructor feedback</h3><p style="font-style:italic;margin:0">“${esc(quote)}”</p>` : ''}
+    <p style="font-size:11px;margin-top:18px">Generated by Vanguard ${esc(STATUS.version || '')} on ${esc(new Date().toLocaleDateString())} from records kept on the instructor's computer. These numbers describe use during the pilot, not proof of learning gains. Vanguard is designed to support JROTC instruction; it is not an official JROTC, military or school product.</p></div>`;
+  window.print();
 }

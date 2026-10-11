@@ -161,12 +161,26 @@ def touch() -> None:
     _last_seen = time.time()
 
 
-def watch_idle(httpd) -> None:
-    """Close an abandoned sample (the visitor closed the tab without leaving)."""
+def _parent_port() -> int | None:
+    from urllib.parse import urlsplit
+    try:
+        u = urlsplit(BACK)
+        return u.port if u.hostname in ("127.0.0.1", "localhost") else None
+    except ValueError:
+        return None
+
+
+def watch_idle(httpd, every: float = 60) -> None:
+    """Close an abandoned sample: the visitor closed the tab without leaving (45 idle minutes), or the Vanguard that
+    opened it is gone (it didn't answer twice in a row) -- a sample never outlives its Vanguard for long."""
+    port = _parent_port()
+
     def loop():
+        missed = 0
         while True:
-            time.sleep(60)
-            if time.time() - _last_seen > IDLE_LIMIT:
+            time.sleep(every)
+            missed = missed + 1 if port and _ask(port, "/api/sample/status") is None else 0
+            if time.time() - _last_seen > IDLE_LIMIT or missed >= 2:
                 httpd.shutdown()
                 return
     threading.Thread(target=loop, daemon=True).start()
@@ -283,6 +297,9 @@ def _build(api: _Client, app) -> None:
     pilot._write(priv, "pilot_snapshots.json", [first] + [s for s in pilot.snapshots(priv) if s.get("date") != day(-28)])
     api.call("POST", "/api/instructor/pilot/feedback", {"satisfaction": 4, "minutes_saved": 20, "use_again": "yes",
                                                         "comment": "Made-up feedback for the sample class."}, S)
+    for useful, worked in ((4, "Made-up: the live questions got quiet Cadets answering."),
+                           (5, "Made-up: the scenario vote started a real discussion.")):
+        api.call("POST", "/api/instructor/pilot/daily", {"useful": useful, "again": "yes", "worked": worked}, S)
     for _pid, ck, *_ in cadets:
         api.call("POST", "/api/lock", {}, ck)
     api.call("POST", "/api/lock", {}, S)

@@ -40,6 +40,9 @@ Version 0.2.2. What's built and what's next: ROADMAP.md. How it fits together: A
 - **Leadership scenarios:** use the twenty practice scenarios or write your own; read each Cadet's leadership log.
   Each has an **instructor debrief** (principles, what Cadets should notice, discussion questions, a follow-up) on
   your screen only — never on the projector or a Cadet's device.
+- **Pilot results:** the Pilot screen shows the headline numbers (Cadets, active, assignments completed, Cadets who did a
+  scenario, your usefulness rating, would you continue), asks "How useful was Vanguard today?" when you finish class,
+  and prints a one-page pilot summary. The numbers describe use, not proof of learning.
 - **What Vanguard is — and isn't:** in Settings and Me, plainly: a supplemental, instructor-controlled, offline-first
   tool; not official, not a replacement for your program's systems or records, not a grading authority.
 - **Classroom mode:** project a scenario, Cadets vote A–D from their devices (anonymous — you see counts only), then

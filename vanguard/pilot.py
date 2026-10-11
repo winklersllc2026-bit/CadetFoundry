@@ -298,6 +298,8 @@ def report(priv: bytes, dash: dict) -> dict:
     in_window = [a for a in lessons.all_assignments()
                  if not cfg.get("start") or a.get("created", "") >= cfg["start"]]
     return {"config": cfg, "metric_names": METRICS, "weeks": weeks, "now": now, "baseline": first, "change": change,
+            "metrics": metrics(priv, dash), "class_feedback": class_feedback(priv)[-20:],
+            "daily_questions": DAILY_QUESTIONS,
             "lessons_assigned": len(in_window), "snapshots": snaps, "feedback": fb,
             "engagement": [{"date": s["date"], "active": s.get("active"), "cadets": s.get("cadets")} for s in snaps],
             "cannot_measure": [] if first else ["Change over the pilot needs a starting snapshot — take one at the start."]}
@@ -305,7 +307,7 @@ def report(priv: bytes, dash: dict) -> dict:
 
 # ── Pilot mode: what's stored, and ending the pilot ─────────────────────────
 PILOT_FILES = ("pilot.json", "pilot_snapshots.json", "feedback_cadets.json", "feedback_instructor.json",
-               "pilot_survey.json")
+               "pilot_survey.json", "feedback_daily.json")
 
 
 def stored(priv: bytes) -> dict:
@@ -324,7 +326,7 @@ def stored(priv: bytes) -> dict:
             "units": len(instructor.roster(priv)["units"]), "lessons": len(lessons.all_lessons()),
             "assignments": len(lessons.all_assignments()), "snapshots": len(snapshots(priv)),
             "survey_answers": len(_survey_rows_raw()["sealed"]) + len(_survey_rows_raw()["plain"]),
-            "instructor_feedback": len(_read(priv, "feedback_instructor.json", [])),
+            "instructor_feedback": len(_read(priv, "feedback_instructor.json", [])) + len(_read(priv, "feedback_daily.json", [])),
             "online_ai": engine.online_ready(), "pilot_mode": bool(store.config().get("pilot_mode"))}
 
 
@@ -355,3 +357,56 @@ def end(priv: bytes) -> dict:
             "guardians": sum(1 for p in gone if p["kind"] == "guardian"),
             "assignments": len(assignments), "safety_copies": len(copies),
             "remaining_profiles": [{"name": p["name"], "kind": p["kind"]} for p in profiles.all_profiles()]}
+
+
+# ── after class: the instructor's quick feedback (batch 3, owner 2026-10-11) ─
+# Product feedback only: how useful Vanguard was today, and four optional questions. No Cadet is named or counted
+# here, and nothing leaves this device -- it's sealed with the program data key like the rest of the pilot.
+DAILY = "feedback_daily.json"
+DAILY_QUESTIONS = {"goal": "What were you trying to accomplish today?", "worked": "What worked?",
+                   "confusing": "What was confusing?", "change": "What would you change?"}
+
+
+def add_class_feedback(priv: bytes, useful, again="", **answers) -> dict:
+    try:
+        useful = int(useful)
+    except (TypeError, ValueError):
+        raise ValueError("How useful was Vanguard today: 1 to 5.") from None
+    if not 1 <= useful <= 5:
+        raise ValueError("How useful was Vanguard today: 1 to 5.")
+    if again not in ("", "yes", "maybe", "no"):
+        raise ValueError("Would you use Vanguard again: yes, maybe or no.")
+    row = {"id": uuid.uuid4().hex[:8], "date": time.strftime("%Y-%m-%d"), "at": round(time.time(), 3),
+           "useful": useful, "again": again,
+           **{k: str(answers.get(k) or "").strip()[:1000] for k in DAILY_QUESTIONS}}
+    with _lock:
+        rows = _read(priv, DAILY, [])
+        rows.append(row)
+        _write(priv, DAILY, rows[-500:])
+    return row
+
+
+def class_feedback(priv: bytes) -> list[dict]:
+    return _read(priv, DAILY, [])
+
+
+def metrics(priv: bytes, dash: dict) -> dict:
+    """The pilot's headline numbers, all from records on this device. They describe use, not learning gains."""
+    shared = [r for r in dash["rows"] if r.get("shared")]
+    assigned = sum(r["lessons_assigned"] for r in shared)
+    completed = sum(r["lessons_completed"] for r in shared)
+    daily = class_feedback(priv)
+    ratings = [r["useful"] for r in daily]
+    # the latest answer wins: by date, then by the moment it was given (weekly feedback rows only have a date)
+    answers = [(r["date"], r.get("at", 0), i, r["again"]) for i, r in enumerate(daily) if r.get("again")]
+    answers += [(r["date"], 0, i, r["use_again"]) for i, r in enumerate(_read(priv, "feedback_instructor.json", []))
+                if r.get("use_again")]
+    survey = feedback_summary(priv)
+    return {"cadets": dash["cadets"], "active": dash["active"], "active_days": dash.get("active_days"),
+            "assignments": assigned, "assignments_completed": completed,
+            "assignments_pct": round(100 * completed / assigned) if assigned else None,
+            "cadets_with_scenario": sum(1 for r in shared if r.get("scenarios")), "scenarios": dash["scenarios"],
+            "avg_lesson_score_pct": dash.get("avg_lesson_score_pct"),
+            "rating": round(sum(ratings) / len(ratings), 1) if ratings else None, "rating_days": len(ratings),
+            "would_continue": max(answers)[3] if answers else None,
+            "cadet_keep_using": survey["averages"].get("again"), "cadet_responses": survey["cadet_responses"]}

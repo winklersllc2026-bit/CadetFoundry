@@ -217,8 +217,16 @@ function runSheet(main, plan, ov) {
     loaders.instructor(plan.items.some(i => i.type === 'lesson' && i.done) ? 'lessons' : 'reports');
   });
   $('#cdEnd').addEventListener('click', () => {
-    if (!confirm('Finish today\'s class? The plan is cleared; everything Cadets did is already saved.')) return;
-    cdClear(); classDayActive = false; classDayHome();
+    const finish = () => { cdClear(); classDayActive = false; classDayHome(); };
+    if (typeof classFeedbackForm !== 'function') {
+      if (confirm('Finish today\'s class? The plan is cleared; everything Cadets did is already saved.')) finish();
+      return;
+    }
+    // Finishing clears today's plan (everything Cadets did is already saved) -- after one quick, optional question.
+    main.innerHTML = '<div id="cdFeedback"></div><p class="faint">Everything Cadets did today is already saved. Finishing clears today\'s plan.</p>';
+    classFeedbackForm($('#cdFeedback'), finish, { skipLabel: 'Skip and finish' });
+    $('#cdFeedback').querySelector('#cfSave').textContent = 'Save and finish';
+    window.scrollTo(0, 0);
   });
   main.querySelectorAll('[data-cdrun]').forEach(b => b.addEventListener('click', () => runItem(plan, Number(b.dataset.cdrun), main, ov)));
 }

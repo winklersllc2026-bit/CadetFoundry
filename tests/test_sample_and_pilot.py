@@ -5,6 +5,8 @@ it the way a visitor would, and check the real data folder is never touched. End
 it deletes made-up Cadets on realistic data -- never anything in the shared test folder.
 """
 import http.client
+import http.server
+import threading
 import json
 import os
 import sys
@@ -20,6 +22,17 @@ os.environ.setdefault("VANGUARD_DATA", tempfile.mkdtemp())
 os.environ["VANGUARD_NO_WARMUP"] = "1"
 
 from vanguard import engine, profiles, sample, store, vault  # noqa: E402
+
+
+class _Parent(http.server.BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.end_headers()
+        self.wfile.write(b"{}")
+
+    def log_message(self, *a):
+        pass
 
 
 class SampleFolderTests(unittest.TestCase):
@@ -45,6 +58,31 @@ class SampleFolderTests(unittest.TestCase):
                 self.assertTrue((target / "library_index.json").exists())   # public index reused, nothing else
 
 
+class SampleLifetimeTests(unittest.TestCase):
+    def test_a_sample_closes_when_the_vanguard_that_opened_it_is_gone(self):
+        class FakeServer:
+            closed = threading.Event()
+
+            def shutdown(self):
+                self.closed.set()
+        gone = FakeServer()
+        with mock.patch.object(sample, "BACK", "http://127.0.0.1:1/"):    # nothing listens on port 1
+            sample.watch_idle(gone, every=0.05)
+            self.assertTrue(gone.closed.wait(5))
+        alive = FakeServer()
+        alive.closed = threading.Event()
+        parent = http.server.ThreadingHTTPServer(("127.0.0.1", 0), _Parent)
+        threading.Thread(target=parent.serve_forever, daemon=True).start()
+        try:
+            with mock.patch.object(sample, "BACK", f"http://127.0.0.1:{parent.server_address[1]}/"):
+                sample.touch()
+                sample.watch_idle(alive, every=0.05)
+                self.assertFalse(alive.closed.wait(1))                    # its Vanguard answers: it stays open
+        finally:
+            parent.shutdown()
+            parent.server_close()
+
+
 class PilotModeTests(unittest.TestCase):
     def test_pilot_mode_keeps_every_question_on_this_device(self):
         online = {"online": True, "groq_key": "test-not-a-real-key"}
@@ -67,7 +105,13 @@ class SampleClassTests(unittest.TestCase):
     def setUpClass(cls):
         cls.addClassCleanup(sample.stop_child)            # even if setup fails, no sample is left running
         cls.before = [p["id"] for p in profiles.all_profiles()]
-        cls.url = sample.start("http://127.0.0.1:1/")
+        # a stand-in for the Vanguard that opens the sample: the sample checks it's still there
+        cls.parent = http.server.ThreadingHTTPServer(("127.0.0.1", 0), _Parent)
+        threading.Thread(target=cls.parent.serve_forever, daemon=True).start()
+        cls.addClassCleanup(cls.parent.server_close)
+        cls.addClassCleanup(cls.parent.shutdown)
+        cls.back = f"http://127.0.0.1:{cls.parent.server_address[1]}/"
+        cls.url = sample.start(cls.back)
         cls.port = int(cls.url.rstrip("/").rsplit(":", 1)[1])
         end = time.time() + 120
         while time.time() < end:
@@ -126,6 +170,28 @@ class SampleClassTests(unittest.TestCase):
         self.assertEqual(pl["config"]["school"], "Sample High School")
         self.assertGreaterEqual(len(pl["snapshots"]), 2)
 
+    def test_1b_pilot_metrics_and_after_class_feedback(self):
+        ck = self.enter()
+        m = self.get("/api/instructor/pilot", ck)[1]["metrics"]
+        self.assertEqual(m["cadets"], len(sample.CADETS))
+        self.assertEqual(m["rating"], 4.5)                                     # the sample's two made-up ratings
+        self.assertEqual((m["rating_days"], m["would_continue"]), (2, "yes"))
+        self.assertTrue(0 < m["assignments_completed"] <= m["assignments"])
+        self.assertEqual(m["assignments_pct"], round(100 * m["assignments_completed"] / m["assignments"]))
+        self.assertTrue(0 < m["cadets_with_scenario"] <= m["cadets"])
+        for bad in ({"useful": 0}, {"useful": 9}, {"useful": "x"}, {"useful": 3, "again": "sometimes"}):
+            self.assertEqual(self.call("POST", "/api/instructor/pilot/daily", bad, ck)[0], 400, bad)
+        st, row, _ = self.call("POST", "/api/instructor/pilot/daily",
+                               {"useful": 2, "again": "maybe", "confusing": "TESTCONFUSING the planner"}, ck)
+        self.assertEqual(st, 200, row)
+        m = self.get("/api/instructor/pilot", ck)[1]["metrics"]
+        self.assertEqual((m["rating_days"], m["rating"], m["would_continue"]), (3, 3.7, "maybe"))
+        raw = (sample.folder() / "program" / "feedback_daily.json").read_bytes()
+        self.assertNotIn(b"TESTCONFUSING", raw)                                # sealed at rest, like the pilot
+        cadet = self.call("POST", "/api/unlock", {"profile": self.get("/api/instructor/overview", ck)[1]["cadets"][0]["id"],
+                                                  "pin": sample.CADET_PIN})[2]
+        self.assertEqual(self.call("POST", "/api/instructor/pilot/daily", {"useful": 5}, cadet)[0], 403)
+
     def test_2_the_real_data_folder_is_never_touched(self):
         self.assertEqual([p["id"] for p in profiles.all_profiles()], self.before)
         self.assertNotEqual(sample.folder(), store.DATA)
@@ -175,13 +241,15 @@ class SampleClassTests(unittest.TestCase):
                          (0, 0, 2))                                           # the instructor's lessons stay
         self.assertEqual(stored["config"], {})                                # the pilot's setup is gone
         self.assertEqual(stored["snapshots"], [])
+        self.assertEqual(stored["metrics"]["rating_days"], 0)                 # after-class feedback went too
+        self.assertFalse((sample.folder() / "program" / "feedback_daily.json").exists())
         left = {p.name for p in (sample.folder() / "profiles").iterdir() if p.is_dir()}
         self.assertEqual(len(left), 1)                                        # only the instructor's folder
 
     def test_6_leaving_closes_the_sample(self):
         st, r, _ = self.call("POST", "/api/sample/leave")
         self.assertEqual(st, 200)
-        self.assertEqual(r["back"], "http://127.0.0.1:1/")
+        self.assertEqual(r["back"], self.back)
         sample._child["proc"].wait(timeout=20)
         self.assertIsNotNone(sample._child["proc"].poll())
 

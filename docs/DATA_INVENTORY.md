@@ -42,6 +42,7 @@ computer.
 | `pilot.json` | Pilot setup: school, instructor name, dates, notes | Medium | Sealed with the program data key | Instructor session only |
 | `pilot_snapshots.json` | Weekly class totals | Low–Medium | Sealed with the program data key | Instructor session only |
 | `feedback_instructor.json` | The instructor's own feedback | Low | Sealed with the program data key | Instructor session only |
+| `feedback_daily.json` | After-class feedback: how useful Vanguard was (1–5), would use again, four optional answers about Vanguard (the screen asks not to name Cadets) | Low | Sealed with the program data key | Instructor session only |
 | `feedback_cadets.json` | Anonymous Cadet survey answers (no name, no id) and optional comments | Medium (free text) | Each answer sealed TO the program public key, stored in random order | Written by a Cadet's session (it can't read any back); read by an instructor session |
 | `pilot_survey.json` | Only "is the survey open" | None | Plain (a Cadet's screen needs it) | Anyone |
 | `lessons.json` | Lesson text, questions, vocabulary, **and the answer key** | Low (content); answer keys matter for academic honesty | **Plain** — see limits | Read by Cadet sessions to show a lesson and grade it; the answer key is never sent to a Cadet |

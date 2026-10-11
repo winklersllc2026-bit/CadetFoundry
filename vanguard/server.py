@@ -1048,6 +1048,9 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                     return self._json({"error": "Choose add, rename or delete."}, 400)
                 if r == "/api/instructor/pilot":
                     return self._json(pilot.save_config(priv, b))
+                if r == "/api/instructor/pilot/daily":   # after class: how useful was Vanguard today (no Cadet data)
+                    return self._json(pilot.add_class_feedback(priv, b.get("useful"), str(b.get("again", "")),
+                                                               **{k: b.get(k) for k in pilot.DAILY_QUESTIONS}))
                 if r == "/api/instructor/pilot/mode":    # Pilot mode: online AI stays off, "what's stored", End pilot
                     store.save_config({"pilot_mode": bool(b.get("on"))})
                     return self._json(pilot.stored(priv))

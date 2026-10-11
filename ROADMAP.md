@@ -41,6 +41,9 @@ data, keeps your lessons and classes).
 Batch 2: **Start class in named steps** (Opening, Learn, Discuss, Engage, Assign, Close, Progress; opening and exit
 questions for the projector) · **instructor debriefs** on all 20 scenarios (instructor screens only) · **What Vanguard
 is — and isn't** in Settings and Me.
+Batch 3: **after-class feedback** (how useful today, 1–5; would you use it again; four optional questions — nothing
+about Cadets) · **pilot results** on the Pilot screen · **one-page pilot summary** to print · a sample class closes
+itself if the Vanguard that opened it is gone.
 
 ## Next: Cadet drives that sync
 
