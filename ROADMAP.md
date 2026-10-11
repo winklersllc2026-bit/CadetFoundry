@@ -1,6 +1,6 @@
 # Vanguard roadmap
 
-Current version: **0.2.3** (2026-10-11, not yet released). Downloads: the public Vanguard-releases repo on GitHub; page: vanguard.winklers-llc.com (public).
+Current version: **0.2.4** (2026-10-11, not yet released; 0.2.3 released 2026-10-11). Downloads: the public Vanguard-releases repo on GitHub; page: vanguard.winklers-llc.com (public).
 
 ## Where it stands
 
@@ -34,7 +34,7 @@ roll back if interrupted, and the updater accepts real releases again · Python 
 installer · online AI only for ordinary Ask questions, without personal context · a broader safety check on Ask ·
 one Cadet's damaged records no longer break the class overview · 208 tests. Details: SECURITY.md and
 docs/SECURITY_REVIEW_2026-10.md. **0.2.2 installs must be reinstalled** (their updater refuses every real release).
-Also in 0.2.3 (batch 1 of the instructor-experience list): **See a sample class** (a separate copy with eight made-up
+**0.2.4 — instructor experience (2026-10-11).** Batch 1: **See a sample class** (a separate copy with eight made-up
 Cadets, two squads and a pilot in progress; Leave sample closes it) · **Pilot mode** (online AI stays off, "what's
 stored on this device") · **End pilot** (save the reports, Class PIN, DELETE: removes the pilot's Cadets and class
 data, keeps your lessons and classes).
@@ -66,7 +66,7 @@ sources (Enlisted Force Structure, Air Force Symbol, SPFMAN 36-2905, Marine Corp
 4. **Walk the pilot flow once by hand** on the classroom setup you'll use (below).
 5. **Decide retention, the device owner, the parent notice and online AI**, and publish a security contact —
    docs/PILOT_DATA_HANDLING.md and docs/PILOT_CHECKLIST.md (2026-10-11).
-6. **Release 0.2.3** (the security review) and reinstall any 0.2.2 copies.
+6. ~~Release 0.2.3~~ (the security review) — released 2026-10-11; reinstall any 0.2.2 copies. **Release 0.2.4** (sample class, Pilot mode, End pilot, Start class steps, debriefs, pilot results).
 
 ## Next work
 

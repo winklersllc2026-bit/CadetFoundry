@@ -2,7 +2,7 @@
 
 For the school, the instructor and parents. It says what Vanguard stores during a pilot, who can see it, and how to
 export it, delete it, or remove a Cadet who leaves. Technical detail: [DATA_INVENTORY.md](DATA_INVENTORY.md) and
-[../SECURITY.md](../SECURITY.md). Written 2026-10-11 for version 0.2.3.
+[../SECURITY.md](../SECURITY.md). Written 2026-10-11 for version 0.2.3; Pilot mode and End pilot need 0.2.4.
 
 ## What is stored, and where
 

@@ -42,6 +42,7 @@ ROADMAP = [
     (True, "0.2: military jobs in every service from official sites; ASVAB practice with exact scoring"),
     (True, "0.2.1: deeper Navy, Air Force, Space Force and Marine Corps cards; official military videos (offline once saved)"),
     (True, "0.2.2: Class day — the instructor's Home walks through setup, then Start class runs today's lesson, scenarios, live questions and videos from one run sheet"),
+    (True, "0.2.4: sample class, Pilot mode and End pilot; Start class in named steps; scenario debriefs; after-class feedback and a one-page pilot summary"),
     (True, "0.2.3: security review — classroom network locked to this computer's address, program data sealed, safer restores and updates, pinned dependencies, honest privacy notes"),
     (True, "Roles: Cadet, guardian and instructor profiles; Class PIN; class records only for the instructor"),
     (True, "Classes, platoons and squads; lessons assigned to everyone, units or Cadets (late joiners get them once)"),

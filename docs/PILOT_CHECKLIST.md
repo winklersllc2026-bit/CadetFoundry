@@ -4,7 +4,7 @@ One page to go through before, during and after a classroom pilot. Data rules: [
 
 ## Before (owner and school)
 
-- [ ] Install **0.2.3 or newer** from the website. 0.2.2 can't take updates, so reinstall it.
+- [ ] Install **0.2.4 or newer** from the website (it has the sample class, Pilot mode and End pilot). 0.2.2 can't take updates, so reinstall it; 0.2.3 updates itself.
 - [ ] Laptop: BitLocker on, Windows updated, a standard (non-admin) account for daily use, a screen lock.
 - [ ] Retention, device owner, parent notice and online AI decided (PILOT_DATA_HANDLING.md → "Decide before the pilot").
       Recommended: **online AI off** for the pilot.
