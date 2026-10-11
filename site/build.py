@@ -431,8 +431,8 @@ def security_page() -> str:
 
 def main() -> int:
     DIST.mkdir(parents=True, exist_ok=True)
-    for old in DIST.glob("*"):
-        old.unlink()
+    for old in DIST.glob("*"):                    # a clean start: files and folders (shots/)
+        shutil.rmtree(old) if old.is_dir() else old.unlink()
     if not (ROOT / "faith" / "catalog.json").exists():
         print("Note: faith library not installed — run python tools/fetch_faith.py first to include it.")
     zip_name = f"Vanguard-{__version__}.zip"
