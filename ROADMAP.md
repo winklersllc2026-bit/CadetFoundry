@@ -1,6 +1,6 @@
 # Vanguard roadmap
 
-Current version: **0.2.1** (2026-10-10). Released on GitHub (private repo) and vanguard.winklers-llc.com (password).
+Current version: **0.2.2** (2026-10-11). Downloads: the public Vanguard-releases repo on GitHub; page: vanguard.winklers-llc.com (public).
 
 ## Where it stands
 
@@ -20,6 +20,18 @@ report · program backup · pilot tools · Windows installer · USB drive (with 
 ceremonies, ranks, fitness, history, organization, joining), each checked against an official source · official
 military videos in Learn (DVIDS public-domain videos play offline once saved with tools/fetch_videos.py; YouTube
 entries link to each service's own channel) · the desktop icon recovers when its port is held by a broken copy.
+
+**0.2.2 — Class day:** the instructor's Home is a setup checklist (make a class, put Cadets in it, open class to
+phones) and a big Start class: pick the class and today's lesson, scenarios, live questions and videos, then run them
+from one run sheet · Start Classroom opens even if a profile has no PIN (phones can't open that profile) · the Join
+screen shows join codes on the instructor's computer before sign-in · a join QR code in the Start Classroom window ·
+USB drives get a "Make more flash drives" folder for clean Cadet drives · public website with real screenshots.
+
+## Next: Cadet drives that sync
+
+A Cadet studies at home on their own drive; at school their class records go to the instructor -- over the classroom
+network when it allows, or by plugging the drive into the instructor's computer (no clicks). Records travel encrypted
+to the Class PIN; private notes never leave the drive; new lessons come back to the drive.
 
 ## Next: branch content up to the depth of the Army set
 

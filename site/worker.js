@@ -1,7 +1,8 @@
-// vanguard.winklers-llc.com — Joshua's page for Vanguard builds.
-// Password: set the Worker secret VANGUARD_PAGE_PASSWORD to require one for every request
-// (npx wrangler secret put VANGUARD_PAGE_PASSWORD). Delete it to make the page open to anyone with the
-// address (npx wrangler secret delete VANGUARD_PAGE_PASSWORD). Search engines are told not to list it either way.
+// vanguard.winklers-llc.com — Vanguard's public page (since 0.2.2). Downloads come from the public
+// Vanguard-releases repo on GitHub; this site only serves the page and its screenshots.
+// Optional password: set the Worker secret VANGUARD_PAGE_PASSWORD to require one for every request
+// (npx wrangler secret put VANGUARD_PAGE_PASSWORD); while it's set, search engines are told not to list the page.
+// Public (the default): npx wrangler secret delete VANGUARD_PAGE_PASSWORD
 
 const REALM = 'Vanguard (private)';
 
@@ -39,12 +40,14 @@ export default {
 
     const res = await env.ASSETS.fetch(request);
     const out = new Response(res.body, res);
-    out.headers.set('Cache-Control', 'no-store');
-    out.headers.set('X-Robots-Tag', 'noindex, nofollow');
+    const path = new URL(request.url).pathname;
+    // screenshots rarely change: cache them a day; the page itself always fresh
+    out.headers.set('Cache-Control', path.startsWith('/shots/') ? 'public, max-age=86400' : 'no-cache');
+    if (secret) out.headers.set('X-Robots-Tag', 'noindex, nofollow');
     out.headers.set('X-Frame-Options', 'DENY');
     out.headers.set('Referrer-Policy', 'no-referrer');
     // Installer, zip and signature: always save as a file, never open in the tab.
-    const name = new URL(request.url).pathname.split('/').pop();
+    const name = path.split('/').pop();
     if (res.ok && /\.(exe|zip|sig)$/i.test(name)) {
       out.headers.set('Content-Disposition', `attachment; filename="${name}"`);
       out.headers.set('Content-Type', 'application/octet-stream');
