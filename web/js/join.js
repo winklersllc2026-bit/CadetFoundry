@@ -15,7 +15,7 @@
       box.innerHTML = `<h1>Phones can't join yet</h1>
         <p class="lead">Vanguard is open on this computer only.</p>
         <div class="card"><p class="big">To let Cadets join from their phones:</p>
-          <ol><li>Close Vanguard (Me → Quit Vanguard).</li><li>Open <b>Start Classroom</b> from the desktop or the Start menu.</li></ol></div>
+          <ol><li>Open Vanguard and sign in as the instructor.</li><li>On your Home screen, press <b>📱 Open class to phones</b>.</li></ol></div>
         <div class="row"><a class="btn" href="/">Open Vanguard</a></div>`;
       return;
     }

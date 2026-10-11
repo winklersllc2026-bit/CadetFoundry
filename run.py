@@ -13,7 +13,7 @@ import webbrowser
 
 from vanguard import store
 from vanguard.network import lan_addresses
-from vanguard.server import serve
+from vanguard.server import reopen, serve
 
 
 def open_kiosk(url: str) -> None:
@@ -142,15 +142,7 @@ def main() -> int:
     print(f"Vanguard is running at {url}")
     print(f"  Library: {stats['cards']} study cards, {len(stats['documents'])} documents, "
           f"{stats['quiz_questions']} quiz questions")
-    if args.lan:
-        addrs = lan_addresses()
-        if addrs:
-            print("  Cadets: join the same Wi-Fi as this computer, then open in a browser:")
-            for a in addrs:
-                print(f"      http://{a}" + ("" if args.port == 80 else f":{args.port}"))
-            _print_join_qr(f"http://{addrs[0]}" + ("" if args.port == 80 else f":{args.port}") + "/")
-        else:
-            print("  Other devices on this network can connect to this computer's address, port", args.port)
+    _print_mode(args.lan, args.port)
     print("  Press Ctrl+C to stop (or Me > Quit Vanguard).")
     # Start Classroom opens the Join screen (a big QR code for the projector); the app is one click from it.
     show = url + ("/join" if args.lan else "/")
@@ -158,12 +150,44 @@ def main() -> int:
         threading.Timer(0.8, lambda: open_kiosk(url)).start()
     elif not args.no_browser:
         threading.Timer(0.8, lambda: webbrowser.open(show)).start()
-    try:
-        httpd.serve_forever()
-    except KeyboardInterrupt:
-        pass
+    while True:
+        try:
+            httpd.serve_forever()
+        except KeyboardInterrupt:
+            break
+        httpd.server_close()
+        want = getattr(httpd, "switch_lan", None)   # the instructor's "Open class to phones" (or close it)
+        if want is None:                            # Quit Vanguard
+            break
+        try:
+            httpd = reopen(args.port, want)
+            args.lan = want
+        except OSError:
+            print("  Couldn't switch class mode — the port didn't free up. Staying as before.")
+            try:
+                httpd = reopen(args.port, args.lan)
+            except OSError:
+                print(f"  Port {args.port} isn't available any more. Start Vanguard again.")
+                return 1
+        print()
+        print("Class is now " + ("OPEN to phones on this Wi-Fi." if args.lan else "on this computer only."))
+        _print_mode(args.lan, args.port)
     httpd.server_close()
     return 0
+
+
+def _print_mode(lan: bool, port: int) -> None:
+    """In classroom mode: the addresses Cadets type and a QR code to scan."""
+    if not lan:
+        return
+    addrs = lan_addresses()
+    if addrs:
+        print("  Cadets: join the same Wi-Fi as this computer, then open in a browser:")
+        for a in addrs:
+            print(f"      http://{a}" + ("" if port == 80 else f":{port}"))
+        _print_join_qr(f"http://{addrs[0]}" + ("" if port == 80 else f":{port}") + "/")
+    else:
+        print("  Other devices on this network can connect to this computer's address, port", port)
 
 
 def _start_portable_ai() -> None:

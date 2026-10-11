@@ -351,8 +351,8 @@ def page(zip_name: str, size: int, commit: str, history, sha: str = "", setup=No
       If Windows shows a blue box that says <i>"Windows protected your PC"</i>, click <b>More info</b>, then <b>Run anyway</b>.</p></li>
     <li><b>Open Vanguard and make your Class PIN.</b><p>Choose "I'm the instructor", pick your JROTC program, and make two PINs:
       a <b>Class PIN</b> that opens your class, and your own PIN. Write down the backup code it shows you.</p></li>
-    <li><b>On class day, open "Vanguard Classroom".</b><p>The Join screen appears with the QR code. Put it on the projector and
-      press <b>▶ Start class</b> on your laptop. Your Home screen walks you through anything left to do.</p></li>
+    <li><b>On class day, press "Open class to phones".</b><p>It's on your Home screen in Vanguard. The Join screen with the QR
+      code is one tap away — put it on the projector, then press <b>▶ Start class</b>. Your Home screen walks you through anything left to do.</p></li>
   </ol>
   <div class="tip"><b>If Cadets' phones can't connect:</b> some school Wi-Fi blocks devices from talking to each other. Ask IT to
   allow it, or bring a small travel router (about $30 — it doesn't need internet) and have everyone join that instead. For a

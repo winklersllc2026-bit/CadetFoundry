@@ -120,7 +120,8 @@ async function classSetup(box, ov, reload, { compactWhenReady = false } = {}) {
   if (ready && compactWhenReady) {
     box.innerHTML = `<div class="card"><div class="row" style="justify-content:space-between;gap:10px;flex-wrap:wrap">
       <span>✅ <b>Class is open.</b> <span class="faint">${ov.units.map(u => `${esc(u.name)} · code <b class="mono" style="letter-spacing:.12em;color:var(--tan2)">${esc(u.code || '')}</b>`).join(' · ')}</span></span>
-      <button class="btn" id="tJoin">📱 Join screen (QR code)</button></div>${noPinNote(true)}</div>`;
+      <span class="row" style="gap:8px"><button class="btn" id="tJoin">📱 Join screen (QR code)</button>
+      ${cls.local ? '<button class="btn small" id="tClose" title="Phones can no longer reach Vanguard; it keeps running on this computer">Close to phones</button>' : ''}</span></div>${noPinNote(true)}</div>`;
   } else {
     box.innerHTML = `<div class="card" style="border-color:var(--tan)"><h3>${ready ? '✅ Your class is ready' : '🧭 Set up your class'}</h3>
     ${step(ov.units.length, '1. Make your class', ov.units.length
@@ -137,13 +138,22 @@ async function classSetup(box, ov, reload, { compactWhenReady = false } = {}) {
           : `<span class="faint">All ${ov.cadets.length} Cadet${ov.cadets.length === 1 ? ' is' : 's are'} in a class. Move anyone in 👥 Class.</span>`)}
     ${step(STATUS.lan, '3. Open class to phones', STATUS.lan
       ? `<button class="btn primary" id="tJoin">📱 Show the Join screen (QR code)</button>
-         <span class="faint" style="margin-left:6px">Put it on the projector. Cadets scan it with their phone camera.</span>`
-      : `<span class="faint">Right now Vanguard is open on this computer only. Close it (👤 Me → Quit Vanguard), then double-click <b>Start Classroom</b>. The Join screen with the QR code opens by itself.</span>`)}
+         ${cls.local ? '<button class="btn small" id="tClose" title="Phones can no longer reach Vanguard; it keeps running on this computer">Close to phones</button>' : ''}
+         <div class="faint" style="margin-top:6px">Put it on the projector. Cadets scan it with their phone camera.</div>`
+      : cls.local ? `<button class="btn primary" id="tOpen">📱 Open class to phones</button>
+         <div class="faint" style="margin-top:6px">Right now only this computer can use Vanguard. This lets Cadets on the same Wi-Fi join from their phones.
+         If Windows asks whether to allow Vanguard (Python) on networks, choose <b>Allow</b>.</div><p class="faint" id="tOpenMsg" role="status" style="margin:4px 0 0"></p>`
+        : '<span class="faint">Open class on the instructor’s own computer.</span>')}
     ${noPinNote(false)}
     </div>`;
   }
   const q = s => box.querySelector(s);
   if (q('#tJoin')) q('#tJoin').addEventListener('click', () => window.open('/join', '_blank', 'noopener'));
+  if (q('#tOpen')) q('#tOpen').addEventListener('click', () => switchClassroom(true, q('#tOpen'), q('#tOpenMsg')));
+  if (q('#tClose')) q('#tClose').addEventListener('click', () => {
+    if (confirm('Close class to phones? Cadets’ phones disconnect; Vanguard keeps running on this computer. Everyone’s work is saved.'))
+      switchClassroom(false, q('#tClose'));
+  });
   if (q('#sMake')) {
     const make = async () => {
       const r = await api('/api/instructor/unit', { action: 'add', name: q('#sName').value, kind: 'class', parent: '' });
@@ -158,6 +168,23 @@ async function classSetup(box, ov, reload, { compactWhenReady = false } = {}) {
     reload();
   });
   return ready;
+}
+
+// Open class to phones (or close it) without closing Vanguard: the server listens again in the other mode, then this
+// page reloads once it answers. Sign-ins stay. Only from the instructor's own computer.
+async function switchClassroom(open, btn, msg) {
+  if (btn) btn.disabled = true;
+  if (msg) msg.textContent = open ? 'Opening class to phones… (a few seconds)' : 'Closing class to phones…';
+  const r = await api('/api/instructor/classroom', { open });
+  if (r.error) { if (msg) msg.textContent = r.error; if (btn) btn.disabled = false; return; }
+  for (let i = 0; i < 60; i++) {                   // up to about 30 seconds while it switches
+    await new Promise(res => setTimeout(res, 500));
+    try {
+      const s = await (await fetch('/api/lock', { cache: 'no-store' })).json();
+      if (s.lan === open) { location.reload(); return; }
+    } catch (e) { }                                  // not answering yet: still switching
+  }
+  if (msg) msg.textContent = 'This is taking longer than usual. Reload the page in a moment.';
 }
 
 // When a projector screen (scenario vote, live question, video) ends: back to the class-day run sheet if one is

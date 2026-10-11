@@ -979,6 +979,20 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
         if r == "/api/instructor/unlock":               # instructor profile + Instructor PIN -> class records
             err = security.unlock_program(self._token(), str(b.get("admin", ""))[:32])
             return self._json({"ok": False, "error": err} if err else {"ok": True}, 403 if err else 200)
+        if r == "/api/instructor/classroom":
+            # Open class to phones (or close it) from the instructor's Home -- the desktop icon starts Vanguard for this
+            # computer only. The running program listens again on the same port; sign-ins and everything loaded stay.
+            if (profiles.get(self._pid or "") or {}).get("kind") != "instructor" or not self._program_key():
+                return self._json({"error": "Open your class first (Class PIN)."}, 403)
+            if not self._local():                        # never from a device on the network
+                return self._json({"error": "Open or close class on the instructor's own computer."}, 403)
+            want = bool(b.get("open"))
+            if want == bool(app.lan):
+                return self._json({"ok": True, "lan": want})
+            self.server.switch_lan = want                # run.py reopens the server in the new mode
+            self._json({"ok": True, "lan": want, "restarting": True})
+            threading.Thread(target=self.server.shutdown, daemon=True).start()
+            return None
         if r.startswith("/api/instructor/"):
             priv = self._program_key()
             if not priv:
@@ -1326,6 +1340,25 @@ class _Server(ThreadingHTTPServer):
         if os.name == "nt" and hasattr(socket, "SO_EXCLUSIVEADDRUSE"):
             self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
         super().server_bind()
+
+
+def reopen(port: int, lan: bool, wait: float = 20.0) -> ThreadingHTTPServer:
+    """The classroom switch: listen again on the same port, on every network (lan) or this computer only. Keeps the
+    running App -- library, sign-ins, live votes. Windows frees a just-closed port after a moment: try again a while."""
+    import time
+    host = "0.0.0.0" if lan else "127.0.0.1"
+    end = time.time() + wait
+    while True:
+        try:
+            httpd = _Server((host, port), Handler)
+            break
+        except OSError:
+            if time.time() > end:
+                raise
+            time.sleep(0.25)
+    Handler.app.lan = lan
+    httpd.daemon_threads = True
+    return httpd
 
 
 def serve(host: str = "127.0.0.1", port: int = 8780, lan: bool = False) -> ThreadingHTTPServer:

@@ -222,7 +222,17 @@ async function showLock(msg) {
       $('#suLocal').onclick = go;
       $('#suClass').onclick = () => {
         if (s.lan) { location.replace('/join'); return; }
-        $('#suMsg').innerHTML = 'To let phones join: close Vanguard (👤 Me → Quit Vanguard), then open <b>Start Classroom</b> from the desktop or Start menu. It shows a QR code for the class to scan.';
+        // open class to phones right here (the desktop icon starts Vanguard for this computer only)
+        $('#suClass').disabled = true;
+        $('#suMsg').innerHTML = 'Opening class to phones… If Windows asks whether to allow Vanguard (Python) on networks, choose <b>Allow</b>.';
+        api('/api/instructor/classroom', { open: true }).then(async r => {
+          if (r.error) { $('#suMsg').textContent = r.error; $('#suClass').disabled = false; return; }
+          for (let i = 0; i < 60; i++) {
+            await new Promise(res => setTimeout(res, 500));
+            try { if ((await (await fetch('/api/lock', { cache: 'no-store' })).json()).lan) { location.replace('/join'); return; } } catch (e) { }
+          }
+          $('#suMsg').textContent = 'This is taking longer than usual. Reload the page in a moment.';
+        });
       };
     };
     welcome();
