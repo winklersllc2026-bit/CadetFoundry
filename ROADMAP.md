@@ -1,6 +1,6 @@
 # Vanguard roadmap
 
-Current version: **0.2.2** (2026-10-11). Downloads: the public Vanguard-releases repo on GitHub; page: vanguard.winklers-llc.com (public).
+Current version: **0.2.3** (2026-10-11, not yet released). Downloads: the public Vanguard-releases repo on GitHub; page: vanguard.winklers-llc.com (public).
 
 ## Where it stands
 
@@ -26,6 +26,14 @@ phones) and a big Start class: pick the class and today's lesson, scenarios, liv
 from one run sheet · Start Classroom opens even if a profile has no PIN (phones can't open that profile) · the Join
 screen shows join codes on the instructor's computer before sign-in · a join QR code in the Start Classroom window ·
 USB drives get a "Make more flash drives" folder for clean Cadet drives · public website with real screenshots.
+
+**0.2.3 — security review (2026-10-11):** the classroom network accepts only this computer's own address (DNS
+rebinding) · a Cadet can't change device settings or lock the instructor out with wrong Class PINs · pilot notes, survey
+answers, join requests and live answers are sealed or kept in memory · program restore is staged and complete, updates
+roll back if interrupted, and the updater accepts real releases again · Python 3.14.8 and hash-pinned packages in the
+installer · online AI only for ordinary Ask questions, without personal context · a broader safety check on Ask ·
+one Cadet's damaged records no longer break the class overview · 208 tests. Details: SECURITY.md and
+docs/SECURITY_REVIEW_2026-10.md. **0.2.2 installs must be reinstalled** (their updater refuses every real release).
 
 ## Next: Cadet drives that sync
 

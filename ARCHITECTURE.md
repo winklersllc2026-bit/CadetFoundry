@@ -28,7 +28,7 @@ Cadet / instructor browser  ──HTTP (classroom network)──▶  run.py  →
 * Every request: Host check (DNS rebinding; any host in `--lan`), Origin check (no cross-site requests), JSON-only
   POSTs, session cookie (HttpOnly, SameSite=Strict) bound to one profile. Public routes: the app shell, `/api/lock`,
   sign-in/profile creation, `/download` and `/downloads/<file>` (installers only).
-* `/api/instructor/*` needs an instructor profile session **and** the Instructor PIN entered in that session.
+* `/api/instructor/*` needs an instructor profile session **and** the Class PIN entered in that session.
 
 ## Data and encryption (`store.py`, `vault.py`, `profiles.py`, `instructor.py`)
 
@@ -36,10 +36,11 @@ Cadet / instructor browser  ──HTTP (classroom network)──▶  run.py  →
   one-time recovery code). Private files (check-ins, chats, notes, letters, logbook, profile) use that key only.
 * **Class records** (`store.CLASS_FILES`: study, exams, lessons, assignments, scenarios, service, fitness, goals,
   recognition) use a second per-Cadet **class key**, sealed to the program's X25519 public key. The program private
-  key is locked by the **Instructor PIN**. So an instructor reads class records, never private files.
+  key is locked by the **Class PIN**. So an instructor reads class records, never private files.
 * Device-wide settings: `config.json` (AI mode, Learn categories, optional-tool switches, demo flag, portfolio
   sections). Program data the instructor builds: `DATA/program/` (lessons, scenarios, units, pilot, quiz edits).
-* In classroom mode (`--lan`) every profile must have a PIN (enforced at start and on profile creation).
+* In classroom mode (`--lan`) new profiles must have a PIN, a PIN can't be removed, and a profile without a PIN can't
+  be opened from another device. Only this computer's own address is accepted as Host (DNS-rebinding guard).
 
 ## Features
 

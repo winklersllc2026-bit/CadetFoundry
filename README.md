@@ -11,7 +11,7 @@ tools.
 explicitly enables an online AI provider (it is off by default and has no switch in the app's screens — see
 SECURITY.md). No accounts on outside services, no advertising, no tracking.
 
-Version 0.1.4. What's built and what's next: ROADMAP.md. How it fits together: ARCHITECTURE.md.
+Version 0.2.2. What's built and what's next: ROADMAP.md. How it fits together: ARCHITECTURE.md.
 
 > Vanguard is designed to support JROTC instruction. It is **not** an official JROTC, Army or school product, does not
 > replace your instructor or your program's curriculum, and makes no claim of endorsement.
@@ -20,16 +20,16 @@ Version 0.1.4. What's built and what's next: ROADMAP.md. How it fits together: A
 
 | Area | What's there today |
 |---|---|
-| **📘 Learn** | Your assignments from your instructor (lessons with vocabulary, questions and a reflection), 120+ study cards from U.S. government sources and Army manuals (leadership, citizenship and history, military knowledge, health and first aid, careers and money — each names its source), quizzes you type and Vanguard grades (Practice with choices, Challenge typed), timed exams, and a library of public-domain books — the Declaration of Independence, the Constitution, the Bill of Rights, the Federalist Papers, American Military History (U.S. Army Center of Military History), and classics. Questions you miss come back more often. |
+| **📘 Learn** | Your assignments from your instructor (lessons with vocabulary, questions and a reflection), 200+ study cards from U.S. government sources and Army manuals (leadership, citizenship and history, military knowledge, health and first aid, careers and money — each names its source), quizzes you type and Vanguard grades (Practice with choices, Challenge typed), timed exams, and a library of public-domain books — the Declaration of Independence, the Constitution, the Bill of Rights, the Federalist Papers, American Military History (U.S. Army Center of Military History), and classics. Questions you miss come back more often. |
 | **🧭 Lead** | Live questions and classroom votes from your instructor, and 20 leadership scenarios: real Cadet situations (teammates arguing, peer pressure, online bullying, a hidden injury, a first job, a rumor, a ride home with a driver who's been drinking, and more). You choose, see what happened and why, and write what you'd do next time — saved to your leadership log. No scores, no "wrong answer". |
 | **💪 Train** | Your fitness history and goals, measured against your own last result. |
 | **🤝 Serve** | Your service hours and what you learned, verified by your instructor; and **Explore Military Service** — for Cadets who want to learn what serving is like: military pay tables, how a military pay statement works, the Army jobs explorer, leave, moving with the military, and letters to family, service members and veterans. Information only; nothing signs you up or contacts a recruiter. |
 | **📈 Progress** | Your growth over time — lessons, leadership, fitness, service and recognition — and a printable portfolio. |
-| **💬 Ask** | Questions about anything in the library. Answers come from sources stored on the device and name them. |
+| **💬 Ask** | Questions about anything in the library. Answers draw on sources stored on the device and name them. Your chats are private: your instructor can't read them. |
 
 ## For instructors
 
-- **Instructor profile + Instructor PIN.** Class records open only with both.
+- **Instructor profile + Class PIN.** Class records open only with both.
 - **Classes, platoons and squads**, each Cadet's unit and LET level.
 - **Lessons:** write a lesson (objective, content, questions, vocabulary, reflection prompt, private notes) and assign
   it to everyone, to units, or to individual Cadets with a due date. See who's complete, in progress or not started,
@@ -45,7 +45,9 @@ Version 0.1.4. What's built and what's next: ROADMAP.md. How it fits together: A
 
 ## Privacy, in plain words
 
-- Everything stays on the instructor's laptop. Each profile has its own PIN, and its files are encrypted.
+- Everything is stored on the instructor's laptop (or the USB drive Vanguard runs from). Each profile has its own PIN,
+  and its files are encrypted. If an operator turns on an online AI service, ordinary Ask questions go to it — without
+  names, notes or earlier chats; anything about feeling unsafe never does (SECURITY.md).
 - **The instructor sees class records only** — lessons, quizzes, exams, leadership scenarios, fitness and service.
   A Cadet's private check-ins, chats, notes and letters are encrypted with that Cadet's own key, and the instructor
   can't open them.
@@ -61,12 +63,12 @@ Run it:
 
 ```
 python run.py              # this computer only (http://127.0.0.1:8780)
-python run.py --lan        # Cadets on the classroom network can connect (requires a PIN on every profile)
+python run.py --lan        # Cadets on the classroom network can connect (a profile without a PIN can't be opened from them)
 ```
 
 Needs Python 3.10+ and the `cryptography` package (installed by the setup script).
 
-**First steps:** set the Instructor PIN in 👤 Me, then create your own profile and choose **An instructor**, and open
+**First steps:** set the Class PIN in 👤 Me, then create your own profile and choose **An instructor**, and open
 🎓 Instructor. Cadets create their own profile with a PIN the first time they open Vanguard.
 
 **Install as an app:** on a phone, "Add to Home Screen"; on a computer, "Install app" in the browser. Vanguard
