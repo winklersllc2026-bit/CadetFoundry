@@ -54,7 +54,7 @@ ROADMAP = [
     (True, "Instructor dashboard, class report CSV, program backup and restore, quiz editor, assigned pop quizzes"),
     (True, "Pilot tools: setup, weekly snapshots, anonymous Cadet survey, instructor feedback, pilot report"),
     (True, "Installable app on phones and computers; works offline on the classroom network"),
-    (False, "Publisher: run tools/sign.py keygen once and commit vanguard/data/release_key.pub"),
+    (True, "Release signing: updates are signed with the publisher's own key (2026-10-11)"),
     (False, "Code-sign the Windows installer (needs a code-signing certificate)"),
     (False, "Navy, Air Force, Marine Corps and Space Force cards brought up to the depth of the Army set"),
     (False, "First classroom pilot"),

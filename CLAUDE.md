@@ -59,11 +59,11 @@ Two AI sessions have worked on this repo at once. Before starting: `git pull` on
 history. If both changed the same file, merge — don't overwrite.
 
 ## Releases
-**Release signing key (Ed25519): not created yet.** The forked public key belonged to the earlier product and was
-removed in 0.1.4; until the owner runs `python tools/sign.py keygen` on the build PC (private key
-`~/.vanguard-release/release_key.pem`, never in git, a zip, a device or chat output) and commits
-`vanguard/data/release_key.pub`, devices refuse signed updates. A session must never make the key on the owner's
-behalf in the cloud; once it exists, never replace it (that locks out every device with the old public key).
+**Release signing key (Ed25519): created by the owner on 2026-10-11.** The public key is
+`vanguard/data/release_key.pub` (committed); the private key is on the owner's build PC only
+(`~/.vanguard-release/release_key.pem` — never in git, a zip, a device or chat output). `site/build.py` signs the
+release zip with it automatically. A session must never make, move, read out or replace the key on the owner's behalf;
+replacing it locks out every device with the old public key.
 
 Bump `vanguard/__init__.py` `__version__` for every release (signed updates refuse equal/older versions).
 `python site/build.py` builds `site/dist/` (page + zip, signed if `~/.vanguard-release/release_key.pem`

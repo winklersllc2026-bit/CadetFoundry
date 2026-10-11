@@ -40,10 +40,8 @@ sources (Enlisted Force Structure, Air Force Symbol, SPFMAN 36-2905, Marine Corp
 
 ## Before the first classroom pilot (owner)
 
-1. **Vanguard's release-signing key.** The key the fork shipped with belonged to the earlier product and was
-   removed in 0.1.4. On the build PC: `python tools/sign.py keygen`, keep `~/.vanguard-release/release_key.pem`
-   safe (and backed up), commit `vanguard/data/release_key.pub`, release a new version. Until then devices refuse
-   signed updates.
+1. ~~Vanguard's release-signing key~~ — done 2026-10-11: `vanguard/data/release_key.pub` is committed and releases
+   sign themselves. Keep `~/.vanguard-release/release_key.pem` backed up somewhere safe, off every school device.
 2. **Code-sign the Windows installer** so Windows doesn't show "Windows protected your PC" (needs a code-signing
    certificate in the company's name; then sign `Vanguard-Setup-*.exe` in `site/build.py`).
 3. ~~Raspberry Pi demo box~~ — no Pi now (2026-10-10); the instructor's laptop is the first device. The Pi tools stay in the repo.
