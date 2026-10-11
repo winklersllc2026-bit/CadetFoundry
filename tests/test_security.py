@@ -332,25 +332,35 @@ class SecurityTests(unittest.TestCase):
         self.assertEqual(post("/api/admin/pin", {"new": "111111"})[0], 400)                # too easy
         self.assertEqual(post("/api/admin/pin", {"new": "905172"})[0], 200)
         self.assertNotIn(b"905172", path.read_bytes())                                       # stored as a hash only
-        self.assertEqual(post("/api/admin/pin", {"new": "604183", "current": "000000"})[0], 400)  # change needs the old one
-        self.assertEqual(post("/api/update", {"zip": "", "sig": "", "admin": "482915"})[0], 403)  # profile PIN refused
-        self.assertEqual(post("/api/library/reload", {})[0], 403)
-        self.assertEqual(post("/api/library/reload", {"admin": "905172"})[0], 200)
-        self.assertNotEqual(post("/api/update", {"zip": "", "sig": "", "admin": "905172"})[0], 403)  # passes the PIN gate
-        # the AI mode is an instructor setting: profile PIN refused, Instructor PIN accepted, shown in status
-        self.assertEqual(store.ai_mode(), "library")                                         # default
-        self.assertEqual(post("/api/admin/ai-mode", {"mode": "off", "admin": "482915"})[0], 403)
-        self.assertEqual(post("/api/admin/ai-mode", {"mode": "sideways", "admin": "905172"})[0], 400)
-        self.assertEqual(post("/api/admin/ai-mode", {"mode": "off", "admin": "905172"})[0], 200)
-        self.assertEqual(json.loads(self.req("GET", "/api/status", headers={"Cookie": cookie})[2])["ai_mode"], "off")
-        self.assertEqual(post("/api/admin/ai-mode", {"mode": "library", "admin": "905172"})[0], 200)
-        self.assertEqual(store.ai_mode(), "library")
+        # once the Class PIN exists, a non-instructor profile can't even try it (so it can't lock the instructor out)
+        self.assertEqual(post("/api/admin/pin", {"new": "604183", "current": "905172"})[0], 403)
+        self.assertEqual(post("/api/library/reload", {"admin": "905172"})[0], 403)
+        self.assertEqual(post("/api/admin/ai-mode", {"mode": "off", "admin": "905172"})[0], 403)
+        ins = profiles.create(f"Rivera-{uuid.uuid4().hex[:8]}", "instructor")
         try:
+            with security.as_profile(ins["id"]):
+                self.assertIsNone(security.set_pin("736281"))
+            icookie = self.login(ins["id"], "736281")
+            post = lambda r, b: self.req("POST", r, b, {"Cookie": icookie})
+            self.assertEqual(post("/api/admin/pin", {"new": "604183", "current": "000000"})[0], 400)  # change needs the old one
+            self.assertEqual(post("/api/update", {"zip": "", "sig": "", "admin": "736281"})[0], 403)  # profile PIN refused
+            self.assertEqual(post("/api/library/reload", {})[0], 403)
+            self.assertEqual(post("/api/library/reload", {"admin": "905172"})[0], 200)
+            self.assertNotEqual(post("/api/update", {"zip": "", "sig": "", "admin": "905172"})[0], 403)  # passes the PIN gate
+            # the AI mode is an instructor setting: profile PIN refused, Class PIN accepted, shown in status
+            self.assertEqual(store.ai_mode(), "library")                                         # default
+            self.assertEqual(post("/api/admin/ai-mode", {"mode": "off", "admin": "736281"})[0], 403)
+            self.assertEqual(post("/api/admin/ai-mode", {"mode": "sideways", "admin": "905172"})[0], 400)
+            self.assertEqual(post("/api/admin/ai-mode", {"mode": "off", "admin": "905172"})[0], 200)
+            self.assertEqual(json.loads(self.req("GET", "/api/status", headers={"Cookie": cookie})[2])["ai_mode"], "off")
+            self.assertEqual(post("/api/admin/ai-mode", {"mode": "library", "admin": "905172"})[0], 200)
+            self.assertEqual(store.ai_mode(), "library")
             for _ in range(5):
                 post("/api/update", {"admin": "123987"})
             self.assertIn("Too many", security.check_admin("905172"))                       # throttled even for the right PIN
         finally:
             path.unlink(missing_ok=True)
+            profiles.delete(ins["id"])
 
     def test_first_instructor_sets_the_instructor_pin_on_this_computer(self):
         """A brand-new device: the first instructor profile chooses the Instructor PIN (from the laptop itself)."""

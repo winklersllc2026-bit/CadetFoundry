@@ -1222,7 +1222,7 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                 return self._json({"error": str(e)}, 400)
             return self._json({"error": "Unknown instructor action."}, 404)
         if r == "/api/admin/ai-mode":                    # device-wide AI setting -> Instructor PIN
-            err = self._device_admin(b) or (None if security.admin_set() else "Set the Class PIN first.")
+            err = self._device_admin(b) or (None if security.admin_set() else "Set the Class PIN on this computer first (👤 Me → Class PIN).")
             if err:
                 return self._json({"error": err}, 403)
             mode = str(b.get("mode", ""))
@@ -1238,7 +1238,7 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
             err = security.set_admin_pin(str(b.get("new", "")), str(b.get("current", "")))
             return self._json({"ok": False, "error": err} if err else {"ok": True}, 400 if err else 200)
         if r == "/api/update":
-            err = self._device_admin(b) or (None if security.admin_set() else "Set the Class PIN first.")
+            err = self._device_admin(b) or (None if security.admin_set() else "Set the Class PIN on this computer first (👤 Me → Class PIN).")
             if err:
                 return self._json({"error": err}, 403)
             if not integrity.PUBLIC_KEY.exists():
