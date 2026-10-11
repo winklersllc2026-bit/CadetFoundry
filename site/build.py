@@ -27,7 +27,7 @@ DIST = SITE / "dist"
 sys.path.insert(0, str(ROOT))
 from vanguard import __version__  # noqa: E402
 
-REPO = "https://github.com/winklersllc2026-bit/CadetFoundry"                # the code: private (copied from Vanguard)
+REPO = "https://github.com/winklersllc2026-bit/CadetFoundry"                # the code: private
 RELEASES_REPO = "winklersllc2026-bit/Vanguard-releases"                     # downloads only: public, no source code
 RELEASES = f"https://github.com/{RELEASES_REPO}"
 LATEST = "CadetFoundry-Setup-latest.exe"        # uploaded with every release (python site/build.py --release)
