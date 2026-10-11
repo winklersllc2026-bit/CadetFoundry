@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import hashlib
 import html
+import re
 import os
 import shutil
 import subprocess
@@ -42,6 +43,7 @@ ROADMAP = [
     (True, "0.2: military jobs in every service from official sites; ASVAB practice with exact scoring"),
     (True, "0.2.1: deeper Navy, Air Force, Space Force and Marine Corps cards; official military videos (offline once saved)"),
     (True, "0.2.2: Class day — the instructor's Home walks through setup, then Start class runs today's lesson, scenarios, live questions and videos from one run sheet"),
+    (True, "0.2.5: Terms of use and Privacy notice (agree on first run), support@winklers-llc.com, \"No internet required\" on the website"),
     (True, "0.2.4: sample class, Pilot mode and End pilot; Start class in named steps; scenario debriefs; after-class feedback and a one-page pilot summary"),
     (True, "0.2.3: security review — classroom network locked to this computer's address, program data sealed, safer restores and updates, pinned dependencies, honest privacy notes"),
     (True, "Roles: Cadet, guardian and instructor profiles; Class PIN; class records only for the instructor"),
@@ -268,7 +270,7 @@ def shell(title: str, here: str, body: str, description: str = "") -> str:
 <a href="/security">Privacy</a><a class="btn small" href="/#download">Download</a></nav></div></header>
 {body}
 <footer><div class="wrap"><p>{html.escape(DISCLAIMER)}</p>
-<p>Built by Winklers LLC · <a href="/security">Privacy and security</a> · <a href="/pilot">Run a pilot</a> · Version {html.escape(__version__)}</p></div></footer>
+<p>A free community project — the Vanguard project · <a href="/security">Privacy and security</a> · <a href="/terms">Terms of use</a> · <a href="/privacy">Privacy notice</a> · <a href="/pilot">Run a pilot</a> · <a href="mailto:support@winklers-llc.com">support@winklers-llc.com</a> · Version {html.escape(__version__)}</p></div></footer>
 </body></html>"""
 
 
@@ -314,11 +316,23 @@ def page(zip_name: str, size: int, commit: str, history, sha: str = "", setup=No
   </div>
 </div></section>
 
+<section class="alt" id="offline"><div class="wrap">
+  <p class="kicker">Built for the classroom</p>
+  <h2>No internet required.</h2>
+  <p class="lead">Vanguard runs on your laptop. Cadets connect to it over your classroom Wi-Fi — that Wi-Fi doesn't need to reach the internet.</p>
+  <div class="grid">
+    <div class="card"><span class="ic">📶</span><h3>Works offline</h3><p>Everything you need for class runs with no internet connection at all.</p></div>
+    <div class="card"><span class="ic">☁️</span><h3>No student accounts in the cloud</h3><p>Cadets sign in with a name and a PIN on your laptop. Nothing to sign up for, nothing stored online.</p></div>
+    <div class="card"><span class="ic">🚫</span><h3>No ads, no tracking</h3><p>No advertising, no analytics and no data sent to us. We never see your Cadets' work.</p></div>
+    <div class="card"><span class="ic">🎓</span><h3>Instructor-controlled</h3><p>You decide what Cadets get, when class opens to phones, and when it closes.</p></div>
+  </div>
+</div></section>
+
 <section class="alt"><div class="wrap">
   <p class="kicker">Why instructors use it</p>
   <h2>Less prep. More of your Cadets talking.</h2>
   <div class="grid">
-    <div class="card"><span class="ic">⏱️</span><h3>Plan class in two minutes</h3><p>Pick from ready-made lessons, scenarios, questions and videos — or write your own once and reuse it every year.</p></div>
+    <div class="card"><span class="ic">⏱️</span><h3>Plan class in two minutes</h3><p>Start with 12 ready-made lessons and 20 leadership scenarios with debrief notes — or write your own once and reuse it every year.</p></div>
     <div class="card"><span class="ic">🙋</span><h3>Every Cadet participates</h3><p>Anonymous votes and live questions on their own phones. You see the whole room's answer, not just the front row's.</p></div>
     <div class="card"><span class="ic">🔒</span><h3>Private by design</h3><p>Everything stays on your laptop. No cloud, no accounts, no ads, no tracking. Each Cadet's work is locked with their own PIN.</p></div>
     <div class="card"><span class="ic">📶</span><h3>No internet needed</h3><p>Works in a classroom with no internet at all. Cadets only need to be on the same Wi-Fi as your laptop.</p></div>
@@ -352,11 +366,12 @@ def page(zip_name: str, size: int, commit: str, history, sha: str = "", setup=No
 <section class="alt" id="setup"><div class="wrap">
   <p class="kicker">Set up</p>
   <h2>Ready in about five minutes.</h2>
-  <p class="lead">No IT ticket. No admin password. Nothing for Cadets to install.</p>
+  <p class="lead">No admin password on most laptops. Nothing for Cadets to install. (If your school manages your laptop, IT may need to approve new software first.)</p>
   <ol class="setup">
     <li><b>Download Vanguard and double-click it.</b><p>Click Next until it's done. A Vanguard icon appears on your desktop.
       If Windows shows a blue box that says <i>"Windows protected your PC"</i>, click <b>More info</b>, then <b>Run anyway</b>.</p></li>
-    <li><b>Open Vanguard and make your Class PIN.</b><p>Choose "I'm the instructor", pick your JROTC program, and make two PINs:
+    <li><b>Open Vanguard and make your Class PIN.</b><p>Just looking? Choose <b>See a sample class</b> to explore a finished class with made-up Cadets first.
+      When you're ready, tick the box to agree to the <a href="/terms">Terms of use</a> and <a href="/privacy">Privacy notice</a>, choose "I'm the instructor", pick your JROTC program, and make two PINs:
       a <b>Class PIN</b> that opens your class, and your own PIN. Write down the backup code it shows you.</p></li>
     <li><b>On class day, press "Open class to phones".</b><p>It's on your Home screen in Vanguard. The Join screen with the QR
       code is one tap away — put it on the projector, then press <b>▶ Start class</b>. Your Home screen walks you through anything left to do.</p></li>
@@ -376,7 +391,7 @@ def page(zip_name: str, size: int, commit: str, history, sha: str = "", setup=No
     <li>Votes are anonymous: you see the totals, never who picked what.</li>
     <li>Very little personal information: a name and a PIN. No email, no phone number, no photos.</li>
   </ul>
-  <p style="margin-top:20px"><a href="/security">More about privacy and security →</a></p>
+  <p style="margin-top:20px"><a href="/privacy">Privacy notice →</a> · <a href="/security">Privacy and security details →</a> · <a href="/terms">Terms of use →</a></p>
 </div></section>
 
 <section class="alt"><div class="wrap" style="max-width:860px">
@@ -388,6 +403,8 @@ def page(zip_name: str, size: int, commit: str, history, sha: str = "", setup=No
   <details><summary>What computer do I need?</summary><p>A Windows laptop. (It also runs on Linux and a Raspberry Pi.) No special hardware.</p></details>
   <details><summary>Can Cadets study at home?</summary><p>Yes. Vanguard can run from a USB flash drive with no installation, and each Cadet can have their own drive. Their work stays on the drive, locked with their PIN.</p></details>
   <details><summary>Is this an official JROTC product?</summary><p>No. Vanguard is designed to support JROTC instruction, but it isn't an official JROTC, military or school product, and it doesn't replace your program's curriculum. Study material comes from official public sources, and each card says which one.</p></details>
+  <details><summary>Who makes Vanguard?</summary><p>Vanguard is a free community project — the Vanguard project. It isn't a company product. Questions, problems, or a copy for another instructor: <a href="mailto:support@winklers-llc.com">support@winklers-llc.com</a>.</p></details>
+  <details><summary>Can I try it without setting anything up?</summary><p>Yes. On Vanguard's first screen, choose <b>See a sample class</b>. It opens a separate copy with eight made-up Cadets, lessons, scenarios and a pilot in progress. Leave it and nothing of yours has changed.</p></details>
   <details><summary>What if a Cadet forgets their PIN?</summary><p>When they make their PIN, Vanguard shows a one-time backup code. With it they can choose a new PIN — their work stays protected the whole time.</p></details>
 </div></section>
 
@@ -411,9 +428,42 @@ def pilot_page() -> str:
 <li><b>Print the pilot report</b><p>Every number comes from real records, and what Vanguard can't measure is said plainly.</p></li>
 </ol>
 <div class="tip"><b>What a school needs:</b> one Windows laptop for the instructor and Cadets' devices on the same Wi-Fi. No server, no cloud account, no subscription.</div>
-<p style="margin-top:24px">Interested? Contact Winklers LLC to talk about a pilot.</p>
+<p style="margin-top:24px">Interested? Email <a href="mailto:support@winklers-llc.com">support@winklers-llc.com</a> to talk about a pilot.</p>
 </div></section>"""
     return shell("Vanguard — Run a pilot", "pilot", body)
+
+
+def _md_page(md_text: str) -> str:
+    """The small Markdown in vanguard/legal/*.md -> HTML (headings, bullet lists, paragraphs, **bold**)."""
+    esc = html.escape
+    bold = lambda t: re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", esc(t))           # noqa: E731
+    out, in_list = [], False
+    for line in md_text.splitlines():
+        if line.startswith("- "):
+            if not in_list:
+                out.append("<ul class=\"legal\">")
+                in_list = True
+            out.append(f"<li>{bold(line[2:])}</li>")
+            continue
+        if in_list:
+            out.append("</ul>")
+            in_list = False
+        if line.startswith("# "):
+            out.append(f"<h1 style=\"font-size:clamp(30px,4.5vw,46px)\">{bold(line[2:])}</h1>")
+        elif line.startswith("## "):
+            out.append(f"<h2 style=\"font-size:24px;margin-top:28px\">{bold(line[3:])}</h2>")
+        elif line.strip():
+            out.append(f"<p>{bold(line)}</p>")
+    if in_list:
+        out.append("</ul>")
+    return "\n".join(out)
+
+
+def legal_page(doc: str) -> str:
+    name, title = {"terms": ("TERMS.md", "Terms of use"), "privacy": ("PRIVACY.md", "Privacy notice")}[doc]
+    body = (f'<section class="hero"><div class="wrap" style="max-width:860px">'
+            f'{_md_page((ROOT / "vanguard" / "legal" / name).read_text(encoding="utf-8"))}</div></section>')
+    return shell(f"Vanguard — {title}", doc, body)
 
 
 def security_page() -> str:
@@ -468,6 +518,8 @@ def main() -> int:
     (DIST / "index.html").write_text(page(zip_name, size, commit, history, sha, setup), encoding="utf-8")
     (DIST / "pilot.html").write_text(pilot_page(), encoding="utf-8")
     (DIST / "security.html").write_text(security_page(), encoding="utf-8")
+    (DIST / "terms.html").write_text(legal_page("terms"), encoding="utf-8")
+    (DIST / "privacy.html").write_text(legal_page("privacy"), encoding="utf-8")
     (DIST / "robots.txt").write_text("User-agent: *\nAllow: /\n", encoding="utf-8")   # the page is public now
     print(f"Built {DIST}: index.html + {zip_name} ({size / 2**20:.1f} MB)")
     key = Path.home() / ".vanguard-release" / "release_key.pem"     # tools/sign.py keygen puts it here

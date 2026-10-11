@@ -24,6 +24,13 @@ function same(a, b) {
 
 export default {
   async fetch(request, env) {
+    // RFC 9116: where to report a security problem (always public, even if a page password is set)
+    if (new URL(request.url).pathname === '/.well-known/security.txt') {
+      return new Response('Contact: mailto:support@winklers-llc.com\nExpires: 2027-10-11T00:00:00.000Z\n'
+        + 'Preferred-Languages: en\nCanonical: https://vanguard.winklers-llc.com/.well-known/security.txt\n'
+        + 'Policy: https://vanguard.winklers-llc.com/privacy\n',
+        { headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'public, max-age=86400' } });
+    }
     const secret = env.VANGUARD_PAGE_PASSWORD;
     if (secret) {
       const auth = request.headers.get('Authorization') || '';

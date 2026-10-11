@@ -60,6 +60,23 @@ async function classDayHome() {
     $('#cdPin').focus();
     return;
   }
+  if (!lock.terms_ok) {                            // set up before the terms existed, or the terms changed: ask once
+    body.innerHTML = `<h2>Hi${name ? ', ' + esc(name) : ''}</h2>
+      <div class="card" style="border-color:var(--tan)"><h3>📄 Terms of use and Privacy notice</h3>
+        <p>Vanguard now has plain-English <a href="#" data-legal="terms">Terms of use</a> and a <a href="#" data-legal="privacy">Privacy notice</a>.
+          The short version: it's a free community project, it isn't official, and your Cadets' data stays on this computer.</p>
+        <label style="display:flex;gap:10px;align-items:flex-start;margin:8px 0">
+          <input type="checkbox" id="cdAgree" style="width:24px;height:24px;flex:none;margin-top:2px">
+          <span>I've read and agree to the Terms of use and the Privacy notice.</span></label>
+        <button class="btn primary" id="cdAgreeGo">Continue</button><p class="faint" id="cdAgreeMsg" role="alert"></p></div>`;
+    $('#cdAgreeGo').addEventListener('click', async () => {
+      if (!$('#cdAgree').checked) { $('#cdAgreeMsg').textContent = 'Tick the box to agree first.'; return; }
+      const r = await api('/api/terms/accept', {});
+      if (r.error) { $('#cdAgreeMsg').textContent = r.error; return; }
+      classDayHome();
+    });
+    return;
+  }
   const plan = cdLoad();
   classDayActive = !!plan;
   body.innerHTML = `<h2>Hi${name ? ', ' + esc(name) : ''}</h2><div id="cdSetup"></div><div id="cdMain"></div>

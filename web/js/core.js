@@ -161,13 +161,26 @@ async function showLock(msg) {
     const welcome = () => {
       step(`<div style="font-size:30px;text-align:center">✦</div><h2 style="text-align:center">Welcome to Vanguard</h2>
         <p>Vanguard stays on this computer. Cadets can join from phones on the same Wi-Fi. Nothing is sent to the internet.</p>
+        <label style="display:flex;gap:10px;align-items:flex-start;margin:4px 0 12px">
+          <input type="checkbox" id="suAgree" ${s.terms_ok ? 'checked' : ''} style="width:24px;height:24px;flex:none;margin-top:2px">
+          <span>I've read and agree to the <a href="#" data-legal="terms">Terms of use</a> and the <a href="#" data-legal="privacy">Privacy notice</a>.</span></label>
         <button class="btn primary" id="suInst" style="width:100%;min-height:52px;font-size:18px">I'm the instructor — set up this class</button>
         <button class="btn small" id="suJustMe" style="width:100%;margin-top:10px">Just me — I'm a Cadet using this on my own</button>
         <button class="btn small" id="suSample" style="width:100%;margin-top:10px">🧪 Just looking? See a sample class first</button>
         <p class="faint" id="suSampleMsg" role="status" style="text-align:center"></p>${extras}`);
-      $('#suInst').onclick = programStep;
+      // Setting up needs the "I agree" box ticked (the sample class doesn't: nothing real is set up there)
+      const agreed = async () => {
+        if (!$('#suAgree').checked) { $('#suSampleMsg').textContent = 'Tick the box to agree to the Terms of use and Privacy notice first.'; return false; }
+        if (!s.terms_ok) {
+          const r = await api('/api/terms/accept', {});
+          if (r.error) { $('#suSampleMsg').textContent = r.error; return false; }
+          s.terms_ok = true;
+        }
+        return true;
+      };
+      $('#suInst').onclick = async () => { if (await agreed()) programStep(); };
       $('#suSample').onclick = () => startSample($('#suSample'), $('#suSampleMsg'));
-      $('#suJustMe').onclick = () => newProfile('cadet');
+      $('#suJustMe').onclick = async () => { if (await agreed()) newProfile('cadet'); };
     };
     // Which program: sets the words Vanguard uses (LET / NS / LE / Year) and puts that branch first in Learn.
     const PROGS = [['army', '⭐', 'Army JROTC'], ['navy', '⚓', 'Navy JROTC'], ['air_force', '✈️', 'Air Force JROTC'],
@@ -260,6 +273,27 @@ async function showLock(msg) {
   } else if (s.profiles.length === 1 && s.on_this_computer) pinFor(s.profiles[0]);
   else pick();
 }
+
+// ── The Terms of use and Privacy notice (vanguard/legal/), readable anywhere -- even before setup, and offline ──
+async function showLegal(doc) {
+  let d = {};
+  try { d = await (await fetch('/api/legal?doc=' + encodeURIComponent(doc), { cache: 'no-store' })).json(); } catch (e) { }
+  const box = document.createElement('div');
+  box.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.6);display:grid;place-items:center;padding:16px';
+  box.innerHTML = `<div class="card" role="dialog" aria-modal="true" style="max-width:720px;width:100%;max-height:86vh;overflow:auto">
+    <div class="legal">${d.text ? md(d.text) : esc(d.error || "This document couldn't be opened.")}</div>
+    <button class="btn primary" style="margin-top:12px;min-height:46px">Close</button></div>`;
+  document.body.appendChild(box);
+  const close = () => box.remove();
+  box.querySelector('button').addEventListener('click', close);
+  box.addEventListener('click', e => { if (e.target === box) close(); });
+  box.querySelector('button').focus();
+}
+document.addEventListener('click', e => {
+  const a = e.target.closest('[data-legal]');
+  if (a) { e.preventDefault(); showLegal(a.dataset.legal); }
+});
+
 // ── The sample class (vanguard/sample.py): a separate copy of Vanguard with made-up Cadets ──
 async function startSample(btn, msgEl) {
   if (btn) btn.disabled = true;

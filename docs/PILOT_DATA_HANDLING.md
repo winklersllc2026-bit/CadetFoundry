@@ -8,12 +8,12 @@ export it, delete it, or remove a Cadet who leaves. Technical detail: [DATA_INVE
 
 Everything is stored in one folder on the instructor's computer: `.vanguard` in the user's home folder, or
 `VanguardData` on the USB drive when Vanguard runs from a USB. Nothing is stored on Cadets' phones or tablets, which
-only show pages. There is no Winklers LLC server, cloud account or analytics.
+only show pages. There is no Vanguard project server, cloud account or analytics.
 
 | What | Example | Protection |
 |---|---|---|
 | Profile name and PIN | "Cadet Ruiz", a 6-digit PIN | Name is in the profile list in plain text (it's shown on the sign-in screen). The PIN is stored only as a slow, salted hash |
-| Private files | Ask chats, check-ins, notes, letters, logbook, address book | Encrypted with the Cadet's own key. **Nobody else can open them**: not the instructor, not the device owner, not Winklers LLC |
+| Private files | Ask chats, check-ins, notes, letters, logbook, address book | Encrypted with the Cadet's own key. **Nobody else can open them**: not the instructor, not the device owner, not the Vanguard project |
 | Class records | Assigned lessons and scores, practice and exam results, leadership scenarios, fitness, service hours, goals, recognition | Encrypted with a per-Cadet class key that only an instructor profile with the Class PIN can open |
 | Program data | Units, roster details (Cadet rank, billet, year), lessons, pilot setup, notes, snapshots, survey answers | Sealed with the program key (opened by the Class PIN). Lesson text and answer keys, assignments and Cadet titles are kept in the clear so they work before sign-in. They hold no private information |
 | Live class votes and pop-quiz answers | "B", "4" | Kept in memory only while class runs; the instructor sees counts, never who |
@@ -83,6 +83,5 @@ letters never do. Before turning it on, the school should read that provider's t
 
 ## Reporting a security problem
 
-Report suspected vulnerabilities privately to Winklers LLC, not in a public issue. **Owner action:** publish a
-security contact address (for example in the public releases repository's SECURITY.md) before the pilot; until then,
-pilot schools should be given the contact directly.
+Report suspected vulnerabilities privately to **support@winklers-llc.com**, not in a public issue. The same address
+answers questions, requests for deletion help, and instructors who'd like their own copy.

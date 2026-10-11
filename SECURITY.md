@@ -108,7 +108,7 @@ hazing (`vanguard/safety.py`). What happens:
   normal answer.
 
 What it **doesn't** do:
-- **It notifies no one.** No instructor, parent, counselor or Winklers LLC is told. Nothing is flagged or reported;
+- **It notifies no one.** No instructor, parent, counselor or anyone at the Vanguard project is told. Nothing is flagged or reported;
   the conversation stays in the Cadet's own private, encrypted chat history, which the instructor can't read.
 - **It is best-effort pattern matching, not a crisis detector.** It misses indirect or new wording ("I just want
   everything to stop"), can't know anyone's intent, and sometimes shows resources when someone is joking.

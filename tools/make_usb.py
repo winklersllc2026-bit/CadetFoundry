@@ -198,7 +198,7 @@ isn't needed. If Windows says <i>"Windows protected your PC"</i>, choose <b>More
 <li><span class="file">demo</span> (if present) — the printable demo card and the Raspberry Pi demo-box guide (<span class="file">README-PI.txt</span>).</li>
 </ul>
 <p class="tip">Vanguard is designed to support JROTC instruction. It is not an official JROTC, Army or school product, does not
-replace your instructor or your program's curriculum, and makes no claim of endorsement. Built by Winklers LLC.</p>
+replace your instructor or your program's curriculum, and makes no claim of endorsement. A free community project — the Vanguard project.</p>
 </div></body></html>
 """
 

@@ -28,7 +28,7 @@ from pathlib import Path
 
 from vanguard import (addons, asvab, backup, videos, board, books, careers, daily, engine, exam, fitness, instructor, integrity, knowledge,
                       lessons, letters, network, live_quiz, pay, pilot, profiles, program_backup, progress, quiz_edits, reports, scenarios, security, service, store, train, voice)
-from vanguard import __version__, sample
+from vanguard import __version__, sample, terms
 from vanguard.brain import Brain
 from vanguard.faith import Faith
 from vanguard.knowledge import Library
@@ -40,10 +40,11 @@ DOWNLOAD_TYPES = {".exe": "application/octet-stream", ".zip": "application/zip",
                   ".pdf": "application/pdf", ".txt": "text/plain"}
 mimetypes.add_type("application/manifest+json", ".webmanifest")
 PUBLIC_GET = {"/", "/index.html", "/icon.svg", "/api/lock",       # the app shell: installable before sign-in
-              "/join", "/api/classroom", "/api/join-code", "/api/sample/status",    # the class Join screen and its QR code (no names, no records)
+              "/join", "/api/classroom", "/api/join-code", "/api/sample/status", "/api/legal",    # the class Join screen and its QR code (no names, no records)
               "/manifest.webmanifest", "/icon-192.png", "/icon-512.png", "/icon-maskable-512.png", "/apple-touch-icon.png"}       # reachable while locked (plus the page's scripts in /js/)
 PUBLIC_POST = {"/api/unlock", "/api/profiles/create", "/api/recover",
                "/api/sample/start", "/api/sample/enter", "/api/sample/leave",   # the sample class: this computer only
+               "/api/terms/accept",                                         # first-run setup: the "I agree" box
                "/api/quit"}                 # End class on the Join screen: this computer (or an instructor) only
 
 
@@ -473,6 +474,10 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                 return self._json(lessons.open_lesson(self._pid or "", str(q.get("a", ""))[:12]))
             except LookupError as e:
                 return self._json({"error": str(e)}, 404)
+        if r == "/api/legal":                            # the Terms of use and Privacy notice, readable before setup
+            doc = terms.text(str(q.get("doc", "")))
+            return self._json({"version": terms.VERSION, "text": doc} if doc else {"error": "No such document."},
+                              200 if doc else 404)
         if r == "/api/sample/status":                    # is the sample class built yet? (no names, no records)
             return self._json(sample.status())
         if r == "/join":                                 # the class Join screen (a QR code for the projector)
@@ -511,6 +516,7 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                    "unlocked": bool(self._pid), "admin_set": security.admin_set(),
                    "on_this_computer": self._local(), "demo": bool(store.config().get("demo")), "lan": self.app.lan, "instance": store.data_id(),
                    "sample": sample.ACTIVE, "sample_back": sample.BACK if sample.ACTIVE else "",
+                   "terms_ok": terms.accepted() or sample.ACTIVE, "terms_version": terms.VERSION,
                    "downloads": bool(_download_files())}
             if self._pid:
                 cur = profiles.get(self._pid)
@@ -1343,6 +1349,11 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                 return self._json(addons.install(str(b.get("name", ""))))
             except ValueError as e:
                 return self._json({"error": str(e)}, 400)
+        if r == "/api/terms/accept":                     # the device's "I agree": on first-run setup, or an instructor
+            first_run = self._local() and not security.admin_set()
+            if not (first_run or (profiles.get(self._pid or "") or {}).get("kind") == "instructor"):
+                return self._json({"error": "The instructor accepts the terms for this computer."}, 403)
+            return self._json({"ok": True, **terms.accept()})
         if r == "/api/sample/start":                     # "See a sample class": a separate copy with made-up Cadets
             if sample.ACTIVE:
                 return self._json({"error": "This is already the sample class."}, 400)

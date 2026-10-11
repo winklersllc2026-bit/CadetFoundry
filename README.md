@@ -1,7 +1,7 @@
 # Vanguard
 
 **Leadership. Learning. Character.** A learning and leadership platform designed to support JROTC instructors and
-Cadets. Built by Winklers LLC.
+Cadets. A free community project — the Vanguard project.
 
 Vanguard runs on the instructor's laptop (or a USB drive, or a Raspberry Pi demo box). Cadets use it in a browser on
 school computers, tablets or phones on the classroom network. The instructor stays in control; Vanguard supplies the
@@ -11,10 +11,25 @@ tools.
 explicitly enables an online AI provider (it is off by default and has no switch in the app's screens — see
 SECURITY.md). No accounts on outside services, no advertising, no tracking.
 
-Version 0.2.2. What's built and what's next: ROADMAP.md. How it fits together: ARCHITECTURE.md.
+Version 0.2.5. What's built and what's next: ROADMAP.md. How it fits together: ARCHITECTURE.md.
 
 > Vanguard is designed to support JROTC instruction. It is **not** an official JROTC, Army or school product, does not
 > replace your instructor or your program's curriculum, and makes no claim of endorsement.
+
+## Start here
+
+1. **Install:** download Vanguard for Windows from **vanguard.winklers-llc.com** and double-click it (or run it from a
+   USB drive — below).
+2. **Just looking?** On the first screen choose **See a sample class**: a separate copy with eight made-up Cadets,
+   lessons, scenarios and a pilot in progress. Leaving it changes nothing.
+3. **Set up:** tick the box to agree to the [Terms of use](vanguard/legal/TERMS.md) and
+   [Privacy notice](vanguard/legal/PRIVACY.md), choose "I'm the instructor", and make your Class PIN and your own PIN.
+4. **Teach:** add the **starter lessons** (one click), open class to phones, and press **▶ Start class**.
+
+Running a pilot? Read [docs/PILOT_CHECKLIST.md](docs/PILOT_CHECKLIST.md) and
+[docs/PILOT_DATA_HANDLING.md](docs/PILOT_DATA_HANDLING.md). Questions, problems, security reports, or a copy for
+another instructor: **support@winklers-llc.com**. Please don't pass your copy on — other instructors get their own
+clean copy, with no one else's data on it.
 
 ## For Cadets
 
