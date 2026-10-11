@@ -486,8 +486,9 @@ def main() -> int:
             return r.returncode
         print(f"Released {tag}: {RELEASES}/releases/tag/{tag}\nThe page's download button: {LATEST_URL}")
     if "--deploy" in sys.argv:
-        for big in DIST.glob("Vanguard*"):           # downloads come from the public releases repo, not the site
-            big.unlink()
+        # downloads come from the public releases repo, not the site (Cloudflare's 25 MB limit): tell wrangler to skip
+        # them -- they stay in site/dist, where tools/make_usb.py picks up the installer for the drive
+        (DIST / ".assetsignore").write_text("Vanguard*\n*.sig\n", encoding="utf-8")
         return subprocess.run("npx --yes wrangler deploy", cwd=SITE, shell=True).returncode
     return 0
 
