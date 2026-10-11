@@ -106,6 +106,68 @@ loaders.instructor = async (section) => {
   await steps(sec, ov, run);
 };
 
+// Set up your class: three steps, each done right where it's shown (instructor Home and Today) -- make a class, put
+// Cadets in it, open class to phones -- plus a warning for profiles phones can't open (no PIN yet). Returns true
+// when everything is ready.
+async function classSetup(box, ov, reload, { compactWhenReady = false } = {}) {
+  let cls = {};
+  try { cls = await api('/api/classroom'); } catch (e) { }
+  const loose = ov.cadets.filter(c => !c.unit), noPin = cls.no_pin || [];
+  const ready = !!(ov.units.length && !loose.length && STATUS.lan);   // a no-PIN profile is a warning, not a blocker
+  const noPinNote = short => noPin.length ? `<p style="margin:10px 0 0">⚠ <b>No PIN yet:</b> ${noPin.map(esc).join(', ')}. <span class="faint">Phones can't open ${noPin.length === 1 ? 'this profile' : 'these profiles'}${short ? '' : ` until ${noPin.length === 1 ? 'it has' : 'they have'} a PIN`}. Sign in to ${noPin.length === 1 ? 'it' : 'each one'} on this computer, then 👤 Me → Security → Set a PIN.</span></p>` : '';
+  const step = (done, title, body) => `<div class="row" style="align-items:flex-start;gap:12px;margin:12px 0;flex-wrap:nowrap">
+      <span style="font-size:22px;line-height:1.2">${done ? '✅' : '⬜'}</span><div style="flex:1"><b>${title}</b>${body ? `<div style="margin-top:6px">${body}</div>` : ''}</div></div>`;
+  if (ready && compactWhenReady) {
+    box.innerHTML = `<div class="card"><div class="row" style="justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <span>✅ <b>Class is open.</b> <span class="faint">${ov.units.map(u => `${esc(u.name)} · code <b class="mono" style="letter-spacing:.12em;color:var(--tan2)">${esc(u.code || '')}</b>`).join(' · ')}</span></span>
+      <button class="btn" id="tJoin">📱 Join screen (QR code)</button></div>${noPinNote(true)}</div>`;
+  } else {
+    box.innerHTML = `<div class="card" style="border-color:var(--tan)"><h3>${ready ? '✅ Your class is ready' : '🧭 Set up your class'}</h3>
+    ${step(ov.units.length, '1. Make your class', ov.units.length
+      ? `<span class="faint">${ov.units.map(u => `${esc(u.name)} — join code <b class="mono" style="letter-spacing:.12em;color:var(--tan2)">${esc(u.code || '')}</b>`).join('<br>')}</span>`
+      : `<div class="row" style="gap:8px;flex-wrap:wrap"><input id="sName" placeholder="Class name (e.g. LET 1, 3rd period)" maxlength="40" aria-label="Class name" style="flex:1;min-width:200px">
+         <button class="btn primary" id="sMake">Create class</button></div><p class="faint" id="sMsg" role="alert" style="margin:4px 0 0"></p>`)}
+    ${step(ov.units.length && !loose.length, '2. Put your Cadets in it', !ov.cadets.length
+      ? '<span class="faint">No Cadets yet. When class is open, Cadets scan the QR code on the Join screen and land in your class on their own.</span>'
+      : loose.length && ov.units.length
+        ? `<div class="faint" style="margin-bottom:6px">${loose.length} Cadet${loose.length === 1 ? ' isn’t' : 's aren’t'} in a class yet: ${loose.map(c => esc(c.name)).join(', ')}</div>
+           <div class="row" style="gap:8px;flex-wrap:wrap"><select id="sUnit" aria-label="Class" style="flex:1;min-width:180px">${ov.units.map(u => `<option value="${esc(u.id)}">${esc(u.name)}</option>`).join('')}</select>
+           <button class="btn primary" id="sPut">Add ${loose.length === 1 ? 'them' : `all ${loose.length}`} to this class</button></div>`
+        : loose.length ? '<span class="faint">Make your class first (step 1).</span>'
+          : `<span class="faint">All ${ov.cadets.length} Cadet${ov.cadets.length === 1 ? ' is' : 's are'} in a class. Move anyone in 👥 Class.</span>`)}
+    ${step(STATUS.lan, '3. Open class to phones', STATUS.lan
+      ? `<button class="btn primary" id="tJoin">📱 Show the Join screen (QR code)</button>
+         <span class="faint" style="margin-left:6px">Put it on the projector. Cadets scan it with their phone camera.</span>`
+      : `<span class="faint">Right now Vanguard is open on this computer only. Close it (👤 Me → Quit Vanguard), then double-click <b>Start Classroom</b>. The Join screen with the QR code opens by itself.</span>`)}
+    ${noPinNote(false)}
+    </div>`;
+  }
+  const q = s => box.querySelector(s);
+  if (q('#tJoin')) q('#tJoin').addEventListener('click', () => window.open('/join', '_blank', 'noopener'));
+  if (q('#sMake')) {
+    const make = async () => {
+      const r = await api('/api/instructor/unit', { action: 'add', name: q('#sName').value, kind: 'class', parent: '' });
+      if (r.error) q('#sMsg').textContent = r.error; else reload();
+    };
+    q('#sMake').addEventListener('click', make);
+    q('#sName').addEventListener('keydown', e => { if (e.key === 'Enter') make(); });
+  }
+  if (q('#sPut')) q('#sPut').addEventListener('click', async () => {
+    q('#sPut').disabled = true;
+    for (const c of loose) await api('/api/instructor/assign', { cadet: c.id, unit: q('#sUnit').value });
+    reload();
+  });
+  return ready;
+}
+
+// When a projector screen (scenario vote, live question, video) ends: back to the class-day run sheet if one is
+// running, otherwise to the instructor tools.
+let classDayActive = false;
+function backFromClassroom() {
+  if (classDayActive) { openView('home'); return; }
+  loaders.instructor(); openView('instructor');
+}
+
 // Today: is class open, the join codes, what needs you, and one-tap starts for class.
 async function instToday(sec, ov) {
   const mine = ov.units.filter(u => u.owner === ov.me), units = mine.length ? mine : ov.units;
@@ -113,11 +175,7 @@ async function instToday(sec, ov) {
   const needs = [d.service_pending && `<b>${d.service_pending}</b> service entr${d.service_pending === 1 ? 'y' : 'ies'} to review`,
     d.lessons_overdue && `<b>${d.lessons_overdue}</b> overdue lesson${d.lessons_overdue === 1 ? '' : 's'}`,
     d.waiting_to_share && `<b>${d.waiting_to_share}</b> Cadet${d.waiting_to_share === 1 ? '' : 's'} not sharing records yet`].filter(Boolean);
-  sec.innerHTML = `
-    <div class="card" style="border-color:var(--tan)">${STATUS.lan
-      ? `<h3>✅ Class is open</h3><p class="faint">Cadets on the same Wi-Fi can join from their phones.</p>
-         <button class="btn primary" id="tJoin">Show the Join screen</button>`
-      : `<h3>💻 This computer only</h3><p class="faint">To let Cadets join from their phones: close Vanguard (👤 Me → Quit Vanguard), then open <b>Start Classroom</b>.</p>`}</div>
+  sec.innerHTML = `<div id="setupBox"></div>
     <div class="card"><h3>👥 ${mine.length ? 'My Cadets' : 'Cadets'}</h3>
       ${d.cadets ? `<p><b>${d.cadets}</b> Cadet${d.cadets === 1 ? '' : 's'} · ${d.active} active in the last ${d.active_days} days</p>`
         : `<p><b>No Cadets yet.</b> ${STATUS.lan ? 'Open the Join screen and have Cadets scan the code.' : 'Cadets make their own profile with a PIN the first time they open Vanguard.'}</p>`}
@@ -131,8 +189,8 @@ async function instToday(sec, ov) {
       <button class="tile" data-tgo="present"><span>🗳️</span>Present a scenario<small>The class votes, then discusses</small></button>
       <button class="tile" data-tgo="lessons"><span>📋</span>Assign a lesson<small>Write it once, assign it to a class</small></button>
       <button class="tile" data-tgo="reports"><span>📊</span>See how they're doing<small>Dashboard and reports</small></button></div></div>`;
-  if ($('#tJoin')) $('#tJoin').addEventListener('click', () => window.open('/join', '_blank', 'noopener'));
   sec.querySelectorAll('[data-tgo]').forEach(b => b.addEventListener('click', () => loaders.instructor(b.dataset.tgo)));
+  await classSetup($('#setupBox'), ov, () => loaders.instructor('today'));
 }
 
 // Class: units with their join codes and teachers, the Cadets, and their fitness and service records.

@@ -455,12 +455,20 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
             # records open (the screen is projected; a code puts a new Cadet in that unit).
             out = {"lan": app.lan, "urls": network.class_urls(app.port) if app.lan else [],
                    "local": self._local(), "cadets": sum(1 for p in profiles.all_profiles() if p["kind"] == "cadet")}
+            if self._local() and app.lan:                # the instructor sees which profiles phones can't open yet
+                out["no_pin"] = [p["name"] for p in profiles.all_profiles() if not security.has_pin(p["id"])]
             priv = self._program_key()
             if priv:
                 self._file_joins(priv)
                 ov = instructor.overview(priv)
                 mine = [u for u in ov["units"] if u.get("owner") == self._pid]
                 out["units"] = [{"id": u["id"], "name": u["name"], "code": u["code"]} for u in (mine or ov["units"])]
+            elif self._local():
+                # Start Classroom opens the Join screen before anyone signs in: on the instructor's own computer it
+                # still shows the classes' join codes (the plain list a signed-in instructor published); never to
+                # other devices on the network.
+                out["units"] = [{"id": v["unit"], "name": v["name"], "code": code}
+                                for code, v in sorted(instructor.join_codes().items(), key=lambda kv: kv[1]["name"])]
             return self._json(out)
         if r == "/api/join-code":                        # the signup form names the unit a code joins
             u = instructor.unit_for_code(q.get("c", ""))
@@ -468,9 +476,11 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
         if r == "/api/lock":
             # Before sign-in, other devices on the classroom network see shortened names ("Ana R."), never full names.
             short = self.app.lan and not self._local() and not self._pid
+            remote = self.app.lan and not self._local()      # other devices don't see profiles they can't open
             out = {"profiles": [{"id": p["id"], "name": _short_name(p["name"]) if short else p["name"], "kind": p["kind"],
                                  "has_pin": security.has_pin(p["id"]),
-                                 "lockout": security.lockout_remaining(p["id"])} for p in profiles.all_profiles()],
+                                 "lockout": security.lockout_remaining(p["id"])} for p in profiles.all_profiles()
+                                if not (remote and not security.has_pin(p["id"]))],
                    "unlocked": bool(self._pid), "admin_set": security.admin_set(),
                    "on_this_computer": self._local(), "demo": bool(store.config().get("demo")), "lan": self.app.lan, "instance": store.data_id(),
                    "downloads": bool(_download_files())}
@@ -640,7 +650,12 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
         if self._module_off(r):
             return self._json({"error": "Your instructor has turned this tool off."}, 403)
         if r == "/api/unlock":
-            token, msg = security.unlock(str(b.get("profile", ""))[:12], str(b.get("pin", ""))[:32])
+            pid = str(b.get("profile", ""))[:12]
+            if self.app.lan and not self._local() and profiles.get(pid) and not security.has_pin(pid):
+                # a profile with no PIN is open to anyone who taps it: on the classroom network only this computer may
+                return self._json({"ok": False, "error": "This profile has no PIN yet. Open it on the instructor's "
+                                                         "computer and add one in Me → Security."}, 403)
+            token, msg = security.unlock(pid, str(b.get("pin", ""))[:32])
             if not token:
                 return self._json({"ok": False, "error": msg}, 401)
             return self._json({"ok": True}, extra={"Set-Cookie": security.cookie_header(token)})
@@ -1315,8 +1330,8 @@ class _Server(ThreadingHTTPServer):
 
 def serve(host: str = "127.0.0.1", port: int = 8780, lan: bool = False) -> ThreadingHTTPServer:
     profiles.migrate_legacy()
-    if lan and not security.all_have_pins():
-        raise SystemExit("LAN mode needs every profile to have a PIN. Set them in Me → Security, then use --lan.")
+    # Class opens even if some profiles on this device have no PIN yet (owner's decision, 2026-10-10): those can only
+    # be opened on this computer -- /api/unlock refuses them from other devices and /api/lock hides them there.
     httpd = _Server((host, port), Handler)                 # take the port first: if it's busy, change nothing
     try:
         Handler.app = App(port, lan)

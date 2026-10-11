@@ -54,7 +54,7 @@ if errorlevel 1 pause
 
 START_SH = """#!/bin/sh
 # Vanguard from this USB drive on Linux or a Mac (uses this computer's python3 and its cryptography package).
-here="$(cd "$(dirname "$0")" && pwd)"
+here="$(cd "$(dirname "$0")/.." && pwd)"     # this file is in "Mac and Linux"; the drive is one level up
 export VANGUARD_DATA="$here/VanguardData"
 cd "$here/Vanguard" || exit 1
 if ! python3 -c "import cryptography" 2>/dev/null; then
@@ -62,6 +62,58 @@ if ! python3 -c "import cryptography" 2>/dev/null; then
   exit 1
 fi
 exec python3 run.py "$@"
+"""
+
+MAKE_BAT = r"""@echo off
+title Make a Cadet flash drive
+rem Copies Vanguard from this folder's copy to a blank flash drive -- without anyone's profiles or records.
+"%~dp0..\Vanguard\python\python.exe" "%~dp0..\Vanguard\tools\clone_drive.py" "%~dp0.."
+echo.
+pause
+"""
+
+MAKE_HOWTO = """MAKE MORE FLASH DRIVES (one for each Cadet)
+============================================
+
+This makes a copy of Vanguard on a blank flash drive. The copy has NO profiles and NO class
+records on it - every Cadet starts fresh with their own name and PIN.
+
+You need: this flash drive, a Windows computer, and blank flash drives (8 GB or bigger).
+
+
+STEP 1 - Copy this flash drive to the computer
+   a. Open this flash drive in File Explorer.
+   b. Make a new folder on the computer's Desktop, for example "Vanguard drive".
+   c. Select everything on the flash drive EXCEPT the folder named VanguardData
+      (that folder is your class's data - it stays on your drive).
+      Tip: press Ctrl+A to select all, then hold Ctrl and click VanguardData to un-select it.
+   d. Copy it (Ctrl+C) and paste it (Ctrl+V) into the new Desktop folder. Wait for it to finish.
+
+STEP 2 - Swap the flash drives
+   a. Close Vanguard if it is running.
+   b. Unplug YOUR flash drive and keep it safe.
+   c. Plug in a BLANK flash drive.
+
+STEP 3 - Make the Cadet drive
+   a. On the computer, open the Desktop folder from Step 1.
+   b. Open the folder "Make more flash drives".
+   c. Double-click "Make a Cadet drive.bat".
+      (If Windows says "Windows protected your PC", choose More info, then Run anyway.)
+   d. Type Y and press Enter when it asks. Wait until it says "Done".
+
+STEP 4 - More drives
+   Unplug the finished drive, plug in the next blank one, and double-click
+   "Make a Cadet drive.bat" again. Repeat for each Cadet.
+
+When you're finished, you can delete the Desktop folder from Step 1.
+
+
+GOOD TO KNOW
+ - It will NOT overwrite a drive that already has Vanguard profiles on it.
+ - A Cadet's drive works on its own: plug it into any Windows computer and
+   double-click "Start Vanguard.bat".
+ - To bring a Cadet into your class, they join it from Start Classroom on your
+   computer, or type your class's join code in Me -> Join a class.
 """
 
 START_HERE = """<!DOCTYPE html>
@@ -89,14 +141,19 @@ Use it to look around, prepare lessons, check records, or for one person studyin
 <div class="box"><h3>▶ <span class="file">Start Classroom.bat</span> — the whole class</h3>
 This computer becomes the classroom's Vanguard. <b>Cadets use it from their own phones, tablets or laptops</b> on the
 same Wi-Fi: it opens a <b>Join screen</b> with a big QR code to put on the projector — Cadets scan it and pick a name and a PIN.<br>
-Every profile needs a PIN when class is open. If Windows asks whether to allow Python on networks, choose
+A profile without a PIN can only be opened on this computer while class is open. If Windows asks whether to allow Python on networks, choose
 <b>Allow</b> (private networks). If Cadets can't connect, the school Wi-Fi may block devices from reaching each other —
 ask IT, or use a phone hotspot or the Vanguard demo box.</div>
 
-<div class="box"><h3>▶ <span class="file">start-vanguard-usb.sh</span> — Linux or Mac</h3>
-The same as <i>Start Vanguard</i>, for a Linux computer or a Mac. Open a terminal in this drive and run
-<code>sh start-vanguard-usb.sh</code> — or <code>sh start-vanguard-usb.sh --lan</code> for the whole class.
-That computer needs Python 3 with the <code>cryptography</code> package.</div>
+<div class="box"><h3>📁 <span class="file">Make more flash drives</span> — a clean drive for each Cadet</h3>
+Open <span class="file">HOW TO MAKE MORE DRIVES.txt</span> in that folder. In short: copy this drive to a computer (all but
+<span class="file">VanguardData</span>), swap in a blank drive, and double-click <span class="file">Make a Cadet drive.bat</span>.
+The new drive has no profiles or records on it.</div>
+
+<div class="box"><h3>📁 <span class="file">Mac and Linux</span> — not Windows</h3>
+For a Mac or Linux computer: open a terminal in that folder and run <code>sh start-vanguard-usb.sh</code> —
+or <code>sh start-vanguard-usb.sh --lan</code> for the whole class. That computer needs Python 3 with the
+<code>cryptography</code> package. Windows computers don't need this folder.</div>
 
 <div class="box"><h3>⬇ <span class="file">Install Vanguard … on this computer.exe</span> — keep it on a computer</h3>
 Installs Vanguard on this Windows computer (a Vanguard icon on the desktop and in the Start menu). After that the drive
@@ -114,7 +171,7 @@ isn't needed. If Windows says <i>"Windows protected your PC"</i>, choose <b>More
 <ol>
 <li>Open <span class="file">Start Vanguard.bat</span> (or <span class="file">Start Classroom.bat</span>).</li>
 <li>Instructor: choose <b>I'm the instructor — set up this class</b>. Pick a <b>Class PIN</b> (it opens your class — don't share it with Cadets), then your name and your own PIN.</li>
-<li>Open <b>🎓 Instructor → 👥 Class</b> and add your class or platoons. Each gets a <b>join code</b>; Cadets who use it land in that class.</li>
+<li>Your <b>Home</b> screen walks you through the rest: make your class, put Cadets in it, open class to phones. Then press <b>▶ Start class</b> and tick today's lesson, scenarios, live questions and videos.</li>
 <li>Write down each <b>backup code</b> Vanguard shows — it's the way back if a PIN is forgotten.</li>
 </ol>
 
@@ -264,7 +321,13 @@ def main(argv: list[str]) -> int:
     (drive / "Start Vanguard (classroom).bat").unlink(missing_ok=True)   # renamed in 0.2: Start Classroom
     for name, args_ in (("Start Vanguard.bat", ""), ("Start Classroom.bat", "--lan")):
         (drive / name).write_bytes(START_BAT.replace("{args}", args_).replace("\r\n", "\n").replace("\n", "\r\n").encode("ascii"))
-    (drive / "start-vanguard-usb.sh").write_bytes(START_SH.encode("ascii"))
+    (drive / "start-vanguard-usb.sh").unlink(missing_ok=True)          # moved into "Mac and Linux" (0.2.2)
+    (drive / "Mac and Linux").mkdir(exist_ok=True)
+    (drive / "Mac and Linux" / "start-vanguard-usb.sh").write_bytes(START_SH.encode("ascii"))
+    more = drive / "Make more flash drives"                             # clean Cadet copies, no one's data
+    more.mkdir(exist_ok=True)
+    (more / "Make a Cadet drive.bat").write_bytes(MAKE_BAT.replace('\r\n', '\n').replace('\n', '\r\n').encode("ascii"))
+    (more / "HOW TO MAKE MORE DRIVES.txt").write_bytes(MAKE_HOWTO.replace('\r\n', '\n').replace('\n', '\r\n').encode("utf-8"))
     (drive / "README-USB.txt").unlink(missing_ok=True)          # replaced by START HERE.html
     (drive / "START HERE.html").write_text(START_HERE.replace("{version}", build.__version__), encoding="utf-8")
 

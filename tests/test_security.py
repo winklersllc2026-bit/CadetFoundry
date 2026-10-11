@@ -8,6 +8,7 @@ import threading
 import unittest
 import uuid
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
@@ -145,10 +146,41 @@ class SecurityTests(unittest.TestCase):
         token, _ = security.unlock(p["id"], "739164")          # even the right PIN waits during a lockout
         self.assertIsNone(token)
 
-    def test_10_lan_mode_requires_pins_on_every_profile(self):
-        profiles.create(f"NoPin-{uuid.uuid4().hex[:8]}")
-        with self.assertRaises(SystemExit):
-            serve("127.0.0.1", 0, lan=True)
+    def test_10_lan_mode_opens_but_pinless_profiles_stay_on_this_computer(self):
+        """Class opens even with a PIN-less profile on the device; other devices can't see or open that profile."""
+        nopin = profiles.create(f"NoPin-{uuid.uuid4().hex[:8]}")
+        saved_app = self.httpd.RequestHandlerClass.app            # the handler class is shared: put it back after
+        httpd = serve("127.0.0.1", 0, lan=True)
+        try:
+            h = httpd.RequestHandlerClass
+            h.app.port = httpd.server_address[1]
+            remote = mock.patch.object(h, "_local", lambda self: False)
+            threading.Thread(target=httpd.serve_forever, daemon=True).start()
+            port = httpd.server_address[1]
+
+            def call(method, path, body=None):
+                c = http.client.HTTPConnection("127.0.0.1", port, timeout=10)
+                c.request(method, path, body=json.dumps(body) if body is not None else None,
+                          headers={"Host": f"127.0.0.1:{port}", "Content-Type": "application/json"})
+                r = c.getresponse()
+                data = json.loads(r.read() or b"{}")
+                c.close()
+                return r.status, data
+
+            with remote:
+                st, lock = call("GET", "/api/lock")
+                self.assertNotIn(nopin["id"], [p["id"] for p in lock["profiles"]])
+                st, r = call("POST", "/api/unlock", {"profile": nopin["id"], "pin": ""})
+                self.assertEqual(st, 403)
+            st, cls = call("GET", "/api/classroom")                 # this computer: the instructor is told
+            self.assertIn(nopin["name"], cls.get("no_pin", []))
+            st, r = call("POST", "/api/unlock", {"profile": nopin["id"], "pin": ""})
+            self.assertEqual(st, 200)                                   # on this computer it still opens
+        finally:
+            httpd.shutdown()
+            httpd.server_close()
+            self.httpd.RequestHandlerClass.app = saved_app
+            profiles.delete(nopin["id"])
 
     def test_11_weak_pins_rejected(self):
         self.assertIn("6 to 12", security.valid_new_pin("123") or "")

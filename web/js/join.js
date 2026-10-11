@@ -39,8 +39,12 @@
               `<option value="${esc(x.id)}" ${x.id === unit ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}</select></div>
             ${u ? `<div class="code" style="margin-top:8px">${esc(u.code)}</div>
               <p class="faint">Built into the QR code. Cadets who type the address enter it when they sign up.</p>` : ''}</div>`
-            : c.local ? `<p class="faint">Want Cadets placed in your class automatically? Sign in as the instructor and add a class or
-              platoon in 🎓 Instructor — each gets a join code that shows here.</p>` : ''}
+            : c.local ? `<div class="card"><p class="big" style="margin:0 0 6px">Put Cadets in your class automatically</p>
+              <p class="faint" style="margin:0 0 12px">Make your class once. Its join code then goes into this QR code, and every Cadet who scans it lands in your class.</p>
+              <a class="btn primary-link" href="/?go=class" target="_blank" rel="noopener">Set up my class →</a></div>` : ''}
+          ${c.local && (c.no_pin || []).length ? `<div class="card warn"><b>⚠ No PIN yet:</b> ${c.no_pin.map(esc).join(', ')}
+            <p class="faint" style="margin:6px 0 0">Phones can't open ${c.no_pin.length === 1 ? 'this profile' : 'these profiles'} until ${c.no_pin.length === 1 ? 'it has' : 'they have'} a PIN.
+            They still open on this computer: sign in, then 👤 Me → Security → Set a PIN.</p></div>` : ''}
           <p class="faint">${c.cadets} Cadet profile${c.cadets === 1 ? '' : 's'} on this Vanguard.
             ${c.urls.length > 1 ? `Other addresses for this computer: ${c.urls.slice(1).map(x => esc(x.replace(/\/$/, ''))).join(', ')}` : ''}</p>
         </div></div>`

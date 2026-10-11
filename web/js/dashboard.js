@@ -184,7 +184,7 @@ async function liveQuizMode() {
   const L = 'ABCDEF';
   const draw = async () => {
     const lq = await api('/api/instructor/live-quiz');
-    if (!lq.id) { clearInterval(livePoll); loaders.instructor(); openView('instructor'); return; }
+    if (!lq.id) { clearInterval(livePoll); backFromClassroom(); return; }
     const pct = n => lq.answered ? Math.round(100 * n / lq.answered) : 0;
     const max = Math.max(1, ...(lq.counts || [0]));
     box.innerHTML = `<div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:8px">

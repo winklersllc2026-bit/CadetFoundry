@@ -332,9 +332,20 @@ let STATUS = {};
 const FAMILY_SUGGEST = ['What is JROTC?', 'Does joining JROTC mean my Cadet has to join the military?', 'What are the core values of each service?',
   'What do military ranks mean?', 'How can I support my Cadet?']
 let landed = false;
+// "/?go=class" (the Join screen's "Set up my class"): remembered through sign-in, which reloads the page
+try {
+  const go = new URLSearchParams(location.search).get('go');
+  if (go && /^[a-z]{2,12}$/.test(go)) sessionStorage.setItem('vanguard-go', go);
+} catch (e) { }
 async function refreshStatus() {
   STATUS = await api('/api/status');
-  if (!landed) openView(STATUS.kind === 'instructor' ? 'instructor' : 'home');   // instructors start in their tools
+  if (!landed) {
+    let go = '';
+    try { go = sessionStorage.getItem('vanguard-go') || ''; sessionStorage.removeItem('vanguard-go'); } catch (e) { }
+    const toTools = STATUS.kind === 'instructor' && go && typeof INST_SECTIONS !== 'undefined' && INST_SECTIONS.some(s => s[0] === go);
+    if (toTools) instSection = go;
+    openView(toTools ? 'instructor' : 'home');     // everyone starts on Home; for an instructor that's Class day
+  }
   landed = true;
   if ((document.body.dataset.kind = STATUS.kind || 'cadet') === 'guardian') {          // family member's profile
     $('#suggest').innerHTML = FAMILY_SUGGEST.map(q => `<button>${esc(q)}</button>`).join('');

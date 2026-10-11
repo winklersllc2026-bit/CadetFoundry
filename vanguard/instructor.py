@@ -108,6 +108,12 @@ def _ensure_codes(r: dict) -> bool:
     return changed
 
 
+def join_codes() -> dict:
+    """{code: {"unit": id, "name": ...}} for every class with a join code (plain file; codes aren't secret --
+    they're shown on the projector)."""
+    return _read_plain("join_codes.json", {})
+
+
 def unit_for_code(code) -> dict | None:
     """{"unit": id, "name": ...} for a join code, or None."""
     return _read_plain("join_codes.json", {}).get(clean_code(code))

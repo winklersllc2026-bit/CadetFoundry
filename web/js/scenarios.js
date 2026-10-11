@@ -223,7 +223,7 @@ async function classroomMode() {
   const box = $('#classroomBody');
   const draw = async () => {
     const lv = await api('/api/instructor/live');
-    if (!lv.scenario) { clearInterval(livePoll); loaders.instructor(); openView('instructor'); return; }
+    if (!lv.scenario) { clearInterval(livePoll); backFromClassroom(); return; }
     const sc = lv.scenario, max = Math.max(1, ...lv.counts);
     box.innerHTML = `<div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
         <span class="faint">CLASSROOM MODE · ${lv.votes} vote${lv.votes === 1 ? '' : 's'} · Cadets vote in 🧭 Lead</span>

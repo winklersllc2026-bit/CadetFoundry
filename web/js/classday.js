@@ -1,0 +1,216 @@
+// Class day (0.2.2): the instructor's Home. Setup until the class is ready, then one big "Start class" -- pick the
+// class, tick today's plan (a lesson, leadership scenarios, live questions from any study card, videos), and run it
+// from one run sheet: each item has its own button, the projector screens come back here when they end, and the
+// plan is kept for the rest of the day on this computer. Listeners in JS (the page's policy blocks inline handlers).
+'use strict';
+
+const CD_KEY = 'vanguard-classday';
+const cdToday = () => new Date().toISOString().slice(0, 10);
+const cdLoad = () => {
+  try {
+    const p = JSON.parse(localStorage.getItem(CD_KEY) || 'null');
+    return p && p.date === cdToday() ? p : null;
+  } catch (e) { return null; }
+};
+const cdSave = p => { try { localStorage.setItem(CD_KEY, JSON.stringify(p)); } catch (e) { } };
+const cdClear = () => { try { localStorage.removeItem(CD_KEY); } catch (e) { } };
+const CD_ICON = { lesson: '📋', scenario: '🗳️', question: '📡', video: '🎬' };
+
+const homeForCadets = loaders.home;
+loaders.home = async () => {
+  if ((STATUS.kind || 'cadet') !== 'instructor') return homeForCadets();
+  return classDayHome();
+};
+
+async function classDayHome() {
+  const body = $('#homeBody');
+  if (!body.innerHTML.trim()) body.innerHTML = '<p class="faint">Loading your class…</p>';
+  const lock = await api('/api/lock');
+  const name = (lock.current && lock.current.name) || '';
+  const ov = await api('/api/instructor/overview');
+  if (ov.error) {                                  // signed in, but the class records are locked: the Class PIN, right here
+    body.innerHTML = `<h2>Hi${name ? ', ' + esc(name) : ''}</h2>
+      <div class="card" style="border-color:var(--tan)"><h3>🔐 Open your class</h3>
+        <p>Type the <b>Class PIN</b> (the one you made when you set up Vanguard) to open your class for today.</p>
+        <div class="row" style="flex-wrap:wrap;gap:8px"><input id="cdPin" type="password" inputmode="numeric" maxlength="12" placeholder="Class PIN"
+          aria-label="Class PIN" style="flex:1;min-width:160px;font-size:20px;letter-spacing:.2em"><button class="btn primary" id="cdPinGo">Open</button></div>
+        <p class="faint" id="cdPinMsg" role="alert"></p></div>`;
+    const go = async () => {
+      const r = await api('/api/instructor/unlock', { admin: $('#cdPin').value });
+      if (r.ok) classDayHome(); else $('#cdPinMsg').textContent = r.error;
+    };
+    $('#cdPinGo').addEventListener('click', go);
+    $('#cdPin').addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
+    $('#cdPin').focus();
+    return;
+  }
+  const plan = cdLoad();
+  classDayActive = !!plan;
+  body.innerHTML = `<h2>Hi${name ? ', ' + esc(name) : ''}</h2><div id="cdSetup"></div><div id="cdMain"></div>
+    <div class="card"><h3>More tools</h3><div class="tiles" style="margin:0">
+      <button class="tile" data-cdgo="class"><span>👥</span>Class<small>Cadets, units, ranks</small></button>
+      <button class="tile" data-cdgo="lessons"><span>📋</span>Lessons<small>Write and assign</small></button>
+      <button class="tile" data-cdgo="present"><span>🖥️</span>Present<small>Scenarios, live questions</small></button>
+      <button class="tile" data-cdgo="reports"><span>📊</span>Reports<small>How they're doing</small></button></div></div>`;
+  body.querySelectorAll('[data-cdgo]').forEach(b => b.addEventListener('click', () => { openView('instructor'); loaders.instructor(b.dataset.cdgo); }));
+  const ready = await classSetup($('#cdSetup'), ov, classDayHome, { compactWhenReady: true });
+  const main = $('#cdMain');
+  if (plan) return runSheet(main, plan, ov);
+  main.innerHTML = `<button class="btn primary" id="cdStart" style="width:100%;min-height:72px;font-size:24px;margin:4px 0 16px">▶ Start class</button>
+    ${ready ? '' : '<p class="faint" style="margin-top:-8px">You can plan class now; finish the setup steps above before Cadets join.</p>'}`;
+  $('#cdStart').addEventListener('click', () => planner(main, ov));
+}
+
+// Step 1 and 2: which class, and what's on today's plan.
+async function planner(main, ov, prev) {
+  main.innerHTML = '<p class="faint">Loading your lessons, scenarios and videos…</p>';
+  const [ls, sc, qz, vd] = await Promise.all([api('/api/instructor/lessons'), api('/api/instructor/scenarios'),
+    api('/api/instructor/quiz'), api('/api/videos')]);
+  const lessons = ls.lessons || [], scenarios = sc.scenarios || [], cards = qz.cards || [], videos = vd.videos || [];
+  const was = prev || {}, had = (t, id) => (was.items || []).some(i => i.type === t && i.id === id);
+  let questions = (was.items || []).filter(i => i.type === 'question');
+  const svcName = s => s === 'joint' ? 'All services' : (STATUS.services || {})[s] || s;
+  const box = 'max-height:280px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:4px 10px';
+  const pick = (type, id, label, sub, checked, kind = 'checkbox', name = '') => `<label style="display:flex;gap:10px;align-items:center;min-height:44px;cursor:pointer">
+    <input type="${kind}" ${name ? `name="${name}"` : ''} data-cd="${type}" value="${esc(id)}" ${checked ? 'checked' : ''} style="width:22px;height:22px;flex:none">
+    <span>${label}${sub ? ` <span class="faint">${sub}</span>` : ''}</span></label>`;
+  main.innerHTML = `<div class="card" style="border-color:var(--tan)"><h3>▶ Start class</h3>
+      <label for="cdUnit"><b>1. Which class?</b></label>
+      ${ov.units.length ? `<select id="cdUnit">${ov.units.map(u => `<option value="${esc(u.id)}" ${u.id === was.unit ? 'selected' : ''}>${esc(u.name)}</option>`).join('')}</select>`
+        : '<p class="faint">Make your class first (step 1 above). You can still plan today, and assign the lesson to everyone.</p>'}
+      <p style="margin:18px 0 4px"><b>2. What's on today's plan?</b> <span class="faint">Tick anything — you can skip any of these.</span></p></div>
+    <div class="card"><h3>📋 A lesson to assign</h3>
+      ${lessons.length ? `<div style="${box}">${pick('lesson', '', 'No lesson today', '', !(was.items || []).some(i => i.type === 'lesson'), 'radio', 'cdLesson')}
+        ${lessons.map(l => pick('lesson', l.id, esc(l.title), [l.let_level && `${STATUS.level_label || 'Year'} ${l.let_level}`, l.questions.length && `${l.questions.length} questions`].filter(Boolean).map(esc).join(' · '), had('lesson', l.id), 'radio', 'cdLesson')).join('')}</div>`
+        : '<p class="faint">No lessons yet.</p>'}
+      <button class="btn small" id="cdNewLesson" style="margin-top:8px">＋ Write a new lesson</button></div>
+    <div class="card"><h3>🗳️ Leadership scenarios for the projector</h3>
+      <p class="faint">The class votes on their phones, then you reveal the discussion guidance.</p>
+      <div style="${box}">${scenarios.map(s => pick('scenario', s.id, esc(s.title), esc(s.competency), had('scenario', s.id))).join('') || '<p class="faint">No scenarios.</p>'}</div></div>
+    <div class="card"><h3>📡 Live questions</h3>
+      <p class="faint">Pick a study card. Its questions go on the projector one at a time; Cadets answer on their phones.</p>
+      <input id="cdCardFind" placeholder="Search study cards (e.g. salute, ranks, core values)" aria-label="Search study cards">
+      <div class="row" style="gap:8px;flex-wrap:wrap;margin-top:6px"><select id="cdCard" aria-label="Study card" style="flex:3;min-width:200px"></select>
+        <select id="cdCount" aria-label="How many questions" style="flex:1;min-width:110px">${[1, 2, 3, 4, 5].map(n => `<option value="${n}" ${n === 3 ? 'selected' : ''}>${n} question${n === 1 ? '' : 's'}</option>`).join('')}</select>
+        <button class="btn" id="cdAddQ">Add</button></div>
+      <div id="cdQList" style="margin-top:8px"></div></div>
+    <div class="card"><h3>🎬 Videos</h3>
+      <div style="${box}">${videos.map(v => pick('video', v.id, esc(v.title), `${esc(svcName(v.service))} · ${v.kind === 'youtube' ? 'YouTube (internet)' : v.local ? `${esc(v.length)} · plays offline` : 'not saved — needs internet'}`, had('video', v.id))).join('') || '<p class="faint">No videos.</p>'}</div></div>
+    <div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:20px"><button class="btn primary" id="cdBuild" style="flex:1;min-height:56px;font-size:19px">Build today's class →</button>
+      <button class="btn" id="cdCancel">Cancel</button></div><p class="faint" id="cdMsg" role="alert"></p>`;
+  const fillCards = () => {
+    const f = $('#cdCardFind').value.trim().toLowerCase();
+    const list = cards.filter(c => c.questions && (!f || c.title.toLowerCase().includes(f))).slice(0, 200);
+    $('#cdCard').innerHTML = list.map(c => `<option value="${esc(c.id)}">${esc(c.title)} (${c.questions})</option>`).join('') || '<option value="">No cards match</option>';
+  };
+  const drawQ = () => {
+    $('#cdQList').innerHTML = questions.map((q, i) => `<div class="row" style="justify-content:space-between;gap:8px;margin:4px 0;flex-wrap:nowrap">
+      <span>📡 ${esc(q.title)} <span class="faint">${esc(q.sub)}</span></span><button class="btn small" data-cdrmq="${i}" aria-label="Remove">✕</button></div>`).join('');
+    $('#cdQList').querySelectorAll('[data-cdrmq]').forEach(b => b.addEventListener('click', () => { questions.splice(Number(b.dataset.cdrmq), 1); drawQ(); }));
+  };
+  fillCards(); drawQ();
+  $('#cdCardFind').addEventListener('input', fillCards);
+  $('#cdAddQ').addEventListener('click', async () => {
+    const id = $('#cdCard').value;
+    if (!id) return;
+    const d = await api('/api/instructor/quiz?card=' + encodeURIComponent(id));
+    const n = Number($('#cdCount').value);
+    const fresh = (d.questions || []).filter(q => !(q.edit || {}).hidden && !questions.some(x => x.id === q.id)).slice(0, n);
+    questions = questions.concat(fresh.map(q => ({ type: 'question', id: q.id, title: (q.edit || {}).q || q.q, sub: d.card.title })));
+    drawQ();
+  });
+  $('#cdNewLesson').addEventListener('click', () => { openView('instructor'); loaders.instructor('lessons'); });
+  $('#cdCancel').addEventListener('click', classDayHome);
+  $('#cdBuild').addEventListener('click', () => {
+    const items = [];
+    const lid = (main.querySelector('[data-cd="lesson"]:checked') || {}).value;
+    if (lid) items.push({ type: 'lesson', id: lid, title: lessons.find(l => l.id === lid).title, sub: 'Assign it; Cadets find it on their Home screen' });
+    main.querySelectorAll('[data-cd="scenario"]:checked').forEach(x => {
+      const s = scenarios.find(y => y.id === x.value); items.push({ type: 'scenario', id: s.id, title: s.title, sub: s.competency });
+    });
+    items.push(...questions);
+    main.querySelectorAll('[data-cd="video"]:checked').forEach(x => {
+      const v = videos.find(y => y.id === x.value); items.push({ type: 'video', id: v.id, title: v.title, sub: v.kind === 'youtube' ? 'YouTube (internet)' : v.length });
+    });
+    if (!items.length) { $('#cdMsg').textContent = 'Tick at least one thing for today — a lesson, a scenario, a question or a video.'; return; }
+    const keep = Object.fromEntries((was.items || []).filter(i => i.done).map(i => [i.type + ':' + i.id, true]));
+    items.forEach(i => { if (keep[i.type + ':' + i.id]) i.done = true; });
+    const plan = { date: cdToday(), unit: $('#cdUnit') ? $('#cdUnit').value : '', items };
+    cdSave(plan);
+    classDayActive = true;
+    runSheet(main, plan, ov);
+    window.scrollTo(0, 0);
+  });
+}
+
+// Step 3: the run sheet -- today's plan in order, one button each.
+function runSheet(main, plan, ov) {
+  const unit = ov.units.find(u => u.id === plan.unit);
+  const done = plan.items.filter(i => i.done).length;
+  const label = { lesson: 'Assign', scenario: '▶ Present', question: '▶ Ask live', video: '▶ Play' };
+  main.innerHTML = `<div class="card" style="border-color:var(--tan)">
+      <div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:8px"><h3 style="margin:0">Today's class${unit ? ' — ' + esc(unit.name) : ''}</h3>
+        <span class="faint">${done} of ${plan.items.length} done</span></div>
+      ${STATUS.lan ? `<div class="row" style="gap:10px;margin:12px 0;flex-wrap:nowrap"><span style="font-size:22px">📱</span>
+        <div style="flex:1"><b>Cadets join</b><div class="faint">Put the Join screen on the projector; Cadets scan the QR code.</div></div>
+        <button class="btn" id="cdJoin">Join screen</button></div>` : ''}
+      ${plan.items.map((it, i) => `<div class="row" style="gap:10px;margin:12px 0;flex-wrap:nowrap;${it.done ? 'opacity:.6' : ''}">
+        <span style="font-size:22px">${it.done ? '✅' : CD_ICON[it.type]}</span>
+        <div style="flex:1;min-width:0"><b>${esc(it.title)}</b><div class="faint">${esc(it.sub || '')}${it.note ? ' · ' + esc(it.note) : ''}</div></div>
+        <button class="btn ${it.done ? '' : 'primary'}" data-cdrun="${i}" style="white-space:nowrap">${it.done && it.type === 'lesson' ? 'Assigned' : label[it.type]}</button></div>`).join('')}
+      <div class="row" style="gap:8px;flex-wrap:wrap;margin-top:14px"><button class="btn" id="cdEdit">✎ Change the plan</button>
+        <button class="btn" id="cdEnd">Finish class</button></div><p class="faint" id="cdRunMsg" role="alert"></p></div>`;
+  if ($('#cdJoin')) $('#cdJoin').addEventListener('click', () => window.open('/join', '_blank', 'noopener'));
+  $('#cdEdit').addEventListener('click', () => planner(main, ov, plan));
+  $('#cdEnd').addEventListener('click', () => {
+    if (!confirm('Finish today\'s class? The plan is cleared; everything Cadets did is already saved.')) return;
+    cdClear(); classDayActive = false; classDayHome();
+  });
+  main.querySelectorAll('[data-cdrun]').forEach(b => b.addEventListener('click', () => runItem(plan, Number(b.dataset.cdrun), main, ov)));
+}
+
+async function runItem(plan, i, main, ov) {
+  const it = plan.items[i], msg = t => { if ($('#cdRunMsg')) $('#cdRunMsg').textContent = t; };
+  const mark = (note) => { it.done = true; if (note) it.note = note; cdSave(plan); };
+  classDayActive = true;
+  if (it.type === 'lesson') {
+    if (it.done) return;
+    const r = await api('/api/instructor/assign-lesson', { lesson: it.id, everyone: !plan.unit, units: plan.unit ? [plan.unit] : [], cadets: [], due: cdToday() });
+    if (r.error) return msg(r.error);
+    mark('assigned, due today');
+    return runSheet(main, plan, ov);
+  }
+  if (it.type === 'scenario') { mark(); return presentScenarios([it.id]); }
+  if (it.type === 'question') {
+    const r = await api('/api/instructor/live-quiz', { action: 'start', id: it.id, mode: 'mc' });
+    if (r.error) return msg(r.error);
+    mark();
+    return liveQuizMode();
+  }
+  if (it.type === 'video') {
+    const d = await api('/api/videos');
+    const v = (d.videos || []).find(x => x.id === it.id);
+    if (!v) return msg('That video is no longer in the list.');
+    mark();
+    return projectorVideo(v);
+  }
+}
+
+// A video on the projector: big, with the official credit, and a way back to the run sheet.
+function projectorVideo(v) {
+  openView('classroom');
+  const box = $('#classroomBody');
+  const credit = v.kind === 'youtube' ? `${esc(v.channel)} — the service's official YouTube channel`
+    : `Official video${v.credit ? ` by ${esc(v.credit)}` : ''}, ${esc(v.date || '')} · public domain · via DVIDS (dvidshub.net)`;
+  box.innerHTML = `<div class="row" style="justify-content:space-between;gap:8px;flex-wrap:wrap">
+      <span class="faint">CLASSROOM · VIDEO</span><button class="btn small" id="pvBack">← Back to today's class</button></div>
+    <h1 style="font-size:clamp(24px,3.4vw,40px);margin:12px 0">${esc(v.title)}</h1>
+    ${v.local ? `<video controls autoplay playsinline src="${esc(v.src)}" style="width:100%;max-height:72vh;background:#000;border-radius:10px"></video>`
+      : `<div class="card"><p style="font-size:20px">${v.kind === 'youtube' ? 'This video is on YouTube. It opens in a new tab and needs internet.' : 'This video isn\'t saved on this computer yet, so it needs internet.'}</p>
+         <a class="btn primary" href="${esc(v.url)}" target="_blank" rel="noopener noreferrer">▶ Open the video</a></div>`}
+    <p class="faint" style="margin-top:10px">${credit}</p>`;
+  $('#pvBack').addEventListener('click', () => {
+    const vid = box.querySelector('video'); if (vid) vid.pause();
+    backFromClassroom();
+  });
+}

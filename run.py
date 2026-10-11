@@ -61,6 +61,27 @@ def write_pid() -> None:
                     if pid.exists() else None)
 
 
+def _print_join_qr(address: str) -> None:
+    """The Join address as a QR code in this window, for phones to scan (the projector's Join screen shows a bigger
+    one). With exactly one class set up, its join code is built in, so a Cadet who scans lands in that class."""
+    from vanguard import instructor, qr
+    codes = instructor.join_codes()
+    target = address
+    if len(codes) == 1:
+        code, unit = next(iter(codes.items()))
+        target = f"{address}?join={code}"
+    try:
+        print()
+        print(qr.terminal(target))
+        if len(codes) == 1:
+            print(f"  Scan to join {unit['name']} (join code {code}).")
+        else:
+            print("  Scan to join." + (" Cadets type their class's join code when they sign up." if codes else ""))
+        print()
+    except UnicodeEncodeError:                      # a console that can't draw block characters: the address is enough
+        pass
+
+
 def main() -> int:
     if sys.stdout is None:
         quiet_start()
@@ -127,6 +148,7 @@ def main() -> int:
             print("  Cadets: join the same Wi-Fi as this computer, then open in a browser:")
             for a in addrs:
                 print(f"      http://{a}" + ("" if args.port == 80 else f":{args.port}"))
+            _print_join_qr(f"http://{addrs[0]}" + ("" if args.port == 80 else f":{args.port}") + "/")
         else:
             print("  Other devices on this network can connect to this computer's address, port", args.port)
     print("  Press Ctrl+C to stop (or Me > Quit Vanguard).")

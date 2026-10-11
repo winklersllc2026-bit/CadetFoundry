@@ -141,7 +141,11 @@ class JoinCodeTests(unittest.TestCase):
         self.assertEqual((st, r["joined"]), (200, "Bravo"))
         self.assertEqual(self.req("POST", "/api/join", {"code": unit["code"]}, t1)[0], 400)        # not for instructors
 
-    def test_join_screen_is_public_and_shows_codes_only_to_an_open_instructor(self):
+    def test_join_screen_is_public_and_shows_codes_only_on_the_instructors_computer(self):
+        """Start Classroom opens the Join screen before anyone signs in: on the instructor's own computer it shows the
+        join codes; another device on the network never gets them without an open instructor session."""
+        from unittest import mock
+        from vanguard.server import Handler
         st, page, _ = self.req("GET", "/join")
         self.assertEqual(st, 200)
         self.assertIn(b"/js/qr.js", page)
@@ -149,7 +153,9 @@ class JoinCodeTests(unittest.TestCase):
         st, c, _ = self.req("GET", "/api/classroom")
         self.assertEqual(st, 200)
         self.assertFalse(c["lan"])                     # this test server is this computer only
-        self.assertNotIn("units", c)                   # no codes without an instructor's open class
+        with mock.patch.object(Handler, "_local", lambda self: False):
+            st, c, _ = self.req("GET", "/api/classroom")
+            self.assertNotIn("units", c)               # another device: no codes
         t1 = self.instructor(self.t1, "736281")
         self.req("POST", "/api/instructor/unit", {"action": "add", "name": "Charlie", "kind": "squad"}, t1)
         units = self.req("GET", "/api/classroom", cookie=t1)[1]["units"]
