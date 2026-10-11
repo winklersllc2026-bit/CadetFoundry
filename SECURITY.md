@@ -160,11 +160,30 @@ Known limits, and what to do about them:
 - Close Vanguard when class ends (**End class** on the Join screen, **Close to phones** on Home, or Me → Quit). The instructor's Home shows "Class is open" while it runs.
 - **Join codes** (0.2) are short codes (6 characters from 31, about 887 million combinations) that put a *new* Cadet's own profile in a class, platoon or squad and give it that unit's lessons. They're kept in the clear in `program/join_codes.json` with the unit's name, because a Cadet's session has no program key; they open nothing else and never reveal any Cadet or record, and they're not secret (they're on the projector, and in the QR code's `?join=` link). The join request is sealed to the program key in `program/joins.json` until an instructor's session files it. An instructor can replace a code (the old one stops working). The Join screen shows codes on the instructor's own computer, never to other devices.
 
+## Dependencies (reviewed 2026-10-11)
+Vanguard is Python's standard library plus one package, `cryptography` (PyCA). Everything else is optional and only fetched when someone with the device-admin role asks for it.
+
+| What | Where it comes from | How it's fixed |
+|---|---|---|
+| Python 3.14.8, embeddable (Windows installer) | python.org | exact URL + SHA-256 in `site/build.py` (matches the hash python.org publishes) |
+| `cryptography` 50.0.2, `cffi` 2.1.1, `pycparser` 3.0 (Windows installer) | PyPI | exact versions + SHA-256 in `site/bundle-requirements.txt`; the build uses `pip --require-hashes`, so a changed file stops the build |
+| `cryptography` (Linux, Raspberry Pi, Mac, source installs) | PyPI, through `tools/setup.py` | at least 50.0.0 (every earlier release has published advisories); not exact, because each platform needs its own wheel. The USB's Mac/Linux starter refuses an older copy and says how to upgrade |
+| Voice add-on: pip 26.2.1 (as one file), `vosk` 0.3.45, the small English model 0.15 | bootstrap.pypa.io, PyPI, alphacephei.com | pip and the model: exact URL + SHA-256 in `vanguard/addons.py`, refused on mismatch. `vosk` and its own dependencies: exact `vosk` version only |
+| AI add-on: Ollama | ollama.com (latest installer) | Windows checks the installer's Authenticode signature is valid and from Ollama before running it; the model is pulled by Ollama itself |
+| `wrangler` 4.141.0 (publishing the website only, owner's computer) | npm | exact version in `site/build.py` |
+| `pypdf` (`tools/setup.py`, converts official PDFs on the owner's computer) | PyPI | not pinned; it never ships to Cadets |
+
+**Before every release:** `python tools/check_deps.py` asks the OSV database (osv.dev) about every pinned package and fails if one has a known vulnerability; only names and version numbers are sent. On 2026-10-11 it reported none. To update a pin: choose a release that is at least two weeks old, check it with OSV, download the wheels with `pip download --only-binary=:all: --platform win_amd64 --python-version 3.14`, record their SHA-256, then build and run the test suite **on the bundled Python** (`app/python/python.exe -m unittest discover -s tests`) — that was done for this set (193 tests, OK).
+
+**Python itself:** the 3.12 line stopped getting Windows builds at 3.12.10, so later 3.12 security fixes never reached the installer; the installer moved to 3.14 (the current line with Windows builds) on 2026-10-11. When 3.14 reaches its security-only phase, move to the next line the same way.
+
+**Secrets:** the repository is checked by `tests/test_security.py` for a release private key, and history was searched for keys and passwords during the 2026-10 review (see the review report). If a secret is ever found, rotate it first — removing it from the files doesn't un-publish it.
+
 ## For military IT: adding CAC sign-in
 Vanguard deliberately ships without CAC/PIV sign-in so that it can be configured by the Army's own IT, with its certificate validation and approval. All sign-in logic is in `vanguard/security.py`: a profile is unlocked by `unlock(profile, secret)`, which creates a session bound to that one profile. A smart-card provider would (1) have the card sign a random challenge with its PIV authentication key, (2) validate the certificate chain against the DoD PKI roots (and revocation, where a network is available), and (3) map the certificate to a profile by a hash of the certificate — never storing the DoD ID number. Nothing else in Vanguard needs to change.
 
 ## Official use
-Use inside military networks or as an issued device would additionally require formal accreditation (Authority to Operate, STIG compliance). This project is designed to make that process straightforward: no network services, one well-known dependency (`cryptography`, PyCA, for AES via OpenSSL), all data local.
+Use inside military networks or as an issued device would additionally require formal accreditation (Authority to Operate, STIG compliance). This project is designed to make that process straightforward: no network services unless an instructor opens class to phones, one well-known dependency (`cryptography`, PyCA, for AES via OpenSSL; see Dependencies), all data local.
 
 ## Instructors and class records (added 2026-10-08)
 

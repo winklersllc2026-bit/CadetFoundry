@@ -7,6 +7,7 @@ Installs the Vosk speech recognizer (Apache 2.0 license) and its small English
 model (~40 MB, from alphacephei.com, the Vosk project). After this, speech-to-text
 runs entirely on the device.
 """
+import hashlib
 import io
 import subprocess
 import sys
@@ -15,13 +16,16 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+from vanguard.addons import VOICE_MODEL, VOSK  # noqa: E402  (same pinned versions + fingerprint as the in-app add-on)
+
 DEST = ROOT / "voice-model"
-MODEL_URL = "https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip"
+MODEL_URL, MODEL_SHA256 = VOICE_MODEL
 
 
 def main() -> int:
     print("Installing the vosk package …")
-    r = subprocess.run([sys.executable, "-m", "pip", "install", "--quiet", "vosk"])
+    r = subprocess.run([sys.executable, "-m", "pip", "install", "--quiet", VOSK])
     if r.returncode != 0:
         print("Couldn't install vosk with pip.")
         return 1
@@ -31,6 +35,9 @@ def main() -> int:
     print("Downloading the small English model (~40 MB) …")
     with urllib.request.urlopen(urllib.request.Request(MODEL_URL, headers={"User-Agent": "Vanguard"}), timeout=300) as resp:
         data = resp.read()
+    if hashlib.sha256(data).hexdigest() != MODEL_SHA256:
+        print("The model download doesn't match its known fingerprint — not installing it.")
+        return 1
     z = zipfile.ZipFile(io.BytesIO(data))
     top = z.namelist()[0].split("/")[0]
     DEST.mkdir(exist_ok=True)

@@ -57,8 +57,9 @@ START_SH = """#!/bin/sh
 here="$(cd "$(dirname "$0")/.." && pwd)"     # this file is in "Mac and Linux"; the drive is one level up
 export VANGUARD_DATA="$here/VanguardData"
 cd "$here/Vanguard" || exit 1
-if ! python3 -c "import cryptography" 2>/dev/null; then
-  echo "Vanguard needs Python 3.10+ with the 'cryptography' package: python3 -m pip install --user cryptography"
+if ! python3 -c "import sys, cryptography; sys.exit(int(cryptography.__version__.split('.')[0]) < 50)" 2>/dev/null; then
+  echo "Vanguard needs Python 3.10+ with the 'cryptography' package, version 50 or newer:"
+  echo "  python3 -m pip install --user --upgrade 'cryptography>=50'"
   exit 1
 fi
 exec python3 run.py "$@"

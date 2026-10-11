@@ -140,9 +140,13 @@ def self_check() -> bool:
     return py("-c", code)
 
 
+# Every release before 50.0.0 has published advisories (OSV); an older copy already on the computer gets upgraded.
+CRYPTOGRAPHY = "cryptography>=50.0.0"
+
+
 def encryption() -> bool:
     """The 'cryptography' package (PyCA, AES via OpenSSL) encrypts each profile's files with its PIN."""
-    pip("cryptography")
+    pip(CRYPTOGRAPHY)                               # a floor, not an exact pin: Pi / Linux / Mac each need their own wheel
     ok = py("-c", "from cryptography.hazmat.primitives.ciphers.aead import AESGCM")
     print("  ✓ files of profiles with a PIN will be encrypted" if ok else
           "  ✗ couldn't install it — PINs will lock the app, but files won't be encrypted")

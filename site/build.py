@@ -103,14 +103,18 @@ def iscc() -> str | None:
 
 # Python ships inside the Windows installer, so the instructor's laptop needs no Python, no console and no setup step.
 # The official embeddable build from python.org, pinned by its SHA-256.
-PYTHON_EMBED = ("https://www.python.org/ftp/python/3.12.10/python-3.12.10-embed-amd64.zip",
-                "4acbed6dd1c744b0376e3b1cf57ce906f9dc9e95e68824584c8099a63025a3c3")
-PYTHON_PACKAGES = ["cryptography"]               # encryption of each profile's files (vault.py) and update signatures
+# (3.12 stopped getting Windows builds at 3.12.10, so later security fixes never reached the installer.)
+PYTHON_EMBED = ("https://www.python.org/ftp/python/3.14.8/python-3.14.8-embed-amd64.zip",
+                "a93abe456ab01bd96d7a085b3cdb6566b3063f4241360d114142fbdb07f0a310")
+PYTHON_TAG = "3.14"
+# cryptography (profile encryption in vault.py, update signatures) and its two dependencies, pinned by version + hash.
+PYTHON_REQUIREMENTS = SITE / "bundle-requirements.txt"
+WRANGLER = "4.141.0"                             # Cloudflare's deploy tool, a fixed version (not "latest")
 PYTHON_UNUSED = ("sqlite3.dll", "_sqlite3.pyd", "_elementtree.pyd", "_lzma.pyd", "_bz2.pyd", "_decimal.pyd", "python.cat")
 
 
 def bundle_python(app: Path) -> bool:
-    """Put Python 3.12 (embeddable) + the cryptography package in app/python. Vanguard then runs as
+    """Put Python (embeddable) + the cryptography package in app/python. Vanguard then runs as
     python\\pythonw.exe run.py -- no console window."""
     import io
     import urllib.request
@@ -136,7 +140,8 @@ def bundle_python(app: Path) -> bool:
     pth.write_text(f"{pth.stem}.zip\r\n.\r\nLib\\site-packages\r\n..\r\nimport site\r\n", encoding="utf-8")
     r = subprocess.run([sys.executable, "-m", "pip", "install", "--quiet", "--disable-pip-version-check", "--no-compile",
                         "--target", str(py / "Lib" / "site-packages"), "--only-binary=:all:", "--platform", "win_amd64",
-                        "--python-version", "3.12", "--implementation", "cp", *PYTHON_PACKAGES],
+                        "--python-version", PYTHON_TAG, "--implementation", "cp",
+                        "--require-hashes", "-r", str(PYTHON_REQUIREMENTS)],
                        capture_output=True, text=True)
     if r.returncode != 0:
         print("Couldn't add Python packages to the installer:\n" + (r.stdout + r.stderr)[-1500:])
@@ -489,7 +494,7 @@ def main() -> int:
         # downloads come from the public releases repo, not the site (Cloudflare's 25 MB limit): tell wrangler to skip
         # them -- they stay in site/dist, where tools/make_usb.py picks up the installer for the drive
         (DIST / ".assetsignore").write_text("Vanguard*\n*.sig\n", encoding="utf-8")
-        return subprocess.run("npx --yes wrangler deploy", cwd=SITE, shell=True).returncode
+        return subprocess.run(f"npx --yes wrangler@{WRANGLER} deploy", cwd=SITE, shell=True).returncode
     return 0
 
 
