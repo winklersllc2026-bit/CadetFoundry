@@ -1,5 +1,5 @@
 @echo off
-rem Double-click to start Vanguard on Windows. Needs Python 3.10+ (python.org).
+rem Double-click to start Cadet Foundry on Windows. Needs Python 3.10+ (python.org).
 cd /d "%~dp0"
 where py >nul 2>nul && (py -3 run.py %* & goto :eof)
 where python >nul 2>nul && (python run.py %* & goto :eof)

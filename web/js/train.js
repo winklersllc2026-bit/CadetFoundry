@@ -86,7 +86,7 @@ async function instructorTrain(body) {
   body.appendChild(sec);
   const unitOpts = Object.entries(d.units).map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join('');
   sec.innerHTML = `<div class="card"><h3>💪 Train</h3>
-      <p class="faint">Cadets are measured against themselves. Choose the events your program uses — Vanguard has no built-in standard.</p>
+      <p class="faint">Cadets are measured against themselves. Choose the events your program uses — Cadet Foundry has no built-in standard.</p>
       ${d.cadets.length ? d.cadets.map(c => `<details style="margin:6px 0"><summary><b>${esc(c.name)}</b> <span class="faint">${c.shared ? '' : '· waiting to share'}</span></summary>
         ${c.events.filter(e => e.count).map(e => `<div style="margin:6px 0 6px 14px">${esc(e.name)}: <b>${esc(e.latest)}</b>
           <span class="faint">${e.count > 1 ? `· ${esc(e.improvement_shown)} since ${esc(e.first_date)} · best ${esc(e.best)}` : '· starting point'}${e.goal ? ` · goal ${esc(e.goal)}` : ''}</span></div>`).join('')

@@ -1,14 +1,14 @@
 #!/bin/sh
-# Turn a Raspberry Pi (Zero 2 W or newer, Raspberry Pi OS Bookworm 64-bit) into a portable Vanguard demo box:
+# Turn a Raspberry Pi (Zero 2 W or newer, Raspberry Pi OS Bookworm 64-bit) into a portable Cadet Foundry demo box:
 #   * its own Wi-Fi network (no internet needed) at http://vanguard.lan  (or http://10.42.0.1)
-#   * Vanguard starts by itself whenever the Pi powers on (a USB power bank is enough)
-#   * demo mode: library answers only (no AI), a "demo unit" note, and the Vanguard installer to download
+#   * Cadet Foundry starts by itself whenever the Pi powers on (a USB power bank is enough)
+#   * demo mode: library answers only (no AI), a "demo unit" note, and the Cadet Foundry installer to download
 #
 # Run once, ON THE PI, while it still has internet (to install one package):
 #     sudo sh /path/to/Vanguard/tools/pi_setup.sh
-# The Wi-Fi name and password come from demo/vanguard-demo.conf next to the Vanguard folder (tools/make_demo_kit.py
+# The Wi-Fi name and password come from demo/vanguard-demo.conf next to the Cadet Foundry folder (tools/make_demo_kit.py
 # writes it), or are asked for. At the end the Pi switches to its own Wi-Fi network, so an SSH session over Wi-Fi
-# ends -- reconnect by joining the Vanguard network:  ssh <user>@10.42.0.1
+# ends -- reconnect by joining the Cadet Foundry network:  ssh <user>@10.42.0.1
 #
 # Back on your home Wi-Fi later:   sudo nmcli connection down vanguard-hotspot
 # Demo network again:              sudo nmcli connection up vanguard-hotspot
@@ -19,17 +19,17 @@ if [ "$(id -u)" != "0" ]; then
   exit 1
 fi
 
-SRC="$(cd "$(dirname "$0")/.." && pwd)"          # the Vanguard folder this script came with
+SRC="$(cd "$(dirname "$0")/.." && pwd)"          # the Cadet Foundry folder this script came with
 APP=/opt/vanguard
 DATA=/var/lib/vanguard
 ADDR=10.42.0.1
-SSID=Vanguard
+SSID=Cadet Foundry
 PASSWORD=""
 CONF="$SRC/../demo/vanguard-demo.conf"
 [ -f "$CONF" ] && . "$CONF"
 
 if [ ! -f "$SRC/run.py" ] || [ ! -d "$SRC/vanguard" ]; then
-  echo "Can't find Vanguard next to this script ($SRC)."
+  echo "Can't find Cadet Foundry next to this script ($SRC)."
   exit 1
 fi
 if [ -z "$PASSWORD" ]; then
@@ -51,7 +51,7 @@ if ! python3 -c "import cryptography" 2>/dev/null; then
   apt-get install -y -q python3 python3-cryptography
 fi
 
-echo "2/6  Copying Vanguard to $APP"
+echo "2/6  Copying Cadet Foundry to $APP"
 id vanguard >/dev/null 2>&1 || useradd --system --home-dir "$DATA" --shell /usr/sbin/nologin vanguard
 mkdir -p "$APP" "$DATA"
 for item in vanguard web tools library books faith downloads run.py README.md LIBRARY.md SECURITY.md \
@@ -83,10 +83,10 @@ else
   done
 fi
 
-echo "5/6  Start Vanguard on every boot"
+echo "5/6  Start Cadet Foundry on every boot"
 cat > /etc/systemd/system/vanguard.service <<EOF
 [Unit]
-Description=Vanguard (demo box)
+Description=Cadet Foundry (demo box)
 After=network.target
 
 [Service]
@@ -116,7 +116,7 @@ nmcli connection add type wifi ifname wlan0 con-name vanguard-hotspot autoconnec
   wifi-sec.key-mgmt wpa-psk wifi-sec.psk "$PASSWORD" >/dev/null
 
 echo
-echo "Done. Vanguard starts by itself on every boot."
+echo "Done. Cadet Foundry starts by itself on every boot."
 echo "  Wi-Fi:    $SSID"
 echo "  Address:  http://vanguard.lan   (or http://$ADDR)"
 echo "  First:    on a phone or laptop, join the Wi-Fi, open the address, tap '+ New profile', choose instructor,"

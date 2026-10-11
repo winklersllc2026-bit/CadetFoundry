@@ -13,7 +13,7 @@ never sent to a Cadet's screen before the instructor reveals it; and a wrong ans
 
 State lives in this program's memory only, never on disk (security review, 2026-10-11): the answers are tied to
 profile ids for one-answer-each and each Cadet's own result, and a live question only lasts a class period. If
-Vanguard closes, the live question ends. A live_quiz.json left by an older version is read once and deleted.
+Cadet Foundry closes, the live question ends. A live_quiz.json left by an older version is read once and deleted.
 """
 from __future__ import annotations
 

@@ -8,7 +8,7 @@ DFAS blocks automated downloads, so save the pages from a browser (File > Save P
   https://www.dfas.mil/Military-Members/payentitlements/Pay-Tables/Basic-Pay/WO/   (warrant officers)
   https://www.dfas.mil/Military-Members/payentitlements/Pay-Tables/Basic-Pay/CO/   (officers, optional)
   https://www.dfas.mil/Military-Members/payentitlements/Pay-Tables/bas/            (BAS)
-Each table keeps the "Effective ..." date printed on its page, and Vanguard shows it.
+Each table keeps the "Effective ..." date printed on its page, and Cadet Foundry shows it.
 """
 from __future__ import annotations
 

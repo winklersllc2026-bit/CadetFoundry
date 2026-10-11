@@ -1,12 +1,12 @@
 """
-Vanguard's local web server (Python standard library only -- runs anywhere,
+Cadet Foundry's local web server (Python standard library only -- runs anywhere,
 including a Raspberry Pi with no internet).
 
 Listens only on this device (127.0.0.1) by default. `--lan` lets other devices on
 the same Wi-Fi reach it, and is only allowed when a PIN is set.
 
 Every request goes through security checks (vanguard/security.py): the Host must
-be Vanguard's own address, cross-site requests are refused, commands must be JSON,
+be Cadet Foundry's own address, cross-site requests are refused, commands must be JSON,
 and when a PIN is set everything except the lock screen needs an unlocked session.
 """
 from __future__ import annotations
@@ -155,10 +155,10 @@ class Handler(BaseHTTPRequestHandler):
             self._deny(421, "Wrong host.")                  # DNS-rebinding protection
             return False
         if not security.origin_ok(self.headers.get("Origin"), host):
-            self._deny(403, "Cross-site request refused.")  # other websites can't command Vanguard
+            self._deny(403, "Cross-site request refused.")  # other websites can't command Cadet Foundry
             return False
         if method == "POST" and not (self.headers.get("Content-Type") or "").startswith("application/json"):
-            self._deny(415, "Requests must be JSON.")       # forces browsers to preflight, which Vanguard refuses
+            self._deny(415, "Requests must be JSON.")       # forces browsers to preflight, which Cadet Foundry refuses
             return False
         pid = security.session_profile(self._token())
         public = PUBLIC_GET if method == "GET" else PUBLIC_POST
@@ -235,7 +235,7 @@ class Handler(BaseHTTPRequestHandler):
         if sample.ACTIVE:
             return "This is the sample class: device settings can't be changed here."
         if not security.admin_set():
-            return None if self._local() else "Set up Vanguard on the instructor's computer first."
+            return None if self._local() else "Set up Cadet Foundry on the instructor's computer first."
         if (profiles.get(self._pid or "") or {}).get("kind") != "instructor":
             return "Only an instructor can change this."
         return security.check_admin(str(b.get("admin", ""))[:32])
@@ -254,19 +254,19 @@ class Handler(BaseHTTPRequestHandler):
         return any(r.startswith(prefixes) and not store.module_on(m) for m, prefixes in self._MODULE_ROUTES)
 
     def _download_page(self):
-        """The installers on this box, for visitors to take Vanguard home -- no internet needed."""
+        """The installers on this box, for visitors to take Cadet Foundry home -- no internet needed."""
         esc = html.escape
         rows = "".join(f'<li><a href="/downloads/{urllib.parse.quote(f.name)}">{esc(f.name)}</a> '
                        f'<span>({f.stat().st_size / 2**20:.1f} MB)</span></li>' for f in _download_files())
         page = f"""<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1"><title>Get Vanguard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Get Cadet Foundry</title>
 <style>body{{margin:0;background:#0f120e;color:#ece6d6;font:17px/1.55 system-ui,sans-serif}} .w{{max-width:640px;margin:0 auto;padding:24px 16px}}
 a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</style></head><body><div class="w">
-<h1>Get Vanguard for your computer</h1>
-<p>Download straight from this Vanguard — no internet needed.</p><ul>{rows or '<li>No downloads on this device.</li>'}</ul>
+<h1>Get Cadet Foundry for your computer</h1>
+<p>Download straight from this Cadet Foundry — no internet needed.</p><ul>{rows or '<li>No downloads on this device.</li>'}</ul>
 <p><b>Windows:</b> the <i>Setup</i> file. If Windows says "Windows protected your PC", choose <i>More info → Run anyway</i>.<br>
 <b>Linux, Mac or Raspberry Pi:</b> the zip — unzip it and run <code>sh install-vanguard.sh</code>.</p>
-<p><a href="/">← Back to Vanguard</a></p></div></body></html>"""
+<p><a href="/">← Back to Cadet Foundry</a></p></div></body></html>"""
         data = page.encode("utf-8")
         self._headers(200, "text/html; charset=utf-8", len(data))
         self.wfile.write(data)
@@ -732,7 +732,7 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                         and not store.config().get("demo")):
                     # the instructor's laptop is the first device: no Cadet profiles from phones before the
                     # instructor has set up the class (a demo box with no screen is the one exception)
-                    return self._json({"ok": False, "error": "Your instructor hasn't set up Vanguard yet. Ask them "
+                    return self._json({"ok": False, "error": "Your instructor hasn't set up Cadet Foundry yet. Ask them "
                                                              "to set it up on their computer first."}, 403)
                 if self.app.lan:                         # on the classroom network every profile needs a PIN
                     err = security.valid_new_pin(str(b.get("pin", "")))
@@ -818,7 +818,7 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
             except Exception as e:
                 return self._json({"error": str(e)[:200]}, 400)
         if r == "/api/quiz/answer":
-            # The Cadet types an answer; Vanguard grades it. Scores are never self-reported (owner's rule).
+            # The Cadet types an answer; Cadet Foundry grades it. Scores are never self-reported (owner's rule).
             item = app.brain.quiz_item(str(b.get("id", ""))[:80])
             if not item:
                 return self._json({"error": "No such question."}, 404)
@@ -1014,7 +1014,7 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
             err = security.unlock_program(self._token(), str(b.get("admin", ""))[:32])
             return self._json({"ok": False, "error": err} if err else {"ok": True}, 403 if err else 200)
         if r == "/api/instructor/classroom":
-            # Open class to phones (or close it) from the instructor's Home -- the desktop icon starts Vanguard for this
+            # Open class to phones (or close it) from the instructor's Home -- the desktop icon starts Cadet Foundry for this
             # computer only. The running program listens again on the same port; sign-ins and everything loaded stay.
             if (profiles.get(self._pid or "") or {}).get("kind") != "instructor" or not self._program_key():
                 return self._json({"error": "Open your class first (Class PIN)."}, 403)
@@ -1054,7 +1054,7 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                     return self._json({"error": "Choose add, rename or delete."}, 400)
                 if r == "/api/instructor/pilot":
                     return self._json(pilot.save_config(priv, b))
-                if r == "/api/instructor/pilot/daily":   # after class: how useful was Vanguard today (no Cadet data)
+                if r == "/api/instructor/pilot/daily":   # after class: how useful was Cadet Foundry today (no Cadet data)
                     return self._json(pilot.add_class_feedback(priv, b.get("useful"), str(b.get("again", "")),
                                                                **{k: b.get(k) for k in pilot.DAILY_QUESTIONS}))
                 if r == "/api/instructor/pilot/mode":    # Pilot mode: online AI stays off, "what's stored", End pilot
@@ -1278,7 +1278,7 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
             if security.admin_set() and (profiles.get(self._pid or "") or {}).get("kind") != "instructor":
                 return self._json({"ok": False, "error": "Only an instructor can change the Class PIN."}, 403)
             if not security.admin_set() and not self._local():
-                return self._json({"ok": False, "error": "Set up Vanguard on the instructor's computer first."}, 403)
+                return self._json({"ok": False, "error": "Set up Cadet Foundry on the instructor's computer first."}, 403)
             err = security.set_admin_pin(str(b.get("new", "")), str(b.get("current", "")))
             return self._json({"ok": False, "error": err} if err else {"ok": True}, 400 if err else 200)
         if r == "/api/update":
@@ -1286,7 +1286,7 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
             if err:
                 return self._json({"error": err}, 403)
             if not integrity.PUBLIC_KEY.exists():
-                return self._json({"error": "This copy of Vanguard has no release key, so it can't verify updates. "
+                return self._json({"error": "This copy of Cadet Foundry has no release key, so it can't verify updates. "
                                             "The publisher sets one up with tools/sign.py keygen."}, 400)
             try:
                 raw = base64.b64decode(str(b.get("zip", "")), validate=True)
@@ -1368,16 +1368,16 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
             if not token:
                 return self._json({"error": "The sample class isn't ready."}, 403)
             return self._json({"ok": True}, extra={"Set-Cookie": security.cookie_header(token)})
-        if r == "/api/sample/leave":                     # close the sample; the visitor goes back to their Vanguard
+        if r == "/api/sample/leave":                     # close the sample; the visitor goes back to their Cadet Foundry
             if not (sample.ACTIVE and self._local()):
                 return self._json({"error": "Not the sample class."}, 400)
             self._json({"ok": True, "back": sample.BACK})
             threading.Thread(target=self.server.shutdown, daemon=True).start()
             return None
-        if r == "/api/quit":                             # Me -> Quit Vanguard (there's no console window to close)
+        if r == "/api/quit":                             # Me -> Quit Cadet Foundry (there's no console window to close)
             # a Cadet's phone on the class Wi-Fi must not be able to end class for everyone
             if not self._local() and (profiles.get(self._pid or "") or {}).get("kind") != "instructor":
-                return self._json({"error": "Only your instructor can close Vanguard for the class."}, 403)
+                return self._json({"error": "Only your instructor can close Cadet Foundry for the class."}, 403)
             self._json({"ok": True})
             threading.Thread(target=self.server.shutdown, daemon=True).start()
             return None

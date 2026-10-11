@@ -52,7 +52,7 @@ class LibraryTests(unittest.TestCase):
         hit = lib.search("tourniquet", k=5)
         doc = next(p for _s, p in hit if "TC_9-99_Test.md" in p.source)
         self.assertEqual(lib.edition(doc.source), "2013-08-13")
-        self.assertEqual(lib.edition("Vanguard study card"), "")
+        self.assertEqual(lib.edition("Cadet Foundry study card"), "")
 
     def test_checked_answers_only_for_near_identical_questions(self):
         r = self.lib.checked_answer("Do I salute a sergeant first class?")
@@ -96,9 +96,9 @@ class LibraryTests(unittest.TestCase):
                 return iter(["ok"])
             with mock.patch("vanguard.engine.stream", spy):
                 list(Brain(self.lib).chat("anything else?"))
-        self.assertEqual(text.count("Checked answer"), 1)                  # only Vanguard's real one, from AR 600-25
+        self.assertEqual(text.count("Checked answer"), 1)                  # only Cadet Foundry's real one, from AR 600-25
         self.assertTrue(text.startswith("✅ **Checked answer:** No"))
-        self.assertNotIn("📄", text.split("⚠️")[0])                     # Vanguard's own notice may use 📄; the AI may not
+        self.assertNotIn("📄", text.split("⚠️")[0])                     # Cadet Foundry's own notice may use 📄; the AI may not
         self.assertNotIn("30 days", text)                                  # the AI's unsupported claim is dropped
         self.assertNotIn("**8**", text)                                    # digits inside "AR 600-8-10" aren't facts
         self.assertFalse(any("✅" in h or "Checked answer" in h for h in seen["history"]))   # nothing to copy
@@ -124,7 +124,7 @@ class LibraryTests(unittest.TestCase):
 
     def test_facts_come_from_vanguards_data_not_the_ai(self):
         """From a real test run: the AI invented BAS 'varies by location', an AFT run-time formula, an E-12, and
-        'AR 999-99' haircut rules. Those now come from the tables -- or Vanguard says it doesn't know."""
+        'AR 999-99' haircut rules. Those now come from the tables -- or Cadet Foundry says it doesn't know."""
         from unittest import mock
         from vanguard import facts
         lib_dir = self.lib.library_dir
@@ -151,7 +151,7 @@ class LibraryTests(unittest.TestCase):
         self.assertIn("doesn't have **AR 999-99**", fake)
         # ...and shows what it has on haircuts -- from the Army, since an AR is an Army regulation (not a Navy card
         # that only shares the word "haircuts")
-        first = fake.split("Here's what Vanguard's library has on this:")[1].split("---")[0]
+        first = fake.split("Here's what Cadet Foundry's library has on this:")[1].split("---")[0]
         self.assertTrue("AR 670-1" in first or "Hair & Appearance" in first, first[:200])
 
     def test_coach_text_never_repeats_or_adds_numbers(self):
@@ -180,7 +180,7 @@ class LibraryTests(unittest.TestCase):
         with mock.patch("vanguard.engine.stream", lambda m, max_tokens=0: iter(["Keep latrines away from water. ", "Dig it far away (TC 7-25.4)."])),              mock.patch.object(Brain, "_learn", lambda *a: None):
             text = "".join(e.get("t", "") for e in Brain(self.lib).chat("how far is a latrine from water"))
         self.assertIn("away from water", text)
-        self.assertNotIn("TC 7-25.4", text)                                # a sentence citing a manual Vanguard lacks is dropped
+        self.assertNotIn("TC 7-25.4", text)                                # a sentence citing a manual Cadet Foundry lacks is dropped
 
     def test_checked_answer_comes_first_and_the_model_is_told_to_agree(self):
         from unittest import mock

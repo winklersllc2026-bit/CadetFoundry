@@ -1,5 +1,5 @@
 """
-Screenshots of the real Vanguard for the website: a demo class with made-up names, run in classroom mode, captured
+Screenshots of the real Cadet Foundry for the website: a demo class with made-up names, run in classroom mode, captured
 in Microsoft Edge (headless). Run it again after a UI change and the site's pictures are current.
 
     python site/shots.py            writes site/shots/*.png (then python site/build.py puts them on the page)
@@ -34,7 +34,7 @@ CADETS = [("Cadet Jordan Ellis", "C/SGT", "Squad Leader"), ("Cadet Maya Chen", "
 CADET_PINS = ["481936", "592047", "603158", "714269", "825370"]
 
 
-# ── the demo class, made through Vanguard's own API ─────────────────────────────────────────────────────────
+# ── the demo class, made through Cadet Foundry's own API ─────────────────────────────────────────────────────────
 
 class Session:
     def __init__(self):

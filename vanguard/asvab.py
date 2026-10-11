@@ -5,12 +5,12 @@ the proctored CAT-ASVAB (officialasvab.com, "What to Expect", checked 2026-10-10
 
 What the score means, honestly: real ASVAB questions are controlled testing materials, and real scores are Standard
 Scores and an AFQT percentile measured against a 1997 national sample of 18-23 year olds, on an adaptive test. A
-practice test can't reproduce that, so Vanguard never shows a made-up AFQT. It shows exactly how many questions you
+practice test can't reproduce that, so Cadet Foundry never shows a made-up AFQT. It shows exactly how many questions you
 got right in each section, how long you took, and which skills to practice -- and every math answer is computed
 (the questions are generated from templates), so the answer key is never wrong.
 
 Every question here is original: math questions are built from templates; word and reading questions were written
-for Vanguard.
+for Cadet Foundry.
 """
 from __future__ import annotations
 

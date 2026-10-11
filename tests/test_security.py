@@ -285,7 +285,7 @@ class SecurityTests(unittest.TestCase):
         import secrets as _secrets
         p = profiles.create(f"Ivy-{uuid.uuid4().hex[:8]}")
         folder = profiles.folder(p["id"])
-        with security.as_profile(p["id"]):                                    # as an older Vanguard left it:
+        with security.as_profile(p["id"]):                                    # as an older Cadet Foundry left it:
             store.write_lines("log.jsonl", [{"text": "Ivy legacy"}])          # a PIN hash, plain files
             salt = _secrets.token_bytes(16)
             store.write_json("security.json", {"salt": salt.hex(), "hash": security._hash("517302", salt),
@@ -411,7 +411,7 @@ class SecurityTests(unittest.TestCase):
         self.req("POST", "/api/profile", {"military_track": ""}, {"Cookie": alice})
 
     def test_quiz_answers_are_typed_and_graded_never_self_reported(self):
-        """Owner's rule, for every quiz: Cadets type the answer and Vanguard grades it. The answer key isn't sent before
+        """Owner's rule, for every quiz: Cadets type the answer and Cadet Foundry grades it. The answer key isn't sent before
         they answer, and no route lets the screen report its own score."""
         alice = self.login(self.alice["id"], "482915")
         get = lambda path: json.loads(self.req("GET", path, headers={"Cookie": alice})[2])

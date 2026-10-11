@@ -1,12 +1,12 @@
 """
-Security for Vanguard's local server.
+Security for Cadet Foundry's local server.
 
 Threats handled here:
-  * Other websites in the same browser sending commands to Vanguard (CSRF):
-    POSTs must be JSON (forces a CORS preflight, which Vanguard never answers),
-    and any Origin header must be Vanguard's own.
+  * Other websites in the same browser sending commands to Cadet Foundry (CSRF):
+    POSTs must be JSON (forces a CORS preflight, which Cadet Foundry never answers),
+    and any Origin header must be Cadet Foundry's own.
   * DNS-rebinding (a hostile site pointing its name at 127.0.0.1 to read data):
-    the Host header must be Vanguard's own address.
+    the Host header must be Cadet Foundry's own address.
   * Someone picking up the device / another Soldier on a shared device: every
     profile can have its own PIN, stored only as a salted PBKDF2-SHA256 hash.
     A session (random token in an HttpOnly, SameSite=Strict cookie) is bound to
@@ -34,7 +34,7 @@ import time
 from vanguard import profiles, store, vault
 
 ITERATIONS = 400_000
-# The sample class (vanguard/sample.py) runs beside the real Vanguard on this computer: its own cookie, so visiting
+# The sample class (vanguard/sample.py) runs beside the real Cadet Foundry on this computer: its own cookie, so visiting
 # it never signs anyone out of the real one (cookies are shared across ports).
 COOKIE = "vanguard_sample" if os.environ.get("VANGUARD_SAMPLE") == "1" else "vanguard_session"
 _lock = threading.Lock()
@@ -433,18 +433,18 @@ SECURITY_HEADERS = {
     "Referrer-Policy": "no-referrer",
     "Cross-Origin-Opener-Policy": "same-origin",
     "Cross-Origin-Resource-Policy": "same-origin",
-    # microphone only for Vanguard's own page (offline voice input); never location or camera
+    # microphone only for Cadet Foundry's own page (offline voice input); never location or camera
     "Permissions-Policy": "geolocation=(), camera=(), microphone=(self), payment=(), usb=()",
 }
 
 
 def host_ok(host: str | None, port: int, lan: bool, local_ip: str | None = None) -> bool:
-    """Block DNS rebinding: the Host header must name Vanguard itself, with Vanguard's port.
+    """Block DNS rebinding: the Host header must name Cadet Foundry itself, with Cadet Foundry's port.
 
     This computer: 127.0.0.1, localhost or [::1]. Classroom mode also accepts this computer's own IP address -- the
     exact address the device connected to (local_ip, from the socket), which is what the QR code and the Join screen
     show. A domain name is refused in classroom mode: DNS rebinding (a website pointing its own name at this
-    computer, so a Cadet's browser treats Vanguard as that site) needs one. Security review, 2026-10-11 -- before,
+    computer, so a Cadet's browser treats Cadet Foundry as that site) needs one. Security review, 2026-10-11 -- before,
     classroom mode accepted any Host."""
     h = (host or "").strip()
     if h.startswith("["):                                   # [IPv6]:port
@@ -468,7 +468,7 @@ def host_ok(host: str | None, port: int, lan: bool, local_ip: str | None = None)
 
 
 def origin_ok(origin: str | None, host: str | None) -> bool:
-    """Browsers send Origin on cross-site requests. If present, it must be Vanguard itself."""
+    """Browsers send Origin on cross-site requests. If present, it must be Cadet Foundry itself."""
     if not origin:
         return True
     return origin in (f"http://{host}",)
@@ -477,7 +477,7 @@ def origin_ok(origin: str | None, host: str | None) -> bool:
 # ── recovery codes: the Soldier's own spare key ───────────────────────────
 # A second copy of the profile's data key, locked by a random code shown to the Soldier once. With it
 # they can set a new PIN when they forget the old one. Nobody else -- not the device owner, not
-# Vanguard -- can open a profile without the PIN or the code; that's what makes the encryption real.
+# Cadet Foundry -- can open a profile without the PIN or the code; that's what makes the encryption real.
 _CODE_ALPHABET = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ"          # no 0/O or 1/I to misread
 _CODE_LEN = 20                                                  # 100 bits
 

@@ -1,10 +1,10 @@
-; Vanguard — Windows installer, compiled by site/build.py with Inno Setup 6 or 7 (ISCC.exe).
-; One step: Python is inside (python\, added by build.py), Vanguard starts with pythonw.exe so there is no console
-; window, and there's no setup script. Optional extras (offline AI, voice) install from inside Vanguard (Me tab).
-; Per-user (no admin): %LOCALAPPDATA%\Programs\Vanguard. Instructor and Cadet data lives in %USERPROFILE%\.vanguard
+; Cadet Foundry — Windows installer, compiled by site/build.py with Inno Setup 6 or 7 (ISCC.exe).
+; One step: Python is inside (python\, added by build.py), Cadet Foundry starts with pythonw.exe so there is no console
+; window, and there's no setup script. Optional extras (offline AI, voice) install from inside Cadet Foundry (Me tab).
+; Per-user (no admin): %LOCALAPPDATA%\Programs\Cadet Foundry. Instructor and Cadet data lives in %USERPROFILE%\.vanguard
 ; and is never touched by installing, updating or uninstalling. @NAMES@ are filled in by build.py.
 
-#define AppName "Vanguard"
+#define AppName "Cadet Foundry"
 #define AppVer  "@VERSION@"
 
 [Setup]
@@ -12,12 +12,12 @@ AppId={{CCA61B30-FC01-4C21-82E5-13E09D1E9C40}
 AppName={#AppName}
 AppVersion={#AppVer}
 AppVerName={#AppName} {#AppVer}
-AppPublisher=The Vanguard Project
+AppPublisher=The Cadet Foundry Project
 AppPublisherURL=https://vanguard.winklers-llc.com
 AppComments=Learning and leadership platform designed to support JROTC instructors and Cadets. Runs on the instructor's laptop.
 VersionInfoVersion=@VIVERSION@
-VersionInfoCompany=The Vanguard Project
-VersionInfoDescription=Vanguard setup
+VersionInfoCompany=The Cadet Foundry Project
+VersionInfoDescription=Cadet Foundry setup
 VersionInfoProductName={#AppName}
 DefaultDirName={autopf}\{#AppName}
 DefaultGroupName={#AppName}
@@ -46,6 +46,10 @@ Type: filesandordirs; Name: "{app}\web"
 Type: filesandordirs; Name: "{app}\tools"
 Type: filesandordirs; Name: "{app}\tests"
 Type: filesandordirs; Name: "{app}\python"
+; Shortcuts from before the rename (0.2.5): the new "Cadet Foundry" ones replace them. Same program ID, same folder, same data.
+Type: files; Name: "{autoprograms}\Vanguard.lnk"
+Type: files; Name: "{autoprograms}\Vanguard Classroom.lnk"
+Type: files; Name: "{autodesktop}\Vanguard.lnk"
 
 [Files]
 Source: "@STAGE@\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
@@ -61,10 +65,10 @@ Name: "{autoprograms}\{#AppName} Classroom"; Filename: "{app}\python\pythonw.exe
 Name: "{autodesktop}\{#AppName}"; Filename: "{app}\python\pythonw.exe"; Parameters: """{app}\run.py"""; WorkingDir: "{app}"; IconFilename: "{app}\web\icon.ico"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\python\pythonw.exe"; Parameters: """{app}\run.py"""; WorkingDir: "{app}"; Description: "Start Vanguard"; Flags: postinstall nowait skipifsilent
+Filename: "{app}\python\pythonw.exe"; Parameters: """{app}\run.py"""; WorkingDir: "{app}"; Description: "Start Cadet Foundry"; Flags: postinstall nowait skipifsilent
 
 [Code]
-// A running Vanguard (pythonw.exe run.py) writes its process id here; close it before files are replaced or removed.
+// A running Cadet Foundry (pythonw.exe run.py) writes its process id here; close it before files are replaced or removed.
 procedure StopVanguard();
 var
   Pid: AnsiString;
@@ -74,8 +78,8 @@ begin
     Exec(ExpandConstant('{sys}\taskkill.exe'), '/F /FI "IMAGENAME eq pythonw.exe" /PID ' + Trim(Pid), '', SW_HIDE, ewWaitUntilTerminated, Code);
 end;
 
-// Vanguard 0.1.0-0.1.3 were installed under an older program ID (shared by mistake with another product). Remove such
-// an old Vanguard first -- only when that entry's name is exactly "Vanguard" -- so its uninstaller can never later delete
+// Vanguard 0.1.0-0.1.3 (this app's name before 0.2.5) were installed under an older program ID (shared by mistake with
+// another product). Remove such an old copy first -- only when that entry's name is exactly "Vanguard" -- so its uninstaller can never later delete
 // this installation's folder.
 procedure RemoveOldVanguard();
 var
@@ -100,7 +104,7 @@ begin
   if CurUninstallStep = usUninstall then
     StopVanguard();
   if (CurUninstallStep = usPostUninstall) and (not UninstallSilent) then
-    MsgBox('Vanguard was removed. Profiles, logbooks and letters are kept in ' +
+    MsgBox('Cadet Foundry was removed. Profiles, logbooks and letters are kept in ' +
            ExpandConstant('{%USERPROFILE}') + '\.vanguard - delete that folder too if you want them gone.',
            mbInformation, MB_OK);
 end;

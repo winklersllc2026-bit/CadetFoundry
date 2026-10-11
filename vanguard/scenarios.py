@@ -4,7 +4,7 @@ Leadership scenarios (Phase 5): a situation, choices, what happened, and a refle
 No scores and no "right answer" verdicts (owner's spec: "Here's what happened. Here's another way to approach it.
 What would you do next time?"). Scenarios are about everyday Cadet leadership -- never combat.
 
-  * Practice scenarios ship in vanguard/scenarios/*.md, labeled as Vanguard practice material, not curriculum.
+  * Practice scenarios ship in vanguard/scenarios/*.md, labeled as Cadet Foundry practice material, not curriculum.
   * Instructors write their own in the same format (program/scenarios.json).
   * A Cadet's completed scenarios go to their leadership log, scenarios.jsonl -- a class record the instructor can
     read (store.CLASS_FILES).

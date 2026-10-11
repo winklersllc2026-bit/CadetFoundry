@@ -18,7 +18,7 @@ There are **no pull-ups** on the AFT.
 - **350** for Soldiers in **combat specialties** (combat standard: sex-neutral, scored by age), or
 - **300** for **combat-enabling specialties** (general standard: scored by sex and age).
 
-Each event is worth up to **100 points**. Vanguard's AFT scorer (Log → AFT) uses the official tables.
+Each event is worth up to **100 points**. Cadet Foundry's AFT scorer (Log → AFT) uses the official tables.
 
 ## Quiz
 Q: What are the five events of the AFT? | A: 3-rep max deadlift, hand-release push-ups, sprint/drag/carry, plank, and two-mile run | ALSO: what events are on the AFT; what is on the Army Fitness Test

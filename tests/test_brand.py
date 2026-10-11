@@ -1,4 +1,4 @@
-"""Vanguard carries no trace of the product it was copied from (owner's rule, 2026-10-08)."""
+"""Cadet Foundry carries no trace of the product it was copied from (owner's rule, 2026-10-08)."""
 import re
 import subprocess
 import unittest
@@ -30,6 +30,24 @@ class BrandTests(unittest.TestCase):
                 continue
             hits += [f"{name}:{i}" for i, line in enumerate(text.splitlines(), 1) if OLD.search(line)]
         self.assertEqual(hits, [], "old product name found")
+
+    def test_people_never_see_the_name_before_the_rename(self):
+        """Renamed from Vanguard to Cadet Foundry (owner, 2026-10-11). The app keeps a few internal names on purpose --
+        the vanguard/ code folder, the Vanguard/ folder inside update zips (0.2.3-0.2.4 updaters require it), the
+        .vanguard and VanguardData data folders -- but nothing a person reads may say Vanguard."""
+        internal = re.compile(r"Vanguard(?=[/\\])|VanguardData|Vanguard-releases|winklersllc2026-bit/Vanguard|Vanguard-Setup-latest|"
+                              r"StopVanguard|RemoveOldVanguard|Name = 'Vanguard'|exactly \"Vanguard\"|"
+                              r"\"Start Vanguard|'Vanguard \(classroom\)|Vanguard\.lnk|Vanguard Classroom\.lnk|Install Vanguard\*|"
+                              r"server_version = \"Vanguard\"|startswith\(\"Vanguard\"\)|/ \"Vanguard\"|Vanguard 0\.1\.0|"
+                              r"before the rename|this app's name before")
+        seen = [ROOT / "web" / "index.html", ROOT / "web" / "join.html", ROOT / "web" / "manifest.webmanifest",
+                *(ROOT / "web" / "js").glob("*.js"), *(ROOT / "vanguard" / "legal").glob("*.md"),
+                ROOT / "README.md", ROOT / "site" / "build.py", ROOT / "site" / "installer.iss",
+                ROOT / "tools" / "make_usb.py", *(ROOT / "vanguard" / "scenarios").glob("*.md"),
+                *(ROOT / "vanguard" / "cards").glob("*.md"), ROOT / "vanguard" / "brain.py", ROOT / "vanguard" / "safety.py"]
+        hits = [f"{p.relative_to(ROOT)}:{i}" for p in seen for i, line in enumerate(p.read_text(encoding="utf-8").splitlines(), 1)
+                if re.search(r"\bVanguard\b|\bVANGUARD\b(?!_)", internal.sub("", line))]
+        self.assertEqual(hits, [], "the old name is still visible")
 
 
 if __name__ == "__main__":

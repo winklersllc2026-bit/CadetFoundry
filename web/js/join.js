@@ -13,10 +13,10 @@
     try { c = await (await fetch('/api/classroom')).json(); } catch (e) { return; }
     if (!c.lan) {
       box.innerHTML = `<h1>Phones can't join yet</h1>
-        <p class="lead">Vanguard is open on this computer only.</p>
+        <p class="lead">Cadet Foundry is open on this computer only.</p>
         <div class="card"><p class="big">To let Cadets join from their phones:</p>
-          <ol><li>Open Vanguard and sign in as the instructor.</li><li>On your Home screen, press <b>📱 Open class to phones</b>.</li></ol></div>
-        <div class="row"><a class="btn" href="/">Open Vanguard</a></div>`;
+          <ol><li>Open Cadet Foundry and sign in as the instructor.</li><li>On your Home screen, press <b>📱 Open class to phones</b>.</li></ol></div>
+        <div class="row"><a class="btn" href="/">Open Cadet Foundry</a></div>`;
       return;
     }
     const units = c.units || [];
@@ -45,13 +45,13 @@
           ${c.local && (c.no_pin || []).length ? `<div class="card warn"><b>⚠ No PIN yet:</b> ${c.no_pin.map(esc).join(', ')}
             <p class="faint" style="margin:6px 0 0">Phones can't open ${c.no_pin.length === 1 ? 'this profile' : 'these profiles'} until ${c.no_pin.length === 1 ? 'it has' : 'they have'} a PIN.
             They still open on this computer: sign in, then 👤 Me → Security → Set a PIN.</p></div>` : ''}
-          <p class="faint">${c.cadets} Cadet profile${c.cadets === 1 ? '' : 's'} on this Vanguard.
+          <p class="faint">${c.cadets} Cadet profile${c.cadets === 1 ? '' : 's'} on this Cadet Foundry.
             ${c.urls.length > 1 ? `Other addresses for this computer: ${c.urls.slice(1).map(x => esc(x.replace(/\/$/, ''))).join(', ')}` : ''}</p>
         </div></div>`
       : `<div class="card"><p class="big">This computer isn't on a network.</p><p>Connect it to Wi-Fi or turn on its hotspot, then reload this page.</p></div>`}
       <div class="row" style="margin-top:18px">
         ${base ? '<button class="primary" id="copy">Copy address</button>' : ''}
-        <a class="btn" href="/" target="_blank" rel="noopener">Open Vanguard</a>
+        <a class="btn" href="/" target="_blank" rel="noopener">Open Cadet Foundry</a>
         ${c.local ? '<button class="end" id="end">End class</button>' : ''}</div>
       <p class="faint" id="msg" role="status"></p>`;
     const pick = document.getElementById('unitPick');
@@ -63,9 +63,9 @@
     });
     const end = document.getElementById('end');
     if (end) end.addEventListener('click', async () => {
-      if (!confirm('End class? Vanguard closes for everyone. Everyone\'s work is already saved.')) return;
+      if (!confirm('End class? Cadet Foundry closes for everyone. Everyone\'s work is already saved.')) return;
       const r = await fetch('/api/quit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
-      if (!r.ok) { document.getElementById('msg').textContent = (await r.json()).error || 'Sign in to Vanguard first, then try again.'; return; }
+      if (!r.ok) { document.getElementById('msg').textContent = (await r.json()).error || 'Sign in to Cadet Foundry first, then try again.'; return; }
       clearInterval(timer);
       box.innerHTML = '<h1>Class is closed</h1><p class="lead">Everyone\'s work is saved. You can close this window.</p>';
     });

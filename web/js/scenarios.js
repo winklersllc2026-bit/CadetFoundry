@@ -52,7 +52,7 @@ function showLive(lv) {
   }));
 }
 
-// The live pop quiz: one answer each, graded by Vanguard; the answer shows only after the instructor reveals it.
+// The live pop quiz: one answer each, graded by Cadet Foundry; the answer shows only after the instructor reveals it.
 const LQ_RESULT = { right: '✅ Right!', close: '🟡 Close — check the wording below.', wrong: '❌ Not this time.' };
 function showLiveQuiz(lq) {
   const box = $('#liveQuizBox');

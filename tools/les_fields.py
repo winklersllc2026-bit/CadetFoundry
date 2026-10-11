@@ -5,7 +5,7 @@ Build vanguard/data/les_fields.json (the LES decoder) from DFAS's own guides:
     tools/pay_source/DFAS_ResNG_reading_your_LES.txt   (Reserve and National Guard)
 
 Copied from dfas.mil > Military Members > Pay & Entitlements > About Pay.
-Each block keeps DFAS's wording; Vanguard's own notes are kept separate and labeled.
+Each block keeps DFAS's wording; Cadet Foundry's own notes are kept separate and labeled.
 
     python tools/les_fields.py
 """
@@ -25,18 +25,18 @@ SECTIONS = [  # (first block, last block, name)
     (63, 75, "Thrift Savings Plan (TSP)"), (76, 78, "Remarks and year to date"),
 ]
 
-# Vanguard's notes -- not DFAS text, shown under the DFAS explanation and labeled as Vanguard's.
+# Cadet Foundry's notes -- not DFAS text, shown under the DFAS explanation and labeled as Cadet Foundry's.
 NOTES = {
     2: "Your LES shows your Social Security Number. Don't post, text or share a photo of it.",
     23: "DFAS's guide was written before the Blended Retirement System. Soldiers who entered service on or after "
         "January 1, 2018 are under BRS (Summary of the Thrift Savings Plan, TSPBK08) — see the TSP calculator.",
     24: "DFAS's guide was written before the Blended Retirement System; newer Soldiers will see BRS here.",
-    26: "Track your own leave in Vanguard's leave tracker (2.5 days a month).",
+    26: "Track your own leave in Cadet Foundry's leave tracker (2.5 days a month).",
     50: "DFAS's guide still uses the older names BAQ and VHA. They were replaced by BAH (Basic Allowance for Housing); "
         "blocks 50 to 58 hold your housing allowance information.",
     52: "VHA is an older name — today this is your BAH (housing allowance) information.",
     55: "VHA is an older name — today this is your BAH (housing allowance) information.",
-    63: "The TSP calculator in Vanguard shows how your contribution percentage adds up with the BRS match.",
+    63: "The TSP calculator in Cadet Foundry shows how your contribution percentage adds up with the BRS match.",
 }
 
 LINE = re.compile(r"^(\d{1,2})(?:\s*-\s*(\d{1,2}))?\s+(.+?):\s*(.*)$")

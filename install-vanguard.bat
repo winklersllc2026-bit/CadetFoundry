@@ -1,5 +1,5 @@
 @echo off
-rem One-click setup for Vanguard on Windows 10/11. Needs internet once.
+rem One-click setup for Cadet Foundry on Windows 10/11. Needs internet once.
 rem Installs Python (if missing), then the faith library, the official library, offline voice,
 rem the offline AI and a desktop shortcut. Safe to run again.
 cd /d "%~dp0"

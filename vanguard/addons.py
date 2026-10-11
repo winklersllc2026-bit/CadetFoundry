@@ -1,5 +1,5 @@
 """
-Optional add-ons, installed from inside Vanguard (Me tab) with a progress bar -- no console window, no setup script.
+Optional add-ons, installed from inside Cadet Foundry (Me tab) with a progress bar -- no console window, no setup script.
 
     Offline AI: Ollama (ollama.com) + the qwen2.5 3B model (about 2 GB). On Windows the official installer is
                 downloaded, its Authenticode signature checked (must be valid and signed by Ollama), then run
@@ -38,7 +38,7 @@ PIP_PYZ = ("https://bootstrap.pypa.io/pip/zipapp/pip-26.2.1.pyz",   # pip as one
 VOICE_MODEL = ("https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip",
                "30f26242c4eb449f948e42cb302dd7a686cb29a3423a8367f99ff41780942498")
 VOSK = "vosk==0.3.45"
-UA = {"User-Agent": "Vanguard"}
+UA = {"User-Agent": "Cadet Foundry"}
 
 _lock = threading.Lock()
 _job: dict = {}
@@ -109,7 +109,7 @@ def _set(**kw) -> None:
 def _run(name: str) -> None:
     try:
         (_install_ai if name == "ai" else _install_voice)()
-        _set(state="done", pct=100, step="Done", msg="Installed. " + ("Ask Vanguard a question to try it."
+        _set(state="done", pct=100, step="Done", msg="Installed. " + ("Ask Cadet Foundry a question to try it."
                                                                       if name == "ai" else "Reload the page to see the 🎤 button."))
     except Exception as e:                              # shown to the Soldier as is -- every message is plain
         _set(state="error", msg=str(e) or "Something went wrong.")
@@ -184,7 +184,7 @@ def _install_ai() -> None:
 
 
 def _python() -> str:
-    """python.exe next to pythonw.exe (the installer starts Vanguard with pythonw)."""
+    """python.exe next to pythonw.exe (the installer starts Cadet Foundry with pythonw)."""
     exe = Path(sys.executable)
     console = exe.with_name("python.exe" if WINDOWS else exe.name.replace("pythonw", "python"))
     return str(console if console.exists() else exe)

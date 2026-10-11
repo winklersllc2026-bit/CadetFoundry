@@ -40,10 +40,10 @@ async function instructorPilot(body) {
     <p class="faint">Snapshots: ${d.snapshots.length}${base ? ` (first ${esc(base.date)})` : ' — take one at the start so the report can show change'}.
       Cadet survey: ${c.survey_open ? 'open — Cadets see it at the top of My Progress' : 'closed'} · ${fb.cadet_responses} response${fb.cadet_responses === 1 ? '' : 's'}.</p>
     <details><summary><b>Your feedback</b></summary>
-      <div style="margin-top:8px">How satisfied are you with Vanguard so far?</div>
+      <div style="margin-top:8px">How satisfied are you with Cadet Foundry so far?</div>
       <div class="row" style="flex-wrap:wrap;gap:6px">${[1, 2, 3, 4, 5].map(n => `<label style="display:flex;gap:6px;align-items:center;min-height:40px"><input type="radio" name="plSat" value="${n}" style="width:22px;height:22px"> ${n}</label>`).join('')}</div>
       <label for="plMin">About how many minutes a week did it save you? (negative if it cost you time)</label><input id="plMin" inputmode="numeric">
-      <div style="margin-top:8px">Would you use Vanguard next semester?</div>
+      <div style="margin-top:8px">Would you use Cadet Foundry next semester?</div>
       <div class="row" style="gap:12px">${['yes', 'maybe', 'no'].map(v => `<label style="display:flex;gap:6px;align-items:center;min-height:40px"><input type="radio" name="plAgain" value="${v}" style="width:22px;height:22px"> ${v[0].toUpperCase() + v.slice(1)}</label>`).join('')}</div>
       <label for="plCom">Comments</label><textarea id="plCom" rows="2" style="width:100%"></textarea>
       <button class="btn primary" id="plFb" style="margin-top:8px">Save my feedback</button><p class="faint" id="plFbMsg" role="alert"></p>
@@ -91,14 +91,14 @@ function printPilotReport(d) {
   const ins = on.includes('feedback') && fb.instructor.length ? `<h2>Instructor feedback</h2><ul>${fb.instructor.filter(r => r.comment).map(r => `<li>${esc(r.date)}: ${esc(r.comment)}</li>`).join('')}</ul>` : '';
   let area = $('#printArea');
   if (!area) { area = document.createElement('div'); area.id = 'printArea'; document.body.appendChild(area); }
-  area.innerHTML = `<div style="font-family:Georgia,serif;color:#000"><div style="letter-spacing:.2em;font-weight:700">VANGUARD</div>
+  area.innerHTML = `<div style="font-family:Georgia,serif;color:#000"><div style="letter-spacing:.2em;font-weight:700">CADET FOUNDRY</div>
     <h1 style="margin:4px 0">JROTC Pilot Report</h1>
     <div>${esc(c.school || '')} · ${esc(c.program || '')}${c.instructor ? ' · Instructor: ' + esc(c.instructor) : ''} · printed ${esc(new Date().toLocaleDateString())}</div>
     <table border="1" cellpadding="5" style="border-collapse:collapse;width:100%;margin-top:12px;font-size:13px">${rows.join('')}</table>
     ${base ? `<p style="font-size:12px">Change is measured from the first snapshot (${esc(base.date)}).</p>` : `<p style="font-size:12px">${(d.cannot_measure || []).map(esc).join(' ')}</p>`}
     ${survey}${ins}
     ${c.notes ? `<h2>Notes</h2><p>${esc(c.notes)}</p>` : ''}
-    <p style="font-size:11px;margin-top:20px">Every number comes from records kept on the instructor's device. Vanguard is designed to support JROTC instruction; it is not an official JROTC, military or school product.</p></div>`;
+    <p style="font-size:11px;margin-top:20px">Every number comes from records kept on the instructor's device. Cadet Foundry is designed to support JROTC instruction; it is not an official JROTC, military or school product.</p></div>`;
   window.print();
 }
 
@@ -110,14 +110,14 @@ async function cadetSurvey(container) {
   box.className = 'card';
   box.style.borderColor = 'var(--tan)';
   if (s.done) {
-    box.innerHTML = '<p style="margin:0">📝 Thanks for answering the Vanguard survey!</p>';
+    box.innerHTML = '<p style="margin:0">📝 Thanks for answering the Cadet Foundry survey!</p>';
   } else {
-    box.innerHTML = `<h3>📝 A quick survey about Vanguard</h3>
+    box.innerHTML = `<h3>📝 A quick survey about Cadet Foundry</h3>
       <p class="faint">Anonymous — your name isn't saved with your answers. It takes about a minute.</p>
       ${s.questions.map(q => `<fieldset style="border:0;padding:0;margin:12px 0"><legend><b>${esc(q.q)}</b></legend>
         <div class="row" style="flex-wrap:wrap;gap:4px">${Object.entries(s.scale).map(([v, t]) => `<label style="display:flex;gap:6px;align-items:center;min-height:40px;margin-right:8px">
           <input type="radio" name="sv-${q.id}" value="${v}" style="width:22px;height:22px"> ${esc(t)}</label>`).join('')}</div></fieldset>`).join('')}
-      <label for="svCom">What would make Vanguard better? (optional)</label><textarea id="svCom" rows="2" style="width:100%"></textarea>
+      <label for="svCom">What would make Cadet Foundry better? (optional)</label><textarea id="svCom" rows="2" style="width:100%"></textarea>
       <button class="btn primary" id="svSend" style="margin-top:8px">Send</button><p class="faint" id="svMsg" role="alert"></p>`;
   }
   container.prepend(box);
@@ -127,7 +127,7 @@ async function cadetSurvey(container) {
     s.questions.forEach(q => { const x = box.querySelector(`[name=sv-${q.id}]:checked`); if (x) answers[q.id] = +x.value; });
     const r = await api('/api/pilot/survey', { answers, comment: box.querySelector('#svCom').value });
     if (r.error) { box.querySelector('#svMsg').textContent = r.error; return; }
-    box.innerHTML = '<p style="margin:0">📝 Thanks for answering the Vanguard survey!</p>';
+    box.innerHTML = '<p style="margin:0">📝 Thanks for answering the Cadet Foundry survey!</p>';
   });
 }
 
@@ -189,19 +189,19 @@ function plModeWire(sec, d) {
   });
 }
 
-// ── After class: how useful was Vanguard today? (product feedback -- never about a Cadet) ──
+// ── After class: how useful was Cadet Foundry today? (product feedback -- never about a Cadet) ──
 const PL_DAILY_Q = { goal: 'What were you trying to accomplish today?', worked: 'What worked?',
   confusing: 'What was confusing?', change: 'What would you change?' };
 
 function classFeedbackForm(box, onDone, { skipLabel = 'Skip' } = {}) {
-  box.innerHTML = `<div class="card" style="border-color:var(--tan)"><h3>💬 How useful was Vanguard today?</h3>
+  box.innerHTML = `<div class="card" style="border-color:var(--tan)"><h3>💬 How useful was Cadet Foundry today?</h3>
     <div class="row" style="gap:8px;flex-wrap:wrap" role="radiogroup" aria-label="How useful, 1 to 5">${[1, 2, 3, 4, 5].map(n => `<label style="display:flex;gap:6px;align-items:center;min-height:44px;margin-right:6px">
       <input type="radio" name="cfUse" value="${n}" style="width:22px;height:22px"> ${n}${n === 1 ? ' — not useful' : n === 5 ? ' — very useful' : ''}</label>`).join('')}</div>
-    <div style="margin-top:8px">Would you use Vanguard again?</div>
+    <div style="margin-top:8px">Would you use Cadet Foundry again?</div>
     <div class="row" style="gap:12px">${['yes', 'maybe', 'no'].map(v => `<label style="display:flex;gap:6px;align-items:center;min-height:44px"><input type="radio" name="cfAgain" value="${v}" style="width:22px;height:22px"> ${v[0].toUpperCase() + v.slice(1)}</label>`).join('')}</div>
     <details style="margin-top:6px"><summary style="cursor:pointer;min-height:40px">A few more questions <span class="faint">(optional)</span></summary>
       ${Object.entries(PL_DAILY_Q).map(([k, q]) => `<label for="cf-${k}">${esc(q)}</label><textarea id="cf-${k}" rows="2" maxlength="1000" style="width:100%"></textarea>`).join('')}</details>
-    <p class="faint">This is about Vanguard, not your Cadets — please don't name anyone. It stays on this computer.</p>
+    <p class="faint">This is about Cadet Foundry, not your Cadets — please don't name anyone. It stays on this computer.</p>
     <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn primary" id="cfSave">Save</button><button class="btn" id="cfSkip">${esc(skipLabel)}</button></div>
     <p class="faint" id="cfMsg" role="alert"></p></div>`;
   box.querySelector('#cfSkip').addEventListener('click', () => onDone(false));
@@ -229,7 +229,7 @@ function plMetricsHtml(m, c) {
       ${tile(m.rating == null ? '—' : `${m.rating}/5`, 'how useful you rated it', m.rating_days ? `from ${m.rating_days} class day${m.rating_days === 1 ? '' : 's'}` : 'rate it when you finish class')}
       ${tile(m.would_continue ? m.would_continue.toUpperCase() : '—', 'would you continue?', 'your latest answer')}
       ${m.cadet_responses ? tile(`${m.cadet_keep_using}/5`, 'Cadets: “I’d like to keep using it”', `${m.cadet_responses} anonymous answer${m.cadet_responses === 1 ? '' : 's'}`) : ''}</div>
-    <p class="faint" style="margin:6px 0 0">These numbers show how Vanguard was used. They don't show that it improved learning — that takes a comparison over time, and more than one pilot.</p></div>`;
+    <p class="faint" style="margin:6px 0 0">These numbers show how Cadet Foundry was used. They don't show that it improved learning — that takes a comparison over time, and more than one pilot.</p></div>`;
 }
 
 // ── One page to hand to a principal or program manager ──
@@ -241,7 +241,7 @@ function printPilotSummary(d) {
   let area = $('#printArea');
   if (!area) { area = document.createElement('div'); area.id = 'printArea'; document.body.appendChild(area); }
   area.innerHTML = `<div style="font-family:Georgia,serif;color:#000;max-width:7in">
-    <div style="letter-spacing:.2em;font-weight:700">VANGUARD</div><h1 style="margin:4px 0 12px">Pilot Summary</h1>
+    <div style="letter-spacing:.2em;font-weight:700">CADET FOUNDRY</div><h1 style="margin:4px 0 12px">Pilot Summary</h1>
     <table border="1" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:14px">
       ${row('Program', esc([c.school, c.program].filter(Boolean).join(' · ') || '—'))}
       ${row('Pilot dates', esc(c.start ? `${c.start} to ${c.end || 'ongoing'}` : '—') + (d.weeks != null ? ` (${d.weeks} weeks)` : ''))}
@@ -251,9 +251,9 @@ function printPilotSummary(d) {
       ${row('Average lesson score', m.avg_lesson_score_pct == null ? '—' : m.avg_lesson_score_pct + '%')}
       ${row('Leadership scenarios', `${m.scenarios} completed · ${m.cadets_with_scenario} of ${m.cadets} Cadets took part`)}
       ${row('Instructor: how useful (1–5)', m.rating == null ? '—' : `${m.rating} (${m.rating_days} class day${m.rating_days === 1 ? '' : 's'})`)}
-      ${row('Instructor: would continue using Vanguard', m.would_continue ? m.would_continue.toUpperCase() : '—')}
-      ${m.cadet_responses ? row('Cadets: “I’d like to keep using Vanguard” (1–5)', `${m.cadet_keep_using} (${m.cadet_responses} anonymous answers)`) : ''}</table>
+      ${row('Instructor: would continue using Cadet Foundry', m.would_continue ? m.would_continue.toUpperCase() : '—')}
+      ${m.cadet_responses ? row('Cadets: “I’d like to keep using Cadet Foundry” (1–5)', `${m.cadet_keep_using} (${m.cadet_responses} anonymous answers)`) : ''}</table>
     ${quote ? `<h3 style="margin:16px 0 4px">Instructor feedback</h3><p style="font-style:italic;margin:0">“${esc(quote)}”</p>` : ''}
-    <p style="font-size:11px;margin-top:18px">Generated by Vanguard ${esc(STATUS.version || '')} on ${esc(new Date().toLocaleDateString())} from records kept on the instructor's computer. These numbers describe use during the pilot, not proof of learning gains. Vanguard is designed to support JROTC instruction; it is not an official JROTC, military or school product.</p></div>`;
+    <p style="font-size:11px;margin-top:18px">Generated by Cadet Foundry ${esc(STATUS.version || '')} on ${esc(new Date().toLocaleDateString())} from records kept on the instructor's computer. These numbers describe use during the pilot, not proof of learning gains. Cadet Foundry is designed to support JROTC instruction; it is not an official JROTC, military or school product.</p></div>`;
   window.print();
 }

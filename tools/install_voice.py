@@ -1,5 +1,5 @@
 """
-Install offline voice input for Vanguard (needs internet once).
+Install offline voice input for Cadet Foundry (needs internet once).
 
     python tools/install_voice.py
 
@@ -33,7 +33,7 @@ def main() -> int:
         print(f"Model already installed in {DEST}")
         return 0
     print("Downloading the small English model (~40 MB) …")
-    with urllib.request.urlopen(urllib.request.Request(MODEL_URL, headers={"User-Agent": "Vanguard"}), timeout=300) as resp:
+    with urllib.request.urlopen(urllib.request.Request(MODEL_URL, headers={"User-Agent": "Cadet Foundry"}), timeout=300) as resp:
         data = resp.read()
     if hashlib.sha256(data).hexdigest() != MODEL_SHA256:
         print("The model download doesn't match its known fingerprint — not installing it.")
@@ -50,7 +50,7 @@ def main() -> int:
             continue
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_bytes(z.read(name))
-    print(f"Voice input installed. Restart Vanguard; a 🎤 button appears next to Send.")
+    print(f"Voice input installed. Restart Cadet Foundry; a 🎤 button appears next to Send.")
     return 0
 
 

@@ -2,12 +2,12 @@
 Tamper check for the library, and signed offline updates.
 
 Library: the installer records a SHA-256 fingerprint of every manual in library/integrity.json. At startup
-Vanguard recomputes them and reports any file that was changed, removed or added since. If the publisher also
+Cadet Foundry recomputes them and reports any file that was changed, removed or added since. If the publisher also
 signed that list (library/integrity.json.sig), the signature is checked too -- so someone who edits a manual
 can't just rewrite the fingerprints to match.
 
 Updates: an update is the normal download zip plus a signature file (.sig) made with the publisher's private
-key (tools/sign.py, kept on the build machine -- never on a device). Vanguard checks the signature with the
+key (tools/sign.py, kept on the build machine -- never on a device). Cadet Foundry checks the signature with the
 public key in vanguard/data/release_key.pub, refuses older versions and unsafe paths, then installs.
 Soldiers' data lives in its own folder (~/.vanguard) and is never touched by an update.
 
@@ -128,7 +128,7 @@ def inspect_update(zip_bytes: bytes, sig_b64: str, root: Path = ROOT, key=None) 
     try:
         z = zipfile.ZipFile(io.BytesIO(zip_bytes))
     except zipfile.BadZipFile:
-        raise ValueError("That isn't a Vanguard update file.")
+        raise ValueError("That isn't a Cadet Foundry update file.")
     files = []
     for info in z.infolist():
         name = info.filename
@@ -158,7 +158,7 @@ _PREVIOUS, _INCOMPLETE = ".update-previous", "_INCOMPLETE"
 
 def install_update(zip_bytes: bytes, sig_b64: str, root: Path = ROOT, key=None) -> dict:
     """Install a signed update. Everything is unpacked first; every file it replaces is copied aside first; if any
-    step fails the app is put back exactly as it was (and if Vanguard stops part-way, finish_pending_update() puts it
+    step fails the app is put back exactly as it was (and if Cadet Foundry stops part-way, finish_pending_update() puts it
     back at the next start). Fails closed: no signature, a wrong one, or no public key -> nothing changes."""
     info = inspect_update(zip_bytes, sig_b64, root, key)
     z, files = info.pop("_zip"), info.pop("_files")
@@ -185,7 +185,7 @@ def install_update(zip_bytes: bytes, sig_b64: str, root: Path = ROOT, key=None) 
     except OSError:
         _rollback_update(root)
         shutil.rmtree(staging, ignore_errors=True)
-        raise ValueError("The update couldn't be installed (a file was in use?). Vanguard was put back as it was.") from None
+        raise ValueError("The update couldn't be installed (a file was in use?). Cadet Foundry was put back as it was.") from None
     (previous / _INCOMPLETE).unlink()
     shutil.rmtree(previous, ignore_errors=True)
     shutil.rmtree(staging, ignore_errors=True)

@@ -1,6 +1,6 @@
 """Batch 1 (2026-10-11): the sample class, Pilot mode and End pilot.
 
-The sample class is a separate Vanguard process with its own throwaway folder; these tests start the real thing, use
+The sample class is a separate Cadet Foundry process with its own throwaway folder; these tests start the real thing, use
 it the way a visitor would, and check the real data folder is never touched. End pilot runs inside the sample too, so
 it deletes made-up Cadets on realistic data -- never anything in the shared test folder.
 """
@@ -77,7 +77,7 @@ class SampleLifetimeTests(unittest.TestCase):
             with mock.patch.object(sample, "BACK", f"http://127.0.0.1:{parent.server_address[1]}/"):
                 sample.touch()
                 sample.watch_idle(alive, every=0.05)
-                self.assertFalse(alive.closed.wait(1))                    # its Vanguard answers: it stays open
+                self.assertFalse(alive.closed.wait(1))                    # its Cadet Foundry answers: it stays open
         finally:
             parent.shutdown()
             parent.server_close()
@@ -105,7 +105,7 @@ class SampleClassTests(unittest.TestCase):
     def setUpClass(cls):
         cls.addClassCleanup(sample.stop_child)            # even if setup fails, no sample is left running
         cls.before = [p["id"] for p in profiles.all_profiles()]
-        # a stand-in for the Vanguard that opens the sample: the sample checks it's still there
+        # a stand-in for the Cadet Foundry that opens the sample: the sample checks it's still there
         cls.parent = http.server.ThreadingHTTPServer(("127.0.0.1", 0), _Parent)
         threading.Thread(target=cls.parent.serve_forever, daemon=True).start()
         cls.addClassCleanup(cls.parent.server_close)
@@ -156,7 +156,7 @@ class SampleClassTests(unittest.TestCase):
     def test_1_the_sample_class_is_built_and_opens_straight_to_the_instructor(self):
         self.assertTrue(self.status.get("ready"), self.status)
         ck = self.enter()
-        self.assertTrue(ck.startswith("vanguard_sample="))             # never replaces the real Vanguard's sign-in
+        self.assertTrue(ck.startswith("vanguard_sample="))             # never replaces the real Cadet Foundry's sign-in
         self.assertTrue(self.get("/api/lock", ck)[1]["sample"])
         ov = self.get("/api/instructor/overview", ck)[1]
         self.assertEqual(len(ov["cadets"]), len(sample.CADETS))

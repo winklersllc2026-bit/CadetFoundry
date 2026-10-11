@@ -51,14 +51,14 @@ async function instructorDashboard(box, ov, unit = '') {
       <td>${r.shared ? dSigned(r.fitness_improvement_pct) : '—'}</td><td>${esc(r.last_active || '')}</td></tr>`).join('');
     let area = $('#printArea');
     if (!area) { area = document.createElement('div'); area.id = 'printArea'; document.body.appendChild(area); }
-    area.innerHTML = `<div style="font-family:Georgia,serif;color:#000"><div style="letter-spacing:.2em;font-weight:700">VANGUARD</div>
+    area.innerHTML = `<div style="font-family:Georgia,serif;color:#000"><div style="letter-spacing:.2em;font-weight:700">CADET FOUNDRY</div>
       <h1 style="margin:4px 0">Class report — ${esc(unitName)}</h1><div>${esc(new Date().toLocaleDateString())}</div>
       <p>${d.cadets} Cadets · ${d.active} active in the last ${d.active_days} days · lesson completion ${dPct(d.lesson_completion_pct)}
         · average lesson score ${dPct(d.avg_lesson_score_pct)} · average fitness improvement ${dSigned(d.avg_fitness_improvement_pct)}
         · ${d.service_hours} service hours · ${d.scenarios} leadership scenarios</p>
       <table style="width:100%;border-collapse:collapse;font-size:12px" border="1" cellpadding="4">
         <tr><th>Cadet</th><th>Unit</th><th>Lessons</th><th>Score</th><th>Scenarios</th><th>Service hrs</th><th>Fitness</th><th>Last active</th></tr>${rows}</table>
-      <p style="font-size:11px">Vanguard is designed to support JROTC instruction; it is not an official JROTC, military or school record.</p></div>`;
+      <p style="font-size:11px">Cadet Foundry is designed to support JROTC instruction; it is not an official JROTC, military or school record.</p></div>`;
     window.print();
   });
 }
@@ -87,7 +87,7 @@ function instructorBackup(body) {
     const f = e.target.files[0]; if (!f) return;
     if (!confirm('Replace this device\'s program (classes, lessons, settings and Class PIN) with this backup?')) return;
     let file;
-    try { file = JSON.parse(await f.text()); } catch (err) { $('#pbMsg').textContent = 'That file isn\'t a Vanguard program backup.'; return; }
+    try { file = JSON.parse(await f.text()); } catch (err) { $('#pbMsg').textContent = 'That file isn\'t a Cadet Foundry program backup.'; return; }
     const r = await api('/api/instructor/program-restore', { file, password: $('#pbPass').value });
     if (r.error) { $('#pbMsg').textContent = r.error; return; }
     alert('Restored. Enter the Class PIN from the backup to open your class again.');
@@ -195,7 +195,7 @@ async function liveQuizMode() {
       ${lq.mode === 'mc' ? lq.choices.map((c, i) => `<div style="margin:14px 0;font-size:clamp(18px,2.4vw,30px)">
         <b>${L[i]}.</b> ${esc(c)}${lq.revealed && c === lq.a ? ' ✅' : ''}
         ${lq.revealed ? `<div style="display:flex;align-items:center;gap:10px;margin-top:6px"><div style="height:14px;border-radius:7px;background:var(--tan);width:${Math.round(lq.counts[i] / max * 70)}%;min-width:4px"></div>
-        <span class="faint">${lq.counts[i]}</span></div>` : ''}</div>`).join('') : '<p class="faint" style="font-size:20px">Typed answers — graded by Vanguard.</p>'}
+        <span class="faint">${lq.counts[i]}</span></div>` : ''}</div>`).join('') : '<p class="faint" style="font-size:20px">Typed answers — graded by Cadet Foundry.</p>'}
       ${lq.revealed ? `<div class="card" style="font-size:clamp(18px,2.2vw,28px)"><b>Answer:</b> ${esc(lq.a)}
         <div class="faint" style="font-size:18px;margin-top:8px">${lq.right} of ${lq.answered} right (${pct(lq.right)}%)${lq.close ? ` · ${lq.close} close` : ''}</div></div>`
         : '<p class="faint">Results stay hidden until you reveal the answer, so nobody copies the room.</p>'}`;

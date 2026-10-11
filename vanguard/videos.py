@@ -5,7 +5,7 @@ Official military videos (0.2). The list is vanguard/data/videos.json:
     into videos/ once (it needs a free DVIDS API key), and then they play on the device with no internet and no
     tracking. Until then a Cadet sees the official DVIDS page link instead.
   * YouTube videos -- links only, each from the service's own channel. They open YouTube and need internet;
-    Vanguard never embeds YouTube (an embedded player would connect every device to Google).
+    Cadet Foundry never embeds YouTube (an embedded player would connect every device to Google).
 """
 from __future__ import annotations
 
@@ -51,7 +51,7 @@ def listing() -> dict:
     out, st = [], status()
     for v in catalog():
         s = st.get(v["id"]) or {}
-        if s.get("removed"):                     # DVIDS took it down: Vanguard doesn't show it either
+        if s.get("removed"):                     # DVIDS took it down: Cadet Foundry doesn't show it either
             continue
         if s.get("title"):                       # DVIDS's current title (its terms: keep cached details current)
             v = {**v, "title": s["title"]}

@@ -1,24 +1,24 @@
-# Vanguard
+# Cadet Foundry
 
 **Leadership. Learning. Character.** A learning and leadership platform designed to support JROTC instructors and
-Cadets. A free community project — the Vanguard project.
+Cadets. A free community project — the Cadet Foundry project.
 
-Vanguard runs on the instructor's laptop (or a USB drive, or a Raspberry Pi demo box). Cadets use it in a browser on
-school computers, tablets or phones on the classroom network. The instructor stays in control; Vanguard supplies the
+Cadet Foundry runs on the instructor's laptop (or a USB drive, or a Raspberry Pi demo box). Cadets use it in a browser on
+school computers, tablets or phones on the classroom network. The instructor stays in control; Cadet Foundry supplies the
 tools.
 
-**Vanguard is offline-first.** No student data leaves the instructor's device unless an instructor or IT operator
+**Cadet Foundry is offline-first.** No student data leaves the instructor's device unless an instructor or IT operator
 explicitly enables an online AI provider (it is off by default and has no switch in the app's screens — see
 SECURITY.md). No accounts on outside services, no advertising, no tracking.
 
 Version 0.2.5. What's built and what's next: ROADMAP.md. How it fits together: ARCHITECTURE.md.
 
-> Vanguard is designed to support JROTC instruction. It is **not** an official JROTC, Army or school product, does not
+> Cadet Foundry is designed to support JROTC instruction. It is **not** an official JROTC, Army or school product, does not
 > replace your instructor or your program's curriculum, and makes no claim of endorsement.
 
 ## Start here
 
-1. **Install:** download Vanguard for Windows from **vanguard.winklers-llc.com** and double-click it (or run it from a
+1. **Install:** download Cadet Foundry for Windows from **vanguard.winklers-llc.com** and double-click it (or run it from a
    USB drive — below).
 2. **Just looking?** On the first screen choose **See a sample class**: a separate copy with eight made-up Cadets,
    lessons, scenarios and a pilot in progress. Leaving it changes nothing.
@@ -35,7 +35,7 @@ clean copy, with no one else's data on it.
 
 | Area | What's there today |
 |---|---|
-| **📘 Learn** | Your assignments from your instructor (lessons with vocabulary, questions and a reflection), 200+ study cards from U.S. government sources and Army manuals (leadership, citizenship and history, military knowledge, health and first aid, careers and money — each names its source), quizzes you type and Vanguard grades (Practice with choices, Challenge typed), timed exams, and a library of public-domain books — the Declaration of Independence, the Constitution, the Bill of Rights, the Federalist Papers, American Military History (U.S. Army Center of Military History), and classics. Questions you miss come back more often. |
+| **📘 Learn** | Your assignments from your instructor (lessons with vocabulary, questions and a reflection), 200+ study cards from U.S. government sources and Army manuals (leadership, citizenship and history, military knowledge, health and first aid, careers and money — each names its source), quizzes you type and Cadet Foundry grades (Practice with choices, Challenge typed), timed exams, and a library of public-domain books — the Declaration of Independence, the Constitution, the Bill of Rights, the Federalist Papers, American Military History (U.S. Army Center of Military History), and classics. Questions you miss come back more often. |
 | **🧭 Lead** | Live questions and classroom votes from your instructor, and 20 leadership scenarios: real Cadet situations (teammates arguing, peer pressure, online bullying, a hidden injury, a first job, a rumor, a ride home with a driver who's been drinking, and more). You choose, see what happened and why, and write what you'd do next time — saved to your leadership log. No scores, no "wrong answer". |
 | **💪 Train** | Your fitness history and goals, measured against your own last result. |
 | **🤝 Serve** | Your service hours and what you learned, verified by your instructor; and **Explore Military Service** — for Cadets who want to learn what serving is like: military pay tables, how a military pay statement works, the Army jobs explorer, leave, moving with the military, and letters to family, service members and veterans. Information only; nothing signs you up or contacts a recruiter. |
@@ -59,16 +59,16 @@ clean copy, with no one else's data on it.
   Each has an **instructor debrief** (principles, what Cadets should notice, discussion questions, a follow-up) on
   your screen only — never on the projector or a Cadet's device.
 - **Pilot results:** the Pilot screen shows the headline numbers (Cadets, active, assignments completed, Cadets who did a
-  scenario, your usefulness rating, would you continue), asks "How useful was Vanguard today?" when you finish class,
+  scenario, your usefulness rating, would you continue), asks "How useful was Cadet Foundry today?" when you finish class,
   and prints a one-page pilot summary. The numbers describe use, not proof of learning.
-- **What Vanguard is — and isn't:** in Settings and Me, plainly: a supplemental, instructor-controlled, offline-first
+- **What Cadet Foundry is — and isn't:** in Settings and Me, plainly: a supplemental, instructor-controlled, offline-first
   tool; not official, not a replacement for your program's systems or records, not a grading authority.
 - **Classroom mode:** project a scenario, Cadets vote A–D from their devices (anonymous — you see counts only), then
   reveal the discussion guidance.
 - **Live pop quiz:** put any quiz question (or your own) on the projector as multiple choice or typed. Cadets answer
-  once in 🧭 Lead; Vanguard grades each answer. Results stay hidden until you reveal the answer, and you see how many
+  once in 🧭 Lead; Cadet Foundry grades each answer. Results stay hidden until you reveal the answer, and you see how many
   got it right — never who.
-- **Sample class:** see Vanguard with eight made-up Cadets before setting anything up (welcome screen, or 🧪 on
+- **Sample class:** see Cadet Foundry with eight made-up Cadets before setting anything up (welcome screen, or 🧪 on
   Home). It's a separate copy with its own throwaway folder; your data is never touched.
 - **Pilot mode and End pilot:** online AI stays off, the Pilot screen shows what's stored on the device, and End
   pilot permanently removes the pilot's Cadets and class data (after you save the reports) while keeping your
@@ -78,7 +78,7 @@ clean copy, with no one else's data on it.
 
 ## Privacy, in plain words
 
-- Everything is stored on the instructor's laptop (or the USB drive Vanguard runs from). Each profile has its own PIN,
+- Everything is stored on the instructor's laptop (or the USB drive Cadet Foundry runs from). Each profile has its own PIN,
   and its files are encrypted. If an operator turns on an online AI service, ordinary Ask questions go to it — without
   names, notes or earlier chats; anything about feeling unsafe never does (SECURITY.md).
 - **The instructor sees class records only** — lessons, quizzes, exams, leadership scenarios, fitness and service.
@@ -102,9 +102,9 @@ python run.py --lan        # Cadets on the classroom network can connect (a prof
 Needs Python 3.10+ and the `cryptography` package (installed by the setup script).
 
 **First steps:** set the Class PIN in 👤 Me, then create your own profile and choose **An instructor**, and open
-🎓 Instructor. Cadets create their own profile with a PIN the first time they open Vanguard.
+🎓 Instructor. Cadets create their own profile with a PIN the first time they open Cadet Foundry.
 
-**Install as an app:** on a phone, "Add to Home Screen"; on a computer, "Install app" in the browser. Vanguard
+**Install as an app:** on a phone, "Add to Home Screen"; on a computer, "Install app" in the browser. Cadet Foundry
 then opens full screen with its own icon.
 
 ## Run it from a USB drive
@@ -117,14 +117,14 @@ python tools/make_usb.py E:\                  # app + its own Python + the libra
 python tools/make_usb.py E:\ --with-ai        # also the offline AI, copied from this computer (adds about 1–2 GB)
 ```
 
-On the drive, double-click **Start Vanguard.bat** (this computer only) or **Start Classroom.bat** (Cadets
-join from their phones on the same Wi-Fi — it opens a Join screen with a QR code). Keep the window open while you use it; close it or use Me → Quit Vanguard
+On the drive, double-click **Start Cadet Foundry.bat** (this computer only) or **Start Classroom.bat** (Cadets
+join from their phones on the same Wi-Fi — it opens a Join screen with a QR code). Keep the window open while you use it; close it or use Me → Quit Cadet Foundry
 before unplugging. Run the command again to update the drive — the `VanguardData` folder is never touched.
-Linux / Mac: `sh start-vanguard-usb.sh` on the drive. `START HERE.html` on the drive explains which file does what.
+Linux / Mac: `sh start-cadet-foundry-usb.sh` (in the Mac and Linux folder) on the drive. `START HERE.html` on the drive explains which file does what.
 
 ## Demo box: Raspberry Pi with its own Wi-Fi
 
-A Raspberry Pi (Zero 2 W or newer) can carry Vanguard anywhere: its own Wi-Fi network, no internet, starts by itself
+A Raspberry Pi (Zero 2 W or newer) can carry Cadet Foundry anywhere: its own Wi-Fi network, no internet, starts by itself
 on power-up, and visitors can download the installer from it. On this computer:
 
 ```
@@ -132,8 +132,8 @@ python site/build.py                      # the installer that goes on the drive
 python tools/make_demo_kit.py E:\         # the USB to hand over + demo/ (Pi settings, printable QR card, Pi guide)
 ```
 
-Then follow `demo/README-PI.txt` on the drive: copy the Vanguard and demo folders to the Pi and run
-`sudo sh ~/Vanguard/tools/pi_setup.sh`. Cadets join the "Vanguard" Wi-Fi and open http://vanguard.lan. A Pi Zero 2 W
+Then follow `demo/README-PI.txt` on the drive: copy the Cadet Foundry and demo folders to the Pi and run
+`sudo sh ~/Vanguard/tools/pi_setup.sh`. Cadets join the "Cadet Foundry" Wi-Fi and open http://vanguard.lan. A Pi Zero 2 W
 serves about 10 Cadets at a time, with library answers only (no AI).
 
 ## Offline AI (optional)
@@ -143,7 +143,7 @@ ollama pull qwen2.5:3b
 ```
 
 Without an AI model, everything except free-form AI explanations still works; answers come straight from the library.
-Facts like pay, fitness score tables and job descriptions always come from Vanguard's data, never from the AI.
+Facts like pay, fitness score tables and job descriptions always come from Cadet Foundry's data, never from the AI.
 
 ## Library
 

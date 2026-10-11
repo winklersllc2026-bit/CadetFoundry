@@ -1,9 +1,9 @@
 """
-Everything Vanguard keeps about the Soldier -- in files on this device, encrypted when the
+Everything Cadet Foundry keeps about the Soldier -- in files on this device, encrypted when the
 profile has a PIN (see vault.py).
 
   profile.json   name, rank, MOS, where they are in training, goals
-  memory.jsonl   lasting facts Vanguard learned ("fails the plank at 1:30")
+  memory.jsonl   lasting facts Cadet Foundry learned ("fails the plank at 1:30")
   log.jsonl      the logbook: PT scores, qualifications, notes, goals
   study.json     flashcard results (so missed questions come back more often)
   chats.json     conversations (the Ask tab's sidebar); chat.json is the old single conversation
@@ -199,7 +199,7 @@ def reseal_folder(folder: Path, old_key: bytes | None, new_key: bytes | None, on
 
 
 # ── profile ─────────────────────────────────────────────────────────────────
-# A Cadet's profile: only what helps Vanguard fit the Cadet. Nothing about body size, sex or military status --
+# A Cadet's profile: only what helps Cadet Foundry fit the Cadet. Nothing about body size, sex or military status --
 # minors' data is kept to the minimum (owner's spec §25), and Train needs none of it.
 PROFILE_FIELDS = ("name", "grade", "interests", "goals", "faith_texts", "military_track", "intake_done")
 GRADES = ("9th grade", "10th grade", "11th grade", "12th grade", "Other")
@@ -468,8 +468,8 @@ def clear_history() -> None:
 # ── config ──────────────────────────────────────────────────────────────────
 
 def data_id() -> str:
-    """A random ID for this data folder, so a second Vanguard (a USB drive) never mistakes another data folder's
-    running Vanguard for itself. Not secret: it only tells data folders apart."""
+    """A random ID for this data folder, so a second Cadet Foundry (a USB drive) never mistakes another data folder's
+    running Cadet Foundry for itself. Not secret: it only tells data folders apart."""
     path = DATA / "instance.id"
     try:
         v = path.read_text(encoding="ascii").strip()
@@ -494,7 +494,7 @@ AI_MODES = ("off", "library", "ai")
 ALL_CATEGORIES = ("leadership", "citizenship", "military", "health", "careers", "explore", "basic")
 # Optional tools the instructor can switch off for every profile on this device (the server refuses their routes).
 MODULES = {"faith": "Faith texts (scripture lookup and reading plans)", "letters": "Letters and address book",
-           "voice": "Talk to Vanguard (offline voice)"}
+           "voice": "Talk to Cadet Foundry (offline voice)"}
 
 
 def module_on(name: str) -> bool:

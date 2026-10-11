@@ -1,8 +1,8 @@
 """
-Release signing for Vanguard updates and the library (run on the BUILD machine only).
+Release signing for Cadet Foundry updates and the library (run on the BUILD machine only).
 
     python tools/sign.py keygen                 make your signing key (once)
-    python tools/sign.py sign site/dist/Vanguard-0.9.0.zip     -> ...zip.sig
+    python tools/sign.py sign site/dist/CadetFoundry-0.9.0.zip     -> ...zip.sig
     python tools/sign.py library                fingerprint library/ and sign the list
 
 The private key is written OUTSIDE the project (default ~/.vanguard-release/release_key.pem) so it

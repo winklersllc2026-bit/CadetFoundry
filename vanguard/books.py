@@ -22,7 +22,7 @@ BOOKS_DIR = ROOT / "books"
 
 SHELVES = ("Army history", "Founding documents", "Classics")
 
-# Every book Vanguard knows how to get. "chapters" is the pattern for a chapter heading in that book's text;
+# Every book Cadet Foundry knows how to get. "chapters" is the pattern for a chapter heading in that book's text;
 # tables of contents are skipped automatically (a heading needs real text after it).
 CATALOG = [
     # Army history -- U.S. Army Center of Military History. history.army.mil blocks scripted downloads,
@@ -210,7 +210,7 @@ def chapters(book_id: str) -> list[dict]:
 
 
 def shelf() -> dict:
-    """Every book Vanguard knows, whether it's on this device, and where this Soldier is in each."""
+    """Every book Cadet Foundry knows, whether it's on this device, and where this Soldier is in each."""
     progress = store.read_json("books.json", {})
     have = {b["id"] for b in installed()}
     out = []

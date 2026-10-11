@@ -1,20 +1,20 @@
 # Security
 
-Vanguard is built to run **completely offline** on the instructor's laptop (Cadets connect over the classroom network) or on a single device. No account, no tracking, no GPS, no data sent anywhere.
+Cadet Foundry is built to run **completely offline** on the instructor's laptop (Cadets connect over the classroom network) or on a single device. No account, no tracking, no GPS, no data sent anywhere.
 
 ## What protects the Cadet's data
 
 | Threat | Protection |
 |---|---|
-| A website open in the same browser tries to send commands to Vanguard (CSRF) | Commands must be JSON (browsers must ask permission first, and Vanguard never grants it); any request from another site's origin is refused; no CORS headers are ever sent. |
-| A website tries to read Vanguard's data by pointing its name at this computer (DNS rebinding) | Requests are only accepted for Vanguard's own address (`127.0.0.1` / `localhost`). |
+| A website open in the same browser tries to send commands to Cadet Foundry (CSRF) | Commands must be JSON (browsers must ask permission first, and Cadet Foundry never grants it); any request from another site's origin is refused; no CORS headers are ever sent. |
+| A website tries to read Cadet Foundry's data by pointing its name at this computer (DNS rebinding) | Requests are only accepted for Cadet Foundry's own address (`127.0.0.1` / `localhost`). |
 | Another Cadet on a shared device | Each Cadet has their own **profile** (separate folder, own PIN). A session is bound to one profile; every request can only reach that profile's files, and Cadet data can't be read or written at all without an unlocked profile. |
-| Someone else on the same network | Vanguard only listens on this device. LAN mode (`--lan`) refuses to start unless every profile has a PIN. |
-| One Cadet changing Vanguard for everyone on a shared device | Device-wide changes (AI mode, updates, add-ons, reloading the library, the Class PIN itself) need an **instructor profile** and the separate **Class PIN**, stored as a salted PBKDF2 hash outside every profile, with the same growing lockouts. A Cadet's attempts are refused before the Class PIN is even checked, so they can't lock the instructor out. Before a Class PIN exists, only the computer Vanguard runs on can set one. |
+| Someone else on the same network | Cadet Foundry only listens on this device. LAN mode (`--lan`) refuses to start unless every profile has a PIN. |
+| One Cadet changing Cadet Foundry for everyone on a shared device | Device-wide changes (AI mode, updates, add-ons, reloading the library, the Class PIN itself) need an **instructor profile** and the separate **Class PIN**, stored as a salted PBKDF2 hash outside every profile, with the same growing lockouts. A Cadet's attempts are refused before the Class PIN is even checked, so they can't lock the instructor out. Before a Class PIN exists, only the computer Cadet Foundry runs on can set one. |
 | Someone picks up the device | **PIN lock** (strongly recommended — it also turns on encryption): 6–12 digits, stored only as a salted PBKDF2-SHA256 hash (400,000 rounds). Sessions are random tokens in an HttpOnly, SameSite=Strict cookie and expire after inactivity (5–60 minutes). Five wrong PINs start a lockout that doubles each time (up to 1 hour) and survives restarts. |
 | Someone copies the files off the device (stolen tablet, USB, another Windows user) | A profile with a PIN has **its files encrypted** with AES-256-GCM using its own random 256-bit key. That key is stored only locked by the PIN (scrypt, 32 MB, memory-hard) and by the Cadet's recovery code, and is held in memory only while the profile is unlocked. Each file is bound to its name, so changed, damaged, swapped or renamed files are refused, never read. Only `security.json` (PIN hash, locked key) is unencrypted. |
 | A crash or power loss while saving | Every file is written to a temporary file, flushed to disk, then renamed into place, so a save is all-or-nothing. |
-| Injected scripts (from a document, an answer, a pasted letter) | All text is escaped before display, and a strict Content-Security-Policy only allows Vanguard's own script file. |
+| Injected scripts (from a document, an answer, a pasted letter) | All text is escaped before display, and a strict Content-Security-Policy only allows Cadet Foundry's own script file. |
 | Path tricks to read other files | Only files inside `web/` are served. |
 | A tampered download | The private build page shows each zip's SHA-256 fingerprint. |
 
@@ -22,43 +22,43 @@ Automated attack tests for all of the above: `python -m unittest discover tests`
 
 ## Forgotten PINs: the recovery code
 
-When a Cadet sets a PIN, Vanguard shows a **recovery code** once (`XXXXX-XXXXX-XXXXX-XXXXX`, 100 bits). It's a second key to that Cadet's files. If they forget their PIN, **Forgot PIN?** on the lock screen takes the code and a new PIN; the files stay encrypted throughout and a fresh code is issued. Wrong codes count toward the same lockout as wrong PINs. A new code can be made any time in Me → Security (with the PIN).
+When a Cadet sets a PIN, Cadet Foundry shows a **recovery code** once (`XXXXX-XXXXX-XXXXX-XXXXX`, 100 bits). It's a second key to that Cadet's files. If they forget their PIN, **Forgot PIN?** on the lock screen takes the code and a new PIN; the files stay encrypted throughout and a fresh code is issued. Wrong codes count toward the same lockout as wrong PINs. A new code can be made any time in Me → Security (with the PIN).
 
-There is **no master key for private files**: not the device owner, not the instructor, not Vanguard can open a Cadet's private files (check-ins, chats, notes, letters, logbook, profile) without that Cadet's PIN or recovery code. The one deliberate exception is **class records**: the instructor can read those with the Instructor PIN — see "Instructors and class records" below. If a Cadet loses both their PIN and recovery code, their encrypted backup (below) is the way back.
+There is **no master key for private files**: not the device owner, not the instructor, not Cadet Foundry can open a Cadet's private files (check-ins, chats, notes, letters, logbook, profile) without that Cadet's PIN or recovery code. The one deliberate exception is **class records**: the instructor can read those with the Instructor PIN — see "Instructors and class records" below. If a Cadet loses both their PIN and recovery code, their encrypted backup (below) is the way back.
 
 ## What the device owner must do too
 
-Vanguard encrypts each Cadet's files, but full-disk encryption still protects everything else on the device (the AI model, the library, Windows itself). **Turn it on:**
+Cadet Foundry encrypts each Cadet's files, but full-disk encryption still protects everything else on the device (the AI model, the library, Windows itself). **Turn it on:**
 
 - **Windows**: BitLocker (Settings → Privacy & security → Device encryption, or BitLocker on Pro editions). Use a Windows sign-in PIN/password.
 - **Linux / Raspberry Pi**: LUKS full-disk encryption at install time.
 
-Also: keep the OS updated, use a standard (non-admin) account for daily use, and don't install other software on a dedicated Vanguard device.
+Also: keep the OS updated, use a standard (non-admin) account for daily use, and don't install other software on a dedicated Cadet Foundry device.
 
 ## Backups
 **Me → Download encrypted backup** saves one file (profile, logbook, letters, address book, study progress, memory), encrypted with AES-256-GCM under a **backup password of at least 10 characters** that the Cadet chooses (a backup can be attacked offline, so a 6-digit PIN isn't enough). Without the password the file can't be opened. Device settings (AI model, online switch, keys) are never included, and restoring a backup can never change them.
 
-A backup is a file its owner controls, so restoring one is treated as the owner's own word: it can never change device settings, make anyone an instructor, or write assigned-lesson grades (`assignments.json` isn't in a backup), and a file of the wrong shape is skipped. It **can** bring back the owner's own practice history (`study.json`, `exams.jsonl`), which instructors also see — so practice counts and practice-exam scores are self-reported, while assigned-lesson scores are graded by Vanguard. Restoring is selective: files in the backup replace the matching files; files it doesn't hold are left as they are.
+A backup is a file its owner controls, so restoring one is treated as the owner's own word: it can never change device settings, make anyone an instructor, or write assigned-lesson grades (`assignments.json` isn't in a backup), and a file of the wrong shape is skipped. It **can** bring back the owner's own practice history (`study.json`, `exams.jsonl`), which instructors also see — so practice counts and practice-exam scores are self-reported, while assigned-lesson scores are graded by Cadet Foundry. Restoring is selective: files in the backup replace the matching files; files it doesn't hold are left as they are.
 
 ## Library tamper check
-When the library is installed, Vanguard records a SHA-256 fingerprint of every manual (`library/integrity.json`). At startup it recomputes them: **Me → Library check** says whether every file still matches, and search marks any result from a changed file. If the publisher signed the list (`tools/sign.py library` → `integrity.json.sig`), the signature is checked too, so editing a manual *and* its fingerprint doesn't go unnoticed.
+When the library is installed, Cadet Foundry records a SHA-256 fingerprint of every manual (`library/integrity.json`). At startup it recomputes them: **Me → Library check** says whether every file still matches, and search marks any result from a changed file. If the publisher signed the list (`tools/sign.py library` → `integrity.json.sig`), the signature is checked too, so editing a manual *and* its fingerprint doesn't go unnoticed.
 
 ## Signed offline updates
-An update is the normal release zip plus a `.sig` file. On a device: **Me → Install an update from a USB stick**, choose both files, and give the Class PIN (instructor profiles only). Vanguard installs it only if:
+An update is the normal release zip plus a `.sig` file. On a device: **Me → Install an update from a USB stick**, choose both files, and give the Class PIN (instructor profiles only). Cadet Foundry installs it only if:
 - the signature is a well-formed Ed25519 signature (exactly 64 bytes, strict base64) that matches the publisher's public key (`vanguard/data/release_key.pub`);
 - it's a **newer** version (no downgrades, no reinstalling the same version);
 - every file is inside the app's own folders (no unexpected names, `..`, drive letters, `:` stream names or control characters).
 
 A copy without a public key refuses every update (fail closed). Everything is unpacked before anything changes, and
 every file the update replaces is copied aside first: if a step fails, the app is put back exactly as it was, and if
-Vanguard stops part-way, the next start rolls it back. Cadets' data (`~/.vanguard`) is never touched. Then restart
-Vanguard. Tested in `tests/test_security.py` (valid, tampered, unsigned, malformed, wrong key, downgrade, equal
+Cadet Foundry stops part-way, the next start rolls it back. Cadets' data (`~/.vanguard`) is never touched. Then restart
+Cadet Foundry. Tested in `tests/test_security.py` (valid, tampered, unsigned, malformed, wrong key, downgrade, equal
 version, unsafe paths, no public key, failed and interrupted installs).
 
 **The release chain.** `python site/build.py` → the release zip (and the Windows installer) → signed with the private
 key into `<zip>.sig` → both published on the public releases page → a device verifies the `.sig` against the public
 key it already has, then installs. The public key ships inside the app; a device trusts only the key it was installed
-with. Note: the Windows **installer** (`Vanguard-Setup-*.exe`) is a separate, first-time install path — it is not
+with. Note: the Windows **installer** (`CadetFoundry-Setup-*.exe`) is a separate, first-time install path — it is not
 checked by this key. Windows code signing (a paid certificate in the company's name) is what makes Windows trust the
 installer itself; it's an owner action that hasn't been done yet, so Windows shows "Windows protected your PC".
 
@@ -77,17 +77,17 @@ installer itself; it's an owner action that hasn't been done yet, so Windows sho
    must be reinstalled from the new installer (their data folder is kept). Tell schools when this happens.
 Anyone who has the private key can sign updates — treat it like a password.
 
-**Status (2026-10-11):** the owner created Vanguard's key; `release_key.pub` is in the app. Releases from now on are
+**Status (2026-10-11):** the owner created Cadet Foundry's key; `release_key.pub` is in the app. Releases from now on are
 signed. A full end-to-end check (build → sign → install on a clean device from the signed zip) is on the pilot
 checklist and hasn't been run yet.
 
 ## Online AI (off by default)
-**Vanguard is offline-first: no student data leaves the instructor's device unless an instructor or IT operator explicitly enables an online AI provider.** There is no switch for it in the app's screens. An operator enables it only by editing `config.json` in the data folder (`"online": true` plus a Groq or Gemini key; the key is stored there in plain text). Leave it off on devices meant to stay fully offline, and read the provider's terms (data retention, use of minors' data) before turning it on.
+**Cadet Foundry is offline-first: no student data leaves the instructor's device unless an instructor or IT operator explicitly enables an online AI provider.** There is no switch for it in the app's screens. An operator enables it only by editing `config.json` in the data folder (`"online": true` plus a Groq or Gemini key; the key is stored there in plain text). Leave it off on devices meant to stay fully offline, and read the provider's terms (data retention, use of minors' data) before turning it on.
 
 **Pilot mode** (Instructor → Reports → Pilot) overrides that file: while it's on, nothing goes online, whatever `config.json` says (`engine.online_ready`; tested in `tests/test_sample_and_pilot.py`).
 
 When it is on, exactly this goes to the provider (security review, 2026-10-11 — tested in `tests/test_outbound_ai.py`):
-- **Ask, ordinary questions only:** the question, Vanguard's rules, and the public library passages that matched.
+- **Ask, ordinary questions only:** the question, Cadet Foundry's rules, and the public library passages that matched.
   **Not** the Cadet's name, profile, remembered facts, logbook or earlier chat.
 - **Never:** a message that shows signs of crisis or harm (answered on this device only), grading of typed quiz answers
   (it carries answer keys), memory learning from chats, letter drafts, "say it simpler", lessons, class records,
@@ -108,23 +108,23 @@ hazing (`vanguard/safety.py`). What happens:
   normal answer.
 
 What it **doesn't** do:
-- **It notifies no one.** No instructor, parent, counselor or anyone at the Vanguard project is told. Nothing is flagged or reported;
+- **It notifies no one.** No instructor, parent, counselor or anyone at the Cadet Foundry project is told. Nothing is flagged or reported;
   the conversation stays in the Cadet's own private, encrypted chat history, which the instructor can't read.
 - **It is best-effort pattern matching, not a crisis detector.** It misses indirect or new wording ("I just want
   everything to stop"), can't know anyone's intent, and sometimes shows resources when someone is joking.
   `tests/test_safety.py` lists what it catches, accepted false positives and known misses.
 - **It only checks Ask.** Check-ins, journal notes, reflections and survey comments are not scanned.
 
-Schools must fit Vanguard into their own safeguarding and incident-response procedures; Vanguard is not one of them.
-Tell Cadets plainly: Vanguard is not monitored — if you're in danger or thinking about hurting yourself, tell an adult
+Schools must fit Cadet Foundry into their own safeguarding and incident-response procedures; Cadet Foundry is not one of them.
+Tell Cadets plainly: Cadet Foundry is not monitored — if you're in danger or thinking about hurting yourself, tell an adult
 or call 988 or 911.
 
 **What's private, in plain words (tell Cadets):** your check-ins, notes, chats with Ask and letters are yours alone
 — not even your instructor can open them. Your instructor can see class work: lessons, quizzes, exams, leadership
-log, fitness and service. Votes in class are anonymous (counts only). Vanguard doesn't watch or read your private
+log, fitness and service. Votes in class are anonymous (counts only). Cadet Foundry doesn't watch or read your private
 things, and no one is alerted by anything you type.
 
-## The classroom network (Open class to phones on the instructor's Home; `--lan`, the Vanguard Classroom shortcut, the USB's Start Classroom file, the Pi demo box)
+## The classroom network (Open class to phones on the instructor's Home; `--lan`, the Cadet Foundry Classroom shortcut, the USB's Start Classroom file, the Pi demo box)
 
 In the app this is called **class is open**; the **Class PIN** is the code this document also calls the Instructor PIN.
 
@@ -136,13 +136,13 @@ In classroom mode the instructor's computer accepts connections from other devic
 | A Cadet signed in | Their own work, assignments, live votes and questions; join a unit with its join code | Another Cadet's anything; the instructor's tools (HTTP 403); change device settings or guess the Class PIN (only instructor profiles may try it, so a Cadet can't lock the instructor out); end class for everyone (Quit works only from the instructor's computer or an instructor profile) |
 | The instructor, signed in **and** with the Class PIN | Class records of every Cadet; open or close class to phones (from their own computer only) | Any Cadet's private files |
 
-**Which addresses Vanguard answers to** (security review, 2026-10-11). Every request's `Host` header must name
-Vanguard itself with Vanguard's port: `127.0.0.1`, `localhost` or `[::1]` from this computer, and in classroom mode
+**Which addresses Cadet Foundry answers to** (security review, 2026-10-11). Every request's `Host` header must name
+Cadet Foundry itself with Cadet Foundry's port: `127.0.0.1`, `localhost` or `[::1]` from this computer, and in classroom mode
 also this computer's own IP address — exactly the address the device connected to (what the QR code shows). A domain
 name is refused in classroom mode, which blocks DNS rebinding (a website pointing its own name at the instructor's
-computer so a Cadet's browser would treat Vanguard as that site). Before this fix, classroom mode accepted any Host.
-Requests that carry an `Origin` must come from Vanguard's own address; POSTs must be JSON (which forces browsers to
-ask first, and Vanguard refuses those preflights); the session cookie is `HttpOnly; SameSite=Strict` with no
+computer so a Cadet's browser would treat Cadet Foundry as that site). Before this fix, classroom mode accepted any Host.
+Requests that carry an `Origin` must come from Cadet Foundry's own address; POSTs must be JSON (which forces browsers to
+ask first, and Cadet Foundry refuses those preflights); the session cookie is `HttpOnly; SameSite=Strict` with no
 `Domain`. Tested in `tests/test_network.py`.
 
 Known limits, and what to do about them:
@@ -158,14 +158,14 @@ Known limits, and what to do about them:
   workable design is the one some media servers use: a public domain the publisher controls with a per-installation
   name that resolves to the laptop's private address, and a real certificate for it issued through DNS validation.
   That needs publisher-run infrastructure (a domain, DNS, certificate issuance and renewal) and is an owner decision.
-  Until then Vanguard doesn't offer an HTTPS option that would leave PINs exposed or produce unusable warnings.
+  Until then Cadet Foundry doesn't offer an HTTPS option that would leave PINs exposed or produce unusable warnings.
 - **PIN guessing** is slowed by growing lockouts (5 wrong PINs → a lockout that doubles, up to an hour, surviving restarts) and scrypt.
 - **School Wi-Fi often blocks devices from reaching each other** ("client isolation") — then Cadets can't connect at all; use the dedicated hotspot.
-- Close Vanguard when class ends (**End class** on the Join screen, **Close to phones** on Home, or Me → Quit). The instructor's Home shows "Class is open" while it runs.
+- Close Cadet Foundry when class ends (**End class** on the Join screen, **Close to phones** on Home, or Me → Quit). The instructor's Home shows "Class is open" while it runs.
 - **Join codes** (0.2) are short codes (6 characters from 31, about 887 million combinations) that put a *new* Cadet's own profile in a class, platoon or squad and give it that unit's lessons. They're kept in the clear in `program/join_codes.json` with the unit's name, because a Cadet's session has no program key; they open nothing else and never reveal any Cadet or record, and they're not secret (they're on the projector, and in the QR code's `?join=` link). The join request is sealed to the program key in `program/joins.json` until an instructor's session files it. An instructor can replace a code (the old one stops working). The Join screen shows codes on the instructor's own computer, never to other devices.
 
 ## Dependencies (reviewed 2026-10-11)
-Vanguard is Python's standard library plus one package, `cryptography` (PyCA). Everything else is optional and only fetched when someone with the device-admin role asks for it.
+Cadet Foundry is Python's standard library plus one package, `cryptography` (PyCA). Everything else is optional and only fetched when someone with the device-admin role asks for it.
 
 | What | Where it comes from | How it's fixed |
 |---|---|---|
@@ -184,11 +184,11 @@ Vanguard is Python's standard library plus one package, `cryptography` (PyCA). E
 **Secrets:** the repository is checked by `tests/test_security.py` for a release private key, and history was searched for keys and passwords during the 2026-10 review (see the review report). If a secret is ever found, rotate it first — removing it from the files doesn't un-publish it.
 
 ## Sample class and End pilot (added 2026-10-11)
-- **Sample class** (`vanguard/sample.py`): a separate Vanguard process on this computer only (127.0.0.1, its own port), with its own data folder next to the real one (`<data>-sample`, marked by `SAMPLE_DATA.txt`; only a marked folder is ever deleted, and it's rebuilt from scratch each time). Its people are made up, it uses its own cookie name so it never signs anyone out of the real Vanguard, it refuses device settings and opening to the network, and it closes itself after 45 idle minutes or on Leave sample. Only the library's public search index is copied in; nothing is read from or written to the real data. Starting it is allowed only from the instructor's own computer.
+- **Sample class** (`vanguard/sample.py`): a separate Cadet Foundry process on this computer only (127.0.0.1, its own port), with its own data folder next to the real one (`<data>-sample`, marked by `SAMPLE_DATA.txt`; only a marked folder is ever deleted, and it's rebuilt from scratch each time). Its people are made up, it uses its own cookie name so it never signs anyone out of the real Cadet Foundry, it refuses device settings and opening to the network, and it closes itself after 45 idle minutes or on Leave sample. Only the library's public search index is copied in; nothing is read from or written to the real data. Starting it is allowed only from the instructor's own computer.
 - **End pilot** (`pilot.end`): instructor session with the Class PIN open, **on the instructor's own computer**, the Class PIN typed again, and the word DELETE. It removes every Cadet and guardian profile (via `profiles.delete`, which deletes the whole profile folder), their sessions, assignments, the roster's Cadets, titles and pending joins, live answers, the pilot's files, and `program.before-restore-*` safety copies; units keep going with new join codes. It doesn't touch personal or program backups already saved elsewhere, and it doesn't wipe free disk space.
 
 ## For military IT: adding CAC sign-in
-Vanguard deliberately ships without CAC/PIV sign-in so that it can be configured by the Army's own IT, with its certificate validation and approval. All sign-in logic is in `vanguard/security.py`: a profile is unlocked by `unlock(profile, secret)`, which creates a session bound to that one profile. A smart-card provider would (1) have the card sign a random challenge with its PIV authentication key, (2) validate the certificate chain against the DoD PKI roots (and revocation, where a network is available), and (3) map the certificate to a profile by a hash of the certificate — never storing the DoD ID number. Nothing else in Vanguard needs to change.
+Cadet Foundry deliberately ships without CAC/PIV sign-in so that it can be configured by the Army's own IT, with its certificate validation and approval. All sign-in logic is in `vanguard/security.py`: a profile is unlocked by `unlock(profile, secret)`, which creates a session bound to that one profile. A smart-card provider would (1) have the card sign a random challenge with its PIV authentication key, (2) validate the certificate chain against the DoD PKI roots (and revocation, where a network is available), and (3) map the certificate to a profile by a hash of the certificate — never storing the DoD ID number. Nothing else in Cadet Foundry needs to change.
 
 ## Official use
 Use inside military networks or as an issued device would additionally require formal accreditation (Authority to Operate, STIG compliance). This project is designed to make that process straightforward: no network services unless an instructor opens class to phones, one well-known dependency (`cryptography`, PyCA, for AES via OpenSSL; see Dependencies), all data local.

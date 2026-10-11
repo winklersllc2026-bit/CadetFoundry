@@ -17,7 +17,7 @@ class CloneDriveTests(unittest.TestCase):
         (src / "Vanguard" / "run.py").write_text("print('vanguard')")
         (src / "Vanguard" / "videos").mkdir()
         (src / "Vanguard" / "videos" / "dvids-1.mp4").write_bytes(b"x" * 1000)
-        (src / "Start Vanguard.bat").write_text("@echo off")
+        (src / "Start Cadet Foundry.bat").write_text("@echo off")
         (src / "Make more flash drives").mkdir()
         (src / "Make more flash drives" / "HOW TO MAKE MORE DRIVES.txt").write_text("how")
         (src / "VanguardData" / "profiles" / "abc123").mkdir(parents=True)      # the instructor's class: never copied
@@ -30,7 +30,7 @@ class CloneDriveTests(unittest.TestCase):
             self.assertEqual(clone_drive.main([str(src), str(dest)]), 0)
         self.assertTrue((dest / "Vanguard" / "run.py").exists())
         self.assertTrue((dest / "Vanguard" / "videos" / "dvids-1.mp4").exists())
-        self.assertTrue((dest / "Start Vanguard.bat").exists())
+        self.assertTrue((dest / "Start Cadet Foundry.bat").exists())
         self.assertTrue((dest / "Make more flash drives" / "HOW TO MAKE MORE DRIVES.txt").exists())
         self.assertTrue((dest / "VanguardData").is_dir())                       # there, and empty
         self.assertEqual(list((dest / "VanguardData").iterdir()), [])

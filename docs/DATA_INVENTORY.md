@@ -1,6 +1,6 @@
-# What Vanguard stores, and how it's protected
+# What Cadet Foundry stores, and how it's protected
 
-Last reviewed: 2026-10-11 (security review, Phase 2). This lists every file Vanguard writes, what's in it, how
+Last reviewed: 2026-10-11 (security review, Phase 2). This lists every file Cadet Foundry writes, what's in it, how
 sensitive it is, how it's protected at rest, and who can read it. It also states the limits plainly. Encryption at
 rest and access control are separate things; both are listed for each file.
 
@@ -28,7 +28,7 @@ master key.
 | Class records: `study.json`, `exams.jsonl`, `assignments.json`, `scenarios.jsonl`, `service.jsonl`, `fitness.jsonl`, `goals.json`, `recognition.jsonl`, `lessons.json` | Quiz progress, exams, lesson work, leadership log, service hours, fitness results | **Medium** (education records) | AES-256-GCM with the Cadet's class key | The Cadet; an instructor session after the Class PIN |
 | `pilot_feedback.json` | Only "this Cadet answered the survey" | Low | Sealed with the data key | That Cadet |
 
-**A profile with no PIN is not encrypted.** Its files are plain JSON. Vanguard shows "No PIN on this profile —
+**A profile with no PIN is not encrypted.** Its files are plain JSON. Cadet Foundry shows "No PIN on this profile —
 records aren't protected", and on the classroom network such a profile can only be opened on the instructor's own
 computer.
 
@@ -42,7 +42,7 @@ computer.
 | `pilot.json` | Pilot setup: school, instructor name, dates, notes | Medium | Sealed with the program data key | Instructor session only |
 | `pilot_snapshots.json` | Weekly class totals | Low–Medium | Sealed with the program data key | Instructor session only |
 | `feedback_instructor.json` | The instructor's own feedback | Low | Sealed with the program data key | Instructor session only |
-| `feedback_daily.json` | After-class feedback: how useful Vanguard was (1–5), would use again, four optional answers about Vanguard (the screen asks not to name Cadets) | Low | Sealed with the program data key | Instructor session only |
+| `feedback_daily.json` | After-class feedback: how useful Cadet Foundry was (1–5), would use again, four optional answers about Cadet Foundry (the screen asks not to name Cadets) | Low | Sealed with the program data key | Instructor session only |
 | `feedback_cadets.json` | Anonymous Cadet survey answers (no name, no id) and optional comments | Medium (free text) | Each answer sealed TO the program public key, stored in random order | Written by a Cadet's session (it can't read any back); read by an instructor session |
 | `pilot_survey.json` | Only "is the survey open" | None | Plain (a Cadet's screen needs it) | Anyone |
 | `lessons.json` | Lesson text, questions, vocabulary, **and the answer key** | Low (content); answer keys matter for academic honesty | **Plain** — see limits | Read by Cadet sessions to show a lesson and grade it; the answer key is never sent to a Cadet |
@@ -50,7 +50,7 @@ computer.
 | `cadet_titles.json` | A Cadet's cadet rank and billet (job), by profile id | Low | **Plain** — see limits | Read by the Cadet's own Home screen |
 | `join_codes.json` | Each unit's join code and name | Low (codes are shown on the projector) | Plain | Needed before sign-in |
 | `scenarios.json`, `quiz_overrides.json`, `service_projects.json`, `fitness_events.json` | The instructor's own content and settings | None–Low | Plain | Instructor writes; Cadets read what applies to them |
-| Live classroom vote, live question | Who voted for what / answered what, during one class | Medium | **Never written to disk** (memory only; ends when Vanguard closes) | Cadets see only their own; the instructor and projector see counts only |
+| Live classroom vote, live question | Who voted for what / answered what, during one class | Medium | **Never written to disk** (memory only; ends when Cadet Foundry closes) | Cadets see only their own; the instructor and projector see counts only |
 
 ## Device files
 
@@ -76,7 +76,7 @@ computer.
 
 ## Leaving the device
 
-Vanguard never connects to the internet on its own. It does so only when someone chooses to:
+Cadet Foundry never connects to the internet on its own. It does so only when someone chooses to:
 
 - **Online AI**: only if the instructor turns it on and enters their own provider key. Then a Cadet's Ask question
   (and the library passages used to answer it) go to that provider. See SECURITY.md.
@@ -101,8 +101,8 @@ Vanguard never connects to the internet on its own. It does so only when someone
    profile voted for what (one vote each, and each Cadet sees their own). It is never shown or saved.
 6. **A profile without a PIN isn't encrypted.**
 7. **Encryption at rest doesn't protect a computer that's on and unlocked.** While a session is open, its keys are in
-   memory. Lock Windows when you step away; Vanguard signs people out after inactivity.
+   memory. Lock Windows when you step away; Cadet Foundry signs people out after inactivity.
 8. **Class PIN reset.** Resetting the Class PIN (without the old one) makes a new program key: the old roster,
    pilot files and sealed join requests can no longer be opened.
 9. **None of this alone establishes FERPA or state student-privacy compliance.** The school decides whether and how
-   Vanguard fits its policies.
+   Cadet Foundry fits its policies.

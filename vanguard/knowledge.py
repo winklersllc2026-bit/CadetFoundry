@@ -1,5 +1,5 @@
 """
-The Vanguard library: everything Vanguard knows comes from here, with sources.
+The Cadet Foundry library: everything Cadet Foundry knows comes from here, with sources.
 
 Two kinds of material:
   * cards/   -- short study cards (Markdown with a small header). Hand-checked,
@@ -206,7 +206,7 @@ def parse_card(path: Path) -> Card | None:
     cat = meta.get("category", "military").strip().lower()
     svc = meta.get("service", "joint").strip().lower().replace(" ", "_").replace("-", "_")
     return Card(id=path.stem, title=meta.get("title", path.stem), topic=meta.get("topic", "General"),
-                source=meta.get("source", "Vanguard study card"), body=body.strip(), quiz=quiz, also=also,
+                source=meta.get("source", "Cadet Foundry study card"), body=body.strip(), quiz=quiz, also=also,
                 verified=meta.get("verified", "yes").strip().lower() not in ("no", "false"),
                 category=cat if cat in CATEGORIES else "military", service=svc if svc in SERVICES else "joint")
 
@@ -450,7 +450,7 @@ class Library:
         return self._pubs
 
     def unknown_pubs(self, text: str) -> list[str]:
-        """Publications named in an AI answer that Vanguard's library doesn't have (likely made up)."""
+        """Publications named in an AI answer that Cadet Foundry's library doesn't have (likely made up)."""
         known = self.known_pubs()
         return list(dict.fromkeys(m.group(0).strip() for m in PUB_RE.finditer(text or "")
                                   if _pub_key(m.group(0)) not in known))
@@ -458,7 +458,7 @@ class Library:
     def checked_answer(self, query: str, min_match: float = 0.75) -> dict | None:
         """A study-card quiz answer for a question asked almost the same way.
 
-        Quiz answers were checked against the source, so when one fits, Vanguard shows it word for word instead of
+        Quiz answers were checked against the source, so when one fits, Cadet Foundry shows it word for word instead of
         trusting a small model to restate it. Both sides must share most of their words; a near miss returns None.
         """
         q = set(_terms(query)) - _FILLER

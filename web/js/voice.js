@@ -1,5 +1,5 @@
 'use strict';
-// Offline voice: read-aloud and talk-to-Vanguard.
+// Offline voice: read-aloud and talk-to-Cadet Foundry.
 
 // ── VOICE (offline only) ──
 // Read aloud: only the computer's own LOCAL voices (voice.localService), so nothing leaves the device.
@@ -45,7 +45,7 @@ const speech = {
 };
 speech.init();
 
-// Talk: record 16 kHz mono audio and send it to Vanguard's own offline recognizer (Vosk).
+// Talk: record 16 kHz mono audio and send it to Cadet Foundry's own offline recognizer (Vosk).
 // The browser's built-in speech recognition is NOT used -- it sends audio to cloud servers.
 const mic = {
   rec: null,
@@ -85,7 +85,7 @@ unlocked.then(async s => {
     btn.textContent = '…'; btn.disabled = true;
     const audio = await mic.stop();
     const r = await api('/api/voice', { audio, rate: 16000 });
-    btn.textContent = '🎤'; btn.disabled = false; btn.classList.remove('primary'); $('#msgIn').placeholder = 'Ask Vanguard…';
+    btn.textContent = '🎤'; btn.disabled = false; btn.classList.remove('primary'); $('#msgIn').placeholder = 'Ask Cadet Foundry…';
     if (r.text) send(r.text); else if (r.error) alert(r.error); else $('#msgIn').placeholder = "Didn't catch that — try again.";
   };
 });

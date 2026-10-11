@@ -1,6 +1,6 @@
 'use strict';
 // Videos (0.2): official military videos. DVIDS videos saved on this device play right here, offline. YouTube
-// entries are links to the service's own channel -- they open YouTube in a new tab and need internet; Vanguard
+// entries are links to the service's own channel -- they open YouTube in a new tab and need internet; Cadet Foundry
 // never embeds YouTube (that would connect every Cadet's device to Google). Listeners in JS.
 const VIDEO_ICON = { army: '⭐', navy: '⚓', air_force: '✈️', marine_corps: '🦅', space_force: '🚀', joint: '🎖️' };
 

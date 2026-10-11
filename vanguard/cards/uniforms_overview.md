@@ -20,7 +20,7 @@ source: AR 670-1, Wear and Appearance of Army Uniforms and Insignia (26 January 
 
 **Army Green Service Uniform (AGSU)** (para 14-3) and **Army Service Uniform (ASU, the blue uniform)** (para 11-3) — worn on duty when the commander prescribes it, at social functions, and for official events such as memorial services, funerals, weddings and patriotic ceremonies. Both are authorized for commercial travel.
 
-Uniform rules change. If a drill sergeant's guidance differs from this card, follow the drill sergeant and ask Vanguard to look up the current paragraph.
+Uniform rules change. If a drill sergeant's guidance differs from this card, follow the drill sergeant and ask Cadet Foundry to look up the current paragraph.
 
 ## Quiz
 Q: Which regulation governs wear and appearance of Army uniforms? | A: AR 670-1

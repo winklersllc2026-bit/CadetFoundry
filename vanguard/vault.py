@@ -12,7 +12,7 @@ truncated or copied in from another profile or under another name fails to open 
     sealed file = b"RCV1" + 12-byte nonce + ciphertext (with tag)
     associated data = the file's name, so files can't be swapped or renamed into place
 
-Uses the `cryptography` package (PyCA; AES via OpenSSL). Without it Vanguard still runs, but PINs only
+Uses the `cryptography` package (PyCA; AES via OpenSSL). Without it Cadet Foundry still runs, but PINs only
 lock the app, not the files -- SECURITY.md says so and the status shows it.
 """
 from __future__ import annotations

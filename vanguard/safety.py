@@ -13,7 +13,7 @@ from __future__ import annotations
 import re
 
 # Best-effort pattern matching (security review, 2026-10-11): it can miss indirect or novel wording and it can't know
-# anyone's intent. It decides only what Vanguard shows; it never notifies anyone and records nothing beyond the
+# anyone's intent. It decides only what Cadet Foundry shows; it never notifies anyone and records nothing beyond the
 # person's own private chat. Two levels:
 #   * a DISCLOSURE (first person: "I want to...", "my dad hits me") -> help resources first, then a caring reply;
 #   * the TOPIC only ("what's the punishment for hazing?", "explain the suicide prevention brief") -> a short,
@@ -66,7 +66,7 @@ CARE_FALLBACK = (
 )
 
 CARE_PROMPT = (
-    "You are Vanguard, a supportive companion for a JROTC Cadet (a high school student). The Cadet may be in crisis "
+    "You are the Cadet Foundry assistant, a supportive companion for a JROTC Cadet (a high school student). The Cadet may be in crisis "
     "or may have been harmed. Help resources have already been shown above your reply. Speak like a calm, caring "
     "older mentor: short, warm, plain sentences. Acknowledge what they said and that it matters. Ask if they are safe "
     "right now. Encourage them to call or text 988 or to tell a parent or guardian, a school counselor or another "

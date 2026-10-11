@@ -1,10 +1,10 @@
-// vanguard.winklers-llc.com — Vanguard's public page (since 0.2.2). Downloads come from the public
+// vanguard.winklers-llc.com — Cadet Foundry's public page (since 0.2.2). Downloads come from the public
 // Vanguard-releases repo on GitHub; this site only serves the page and its screenshots.
 // Optional password: set the Worker secret VANGUARD_PAGE_PASSWORD to require one for every request
 // (npx wrangler secret put VANGUARD_PAGE_PASSWORD); while it's set, search engines are told not to list the page.
 // Public (the default): npx wrangler secret delete VANGUARD_PAGE_PASSWORD
 
-const REALM = 'Vanguard (private)';
+const REALM = 'Cadet Foundry (private)';
 
 function unauthorized(msg = 'Password required') {
   return new Response(msg, {

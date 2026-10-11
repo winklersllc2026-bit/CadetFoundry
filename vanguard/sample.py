@@ -1,12 +1,12 @@
 """
-The sample class: a finished classroom with made-up Cadets, for an instructor who wants to see what Vanguard does
+The sample class: a finished classroom with made-up Cadets, for an instructor who wants to see what Cadet Foundry does
 before setting anything up.
 
-It is a SEPARATE copy of Vanguard: its own throwaway data folder (next to the real one, named "...-sample") and its
+It is a SEPARATE copy of Cadet Foundry: its own throwaway data folder (next to the real one, named "...-sample") and its
 own port on this computer only. Real profiles, class records and settings are never opened, copied or changed, and
 "Leave sample" simply closes it. The folder is rebuilt from scratch every time the sample starts.
 
-    real Vanguard  --/api/sample/start-->  python run.py (VANGUARD_SAMPLE=1, VANGUARD_DATA=<...-sample>)
+    real Cadet Foundry  --/api/sample/start-->  python run.py (VANGUARD_SAMPLE=1, VANGUARD_DATA=<...-sample>)
                                             builds the class through its own API, then signs the visitor in
 """
 from __future__ import annotations
@@ -25,7 +25,7 @@ from pathlib import Path
 from vanguard import store
 
 ACTIVE = os.environ.get("VANGUARD_SAMPLE") == "1"     # this process IS the sample class
-BACK = os.environ.get("VANGUARD_SAMPLE_BACK", "")     # where "Leave sample" goes (the real Vanguard)
+BACK = os.environ.get("VANGUARD_SAMPLE_BACK", "")     # where "Leave sample" goes (the real Cadet Foundry)
 MARKER = "SAMPLE_DATA.txt"                            # only a folder with this file is ever deleted
 IDLE_LIMIT = 45 * 60                                  # an abandoned sample closes itself
 
@@ -44,7 +44,7 @@ CADETS = [  # name, squad (0 = Alpha, 1 = Bravo), year, cadet rank, billet, how 
 ]
 CADET_PIN = "482915"
 
-# Two short lessons built only from facts already in Vanguard's cited study cards.
+# Two short lessons built only from facts already in Cadet Foundry's cited study cards.
 LESSONS = [
     {"title": "The three branches of government", "let_level": 1, "competency": "Citizenship",
      "objective": "Name the three branches and what each one does.",
@@ -58,7 +58,7 @@ LESSONS = [
      "reflection": "Give one example of a branch checking another branch."},
     {"title": "Chain of command", "let_level": 1, "competency": "Leadership",
      "objective": "Know who leads whom, and why the chain matters.",
-     "source": "Vanguard study card: Chain of command",
+     "source": "Cadet Foundry study card: Chain of command",
      "content": "The chain of command runs from the President, the Commander in Chief, down to the newest member. "
                 "In the cadet corps it runs from the cadet commander down through platoon and squad leaders.",
      "questions": "Q: Who is at the top of the military chain of command?\n* The President\n- The first sergeant\n"
@@ -69,10 +69,10 @@ RIGHT = {"Three", "The legislative branch (Congress)", "The President"}
 
 _state = {"ready": False, "error": "", "step": "Starting"}
 _last_seen = time.time()
-_child: dict = {}                                     # in the real Vanguard: the sample process we started
+_child: dict = {}                                     # in the real Cadet Foundry: the sample process we started
 
 
-# ── the real Vanguard's side: start (or reuse) the sample ───────────────────
+# ── the real Cadet Foundry's side: start (or reuse) the sample ───────────────────
 
 def folder() -> Path:
     real = store.DATA.resolve()
@@ -86,7 +86,7 @@ def _prepare(path: Path) -> None:
             raise RuntimeError(f"{path} exists and isn't a sample folder, so it wasn't touched.")
         shutil.rmtree(path)
     path.mkdir(parents=True)
-    (path / MARKER).write_text("Vanguard's sample class: made-up people only. Safe to delete.\n", encoding="utf-8")
+    (path / MARKER).write_text("Cadet Foundry's sample class: made-up people only. Safe to delete.\n", encoding="utf-8")
     index = store.DATA / "library_index.json"         # the study library's search index (public content only):
     if index.is_file():                               # reused, so the sample starts in seconds instead of rebuilding it
         shutil.copyfile(index, path / index.name)
@@ -171,8 +171,8 @@ def _parent_port() -> int | None:
 
 
 def watch_idle(httpd, every: float = 60) -> None:
-    """Close an abandoned sample: the visitor closed the tab without leaving (45 idle minutes), or the Vanguard that
-    opened it is gone (it didn't answer twice in a row) -- a sample never outlives its Vanguard for long."""
+    """Close an abandoned sample: the visitor closed the tab without leaving (45 idle minutes), or the Cadet Foundry that
+    opened it is gone (it didn't answer twice in a row) -- a sample never outlives its Cadet Foundry for long."""
     port = _parent_port()
 
     def loop():
@@ -202,7 +202,7 @@ def enter() -> str | None:
 
 
 class _Client:
-    """The sample is built through Vanguard's own API, exactly as people would do it."""
+    """The sample is built through Cadet Foundry's own API, exactly as people would do it."""
 
     def __init__(self, port: int):
         self.port = port

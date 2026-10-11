@@ -14,7 +14,7 @@ session, which can write an answer but never read one back; answers are stored i
 open?" is plain (program/pilot_survey.json): a Cadet's screen needs it. Files from older versions (plain JSON) are
 read as they are and sealed the next time an instructor opens the pilot -- nothing is lost.
   * Instructor feedback: satisfaction, minutes saved per week, and "would you use this next semester?" (spec §50).
-  * The end-of-pilot report: every number comes from real records; what Vanguard can't measure is said plainly.
+  * The end-of-pilot report: every number comes from real records; what Cadet Foundry can't measure is said plainly.
 """
 from __future__ import annotations
 
@@ -33,11 +33,11 @@ METRICS = {"engagement": "Engagement (Cadets active each week)", "lessons": "Les
            "fitness": "Fitness improvement", "service": "Service participation",
            "workload": "Instructor workload", "feedback": "Cadet and instructor feedback"}
 SURVEY = [
-    ("learn", "Vanguard helped me learn the material."),
+    ("learn", "Cadet Foundry helped me learn the material."),
     ("lead", "The leadership scenarios helped me think about how to lead."),
     ("progress", "Seeing my progress motivated me."),
-    ("easy", "Vanguard was easy to use."),
-    ("again", "I'd like to keep using Vanguard."),
+    ("easy", "Cadet Foundry was easy to use."),
+    ("again", "I'd like to keep using Cadet Foundry."),
 ]
 SCALE = {1: "Strongly disagree", 2: "Disagree", 3: "Not sure", 4: "Agree", 5: "Strongly agree"}
 _lock = threading.Lock()
@@ -360,7 +360,7 @@ def end(priv: bytes) -> dict:
 
 
 # ── after class: the instructor's quick feedback (batch 3, owner 2026-10-11) ─
-# Product feedback only: how useful Vanguard was today, and four optional questions. No Cadet is named or counted
+# Product feedback only: how useful Cadet Foundry was today, and four optional questions. No Cadet is named or counted
 # here, and nothing leaves this device -- it's sealed with the program data key like the rest of the pilot.
 DAILY = "feedback_daily.json"
 DAILY_QUESTIONS = {"goal": "What were you trying to accomplish today?", "worked": "What worked?",
@@ -371,11 +371,11 @@ def add_class_feedback(priv: bytes, useful, again="", **answers) -> dict:
     try:
         useful = int(useful)
     except (TypeError, ValueError):
-        raise ValueError("How useful was Vanguard today: 1 to 5.") from None
+        raise ValueError("How useful was Cadet Foundry today: 1 to 5.") from None
     if not 1 <= useful <= 5:
-        raise ValueError("How useful was Vanguard today: 1 to 5.")
+        raise ValueError("How useful was Cadet Foundry today: 1 to 5.")
     if again not in ("", "yes", "maybe", "no"):
-        raise ValueError("Would you use Vanguard again: yes, maybe or no.")
+        raise ValueError("Would you use Cadet Foundry again: yes, maybe or no.")
     row = {"id": uuid.uuid4().hex[:8], "date": time.strftime("%Y-%m-%d"), "at": round(time.time(), 3),
            "useful": useful, "again": again,
            **{k: str(answers.get(k) or "").strip()[:1000] for k in DAILY_QUESTIONS}}

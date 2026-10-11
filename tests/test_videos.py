@@ -47,7 +47,7 @@ class CatalogTests(unittest.TestCase):
             self.assertIsNone(videos.path_for_request(bad), bad)
 
     def test_the_page_never_embeds_youtube(self):
-        """An embedded YouTube player would connect every Cadet's device to Google; Vanguard only links out."""
+        """An embedded YouTube player would connect every Cadet's device to Google; Cadet Foundry only links out."""
         js = (ROOT / "web" / "js" / "videos.js").read_text(encoding="utf-8")
         self.assertNotRegex(js, r"<iframe|youtube\.com/embed|youtube-nocookie")
         csp = security.SECURITY_HEADERS["Content-Security-Policy"]
@@ -57,7 +57,7 @@ class CatalogTests(unittest.TestCase):
 class DvidsCacheTests(unittest.TestCase):
     def test_saved_copies_follow_dvids(self):
         """DVIDS API terms (I.E, Caching): copies of removed videos are deleted, details are kept current, and files
-        no longer in Vanguard's list are cleaned up."""
+        no longer in Cadet Foundry's list are cleaned up."""
         import io
         import urllib.error
         sys.path.insert(0, str(ROOT / "tools"))

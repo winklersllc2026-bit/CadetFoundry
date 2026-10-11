@@ -61,7 +61,7 @@ def _shape_ok(name: str, value) -> bool:
 def restore(data: dict) -> dict:
     """Replace this device's data with the backup's. Returns what was restored."""
     if not isinstance(data, dict) or data.get("vanguard_backup") != VERSION:
-        raise ValueError("That isn't a Vanguard backup file.")
+        raise ValueError("That isn't a Cadet Foundry backup file.")
     restored = []
     for f in JSON_FILES:                             # config.json is never restored (device settings)
         v = data.get("json", {}).get(f)

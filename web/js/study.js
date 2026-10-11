@@ -252,7 +252,7 @@ async function jobsExplorer(q = '', area = '', service = '', meetsOnly = false) 
         <h2>${j.code ? esc(j.code) + ' · ' : ''}${esc(j.title)}</h2><p>${esc(j.summary)}</p>
         ${j.asvab_text ? `<p><b>Minimum ASVAB line scores listed:</b> ${esc(j.asvab_text)}${j.meets === true ? ' — <span style="color:var(--green)">your scores meet this</span>' : j.meets === false ? ' — your scores are below this' : ''}</p>` : ''}
         <p class="faint">Source: ${esc(r.sources[j.service] || '')}${j.url ? ` (${esc(j.url)})` : ''}. Requirements and openings change — check with a recruiter.</p></div>
-      <div class="row"><button class="btn primary" id="askJob">Ask Vanguard about this job</button></div>`;
+      <div class="row"><button class="btn primary" id="askJob">Ask Cadet Foundry about this job</button></div>`;
     $('#backJobs').onclick = () => again();
     $('#askJob').onclick = () => { openView('ask'); send(`Tell me about the ${svcName(j.service)} job ${j.code} ${j.title}. What does the training look like and what should I know?`); };
   });
@@ -264,15 +264,15 @@ studyBody.addEventListener('click', async e => {
     const card = await api('/api/card?id=' + encodeURIComponent(c.dataset.card));
     studyBody.innerHTML = `<button class="btn small" id="backStudy">← Study</button>
       <div class="card" style="margin-top:12px"><h2>${esc(card.title)}</h2><div class="faint">Source: ${esc(card.source)}</div>
-      ${card.verified === false ? '<div class="faint" style="color:var(--tan);margin-top:6px">⚠️ Vanguard couldn\'t check this card against the current manual — confirm it with your cadre.</div>' : ''}
+      ${card.verified === false ? '<div class="faint" style="color:var(--tan);margin-top:6px">⚠️ Cadet Foundry couldn\'t check this card against the current manual — confirm it with your cadre.</div>' : ''}
       <div class="cardbody" style="margin-top:10px">${md(card.body)}</div></div>
       <div class="row"><button class="btn primary" data-quiz="${esc(card.id)}">Quiz me on this</button>
-      <button class="btn" id="askAbout">Ask Vanguard about it</button></div>`;
+      <button class="btn" id="askAbout">Ask Cadet Foundry about it</button></div>`;
     $('#backStudy').onclick = loaders.study;
     $('#askAbout').onclick = () => { openView('ask'); send('Help me understand: ' + card.title); };
   }
 });
-// Quizzes are a chat feed: Vanguard asks, the Cadet types an answer, Vanguard grades it on the device. Nothing is
+// Quizzes are a chat feed: Cadet Foundry asks, the Cadet types an answer, Cadet Foundry grades it on the device. Nothing is
 // self-reported and the answer isn't sent to the screen until after the Cadet answers (owner's rule: scores must be
 // real). `daily` marks Daily 10 answers so today's score is counted from graded answers.
 const QUIZ_NOTE = "Getting one wrong doesn't mean anything bad. A lot of these are just facts — knowing them doesn't make " +
@@ -313,7 +313,7 @@ async function startQuiz(topic, preset, onDone, daily = false, mode = 'typed') {
   const say = (who, html) => {
     const m = document.createElement('div');
     m.className = 'msg ' + (who === 'me' ? 'me' : 'ai');
-    m.innerHTML = (who === 'me' ? '' : '<div class="who">VANGUARD</div>') + html;
+    m.innerHTML = (who === 'me' ? '' : '<div class="who">CADET FOUNDRY</div>') + html;
     feed.appendChild(m); m.scrollIntoView({ block: 'end' });
   };
   $('#quit').onclick = loaders.study;
@@ -490,7 +490,7 @@ function nineLine() {
   $('#backStudy').onclick = loaders.study; $('#nineNext').onclick = nineLine;
   const stopClock = drillClock($('#clock')); let timed = false;
   if (STATUS.voice && navigator.mediaDevices) {
-    // Say the whole request like on the radio; Vanguard listens for radio words only (on this device).
+    // Say the whole request like on the radio; Cadet Foundry listens for radio words only (on this device).
     const say = document.createElement('div');
     say.className = 'card';
     say.innerHTML = `<div class="row" style="justify-content:space-between"><div><b>🎤 Say it on the radio</b>
@@ -714,7 +714,7 @@ async function showBct(st) {
 }
 
 // ── BOARD PREP ──
-// A 🎤 button that fills a text box using Vanguard's own offline recognizer (only when voice is installed).
+// A 🎤 button that fills a text box using Cadet Foundry's own offline recognizer (only when voice is installed).
 function micInto(btn, box) {
   if (!(STATUS.voice && navigator.mediaDevices)) { btn.hidden = true; return; }
   btn.onclick = async () => {
@@ -776,7 +776,7 @@ async function mockBoard(topic = '') {
     micInto($('#mbMic'), $('#mbAns'));
     const submit = async skipped => {
       $('#mbGo').disabled = $('#mbSkip').disabled = true;
-      // graded and recorded by Vanguard on the device -- no "count it right" button (scores are never self-reported)
+      // graded and recorded by Cadet Foundry on the device -- no "count it right" button (scores are never self-reported)
       const g = await api('/api/board/grade', { id: q.id, answer: skipped ? '' : $('#mbAns').value });
       const [label, color] = VERDICT[g.verdict] || VERDICT.nogo;
       if (g.verdict === 'go') right++;
@@ -844,7 +844,7 @@ const POCKET = [
     <li><b>Personal Courage</b> — Face fear, danger or adversity (physical or moral).</li></ul>`, 'U.S. Army, army.mil/values'],
 ];
 function pocketCards() {
-  const cards = POCKET.map(([t, body, src]) => `<div class="pc"><h4>${t}</h4>${body}<div class="src">Source: ${src} · Vanguard study aid</div></div>`).join('');
+  const cards = POCKET.map(([t, body, src]) => `<div class="pc"><h4>${t}</h4>${body}<div class="src">Source: ${src} · Cadet Foundry study aid</div></div>`).join('');
   studyBody.innerHTML = `<button class="btn small" id="backStudy">← Study</button>
     <div class="card" style="margin-top:12px"><h3>🖨️ Pocket cards</h3>
       <p class="faint">Prints on one letter page, black on white (even in night mode). Cut along the dashed lines. Only text checked against its official source is included.</p>

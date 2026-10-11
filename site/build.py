@@ -30,7 +30,8 @@ from vanguard import __version__  # noqa: E402
 REPO = "https://github.com/winklersllc2026-bit/Vanguard"                    # the code: private
 RELEASES_REPO = "winklersllc2026-bit/Vanguard-releases"                     # downloads only: public, no source code
 RELEASES = f"https://github.com/{RELEASES_REPO}"
-LATEST = "Vanguard-Setup-latest.exe"            # uploaded with every release (python site/build.py --release)
+LATEST = "CadetFoundry-Setup-latest.exe"        # uploaded with every release (python site/build.py --release)
+OLD_LATEST = "Vanguard-Setup-latest.exe"        # the same file under the name used before the rename (old links)
 LATEST_URL = f"{RELEASES}/releases/latest/download/{LATEST}"
 
 INCLUDE_DIRS = ["vanguard", "web", "tools", "tests", "faith", "library", "books"]
@@ -49,7 +50,7 @@ ROADMAP = [
     (True, "Roles: Cadet, guardian and instructor profiles; Class PIN; class records only for the instructor"),
     (True, "Classes, platoons and squads; lessons assigned to everyone, units or Cadets (late joiners get them once)"),
     (True, "Learn: 200+ study cards from official U.S. government and military sources, each citing its source"),
-    (True, "Quizzes typed and graded by Vanguard — Practice (multiple choice) and Challenge (typed); never self-reported"),
+    (True, "Quizzes typed and graded by Cadet Foundry — Practice (multiple choice) and Challenge (typed); never self-reported"),
     (True, "Leadership scenarios (20) with a leadership log; classroom vote on the projector"),
     (True, "Live in-class pop quiz: one question on the projector, Cadets answer on their devices, counts only"),
     (True, "Train: fitness events and goals measured against yourself"),
@@ -118,7 +119,7 @@ PYTHON_UNUSED = ("sqlite3.dll", "_sqlite3.pyd", "_elementtree.pyd", "_lzma.pyd",
 
 
 def bundle_python(app: Path) -> bool:
-    """Put Python (embeddable) + the cryptography package in app/python. Vanguard then runs as
+    """Put Python (embeddable) + the cryptography package in app/python. Cadet Foundry then runs as
     python\\pythonw.exe run.py -- no console window."""
     import io
     import urllib.request
@@ -156,7 +157,7 @@ def bundle_python(app: Path) -> bool:
 
 
 def make_installer(zip_path: Path, dest: Path) -> bool:
-    """Vanguard-Setup-<version>.exe (Inno Setup, like Vanguard's): copies the app and makes the icons.
+    """CadetFoundry-Setup-<version>.exe (Inno Setup): copies the app and makes the icons.
     Setup (Python, libraries, AI) runs only from the checkbox on its last page."""
     exe = iscc()
     if not exe:
@@ -253,24 +254,24 @@ footer { padding:36px 0 60px; color:var(--muted); font-size:15px; } footer a { c
 .mono { font-family:ui-monospace,Consolas,monospace; }
 """
 
-DISCLAIMER = ("Vanguard is designed to support JROTC instruction. It is not an official JROTC, Army, Navy, Air Force, "
+DISCLAIMER = ("Cadet Foundry is designed to support JROTC instruction. It is not an official JROTC, Army, Navy, Air Force, "
               "Marine Corps, Space Force or school product, does not replace your instructor or your program's "
               "curriculum, and makes no claim of endorsement.")
 
 
 def shell(title: str, here: str, body: str, description: str = "") -> str:
-    desc = description or ("Vanguard runs your JROTC class from one laptop. Cadets join from their phones with a QR "
+    desc = description or ("Cadet Foundry runs your JROTC class from one laptop. Cadets join from their phones with a QR "
                            "code. Lessons, leadership scenarios, live questions and videos — private, no internet needed, free during the pilot.")
     return f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{html.escape(title)}</title><meta name="description" content="{html.escape(desc)}">
 <link rel="icon" href="/icon.svg" type="image/svg+xml"><style>{STYLE}</style></head><body>
-<header class="top"><div class="wrap"><a class="brand" href="/"><span>✦</span> VANGUARD</a>
+<header class="top"><div class="wrap"><a class="brand" href="/"><span>✦</span> CADET FOUNDRY</a>
 <nav><a href="/#class-day" class="hide-sm">How it works</a><a href="/#setup" class="hide-sm">Set up</a>
 <a href="/security">Privacy</a><a class="btn small" href="/#download">Download</a></nav></div></header>
 {body}
 <footer><div class="wrap"><p>{html.escape(DISCLAIMER)}</p>
-<p>A free community project — the Vanguard project · <a href="/security">Privacy and security</a> · <a href="/terms">Terms of use</a> · <a href="/privacy">Privacy notice</a> · <a href="/pilot">Run a pilot</a> · <a href="mailto:support@winklers-llc.com">support@winklers-llc.com</a> · Version {html.escape(__version__)}</p></div></footer>
+<p>A free community project — the Cadet Foundry project · <a href="/security">Privacy and security</a> · <a href="/terms">Terms of use</a> · <a href="/privacy">Privacy notice</a> · <a href="/pilot">Run a pilot</a> · <a href="mailto:support@winklers-llc.com">support@winklers-llc.com</a> · Version {html.escape(__version__)}</p></div></footer>
 </body></html>"""
 
 
@@ -278,12 +279,12 @@ def page(zip_name: str, size: int, commit: str, history, sha: str = "", setup=No
     esc = html.escape
     if setup:
         setup_link = f"{RELEASES}/releases/latest/download/{LATEST}"
-        download = f"""<a class="btn" href="{esc(setup_link)}">⬇ Download Vanguard for Windows</a>
+        download = f"""<a class="btn" href="{esc(setup_link)}">⬇ Download Cadet Foundry for Windows</a>
           <p class="fine" style="margin-top:14px">Free during the pilot · version {esc(__version__)} · {setup[1] / 2**20:.0f} MB ·
           <a href="{esc(RELEASES)}/releases/latest">other downloads (zip for a USB drive, Linux, Raspberry Pi)</a></p>
           <p class="fine">SHA-256 of the installer: <span class="mono">{esc(setup[2])}</span></p>"""
     else:
-        download = f'<a class="btn" href="{esc(RELEASES)}/releases/latest">⬇ Download Vanguard</a>'
+        download = f'<a class="btn" href="{esc(RELEASES)}/releases/latest">⬇ Download Cadet Foundry</a>'
     body = f"""
 <section class="hero"><div class="wrap">
   <p class="kicker">For JROTC instructors</p>
@@ -301,7 +302,7 @@ def page(zip_name: str, size: int, commit: str, history, sha: str = "", setup=No
   <h2>Three steps. That's the whole thing.</h2>
   <div class="steps">
     <div class="step"><div class="text"><span class="num">1</span><h3>Press Start class and pick today's plan</h3>
-      <p class="lead" style="font-size:19px">Tick a lesson, a leadership scenario or two, a few live questions and a video. Vanguard turns it into
+      <p class="lead" style="font-size:19px">Tick a lesson, a leadership scenario or two, a few live questions and a video. Cadet Foundry turns it into
       a run sheet — one button for each thing, in order.</p></div>
       <img class="shot" src="/shots/instructor-home.png" alt="The instructor's Home screen with a big Start class button" loading="lazy"></div>
     <div class="step"><div class="text"><span class="num">2</span><h3>Cadets scan the code on the projector</h3>
@@ -319,7 +320,7 @@ def page(zip_name: str, size: int, commit: str, history, sha: str = "", setup=No
 <section class="alt" id="offline"><div class="wrap">
   <p class="kicker">Built for the classroom</p>
   <h2>No internet required.</h2>
-  <p class="lead">Vanguard runs on your laptop. Cadets connect to it over your classroom Wi-Fi — that Wi-Fi doesn't need to reach the internet.</p>
+  <p class="lead">Cadet Foundry runs on your laptop. Cadets connect to it over your classroom Wi-Fi — that Wi-Fi doesn't need to reach the internet.</p>
   <div class="grid">
     <div class="card"><span class="ic">📶</span><h3>Works offline</h3><p>Everything you need for class runs with no internet connection at all.</p></div>
     <div class="card"><span class="ic">☁️</span><h3>No student accounts in the cloud</h3><p>Cadets sign in with a name and a PIN on your laptop. Nothing to sign up for, nothing stored online.</p></div>
@@ -337,7 +338,7 @@ def page(zip_name: str, size: int, commit: str, history, sha: str = "", setup=No
     <div class="card"><span class="ic">🔒</span><h3>Private by design</h3><p>Everything stays on your laptop. No cloud, no accounts, no ads, no tracking. Each Cadet's work is locked with their own PIN.</p></div>
     <div class="card"><span class="ic">📶</span><h3>No internet needed</h3><p>Works in a classroom with no internet at all. Cadets only need to be on the same Wi-Fi as your laptop.</p></div>
     <div class="card"><span class="ic">📘</span><h3>Every branch, official sources</h3><p>Army, Navy, Air Force, Marine Corps and Space Force study cards — each one names the official manual or page it comes from.</p></div>
-    <div class="card"><span class="ic">💲</span><h3>Free during the pilot</h3><p>Nothing for your school to buy while we pilot Vanguard with JROTC programs. Your laptop is the whole system — no server, no subscription to manage.</p></div>
+    <div class="card"><span class="ic">💲</span><h3>Free during the pilot</h3><p>Nothing for your school to buy while we pilot Cadet Foundry with JROTC programs. Your laptop is the whole system — no server, no subscription to manage.</p></div>
   </div>
 </div></section>
 
@@ -345,7 +346,7 @@ def page(zip_name: str, size: int, commit: str, history, sha: str = "", setup=No
   <p class="kicker">What's inside</p>
   <h2>Everything a Cadet needs, on their phone.</h2>
   <p class="lead">Cadets get their own Home screen: what's due, a Daily 10 quiz, and anything you start in class. They study
-  every branch of service, take quizzes Vanguard grades for them, and keep a leadership log.</p>
+  every branch of service, take quizzes Cadet Foundry grades for them, and keep a leadership log.</p>
   <div class="phones">
     <figure><img class="shot phone" src="/shots/phone-home.png" alt="A Cadet's Home screen" loading="lazy"><figcaption>A Cadet's Home</figcaption></figure>
     <figure><img class="shot phone" src="/shots/phone-learn.png" alt="Learn: assignments and study sections for every branch" loading="lazy"><figcaption>Learn: every branch</figcaption></figure>
@@ -368,12 +369,12 @@ def page(zip_name: str, size: int, commit: str, history, sha: str = "", setup=No
   <h2>Ready in about five minutes.</h2>
   <p class="lead">No admin password on most laptops. Nothing for Cadets to install. (If your school manages your laptop, IT may need to approve new software first.)</p>
   <ol class="setup">
-    <li><b>Download Vanguard and double-click it.</b><p>Click Next until it's done. A Vanguard icon appears on your desktop.
+    <li><b>Download Cadet Foundry and double-click it.</b><p>Click Next until it's done. A Cadet Foundry icon appears on your desktop.
       If Windows shows a blue box that says <i>"Windows protected your PC"</i>, click <b>More info</b>, then <b>Run anyway</b>.</p></li>
-    <li><b>Open Vanguard and make your Class PIN.</b><p>Just looking? Choose <b>See a sample class</b> to explore a finished class with made-up Cadets first.
+    <li><b>Open Cadet Foundry and make your Class PIN.</b><p>Just looking? Choose <b>See a sample class</b> to explore a finished class with made-up Cadets first.
       When you're ready, tick the box to agree to the <a href="/terms">Terms of use</a> and <a href="/privacy">Privacy notice</a>, choose "I'm the instructor", pick your JROTC program, and make two PINs:
       a <b>Class PIN</b> that opens your class, and your own PIN. Write down the backup code it shows you.</p></li>
-    <li><b>On class day, press "Open class to phones".</b><p>It's on your Home screen in Vanguard. The Join screen with the QR
+    <li><b>On class day, press "Open class to phones".</b><p>It's on your Home screen in Cadet Foundry. The Join screen with the QR
       code is one tap away — put it on the projector, then press <b>▶ Start class</b>. Your Home screen walks you through anything left to do.</p></li>
   </ol>
   <div class="tip"><b>If Cadets' phones can't connect:</b> some school Wi-Fi blocks devices from talking to each other. Ask IT to
@@ -397,40 +398,40 @@ def page(zip_name: str, size: int, commit: str, history, sha: str = "", setup=No
 <section class="alt"><div class="wrap" style="max-width:860px">
   <p class="kicker">Questions</p>
   <h2>Good to know</h2>
-  <details><summary>Does it cost anything?</summary><p>Not during the pilot. Vanguard is free to download and use while we pilot it with JROTC programs.</p></details>
+  <details><summary>Does it cost anything?</summary><p>Not during the pilot. Cadet Foundry is free to download and use while we pilot it with JROTC programs.</p></details>
   <details><summary>Does it need the internet?</summary><p>No. Your laptop runs everything. Cadets only need to join the same Wi-Fi as your laptop — that Wi-Fi doesn't need internet.</p></details>
   <details><summary>What do Cadets need?</summary><p>Any phone, tablet, Chromebook or school computer with a web browser. Nothing to install and no accounts to make — a name and a PIN.</p></details>
   <details><summary>What computer do I need?</summary><p>A Windows laptop. (It also runs on Linux and a Raspberry Pi.) No special hardware.</p></details>
-  <details><summary>Can Cadets study at home?</summary><p>Yes. Vanguard can run from a USB flash drive with no installation, and each Cadet can have their own drive. Their work stays on the drive, locked with their PIN.</p></details>
-  <details><summary>Is this an official JROTC product?</summary><p>No. Vanguard is designed to support JROTC instruction, but it isn't an official JROTC, military or school product, and it doesn't replace your program's curriculum. Study material comes from official public sources, and each card says which one.</p></details>
-  <details><summary>Who makes Vanguard?</summary><p>Vanguard is a free community project — the Vanguard project. It isn't a company product. Questions, problems, or a copy for another instructor: <a href="mailto:support@winklers-llc.com">support@winklers-llc.com</a>.</p></details>
-  <details><summary>Can I try it without setting anything up?</summary><p>Yes. On Vanguard's first screen, choose <b>See a sample class</b>. It opens a separate copy with eight made-up Cadets, lessons, scenarios and a pilot in progress. Leave it and nothing of yours has changed.</p></details>
-  <details><summary>What if a Cadet forgets their PIN?</summary><p>When they make their PIN, Vanguard shows a one-time backup code. With it they can choose a new PIN — their work stays protected the whole time.</p></details>
+  <details><summary>Can Cadets study at home?</summary><p>Yes. Cadet Foundry can run from a USB flash drive with no installation, and each Cadet can have their own drive. Their work stays on the drive, locked with their PIN.</p></details>
+  <details><summary>Is this an official JROTC product?</summary><p>No. Cadet Foundry is designed to support JROTC instruction, but it isn't an official JROTC, military or school product, and it doesn't replace your program's curriculum. Study material comes from official public sources, and each card says which one.</p></details>
+  <details><summary>Who makes Cadet Foundry?</summary><p>Cadet Foundry is a free community project — the Cadet Foundry project. It isn't a company product. Questions, problems, or a copy for another instructor: <a href="mailto:support@winklers-llc.com">support@winklers-llc.com</a>.</p></details>
+  <details><summary>Can I try it without setting anything up?</summary><p>Yes. On Cadet Foundry's first screen, choose <b>See a sample class</b>. It opens a separate copy with eight made-up Cadets, lessons, scenarios and a pilot in progress. Leave it and nothing of yours has changed.</p></details>
+  <details><summary>What if a Cadet forgets their PIN?</summary><p>When they make their PIN, Cadet Foundry shows a one-time backup code. With it they can choose a new PIN — their work stays protected the whole time.</p></details>
 </div></section>
 
 <section id="download" class="dl"><div class="wrap">
   <h2>Try it with your next class.</h2>
-  <p class="lead">Download Vanguard, set your Class PIN, and press Start class. If it doesn't make your day easier, uninstall it — nothing to cancel.</p>
+  <p class="lead">Download Cadet Foundry, set your Class PIN, and press Start class. If it doesn't make your day easier, uninstall it — nothing to cancel.</p>
   {download}
 </div></section>"""
-    return shell("Vanguard — run your JROTC class from one laptop", "home", body)
+    return shell("Cadet Foundry — run your JROTC class from one laptop", "home", body)
 
 
 def pilot_page() -> str:
     body = """<section class="hero"><div class="wrap" style="max-width:860px">
 <p class="kicker">For programs and schools</p><h1 style="font-size:clamp(32px,5vw,52px)">Run a pilot</h1>
-<p class="lead">A pilot shows whether Vanguard helps <i>your</i> program — measured from real class records, not guesses.</p>
+<p class="lead">A pilot shows whether Cadet Foundry helps <i>your</i> program — measured from real class records, not guesses.</p>
 <ol class="setup">
-<li><b>Set it up</b><p>In Vanguard: Instructor → Pilot. School, dates, how many Cadets, and what to measure — engagement, lesson completion, academics, leadership scenarios, fitness, service, your workload, feedback.</p></li>
+<li><b>Set it up</b><p>In Cadet Foundry: Instructor → Pilot. School, dates, how many Cadets, and what to measure — engagement, lesson completion, academics, leadership scenarios, fitness, service, your workload, feedback.</p></li>
 <li><b>Take a snapshot on day one</b><p>Then about once a week. The report shows the change over the pilot.</p></li>
 <li><b>Teach as usual</b><p>Assign lessons, run scenarios and live questions, record fitness and service.</p></li>
 <li><b>Open the Cadet survey near the end</b><p>Five short questions, stored with no name or ID.</p></li>
-<li><b>Print the pilot report</b><p>Every number comes from real records, and what Vanguard can't measure is said plainly.</p></li>
+<li><b>Print the pilot report</b><p>Every number comes from real records, and what Cadet Foundry can't measure is said plainly.</p></li>
 </ol>
 <div class="tip"><b>What a school needs:</b> one Windows laptop for the instructor and Cadets' devices on the same Wi-Fi. No server, no cloud account, no subscription.</div>
 <p style="margin-top:24px">Interested? Email <a href="mailto:support@winklers-llc.com">support@winklers-llc.com</a> to talk about a pilot.</p>
 </div></section>"""
-    return shell("Vanguard — Run a pilot", "pilot", body)
+    return shell("Cadet Foundry — Run a pilot", "pilot", body)
 
 
 def _md_page(md_text: str) -> str:
@@ -463,28 +464,28 @@ def legal_page(doc: str) -> str:
     name, title = {"terms": ("TERMS.md", "Terms of use"), "privacy": ("PRIVACY.md", "Privacy notice")}[doc]
     body = (f'<section class="hero"><div class="wrap" style="max-width:860px">'
             f'{_md_page((ROOT / "vanguard" / "legal" / name).read_text(encoding="utf-8"))}</div></section>')
-    return shell(f"Vanguard — {title}", doc, body)
+    return shell(f"Cadet Foundry — {title}", doc, body)
 
 
 def security_page() -> str:
     body = """<section class="hero"><div class="wrap" style="max-width:860px">
 <p class="kicker">Privacy and security</p><h1 style="font-size:clamp(32px,5vw,52px)">Built for minors' data from the start</h1>
 <ul class="checks">
-<li><b>Everything is stored on the instructor's laptop</b> (or the USB drive Vanguard runs from). No cloud, no outside accounts, no tracking, no advertising.</li>
+<li><b>Everything is stored on the instructor's laptop</b> (or the USB drive Cadet Foundry runs from). No cloud, no outside accounts, no tracking, no advertising.</li>
 <li><b>Each profile has its own PIN, and its files are encrypted</b> (AES-256-GCM, with the key locked by the PIN).</li>
 <li><b>The instructor sees class records only</b> — lessons, quizzes, exams, leadership scenarios, fitness and service. A Cadet's private check-ins, chats and notes are sealed with that Cadet's own key; the instructor can't open them.</li>
 <li><b>Two keys for class records:</b> the instructor's own PIN and the Class PIN.</li>
 <li><b>Cadets never see another Cadet's work</b>, and there are no public leaderboards. Class votes show totals only.</li>
-<li><b>Assigned quizzes can't be faked:</b> Cadets type or pick answers and Vanguard grades them; the answer isn't sent to the screen early.</li>
-<li><b>Minimal data about minors:</b> Vanguard asks for a name and a PIN — no email, phone number, photos or birth date. Whatever else a Cadet types stays in their own encrypted files.</li>
+<li><b>Assigned quizzes can't be faked:</b> Cadets type or pick answers and Cadet Foundry grades them; the answer isn't sent to the screen early.</li>
+<li><b>Minimal data about minors:</b> Cadet Foundry asks for a name and a PIN — no email, phone number, photos or birth date. Whatever else a Cadet types stays in their own encrypted files.</li>
 <li><b>The classroom network:</b> other devices on the Wi-Fi see shortened names before sign-in, and a profile without a PIN can only be opened on the instructor's own computer. Requests from other websites, and from addresses other than the laptop's own, are refused. Traffic on that network isn't encrypted (plain HTTP), so use a hotspot only your class joins.</li>
-<li><b>No internet unless you choose it:</b> Vanguard never connects to the internet on its own. Optional online AI is off unless the device owner turns it on with their own key; then only ordinary Ask questions go to it, without names, notes or earlier chats.</li>
+<li><b>No internet unless you choose it:</b> Cadet Foundry never connects to the internet on its own. Optional online AI is off unless the device owner turns it on with their own key; then only ordinary Ask questions go to it, without names, notes or earlier chats.</li>
 <li><b>Ask is private, not monitored:</b> a safety check shows help numbers (988, 911) when a message sounds unsafe. It notifies no one.</li>
 <li><b>Forgotten PIN:</b> each person gets a one-time backup code. There is no master key for private files — not even for us.</li>
 </ul>
 <div class="tip"><b>For school IT:</b> turn on full-disk encryption (BitLocker) on the instructor's laptop, keep Windows updated, and use a standard (non-admin) account day to day. For the classroom, a dedicated hotspot or travel router that only the class joins is better than open or guest Wi-Fi. Full technical details — threats, protections and the automated attack tests — are in SECURITY.md with the code.</div>
 </div></section>"""
-    return shell("Vanguard — Privacy and security", "security", body)
+    return shell("Cadet Foundry — Privacy and security", "security", body)
 
 
 def main() -> int:
@@ -493,7 +494,7 @@ def main() -> int:
         shutil.rmtree(old) if old.is_dir() else old.unlink()
     if not (ROOT / "faith" / "catalog.json").exists():
         print("Note: faith library not installed — run python tools/fetch_faith.py first to include it.")
-    zip_name = f"Vanguard-{__version__}.zip"
+    zip_name = f"CadetFoundry-{__version__}.zip"
     size = make_zip(DIST / zip_name)
     commit = git("rev-parse", "--short", "HEAD")
     history = []
@@ -501,7 +502,7 @@ def main() -> int:
         h, d, s = (line.split("|", 2) + ["", ""])[:3]
         history.append((h, d, s))
     sha = hashlib.sha256((DIST / zip_name).read_bytes()).hexdigest()
-    setup_name, setup = f"Vanguard-Setup-{__version__}.exe", None
+    setup_name, setup = f"CadetFoundry-Setup-{__version__}.exe", None
     if make_installer(DIST / zip_name, DIST / setup_name):
         data = (DIST / setup_name).read_bytes()
         setup = (setup_name, len(data), hashlib.sha256(data).hexdigest())
@@ -530,16 +531,18 @@ def main() -> int:
               "— copy it next to the zip on the USB stick for Me → Install an update")
     else:
         print("Not signed (no release key). Devices only install signed updates — see tools/sign.py.")
-    if "--release" in sys.argv:                 # like Vanguard: the installer as a plain GitHub release download
-        setup_exe = DIST / f"Vanguard-Setup-{__version__}.exe"
+    if "--release" in sys.argv:                 # the installer as a plain GitHub release download
+        setup_exe = DIST / f"CadetFoundry-Setup-{__version__}.exe"
         if setup_exe.exists():                    # a fixed name, so the page's button always gets the newest one
             shutil.copy(setup_exe, DIST / LATEST)
-        files = [str(p) for p in sorted(DIST.glob("Vanguard*")) if p.suffix in (".exe", ".zip", ".sig")]
+            shutil.copy(setup_exe, DIST / OLD_LATEST)   # links shared before the rename keep working
+        files = [str(p) for p in sorted(DIST.glob(f"CadetFoundry*{__version__}*")) if p.suffix in (".exe", ".zip", ".sig")]
+        files += [str(DIST / n) for n in (LATEST, OLD_LATEST) if (DIST / n).exists()]
         tag = f"v{__version__}"
-        notes = "Windows: download Vanguard-Setup and run it (More info -> Run anyway). Linux: the zip."
+        notes = "Windows: download CadetFoundry-Setup and run it (More info -> Run anyway). Linux: the zip."
         # to the public releases repo: anyone can download, and the code repo stays private
         r = subprocess.run(["gh", "release", "create", tag, *files, "--repo", RELEASES_REPO,
-                            "--title", f"Vanguard {__version__}", "--notes", notes], cwd=ROOT)
+                            "--title", f"Cadet Foundry {__version__}", "--notes", notes], cwd=ROOT)
         if r.returncode != 0:                     # release already there: replace its files
             r = subprocess.run(["gh", "release", "upload", tag, *files, "--clobber", "--repo", RELEASES_REPO], cwd=ROOT)
         if r.returncode != 0:
@@ -548,7 +551,7 @@ def main() -> int:
     if "--deploy" in sys.argv:
         # downloads come from the public releases repo, not the site (Cloudflare's 25 MB limit): tell wrangler to skip
         # them -- they stay in site/dist, where tools/make_usb.py picks up the installer for the drive
-        (DIST / ".assetsignore").write_text("Vanguard*\n*.sig\n", encoding="utf-8")
+        (DIST / ".assetsignore").write_text("CadetFoundry*\nVanguard*\n*.sig\n", encoding="utf-8")
         return subprocess.run(f"npx --yes wrangler@{WRANGLER} deploy", cwd=SITE, shell=True).returncode
     return 0
 

@@ -11,7 +11,7 @@ source: Earlier editions of TC 7-21.13, The Soldier's Guide (not in the 17 Septe
 
 General orders apply to every Soldier on guard. Special orders are the extra instructions for one specific post.
 
-**Check the wording with your drill sergeant** — the current Soldier's Guide no longer prints the General Orders, and no current public manual does, so Vanguard can't confirm this is today's exact wording.
+**Check the wording with your drill sergeant** — the current Soldier's Guide no longer prints the General Orders, and no current public manual does, so Cadet Foundry can't confirm this is today's exact wording.
 
 ## Quiz
 Q: Recite General Order Number 1. | A: I will guard everything within the limits of my post and quit my post only when properly relieved.

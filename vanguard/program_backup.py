@@ -22,8 +22,8 @@ profiles are not touched. How it's done safely:
      The three newest are kept.
   4. program.restoring/ is renamed into place, then the key files are put in place.
 
-If Vanguard stops part-way, finish_pending() (run at every start) completes a restore that was ready, or puts the
-safety copy back -- there's never "no program". To undo a restore by hand: close Vanguard, rename program/ out of the
+If Cadet Foundry stops part-way, finish_pending() (run at every start) completes a restore that was ready, or puts the
+safety copy back -- there's never "no program". To undo a restore by hand: close Cadet Foundry, rename program/ out of the
 way, rename the newest program.before-restore-*/ to program/, and copy its _device_*.json files back as program.json
 and admin.json in the data folder.
 """
@@ -73,7 +73,7 @@ def _decode(files: dict) -> dict[str, bytes]:
     """Every file, decoded and checked -- or ValueError, before anything on this device changes."""
     allowed = {"program/" + n for n in PROGRAM_FILES} | set(DEVICE_FILES)
     if not isinstance(files, dict) or not files or not set(files) <= allowed:
-        raise ValueError("That backup contains files Vanguard doesn't expect, so it wasn't restored.")
+        raise ValueError("That backup contains files Cadet Foundry doesn't expect, so it wasn't restored.")
     out = {}
     for name, b64 in files.items():
         if not isinstance(b64, str) or len(b64) > MAX_FILE * 4 // 3 + 8:
@@ -95,13 +95,13 @@ def restore(box: dict, password: str) -> dict:
     """Replaces the program on this device with the backup (a complete replacement). Cadets' profiles are not
     touched. A backup that fails any check changes nothing."""
     if not isinstance(box, dict) or box.get("vanguard_program_backup_sealed") != VERSION:
-        raise ValueError("That isn't a Vanguard program backup.")
+        raise ValueError("That isn't a Cadet Foundry program backup.")
     try:
         data = json.loads(vault.open_backup(box, password).decode("utf-8"))
     except (vault.VaultError, ValueError):
         raise ValueError("Wrong backup password, or the file is damaged.") from None
     if not isinstance(data, dict) or data.get("vanguard_program_backup") != VERSION:
-        raise ValueError("That isn't a Vanguard program backup.")
+        raise ValueError("That isn't a Cadet Foundry program backup.")
     files = _decode(data.get("files") or {})
     root = store.DATA
     root.mkdir(parents=True, exist_ok=True)

@@ -1,5 +1,5 @@
 """
-Put the whole Vanguard system on a USB drive: plug it into any Windows computer, double-click, and it runs —
+Put the whole Cadet Foundry system on a USB drive: plug it into any Windows computer, double-click, and it runs —
 nothing is installed on that computer, and every profile and class record stays on the drive.
 
     python tools/make_usb.py E:\\                 app + its own Python + the library
@@ -12,9 +12,9 @@ Sizes: the app about 50 MB; with the AI about 0.1 GB for the engine plus the mod
 Run it again to update the drive: the app is replaced, the data (VanguardData) is never touched.
 
 On the drive:
-    Start Vanguard.bat                 this computer only
+    Start Cadet Foundry.bat                 this computer only
     Start Classroom.bat                Cadets on the same Wi-Fi join from their phones
-    start-vanguard-usb.sh              Linux / Mac (uses that computer's python3)
+    start-cadet-foundry-usb.sh         Linux / Mac (uses that computer's python3)
     START HERE.html                    which file does what (opens in any browser)
     Vanguard\\                          the app, with python\\ (and ollama\\ with --with-ai)
     VanguardData\\                      profiles and class records (each profile encrypted with its own PIN)
@@ -38,27 +38,27 @@ APP_ITEMS = ["vanguard", "web", "tools", "library", "books", "faith", "python", 
              "start-classroom.bat", "start-classroom.sh"]
 
 START_BAT = r"""@echo off
-title Vanguard
-rem Vanguard from this USB drive. Nothing is installed on this computer; all data stays on the drive.
+title Cadet Foundry
+rem Cadet Foundry from this USB drive. Nothing is installed on this computer; all data stays on the drive.
 cd /d "%~dp0Vanguard"
 set "VANGUARD_DATA=%~dp0VanguardData"
 if exist "%~dp0Vanguard\ollama\ollama.exe" set "VANGUARD_OLLAMA=%~dp0Vanguard\ollama\ollama.exe"
 echo.
-echo   VANGUARD - running from this USB drive
-echo   Keep this window open while you use Vanguard.
-echo   To stop: Me ^> Quit Vanguard, or close this window. Then unplug the drive.
+echo   CADET FOUNDRY - running from this USB drive
+echo   Keep this window open while you use Cadet Foundry.
+echo   To stop: Me ^> Quit Cadet Foundry, or close this window. Then unplug the drive.
 echo.
 "%~dp0Vanguard\python\python.exe" run.py {args} %*
 if errorlevel 1 pause
 """
 
 START_SH = """#!/bin/sh
-# Vanguard from this USB drive on Linux or a Mac (uses this computer's python3 and its cryptography package).
+# Cadet Foundry from this USB drive on Linux or a Mac (uses this computer's python3 and its cryptography package).
 here="$(cd "$(dirname "$0")/.." && pwd)"     # this file is in "Mac and Linux"; the drive is one level up
 export VANGUARD_DATA="$here/VanguardData"
-cd "$here/Vanguard" || exit 1
+cd "$here/Cadet Foundry" || exit 1
 if ! python3 -c "import sys, cryptography; sys.exit(int(cryptography.__version__.split('.')[0]) < 50)" 2>/dev/null; then
-  echo "Vanguard needs Python 3.10+ with the 'cryptography' package, version 50 or newer:"
+  echo "Cadet Foundry needs Python 3.10+ with the 'cryptography' package, version 50 or newer:"
   echo "  python3 -m pip install --user --upgrade 'cryptography>=50'"
   exit 1
 fi
@@ -67,7 +67,7 @@ exec python3 run.py "$@"
 
 MAKE_BAT = r"""@echo off
 title Make a Cadet flash drive
-rem Copies Vanguard from this folder's copy to a blank flash drive -- without anyone's profiles or records.
+rem Copies Cadet Foundry from this folder's copy to a blank flash drive -- without anyone's profiles or records.
 "%~dp0..\Vanguard\python\python.exe" "%~dp0..\Vanguard\tools\clone_drive.py" "%~dp0.."
 echo.
 pause
@@ -76,7 +76,7 @@ pause
 MAKE_HOWTO = """MAKE MORE FLASH DRIVES (one for each Cadet)
 ============================================
 
-This makes a copy of Vanguard on a blank flash drive. The copy has NO profiles and NO class
+This makes a copy of Cadet Foundry on a blank flash drive. The copy has NO profiles and NO class
 records on it - every Cadet starts fresh with their own name and PIN.
 
 You need: this flash drive, a Windows computer, and blank flash drives (8 GB or bigger).
@@ -84,14 +84,14 @@ You need: this flash drive, a Windows computer, and blank flash drives (8 GB or 
 
 STEP 1 - Copy this flash drive to the computer
    a. Open this flash drive in File Explorer.
-   b. Make a new folder on the computer's Desktop, for example "Vanguard drive".
+   b. Make a new folder on the computer's Desktop, for example "Cadet Foundry drive".
    c. Select everything on the flash drive EXCEPT the folder named VanguardData
       (that folder is your class's data - it stays on your drive).
       Tip: press Ctrl+A to select all, then hold Ctrl and click VanguardData to un-select it.
    d. Copy it (Ctrl+C) and paste it (Ctrl+V) into the new Desktop folder. Wait for it to finish.
 
 STEP 2 - Swap the flash drives
-   a. Close Vanguard if it is running.
+   a. Close Cadet Foundry if it is running.
    b. Unplug YOUR flash drive and keep it safe.
    c. Plug in a BLANK flash drive.
 
@@ -110,16 +110,16 @@ When you're finished, you can delete the Desktop folder from Step 1.
 
 
 GOOD TO KNOW
- - It will NOT overwrite a drive that already has Vanguard profiles on it.
+ - It will NOT overwrite a drive that already has Cadet Foundry profiles on it.
  - A Cadet's drive works on its own: plug it into any Windows computer and
-   double-click "Start Vanguard.bat".
+   double-click "Start Cadet Foundry.bat".
  - To bring a Cadet into your class, they join it from Start Classroom on your
    computer, or type your class's join code in Me -> Join a class.
 """
 
 START_HERE = """<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Vanguard — start here</title>
+<title>Cadet Foundry — start here</title>
 <style>
 body { margin: 0; background: #f6f4ee; color: #1b1a17; font: 17px/1.6 system-ui, "Segoe UI", sans-serif; }
 .w { max-width: 860px; margin: 0 auto; padding: 28px 18px 60px; }
@@ -130,21 +130,21 @@ h1 { margin: 0; font-size: 32px; } h2 { margin: 30px 0 10px; font-size: 22px; bo
 table { border-collapse: collapse; width: 100%; font-size: 15px; } th, td { border: 1px solid #ddd5c0; padding: 8px; text-align: left; vertical-align: top; }
 th { background: #efe8d6; } .tip { color: #444; font-size: 15px; } code { font-family: Consolas, monospace; background: #efe8d6; padding: 1px 6px; border-radius: 5px; }
 </style></head><body><div class="w">
-<h1>✦ Vanguard — start here</h1>
+<h1>✦ Cadet Foundry — start here</h1>
 <p class="sub">Leadership. Learning. Character. Version {version}. Everything on this drive works with no internet.</p>
 
 <h2>Which one do I open?</h2>
 
-<div class="box"><h3>▶ <span class="file">Start Vanguard.bat</span> — just this computer</h3>
-Vanguard runs from this drive and opens in this computer's browser. <b>Only this computer can use it.</b><br>
+<div class="box"><h3>▶ <span class="file">Start Cadet Foundry.bat</span> — just this computer</h3>
+Cadet Foundry runs from this drive and opens in this computer's browser. <b>Only this computer can use it.</b><br>
 Use it to look around, prepare lessons, check records, or for one person studying.</div>
 
 <div class="box"><h3>▶ <span class="file">Start Classroom.bat</span> — the whole class</h3>
-This computer becomes the classroom's Vanguard. <b>Cadets use it from their own phones, tablets or laptops</b> on the
+This computer becomes the classroom's Cadet Foundry. <b>Cadets use it from their own phones, tablets or laptops</b> on the
 same Wi-Fi: it opens a <b>Join screen</b> with a big QR code to put on the projector — Cadets scan it and pick a name and a PIN.<br>
 A profile without a PIN can only be opened on this computer while class is open. If Windows asks whether to allow Python on networks, choose
 <b>Allow</b> (private networks). If Cadets can't connect, the school Wi-Fi may block devices from reaching each other —
-ask IT, or use a phone hotspot or the Vanguard demo box.</div>
+ask IT, or use a phone hotspot or the Cadet Foundry demo box.</div>
 
 <div class="box"><h3>📁 <span class="file">Make more flash drives</span> — a clean drive for each Cadet</h3>
 Open <span class="file">HOW TO MAKE MORE DRIVES.txt</span> in that folder. In short: copy this drive to a computer (all but
@@ -152,17 +152,17 @@ Open <span class="file">HOW TO MAKE MORE DRIVES.txt</span> in that folder. In sh
 The new drive has no profiles or records on it.</div>
 
 <div class="box"><h3>📁 <span class="file">Mac and Linux</span> — not Windows</h3>
-For a Mac or Linux computer: open a terminal in that folder and run <code>sh start-vanguard-usb.sh</code> —
-or <code>sh start-vanguard-usb.sh --lan</code> for the whole class. That computer needs Python 3 with the
+For a Mac or Linux computer: open a terminal in that folder and run <code>sh start-cadet-foundry-usb.sh</code> —
+or <code>sh start-cadet-foundry-usb.sh --lan</code> for the whole class. That computer needs Python 3 with the
 <code>cryptography</code> package. Windows computers don't need this folder.</div>
 
-<div class="box"><h3>⬇ <span class="file">Install Vanguard … on this computer.exe</span> — keep it on a computer</h3>
-Installs Vanguard on this Windows computer (a Vanguard icon on the desktop and in the Start menu). After that the drive
+<div class="box"><h3>⬇ <span class="file">Install Cadet Foundry … on this computer.exe</span> — keep it on a computer</h3>
+Installs Cadet Foundry on this Windows computer (a Cadet Foundry icon on the desktop and in the Start menu). After that the drive
 isn't needed. If Windows says <i>"Windows protected your PC"</i>, choose <b>More info → Run anyway</b>.</div>
 
 <table>
-<tr><th></th><th>Start Vanguard</th><th>Start Classroom</th><th>Install …exe</th></tr>
-<tr><td>Who can use it</td><td>This computer only</td><td>This computer + Cadets' devices on the same Wi-Fi</td><td>That computer (Vanguard Classroom in its Start menu)</td></tr>
+<tr><th></th><th>Start Cadet Foundry</th><th>Start Classroom</th><th>Install …exe</th></tr>
+<tr><td>Who can use it</td><td>This computer only</td><td>This computer + Cadets' devices on the same Wi-Fi</td><td>That computer (Cadet Foundry Classroom in its Start menu)</td></tr>
 <tr><td>Where the data lives</td><td colspan="2">On this drive (<span class="file">VanguardData</span>)</td><td>On that computer</td></tr>
 <tr><td>Installs anything?</td><td colspan="2">No — runs from the drive</td><td>Yes</td></tr>
 <tr><td>Best for</td><td>Preparing, one person</td><td>Teaching a class</td><td>A computer used every day</td></tr>
@@ -170,35 +170,35 @@ isn't needed. If Windows says <i>"Windows protected your PC"</i>, choose <b>More
 
 <h2>The first time</h2>
 <ol>
-<li>Open <span class="file">Start Vanguard.bat</span> (or <span class="file">Start Classroom.bat</span>).</li>
+<li>Open <span class="file">Start Cadet Foundry.bat</span> (or <span class="file">Start Classroom.bat</span>).</li>
 <li>Instructor: choose <b>I'm the instructor — set up this class</b>. Pick a <b>Class PIN</b> (it opens your class — don't share it with Cadets), then your name and your own PIN.</li>
 <li>Your <b>Home</b> screen walks you through the rest: make your class, put Cadets in it, open class to phones. Then press <b>▶ Start class</b> and tick today's lesson, scenarios, live questions and videos.</li>
-<li>Write down each <b>backup code</b> Vanguard shows — it's the way back if a PIN is forgotten.</li>
+<li>Write down each <b>backup code</b> Cadet Foundry shows — it's the way back if a PIN is forgotten.</li>
 </ol>
 
 <h2>While it runs and when you're done</h2>
 <ul>
-<li>A black window stays open while Vanguard runs — <b>leave it open</b>.</li>
-<li>To stop: <b>End class</b> on the Join screen, <b>Me → Quit Vanguard</b>, or close the black window. Wait a moment, then unplug the drive.</li>
-<li>The offline AI (if this drive has it) starts and stops with Vanguard. Its first answer can take a minute.</li>
+<li>A black window stays open while Cadet Foundry runs — <b>leave it open</b>.</li>
+<li>To stop: <b>End class</b> on the Join screen, <b>Me → Quit Cadet Foundry</b>, or close the black window. Wait a moment, then unplug the drive.</li>
+<li>The offline AI (if this drive has it) starts and stops with Cadet Foundry. Its first answer can take a minute.</li>
 </ul>
 
 <h2>Your data</h2>
 <ul>
 <li>Everything — profiles, class records, lessons, settings — is in <span class="file">VanguardData</span>. Each profile is encrypted with its own PIN, and class records also need the Class PIN, so a lost drive doesn't expose anyone's data.</li>
 <li><b>Back it up:</b> copy the <span class="file">VanguardData</span> folder somewhere safe now and then.</li>
-<li><b>Move everyone to an installed computer:</b> with Vanguard closed on both, copy <span class="file">VanguardData</span> into
+<li><b>Move everyone to an installed computer:</b> with Cadet Foundry closed on both, copy <span class="file">VanguardData</span> into
 <code>C:\\Users\\&lt;name&gt;\\.vanguard</code> on that computer (before anyone makes profiles there — it replaces them).</li>
 <li><b>Move one person:</b> Me → <i>Download encrypted backup</i>, then restore it on the other computer.</li>
 </ul>
 
 <h2>Other things on this drive</h2>
 <ul>
-<li><span class="file">Vanguard</span> — the app itself. Don't change it.</li>
+<li><span class="file">Cadet Foundry</span> — the app itself. Don't change it.</li>
 <li><span class="file">demo</span> (if present) — the printable demo card and the Raspberry Pi demo-box guide (<span class="file">README-PI.txt</span>).</li>
 </ul>
-<p class="tip">Vanguard is designed to support JROTC instruction. It is not an official JROTC, Army or school product, does not
-replace your instructor or your program's curriculum, and makes no claim of endorsement. A free community project — the Vanguard project.</p>
+<p class="tip">Cadet Foundry is designed to support JROTC instruction. It is not an official JROTC, Army or school product, does not
+replace your instructor or your program's curriculum, and makes no claim of endorsement. A free community project — the Cadet Foundry project.</p>
 </div></body></html>
 """
 
@@ -213,7 +213,7 @@ def _retry(fn, *args, tries: int = 15, wait: float = 2.0, **kw):
         except PermissionError:
             if n == tries - 1:
                 raise PermissionError(f"{args[-1] if args else ''} is still in use. Close anything that has the USB drive "
-                                      "open (Vanguard, File Explorer previews) and run this again.") from None
+                                      "open (Cadet Foundry, File Explorer previews) and run this again.") from None
             if n == 2:
                 print("  waiting for Windows to finish checking a file (antivirus scan) …")
             time.sleep(wait)
@@ -304,27 +304,29 @@ def main(argv: list[str]) -> int:
                 _retry(shutil.copy2, vids / "status.json", app / "videos" / "status.json")
 
     # The installer and zip ride along: on the drive's root for whoever holds it, and in Vanguard\downloads so a
-    # Vanguard started from this drive (or a demo Pi set up from it) offers them on /download -- no internet needed.
+    # Cadet Foundry started from this drive (or a demo Pi set up from it) offers them on /download -- no internet needed.
     version = build.__version__
-    setup, zipf = build.DIST / f"Vanguard-Setup-{version}.exe", build.DIST / f"Vanguard-{version}.zip"
+    setup, zipf = build.DIST / f"CadetFoundry-Setup-{version}.exe", build.DIST / f"CadetFoundry-{version}.zip"
     downloads = app / "downloads"
     shutil.rmtree(downloads, ignore_errors=True)
-    for old in drive.glob("Install Vanguard*.exe"):
+    for old in [*drive.glob("Install Vanguard*.exe"), *drive.glob("Install Cadet Foundry*.exe")]:
         _retry(old.unlink)
     if setup.exists() and zipf.exists():
         downloads.mkdir(exist_ok=True)
         for f in (setup, zipf):
             _retry(shutil.copy2, f, downloads / f.name)
-        _retry(shutil.copy2, setup, drive / f"Install Vanguard {version} on this computer.exe")
+        _retry(shutil.copy2, setup, drive / f"Install Cadet Foundry {version} on this computer.exe")
     else:
         print(f"Note: no installer for {version} in site/dist — run  python site/build.py  first to put it on the drive.")
     (drive / "VanguardData").mkdir(exist_ok=True)
-    (drive / "Start Vanguard (classroom).bat").unlink(missing_ok=True)   # renamed in 0.2: Start Classroom
-    for name, args_ in (("Start Vanguard.bat", ""), ("Start Classroom.bat", "--lan")):
+    for old in ("Start Vanguard (classroom).bat", "Start Vanguard.bat"):    # older names (0.1; before the rename)
+        (drive / old).unlink(missing_ok=True)
+    for name, args_ in (("Start Cadet Foundry.bat", ""), ("Start Classroom.bat", "--lan")):
         (drive / name).write_bytes(START_BAT.replace("{args}", args_).replace("\r\n", "\n").replace("\n", "\r\n").encode("ascii"))
     (drive / "start-vanguard-usb.sh").unlink(missing_ok=True)          # moved into "Mac and Linux" (0.2.2)
     (drive / "Mac and Linux").mkdir(exist_ok=True)
-    (drive / "Mac and Linux" / "start-vanguard-usb.sh").write_bytes(START_SH.encode("ascii"))
+    (drive / "Mac and Linux" / "start-vanguard-usb.sh").unlink(missing_ok=True)   # the name before the rename
+    (drive / "Mac and Linux" / "start-cadet-foundry-usb.sh").write_bytes(START_SH.encode("ascii"))
     more = drive / "Make more flash drives"                             # clean Cadet copies, no one's data
     more.mkdir(exist_ok=True)
     (more / "Make a Cadet drive.bat").write_bytes(MAKE_BAT.replace('\r\n', '\n').replace('\n', '\r\n').encode("ascii"))
@@ -361,7 +363,7 @@ def main(argv: list[str]) -> int:
 
     used = sum(f.stat().st_size for f in app.rglob("*") if f.is_file())
     print(f"\nDone. {app} uses {used / 2**30:.2f} GB. Plug the drive into a Windows computer and double-click "
-          "\"Start Vanguard.bat\".")
+          "\"Start Cadet Foundry.bat\".")
     return 0
 
 

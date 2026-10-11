@@ -6,7 +6,7 @@ const thread = $('#thread'), logEl = $('#log');
 function addMsg(role, html) {
   const d = document.createElement('div');
   d.className = 'msg ' + (role === 'user' ? 'me' : 'ai');
-  if (role === 'user') d.textContent = html; else d.innerHTML = '<div class="who">VANGUARD</div><div class="body">' + html + '</div>';
+  if (role === 'user') d.textContent = html; else d.innerHTML = '<div class="who">CADET FOUNDRY</div><div class="body">' + html + '</div>';
   thread.appendChild(d); logEl.scrollTop = logEl.scrollHeight;
   return d;
 }
@@ -56,7 +56,7 @@ async function send(text) {
         box.appendChild(s);
       }
     });
-  } catch (err) { body.innerHTML = '<p>Something went wrong talking to Vanguard. Is it still running?</p>'; }
+  } catch (err) { body.innerHTML = '<p>Something went wrong talking to Cadet Foundry. Is it still running?</p>'; }
   if (full && !care && aiReady() && !(STATUS && STATUS.library_only)) {   // re-say it in plain words (needs the AI)
     const b = document.createElement('button');
     b.className = 'btn small'; b.textContent = '🔁 Simpler'; b.title = 'Explain it in plainer words'; b.style.margin = '6px 6px 0 0';
@@ -87,7 +87,7 @@ thread.addEventListener('click', e => {           // the suggestions (re-drawn w
 });
 
 // ── CONVERSATIONS ── (sidebar on the left; on a phone it slides in from ☰ Chats)
-const WELCOME = thread.innerHTML;                 // Vanguard's greeting + the suggestions
+const WELCOME = thread.innerHTML;                 // Cadet Foundry's greeting + the suggestions
 function showChat(messages) {
   thread.innerHTML = WELCOME;
   $('#suggest').hidden = messages.length > 0;

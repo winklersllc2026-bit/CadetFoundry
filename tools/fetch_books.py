@@ -1,10 +1,10 @@
 """
-Download Vanguard's free books into books/ (run once on a computer with internet, like fetch_library.py).
+Download Cadet Foundry's free books into books/ (run once on a computer with internet, like fetch_library.py).
 
     python tools/fetch_books.py
 
   * Classics and the Federalist Papers: public-domain texts from Project Gutenberg, saved whole -- the
-    Project Gutenberg license stays in each file; Vanguard only hides it when showing the book.
+    Project Gutenberg license stays in each file; Cadet Foundry only hides it when showing the book.
   * The Declaration, Constitution and Bill of Rights: the National Archives transcriptions (archives.gov).
   * American Military History, Volumes I and II (U.S. Army Center of Military History): history.army.mil
     blocks scripted downloads, so save the two PDFs into books/ from a browser (links printed below) and

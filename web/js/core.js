@@ -31,7 +31,7 @@ function showRecoveryCode(code, done) {
 const PIN_INPUT = (id, ph) => `<input id="${id}" type="password" inputmode="numeric" maxlength="12" autocomplete="new-password" placeholder="${ph}"
   style="font-size:20px;letter-spacing:.2em">`;
 
-// Who's using Vanguard: pick your name and type your PIN; a new Cadet joins in about 30 seconds (name, PIN, done);
+// Who's using Cadet Foundry: pick your name and type your PIN; a new Cadet joins in about 30 seconds (name, PIN, done);
 // the very first time on the instructor's computer, a short setup walks the instructor through it.
 async function showLock(msg) {
   if (document.getElementById('lockScreen')) return;
@@ -44,13 +44,13 @@ async function showLock(msg) {
   const want = new URLSearchParams(location.search);
   const joinCode = (want.get('join') || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 12);
   history.replaceState(null, '', '/');
-  // a demo box says so, and any Vanguard with installers on it offers them (both on every sign-in screen)
-  const extras = (s.demo ? '<p class="faint" style="border-top:1px solid var(--line);padding-top:10px;text-align:center">🧪 <b>Demo unit.</b> This small, portable Vanguard runs on a Raspberry Pi — about 10 Cadets at a time. Please sign in a few at a time.</p>' : '')
-    + (s.downloads ? '<p style="margin:6px 0 0;text-align:center"><a href="/download" style="color:var(--tan)">⬇ Get Vanguard for your own computer</a></p>' : '');
+  // a demo box says so, and any Cadet Foundry with installers on it offers them (both on every sign-in screen)
+  const extras = (s.demo ? '<p class="faint" style="border-top:1px solid var(--line);padding-top:10px;text-align:center">🧪 <b>Demo unit.</b> This small, portable Cadet Foundry runs on a Raspberry Pi — about 10 Cadets at a time. Please sign in a few at a time.</p>' : '')
+    + (s.downloads ? '<p style="margin:6px 0 0;text-align:center"><a href="/download" style="color:var(--tan)">⬇ Get Cadet Foundry for your own computer</a></p>' : '');
   const pinRule = s.lan || s.profiles.length ? 'required' : 'recommended';
   const pick = () => {
     d.innerHTML = `<div class="card" style="width:100%;max-width:400px;text-align:center">
-        <div style="font-size:28px">✦</div><h2>Who's using Vanguard?</h2>
+        <div style="font-size:28px">✦</div><h2>Who's using Cadet Foundry?</h2>
         <button class="btn primary" id="newProf" style="width:100%;min-height:52px;font-size:18px">I'm new — join</button>
         <p class="faint" style="margin:14px 0 6px">Or tap your name:</p>
         <div style="display:grid;gap:8px;margin:0 0 12px">${s.profiles.map(p =>
@@ -102,7 +102,7 @@ async function showLock(msg) {
   // A new profile: name, PIN, (join code) -- everything else is optional, under "More options" or later in 👤 Me.
   const newProfile = (kind = 'cadet') => {
     d.innerHTML = `<form class="card" id="newForm" style="width:100%;max-width:400px">
-        <h2>${s.profiles.length ? 'Join Vanguard' : 'Welcome to Vanguard'}</h2>
+        <h2>${s.profiles.length ? 'Join Cadet Foundry' : 'Welcome to Cadet Foundry'}</h2>
         <p class="faint">Your work stays in your own profile on this device. It takes about 30 seconds.</p>
         <label for="npName">What's your name?</label><input id="npName" maxlength="40" autocomplete="off" placeholder="First and last name">
         <label for="npPin">Choose a PIN (6–12 digits)${pinRule === 'recommended' ? ' — recommended' : ''}</label>${PIN_INPUT('npPin', '')}
@@ -159,8 +159,8 @@ async function showLock(msg) {
     let classPin = '', program = '';
     const step = html => { d.innerHTML = `<div class="card" style="width:100%;max-width:440px">${html}</div>`; };
     const welcome = () => {
-      step(`<div style="font-size:30px;text-align:center">✦</div><h2 style="text-align:center">Welcome to Vanguard</h2>
-        <p>Vanguard stays on this computer. Cadets can join from phones on the same Wi-Fi. Nothing is sent to the internet.</p>
+      step(`<div style="font-size:30px;text-align:center">✦</div><h2 style="text-align:center">Welcome to Cadet Foundry</h2>
+        <p>Cadet Foundry stays on this computer. Cadets can join from phones on the same Wi-Fi. Nothing is sent to the internet.</p>
         <label style="display:flex;gap:10px;align-items:flex-start;margin:4px 0 12px">
           <input type="checkbox" id="suAgree" ${s.terms_ok ? 'checked' : ''} style="width:24px;height:24px;flex:none;margin-top:2px">
           <span>I've read and agree to the <a href="#" data-legal="terms">Terms of use</a> and the <a href="#" data-legal="privacy">Privacy notice</a>.</span></label>
@@ -182,13 +182,13 @@ async function showLock(msg) {
       $('#suSample').onclick = () => startSample($('#suSample'), $('#suSampleMsg'));
       $('#suJustMe').onclick = async () => { if (await agreed()) newProfile('cadet'); };
     };
-    // Which program: sets the words Vanguard uses (LET / NS / LE / Year) and puts that branch first in Learn.
+    // Which program: sets the words Cadet Foundry uses (LET / NS / LE / Year) and puts that branch first in Learn.
     const PROGS = [['army', '⭐', 'Army JROTC'], ['navy', '⚓', 'Navy JROTC'], ['air_force', '✈️', 'Air Force JROTC'],
       ['marine_corps', '🦅', 'Marine Corps JROTC'], ['space_force', '🚀', 'Space Force JROTC'], ['coast_guard', '🛟', 'Coast Guard JROTC<small>No Coast Guard study cards yet — Cadets see every other branch</small>'],
       ['', '🎖️', 'More than one / not sure']];
     const programStep = () => {
       step(`<div class="faint">Step 1 of 4</div><h2>Your program</h2>
-        <p>Which JROTC program is this? Cadets can still explore every branch — this just sets the words Vanguard uses.</p>
+        <p>Which JROTC program is this? Cadets can still explore every branch — this just sets the words Cadet Foundry uses.</p>
         <div class="tiles" style="margin:0">${PROGS.map(([k, ic, name]) => `<button class="tile" data-prog="${k}"><span>${ic}</span>${name}</button>`).join('')}</div>
         <button type="button" class="btn small" id="suBack" style="margin-top:10px">← Back</button>`);
       $('#suBack').onclick = welcome;
@@ -233,16 +233,16 @@ async function showLock(msg) {
     };
     const ready = () => {
       step(`<div style="font-size:34px;text-align:center">✅</div><h2 style="text-align:center">You're ready</h2>
-        <p>How do you want to use Vanguard right now?</p>
+        <p>How do you want to use Cadet Foundry right now?</p>
         <button class="btn primary" id="suClass" style="width:100%;min-height:52px;font-size:18px">Open it for the class</button>
         <button class="btn" id="suLocal" style="width:100%;margin-top:10px;min-height:48px">Use it on this computer only</button>
         <p class="faint" id="suMsg" role="status"></p>`);
       $('#suLocal').onclick = go;
       $('#suClass').onclick = () => {
         if (s.lan) { location.replace('/join'); return; }
-        // open class to phones right here (the desktop icon starts Vanguard for this computer only)
+        // open class to phones right here (the desktop icon starts Cadet Foundry for this computer only)
         $('#suClass').disabled = true;
-        $('#suMsg').innerHTML = 'Opening class to phones… If Windows asks whether to allow Vanguard (Python) on networks, choose <b>Allow</b>.';
+        $('#suMsg').innerHTML = 'Opening class to phones… If Windows asks whether to allow Cadet Foundry (Python) on networks, choose <b>Allow</b>.';
         api('/api/instructor/classroom', { open: true }).then(async r => {
           if (r.error) { $('#suMsg').textContent = r.error; $('#suClass').disabled = false; return; }
           for (let i = 0; i < 60; i++) {
@@ -257,7 +257,7 @@ async function showLock(msg) {
   };
   const notYet = () => {                         // a phone arrived before the instructor set up the class
     d.innerHTML = `<div class="card" style="width:100%;max-width:380px;text-align:center"><div style="font-size:30px">⏳</div>
-      <h2>Not set up yet</h2><p>Your instructor sets up Vanguard on their computer first. Then come back and join.</p>
+      <h2>Not set up yet</h2><p>Your instructor sets up Cadet Foundry on their computer first. Then come back and join.</p>
       <button class="btn primary" id="nyAgain" style="width:100%;min-height:48px">Try again</button>${extras}</div>`;
     $('#nyAgain').onclick = () => location.reload();
   };
@@ -294,7 +294,7 @@ document.addEventListener('click', e => {
   if (a) { e.preventDefault(); showLegal(a.dataset.legal); }
 });
 
-// ── The sample class (vanguard/sample.py): a separate copy of Vanguard with made-up Cadets ──
+// ── The sample class (vanguard/sample.py): a separate copy of Cadet Foundry with made-up Cadets ──
 async function startSample(btn, msgEl) {
   if (btn) btn.disabled = true;
   if (msgEl) msgEl.textContent = 'Opening the sample class…';
@@ -309,13 +309,13 @@ async function startSample(btn, msgEl) {
 
 async function sampleArrive(d, s) {
   d.innerHTML = `<div class="card" style="width:100%;max-width:420px;text-align:center"><div style="font-size:34px">🧪</div>
-    <h2>Building a sample class</h2><p>Eight made-up Cadets, two squads, lessons, scenarios and a pilot in progress. Your own Vanguard isn't touched.</p>
+    <h2>Building a sample class</h2><p>Eight made-up Cadets, two squads, lessons, scenarios and a pilot in progress. Your own Cadet Foundry isn't touched.</p>
     <p class="faint" id="smStep" role="status">Starting…</p></div>`;
   for (;;) {
     let st = {};
     try { st = await (await fetch('/api/sample/status', { cache: 'no-store' })).json(); } catch (e) { }
     if (st.error) {
-      $('#smStep').innerHTML = `${esc(st.error)}<br><a href="${esc(s.sample_back || '/')}">Back to my Vanguard</a>`;
+      $('#smStep').innerHTML = `${esc(st.error)}<br><a href="${esc(s.sample_back || '/')}">Back to my Cadet Foundry</a>`;
       return;
     }
     if (st.ready) break;
@@ -446,7 +446,7 @@ async function refreshStatus() {
   if ((document.body.dataset.kind = STATUS.kind || 'cadet') === 'guardian') {          // family member's profile
     $('#suggest').innerHTML = FAMILY_SUGGEST.map(q => `<button>${esc(q)}</button>`).join('');
     const hi = document.querySelector('#thread .msg.ai p');
-    if (hi) hi.textContent = "I'm Vanguard — here to help you understand JROTC and support your Cadet. Ask me anything. Your chats are saved on this device.";
+    if (hi) hi.textContent = "Welcome to Cadet Foundry — I'm here to help you understand JROTC and support your Cadet. Ask me anything. Your chats are saved on this device.";
   }
   const e = STATUS.engine, el = $('#engine');
   const online = e.online_enabled && e.online_keys.length;

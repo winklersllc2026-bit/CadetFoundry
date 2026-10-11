@@ -1,4 +1,4 @@
-"""0.2.2: "Open class to phones" from the instructor's Home -- the desktop icon starts Vanguard for this computer only;
+"""0.2.2: "Open class to phones" from the instructor's Home -- the desktop icon starts Cadet Foundry for this computer only;
 the instructor opens class without quitting. Only an instructor with the class open, only on their own computer.
 The server listens again in classroom mode on the same port, and sign-ins survive the switch."""
 import http.client

@@ -1,7 +1,7 @@
 """
 Offline voice input (optional): speech-to-text with Vosk, entirely on this device.
 
-Browsers' built-in speech recognition sends audio to cloud servers, so Vanguard
+Browsers' built-in speech recognition sends audio to cloud servers, so Cadet Foundry
 doesn't use it. Instead the page records 16 kHz mono audio and sends it here;
 Vosk turns it into text locally. Nothing leaves the device.
 

@@ -2,7 +2,7 @@
 
 Online AI is off unless an operator turns it on in config.json with a provider key. Even then (2026-10-11):
   * only Ask's ordinary answers may go online, and without the Cadet's profile, remembered facts, logbook or earlier
-    chat -- just the question, the public library passages and Vanguard's rules;
+    chat -- just the question, the public library passages and Cadet Foundry's rules;
   * a message that shows signs of crisis or harm never goes online;
   * grading (which carries answer keys), memory learning and letters never go online.
 Before this, every AI call tried the online provider first, with the full personal context.

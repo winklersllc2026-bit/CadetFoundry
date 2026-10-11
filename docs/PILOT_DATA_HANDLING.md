@@ -1,24 +1,24 @@
 # Pilot data handling
 
-For the school, the instructor and parents. It says what Vanguard stores during a pilot, who can see it, and how to
+For the school, the instructor and parents. It says what Cadet Foundry stores during a pilot, who can see it, and how to
 export it, delete it, or remove a Cadet who leaves. Technical detail: [DATA_INVENTORY.md](DATA_INVENTORY.md) and
 [../SECURITY.md](../SECURITY.md). Written 2026-10-11 for version 0.2.3; Pilot mode and End pilot need 0.2.4.
 
 ## What is stored, and where
 
 Everything is stored in one folder on the instructor's computer: `.vanguard` in the user's home folder, or
-`VanguardData` on the USB drive when Vanguard runs from a USB. Nothing is stored on Cadets' phones or tablets, which
-only show pages. There is no Vanguard project server, cloud account or analytics.
+`VanguardData` on the USB drive when Cadet Foundry runs from a USB. Nothing is stored on Cadets' phones or tablets, which
+only show pages. There is no Cadet Foundry project server, cloud account or analytics.
 
 | What | Example | Protection |
 |---|---|---|
 | Profile name and PIN | "Cadet Ruiz", a 6-digit PIN | Name is in the profile list in plain text (it's shown on the sign-in screen). The PIN is stored only as a slow, salted hash |
-| Private files | Ask chats, check-ins, notes, letters, logbook, address book | Encrypted with the Cadet's own key. **Nobody else can open them**: not the instructor, not the device owner, not the Vanguard project |
+| Private files | Ask chats, check-ins, notes, letters, logbook, address book | Encrypted with the Cadet's own key. **Nobody else can open them**: not the instructor, not the device owner, not the Cadet Foundry project |
 | Class records | Assigned lessons and scores, practice and exam results, leadership scenarios, fitness, service hours, goals, recognition | Encrypted with a per-Cadet class key that only an instructor profile with the Class PIN can open |
 | Program data | Units, roster details (Cadet rank, billet, year), lessons, pilot setup, notes, snapshots, survey answers | Sealed with the program key (opened by the Class PIN). Lesson text and answer keys, assignments and Cadet titles are kept in the clear so they work before sign-in. They hold no private information |
 | Live class votes and pop-quiz answers | "B", "4" | Kept in memory only while class runs; the instructor sees counts, never who |
 
-**What Vanguard doesn't ask for:** email, phone number, address, photos, birth date, sex, or body measurements
+**What Cadet Foundry doesn't ask for:** email, phone number, address, photos, birth date, sex, or body measurements
 beyond what a Cadet types into Train themselves. Cadets can type anything into free-text fields, so tell them not to
 put other people's private information in notes or letters.
 
@@ -56,7 +56,7 @@ letters never do. Before turning it on, the school should read that provider's t
 
 - **A Cadet deletes their own profile:** Me → Delete profile (needs their PIN). Every file in their folder is
   deleted, private files and class records alike, and their open sessions end.
-- **A Cadet who left and can't sign in:** there is no instructor button for this yet. With Vanguard closed, the
+- **A Cadet who left and can't sign in:** there is no instructor button for this yet. With Cadet Foundry closed, the
   device owner runs `python tools/remove_profile.py` (it lists the profiles), then
   `python tools/remove_profile.py "Cadet Name"` and types DELETE. From a USB drive, use the drive's own Python:
   `Vanguard\python\python.exe Vanguard\tools\remove_profile.py "Cadet Name" --data VanguardData`. Or keep the
@@ -66,7 +66,7 @@ letters never do. Before turning it on, the school should read that provider's t
   the instructor's own computer. It permanently removes every Cadet and guardian profile (private files and class
   records), the assignments, the pilot's setup, snapshots and survey answers, pending joins, and program safety
   copies; it keeps instructor profiles, the Class PIN, your lessons and your classes (with new join codes). To remove
-  everything, uninstall Vanguard and delete the data folder instead. Deleting a file doesn't wipe the disk, so
+  everything, uninstall Cadet Foundry and delete the data folder instead. Deleting a file doesn't wipe the disk, so
   full-disk encryption (BitLocker) on the instructor's laptop is what protects deleted data.
 - **Lost or stolen laptop or USB drive:** private files and class records stay encrypted without the PINs. Names in
   the profile list and program data in the clear (lesson text, units) are readable. Change the Class PIN and treat

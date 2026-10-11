@@ -1,8 +1,8 @@
-# Vanguard roadmap
+# Cadet Foundry roadmap
 
 Current version: **0.2.5** (not yet released; 0.2.3 and 0.2.4 released 2026-10-11).
 
-**0.2.5 — terms and privacy:** plain-English Terms of use and Privacy notice (vanguard/legal/), a required "I agree" box on first-run setup (and once on the instructor's Home for existing installs), readable in the app and on the website (/terms, /privacy) · "the Vanguard project" instead of a company name · support@winklers-llc.com everywhere · security.txt · "No internet required" on the website. Downloads: the public Vanguard-releases repo on GitHub; page: vanguard.winklers-llc.com (public).
+**0.2.5 — terms and privacy:** plain-English Terms of use and Privacy notice (vanguard/legal/), a required "I agree" box on first-run setup (and once on the instructor's Home for existing installs), readable in the app and on the website (/terms, /privacy) · "the Cadet Foundry project" instead of a company name · support@winklers-llc.com everywhere · security.txt · "No internet required" on the website. Downloads: the public Vanguard-releases repo on GitHub; page: vanguard.winklers-llc.com (public).
 
 ## Where it stands
 
@@ -14,7 +14,7 @@ Reports, Settings) · jobs explorer for every service from official recruiting s
 ASVAB minimums) · ASVAB practice for the four AFQT subtests with exact scoring · Start Classroom launchers.
 
 Built before 0.2 and still here: roles and the Class PIN · classes, platoons and squads · lessons and assignments ·
-quizzes typed and graded by Vanguard · exams · 20 leadership scenarios with a classroom vote · live in-class pop
+quizzes typed and graded by Cadet Foundry · exams · 20 leadership scenarios with a classroom vote · live in-class pop
 quiz · Train · Serve with instructor verification · Progress and printable portfolio · instructor dashboard and CSV
 report · program backup · pilot tools · Windows installer · USB drive (with optional offline AI) · website.
 
@@ -41,11 +41,11 @@ Cadets, two squads and a pilot in progress; Leave sample closes it) · **Pilot m
 stored on this device") · **End pilot** (save the reports, Class PIN, DELETE: removes the pilot's Cadets and class
 data, keeps your lessons and classes).
 Batch 2: **Start class in named steps** (Opening, Learn, Discuss, Engage, Assign, Close, Progress; opening and exit
-questions for the projector) · **instructor debriefs** on all 20 scenarios (instructor screens only) · **What Vanguard
+questions for the projector) · **instructor debriefs** on all 20 scenarios (instructor screens only) · **What Cadet Foundry
 is — and isn't** in Settings and Me.
 Batch 3: **after-class feedback** (how useful today, 1–5; would you use it again; four optional questions — nothing
 about Cadets) · **pilot results** on the Pilot screen · **one-page pilot summary** to print · a sample class closes
-itself if the Vanguard that opened it is gone.
+itself if the Cadet Foundry that opened it is gone.
 Also: **12 starter lessons** from cited cards (one click; right answers from each card's own quiz) · the OCS card checked
 against goarmy.com and the Minnesota National Guard (GT 110, bachelor's degree) · Coast Guard JROTC says plainly there are
 no Coast Guard cards yet. Still unchecked: `land_navigation` (its manual, TC 3-25.26, wasn't readable from a public copy).
@@ -63,10 +63,10 @@ sources (Enlisted Force Structure, Air Force Symbol, SPFMAN 36-2905, Marine Corp
 
 ## Before the first classroom pilot (owner)
 
-1. ~~Vanguard's release-signing key~~ — done 2026-10-11: `vanguard/data/release_key.pub` is committed and releases
+1. ~~Cadet Foundry's release-signing key~~ — done 2026-10-11: `vanguard/data/release_key.pub` is committed and releases
    sign themselves. Keep `~/.vanguard-release/release_key.pem` backed up somewhere safe, off every school device.
 2. **Code-sign the Windows installer** so Windows doesn't show "Windows protected your PC" (needs a code-signing
-   certificate in the company's name; then sign `Vanguard-Setup-*.exe` in `site/build.py`).
+   certificate in the company's name; then sign `CadetFoundry-Setup-*.exe` in `site/build.py`).
 3. ~~Raspberry Pi demo box~~ — no Pi now (2026-10-10); the instructor's laptop is the first device. The Pi tools stay in the repo.
 4. **Walk the pilot flow once by hand** on the classroom setup you'll use (below).
 5. **Decide retention, the device owner, the parent notice and online AI**, and publish a security contact —

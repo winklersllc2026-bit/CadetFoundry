@@ -15,12 +15,12 @@ from vanguard.faith import Faith
 from vanguard import knowledge
 from vanguard.knowledge import PUB_RE, Library, unsupported_numbers
 
-# Publication prefixes -> their service (for the reading offered after "Vanguard doesn't have AR 999-99").
+# Publication prefixes -> their service (for the reading offered after "Cadet Foundry doesn't have AR 999-99").
 PUB_SERVICE = [(r"(AR|FM|TC|ATP|ADP|DA ?PAM)\b", "Army"), (r"(OPNAVINST|NAVEDTRA|NAVADMIN|NAVPERS)\b", "Navy"),
                (r"(DAFI|DAFMAN|DAFPAM|AFI|AFMAN|AFH)\b", "Air Force"), (r"(MCO|MCWP|MCRP|MCTP)\b", "Marine Corps"),
                (r"(SPFH|SFDD)\b", "Space Force")]
 
-PERSONA = """You are Vanguard, an offline learning and leadership companion for JROTC Cadets (high school students).
+PERSONA = """You are the Cadet Foundry assistant, an offline learning and leadership companion for JROTC Cadets (high school students).
 You support their JROTC instructor; you never replace the instructor, the curriculum, school policy or official
 sources. You are not an official military, JROTC or school source.
 
@@ -82,16 +82,16 @@ ANSWER_RULES = """## Before you answer
 8. Talk to the Cadet as "you". Never mention file names.
 """
 
-# When Vanguard already showed the answer from its own data, the AI may only add a little help around it -- it
+# When Cadet Foundry already showed the answer from its own data, the AI may only add a little help around it -- it
 # never restates or changes the facts (the AFT answer once listed pull-ups right under the checked answer).
 COACH_RULES = """## Your job now
-The Cadet already sees the ANSWER above, from Vanguard's official data. Do NOT repeat it, list it again, change it,
+The Cadet already sees the ANSWER above, from Cadet Foundry's official data. Do NOT repeat it, list it again, change it,
 or add any numbers, events, steps or rules. Write at most 3 short sentences that help them use it: why it matters,
 a practical tip, or who to ask. Talk to them as "you". If there's nothing useful to add, write one short sentence
 of encouragement.
 """
 
-# Questions that ask for a fact. When the library has nothing on one, Vanguard says so instead of letting the AI guess.
+# Questions that ask for a fact. When the library has nothing on one, Cadet Foundry says so instead of letting the AI guess.
 _FACTUAL = re.compile(r"^\s*(what|which|when|where|who|how (many|much|long|often|far|fast|old|heavy))\b"
                       r"|\b(minimum|maximum|required|requirement|regulation|standard|policy)s?\b", re.I)
 
@@ -99,7 +99,7 @@ _FACTUAL = re.compile(r"^\s*(what|which|when|where|who|how (many|much|long|often
 _BOILERPLATE = re.compile(r"feel free to ask|if you have any (other|more|further) questions|hope this helps|let me know\b",
                           re.I)
 
-LIBRARY_GAP = ("Vanguard's library doesn't cover that, so I won't guess. Ask your instructor.")
+LIBRARY_GAP = ("Cadet Foundry's library doesn't cover that, so I won't guess. Ask your instructor.")
 
 
 FAMILY_NOTE = """## Who you're talking with
@@ -111,17 +111,17 @@ Cadet's grades, standing or the program, point them to the JROTC instructor and 
 
 _VAGUE = re.compile(r"\b(what (do|should) i (need to )?know|what to expect|how (do|can) i prepare|get ready|any tips|what('s| is) next)\b", re.I)
 
-# "How does this work?" is about Vanguard itself -- answered the same way every time, no AI, no library.
+# "How does this work?" is about Cadet Foundry itself -- answered the same way every time, no AI, no library.
 _APP_HELP = re.compile(r"\b(how (does|do) (this|vanguard|it|you) work|what (am i|do i|should i) (supposed to )?do with (this|it|vanguard)"
                        r"|what can (you|vanguard) do|how do i use (this|vanguard|it|you)|what is (this|vanguard)( app)?\W*$)", re.I)
 
 
 def app_help_question(text: str) -> bool:
-    """Short questions about Vanguard itself ("How does this work?"), not "how does a tourniquet work"."""
+    """Short questions about Cadet Foundry itself ("How does this work?"), not "how does a tourniquet work"."""
     return len(text) <= 90 and bool(_APP_HELP.search(text)) or text.strip().lower() in ("help", "help?", "/help")
 
 
-APP_HELP = """Here's how Vanguard works:
+APP_HELP = """Here's how Cadet Foundry works:
 
 - **📘 Learn** — study cards, quizzes, timed exams and the library (founding documents, Army history, classics). Answers come from sources stored on this device, with the source shown. A **✅ Checked answer** matched a study card checked against its source.
 - **🧭 Lead** — leadership scenarios and your leadership log.
@@ -130,7 +130,7 @@ APP_HELP = """Here's how Vanguard works:
 - **📈 Progress** — your growth over time.
 - **💬 Ask** (top of the screen) — ask a question about anything in the library. **👤** is your profile, PIN and backup.
 
-Everything stays on this device. Vanguard supports your instructor — your instructor and official sources come first."""
+Everything stays on this device. Cadet Foundry supports your instructor — your instructor and official sources come first."""
 
 
 def used_cites(reply: str, cites: list[dict], checked: dict | None = None) -> list[dict]:
@@ -152,7 +152,7 @@ def used_cites(reply: str, cites: list[dict], checked: dict | None = None) -> li
     return [c for c in cites if used(c)]
 
 
-# Vanguard's own trust markers. Only Vanguard adds them; any copy in AI text is removed.
+# Cadet Foundry's own trust markers. Only Cadet Foundry adds them; any copy in AI text is removed.
 _MARKERS = re.compile(r"✅\s*(\*\*)?\s*checked answers?:?\s*(\*\*)?\s*|\*?\*?checked answers?:\*?\*?\s*|✅\s*|⚠️\s*\*?\s*"
                       r"(not found in vanguard's sources|vanguard's library has no)[^\n]*\n?|📄\s*", re.I)
 
@@ -174,7 +174,7 @@ _THEY = re.compile(r"\bthey (should|can|could|will need to|need to|may want to|m
                    r"(check|confirm|ask|contact|talk|see|visit|refer|reach out)", re.I)
 
 
-# Copied from Vanguard's own formatting or the prompt: a trailing "— *DFAS pay tables*", "STUDY CARD (checked
+# Copied from Cadet Foundry's own formatting or the prompt: a trailing "— *DFAS pay tables*", "STUDY CARD (checked
 # summary)", a manual's paragraph number at the start of a line ("14-8 The Deadlift ...").
 _SOURCE_TAIL = re.compile(r"\s*—\s*\*[^*\n]{2,120}\*?(?=\s*$)|\s*—\s*\([^)\n]{2,60}\)(?=\s*$)")
 _PROMPT_LABEL = re.compile(r"\s*[\[(]?(STUDY CARD \(checked summary\)|MANUAL PAGE \([^)]*\))[\])]?", re.I)
@@ -194,7 +194,7 @@ def tidy_sentence(piece: str) -> str:
 
 
 def for_history(text: str) -> str:
-    """An earlier answer as the AI sees it again: Vanguard's badge and '— *source*' formatting removed, so the model
+    """An earlier answer as the AI sees it again: Cadet Foundry's badge and '— *source*' formatting removed, so the model
     doesn't learn to copy them."""
     text = re.sub(r"✅\s*\*\*Checked answer:\*\*\s*(.*?)\s*—\s*\*([^*\n]+)\*", r"\1 (\2)", text or "", flags=re.S)
     return strip_markers(text)
@@ -202,7 +202,7 @@ def for_history(text: str) -> str:
 
 class SentenceGate:
     """Releases AI text one sentence (or line) at a time, and drops any sentence `keep` rejects -- one with a number
-    or a manual Vanguard's sources don't back up. The Cadet never sees a made-up figure, and never has to be told
+    or a manual Cadet Foundry's sources don't back up. The Cadet never sees a made-up figure, and never has to be told
     to double-check one."""
     _END = re.compile(r"(?<!\b[A-Z])[.!?](?=\s)|\n")          # not inside "U.S." or after an initial
 
@@ -236,7 +236,7 @@ class SentenceGate:
 
 
 class MarkerFilter:
-    """Streams AI text with Vanguard's trust markers and any web links removed. A marker or link can arrive split
+    """Streams AI text with Cadet Foundry's trust markers and any web links removed. A marker or link can arrive split
     across chunks ("✅ **Check" + "ed answer:**"), so text is only released at a safe point: a space that isn't
     inside a link, a bold run, or anything after ✅ / ⚠️ on the same line. The rest waits for the next chunk."""
     HOLD = 100
@@ -271,7 +271,7 @@ class Brain:
     def _messages(self, text: str, care: bool, family: bool = False,
                   checked: dict | None = None, personal: bool = True) -> tuple[list[dict], list[dict]]:
         """personal=False (an answer that may go to an online provider): no profile, memories, logbook or earlier
-        chat -- only the question, the public library passages and Vanguard's rules."""
+        chat -- only the question, the public library passages and Cadet Foundry's rules."""
         if care:
             system = safety.CARE_PROMPT
             sources: list[dict] = []
@@ -302,7 +302,7 @@ class Brain:
             parts.append(COACH_RULES if checked else ANSWER_RULES)   # last, where small models pay the most attention
             system = "\n\n".join(parts)
         msgs = [{"role": "system", "content": system}]
-        # Earlier answers go back to the model without Vanguard's trust markers -- otherwise it copies
+        # Earlier answers go back to the model without Cadet Foundry's trust markers -- otherwise it copies
         # "✅ Checked answer:" into its own text, and a made-up answer looks verified.
         msgs += [{"role": m["role"], "content": for_history(m["content"]) if m["role"] == "assistant" else m["content"]}
                  for m in (store.history()[-8:] if personal else [])]
@@ -323,16 +323,16 @@ class Brain:
             return
         if check["banner"]:                              # (a topic-only line doesn't add the Cadet's own people)
             yield {"t": check["banner"] + (_my_people() if check["care"] else ""), "banner": True}
-        # Facts come from Vanguard's own data, not the AI: pay, BAS, AFT scores, LES blocks and Army jobs are answered
+        # Facts come from Cadet Foundry's own data, not the AI: pay, BAS, AFT scores, LES blocks and Army jobs are answered
         # straight from the tables, and a question asked like a study-card quiz question gets that checked answer,
         # word for word. The AI may only add a few sentences of help around it.
         checked = None if check["care"] else (facts.direct_answer(text, self.library.library_dir)
                                               or self.library.checked_answer(text))
         asked_unknown = [] if check["care"] or checked else self.library.unknown_pubs(text)
         if asked_unknown:
-            # "What does AR 999-99 say?" -- Vanguard doesn't have it, so it says so instead of letting the AI guess.
+            # "What does AR 999-99 say?" -- Cadet Foundry doesn't have it, so it says so instead of letting the AI guess.
             names = ", ".join(f"**{x}**" for x in asked_unknown)
-            gap = f"Vanguard's library doesn't have {names}, so I can't tell you what it says — and I won't guess."
+            gap = f"Cadet Foundry's library doesn't have {names}, so I can't tell you what it says — and I won't guess."
             topic = re.sub(r"\b(say|says|said|tell|tells|mean|means|state|states)\b", " ", PUB_RE.sub(" ", text), flags=re.I)
             # The kind of publication says which service the question is about (an AR is Army, a DAFI Air Force...),
             # so related reading comes from that service first, not another branch that only shares a word.
@@ -342,7 +342,7 @@ class Brain:
                     break
             said = self._library_says(topic)                 # "...about haircuts", not the made-up number
             if said:
-                gap += "\n\nHere's what Vanguard's library has on this:\n\n" + said
+                gap += "\n\nHere's what Cadet Foundry's library has on this:\n\n" + said
             yield {"t": gap}
             store.add_history("user", text)
             store.add_history("assistant", gap)
@@ -435,7 +435,7 @@ class Brain:
         yield {"done": True, "sources": list(dict.fromkeys(c["source"] for c in sources)), "cites": sources,
                "ai": not fell_back and not check["care"]}      # the app labels AI-written text
 
-    _SIMPLER = ("You are Vanguard. Rewrite the answer below for a Cadet who wants it in plain words. Use short "
+    _SIMPLER = ("You are the Cadet Foundry assistant. Rewrite the answer below for a Cadet who wants it in plain words. Use short "
                 "sentences and everyday words. The first time an acronym or Army term appears, say what it means in "
                 "a few words. Keep every fact, number, rule and source name (like AR 670-1) exactly as given. Do not "
                 "add anything that isn't in the answer. Keep it under 150 words. Reply with the rewrite only.")
@@ -446,7 +446,7 @@ class Brain:
         if not answer:
             return
         if store.ai_mode() == "off":
-            yield {"t": "AI is turned off on this device, so Vanguard doesn't reword answers."}
+            yield {"t": "AI is turned off on this device, so Cadet Foundry doesn't reword answers."}
             yield {"done": True}
             return
         msgs = [{"role": "system", "content": self._SIMPLER}, {"role": "user", "content": strip_markers(answer)}]

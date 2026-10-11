@@ -47,7 +47,7 @@ async function classDayHome() {
   if (ov.error) {                                  // signed in, but the class records are locked: the Class PIN, right here
     body.innerHTML = `<h2>Hi${name ? ', ' + esc(name) : ''}</h2>
       <div class="card" style="border-color:var(--tan)"><h3>🔐 Open your class</h3>
-        <p>Type the <b>Class PIN</b> (the one you made when you set up Vanguard) to open your class for today.</p>
+        <p>Type the <b>Class PIN</b> (the one you made when you set up Cadet Foundry) to open your class for today.</p>
         <div class="row" style="flex-wrap:wrap;gap:8px"><input id="cdPin" type="password" inputmode="numeric" maxlength="12" placeholder="Class PIN"
           aria-label="Class PIN" style="flex:1;min-width:160px;font-size:20px;letter-spacing:.2em"><button class="btn primary" id="cdPinGo">Open</button></div>
         <p class="faint" id="cdPinMsg" role="alert"></p></div>`;
@@ -63,7 +63,7 @@ async function classDayHome() {
   if (!lock.terms_ok) {                            // set up before the terms existed, or the terms changed: ask once
     body.innerHTML = `<h2>Hi${name ? ', ' + esc(name) : ''}</h2>
       <div class="card" style="border-color:var(--tan)"><h3>📄 Terms of use and Privacy notice</h3>
-        <p>Vanguard now has plain-English <a href="#" data-legal="terms">Terms of use</a> and a <a href="#" data-legal="privacy">Privacy notice</a>.
+        <p>Cadet Foundry now has plain-English <a href="#" data-legal="terms">Terms of use</a> and a <a href="#" data-legal="privacy">Privacy notice</a>.
           The short version: it's a free community project, it isn't official, and your Cadets' data stays on this computer.</p>
         <label style="display:flex;gap:10px;align-items:flex-start;margin:8px 0">
           <input type="checkbox" id="cdAgree" style="width:24px;height:24px;flex:none;margin-top:2px">
@@ -131,7 +131,7 @@ async function planner(main, ov, prev) {
     <div class="card"><h3>📋 Assign — a lesson</h3>
       ${lessons.length ? `<div style="${box}">${pick('lesson', '', 'No lesson today', '', !(was.items || []).some(i => i.type === 'lesson'), 'radio', 'cdLesson')}
         ${lessons.map(l => pick('lesson', l.id, esc(l.title), [l.let_level && `${STATUS.level_label || 'Year'} ${l.let_level}`, l.questions.length && `${l.questions.length} questions`].filter(Boolean).map(esc).join(' · '), had('lesson', l.id), 'radio', 'cdLesson')).join('')}</div>`
-        : `<p class="faint">No lessons yet. Add Vanguard's starter lessons — ready to assign, built from cited study cards — or write your own.</p>
+        : `<p class="faint">No lessons yet. Add Cadet Foundry's starter lessons — ready to assign, built from cited study cards — or write your own.</p>
            <button class="btn small primary" id="cdStarters">📦 Add the starter lessons</button>`}
       <button class="btn small" id="cdNewLesson" style="margin-top:8px">＋ Write a new lesson</button></div>
     ${cdPromptCard('close', '🚪 Close', 'An exit question on the projector before the bell.', was, CD_CLOSERS)}

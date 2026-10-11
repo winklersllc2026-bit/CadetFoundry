@@ -1,4 +1,4 @@
-"""Phase 11: the live in-class pop quiz -- graded by Vanguard, one answer each, no answer before the reveal, counts only."""
+"""Phase 11: the live in-class pop quiz -- graded by Cadet Foundry, one answer each, no answer before the reveal, counts only."""
 import http.client
 import json
 import os

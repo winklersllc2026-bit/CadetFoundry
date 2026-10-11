@@ -47,11 +47,11 @@ function timelineHtml(tl) {
 
 function printPortfolio(d, term) {
   const html = `<div style="font-family:Georgia,serif;color:#000">
-    <div style="text-align:center"><div style="letter-spacing:.2em;font-weight:700">VANGUARD</div><h1 style="margin:4px 0">Cadet Development Portfolio</h1>
+    <div style="text-align:center"><div style="letter-spacing:.2em;font-weight:700">CADET FOUNDRY</div><h1 style="margin:4px 0">Cadet Development Portfolio</h1>
       <div style="font-size:18px">${esc(d.name)}${term ? ' · ' + esc(term) : ''}</div>
       <div style="font-size:12px">Printed ${esc(new Date().toLocaleDateString())}</div></div>
     ${progressHtml(d, true)}
-    <p style="font-size:11px;margin-top:24px">Vanguard is designed to support JROTC instruction; it is not an official JROTC, military or school record.</p></div>`;
+    <p style="font-size:11px;margin-top:24px">Cadet Foundry is designed to support JROTC instruction; it is not an official JROTC, military or school record.</p></div>`;
   let area = $('#printArea');
   if (!area) { area = document.createElement('div'); area.id = 'printArea'; document.body.appendChild(area); }
   area.innerHTML = html;

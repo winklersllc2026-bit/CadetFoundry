@@ -5,7 +5,7 @@ Save the official DVIDS videos listed in vanguard/data/videos.json onto this dev
     python tools/fetch_videos.py --list                        what would be saved, and what already is
 
 DVIDS (dvidshub.net, the Defense Department's media service) gives each public-domain video in several sizes. An
-API key is free: sign up at https://api.dvidshub.net. Vanguard takes a classroom-size copy (720p or smaller) to
+API key is free: sign up at https://api.dvidshub.net. Cadet Foundry takes a classroom-size copy (720p or smaller) to
 keep the drive small. Needs internet once; files go into videos/ (not tracked in git; make_usb.py copies them).
 """
 from __future__ import annotations
@@ -23,7 +23,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 from vanguard import videos  # noqa: E402
 
-UA = {"User-Agent": "Vanguard video installer (offline classroom app)"}
+UA = {"User-Agent": "Cadet Foundry video installer (offline classroom app)"}
 
 
 def _pick(files: list[dict]) -> dict | None:
@@ -53,14 +53,14 @@ def main(argv: list[str]) -> int:
         return 1
     videos.VIDEOS.mkdir(parents=True, exist_ok=True)
     # DVIDS API terms (I.E, Caching): saved copies are a cache -- every run rechecks each video, keeps its title
-    # current, and deletes the copy of any video DVIDS has removed. Copies of videos no longer in Vanguard's list
+    # current, and deletes the copy of any video DVIDS has removed. Copies of videos no longer in Cadet Foundry's list
     # are deleted too.
     status = videos.status()
     listed = {v["id"] for v in entries}
     for old in videos.VIDEOS.glob("dvids-*.mp4"):
         if old.stem not in listed:
             old.unlink()
-            print(f"removed {old.name} (no longer in Vanguard's list)")
+            print(f"removed {old.name} (no longer in Cadet Foundry's list)")
     total, failed, removed = 0, [], []
     for v in entries:
         dest = videos.VIDEOS / f"{v['id']}.mp4"

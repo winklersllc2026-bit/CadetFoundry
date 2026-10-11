@@ -1,4 +1,4 @@
-// Vanguard shell: the Serve, Progress and Instructor pages (Lead is web/js/scenarios.js). Progress is a frame a
+// Cadet Foundry shell: the Serve, Progress and Instructor pages (Lead is web/js/scenarios.js). Progress is a frame a
 // later phase fills in; Serve already holds Explore Military Service (pay, letters, PCS, leave, Army jobs).
 'use strict';
 
@@ -119,14 +119,14 @@ async function classSetup(box, ov, reload, { compactWhenReady = false } = {}) {
       <span style="font-size:22px;line-height:1.2">${done ? '✅' : '⬜'}</span><div style="flex:1"><b>${title}</b>${body ? `<div style="margin-top:6px">${body}</div>` : ''}</div></div>`;
   if (STATUS.sample && ov.units.length && !loose.length) {   // the sample class stays on this computer: nothing to open
     box.innerHTML = `<div class="card"><span>✅ <b>The sample class is set up.</b> <span class="faint">${ov.units.map(u => esc(u.name)).join(' · ')}.
-      In your own Vanguard, step 3 opens class to phones so Cadets can join; the sample stays on this computer.</span></span></div>`;
+      In your own Cadet Foundry, step 3 opens class to phones so Cadets can join; the sample stays on this computer.</span></span></div>`;
     return true;
   }
   if (ready && compactWhenReady) {
     box.innerHTML = `<div class="card"><div class="row" style="justify-content:space-between;gap:10px;flex-wrap:wrap">
       <span>✅ <b>Class is open.</b> <span class="faint">${ov.units.map(u => `${esc(u.name)} · code <b class="mono" style="letter-spacing:.12em;color:var(--tan2)">${esc(u.code || '')}</b>`).join(' · ')}</span></span>
       <span class="row" style="gap:8px"><button class="btn" id="tJoin">📱 Join screen (QR code)</button>
-      ${cls.local ? '<button class="btn small" id="tClose" title="Phones can no longer reach Vanguard; it keeps running on this computer">Close to phones</button>' : ''}</span></div>${noPinNote(true)}</div>`;
+      ${cls.local ? '<button class="btn small" id="tClose" title="Phones can no longer reach Cadet Foundry; it keeps running on this computer">Close to phones</button>' : ''}</span></div>${noPinNote(true)}</div>`;
   } else {
     box.innerHTML = `<div class="card" style="border-color:var(--tan)"><h3>${ready ? '✅ Your class is ready' : '🧭 Set up your class'}</h3>
     ${step(ov.units.length, '1. Make your class', ov.units.length
@@ -143,11 +143,11 @@ async function classSetup(box, ov, reload, { compactWhenReady = false } = {}) {
           : `<span class="faint">All ${ov.cadets.length} Cadet${ov.cadets.length === 1 ? ' is' : 's are'} in a class. Move anyone in 👥 Class.</span>`)}
     ${step(STATUS.lan, '3. Open class to phones', STATUS.lan
       ? `<button class="btn primary" id="tJoin">📱 Show the Join screen (QR code)</button>
-         ${cls.local ? '<button class="btn small" id="tClose" title="Phones can no longer reach Vanguard; it keeps running on this computer">Close to phones</button>' : ''}
+         ${cls.local ? '<button class="btn small" id="tClose" title="Phones can no longer reach Cadet Foundry; it keeps running on this computer">Close to phones</button>' : ''}
          <div class="faint" style="margin-top:6px">Put it on the projector. Cadets scan it with their phone camera.</div>`
       : cls.local ? `<button class="btn primary" id="tOpen">📱 Open class to phones</button>
-         <div class="faint" style="margin-top:6px">Right now only this computer can use Vanguard. This lets Cadets on the same Wi-Fi join from their phones.
-         If Windows asks whether to allow Vanguard (Python) on networks, choose <b>Allow</b>.</div><p class="faint" id="tOpenMsg" role="status" style="margin:4px 0 0"></p>`
+         <div class="faint" style="margin-top:6px">Right now only this computer can use Cadet Foundry. This lets Cadets on the same Wi-Fi join from their phones.
+         If Windows asks whether to allow Cadet Foundry (Python) on networks, choose <b>Allow</b>.</div><p class="faint" id="tOpenMsg" role="status" style="margin:4px 0 0"></p>`
         : '<span class="faint">Open class on the instructor’s own computer.</span>')}
     ${noPinNote(false)}
     </div>`;
@@ -156,7 +156,7 @@ async function classSetup(box, ov, reload, { compactWhenReady = false } = {}) {
   if (q('#tJoin')) q('#tJoin').addEventListener('click', () => window.open('/join', '_blank', 'noopener'));
   if (q('#tOpen')) q('#tOpen').addEventListener('click', () => switchClassroom(true, q('#tOpen'), q('#tOpenMsg')));
   if (q('#tClose')) q('#tClose').addEventListener('click', () => {
-    if (confirm('Close class to phones? Cadets’ phones disconnect; Vanguard keeps running on this computer. Everyone’s work is saved.'))
+    if (confirm('Close class to phones? Cadets’ phones disconnect; Cadet Foundry keeps running on this computer. Everyone’s work is saved.'))
       switchClassroom(false, q('#tClose'));
   });
   if (q('#sMake')) {
@@ -175,7 +175,7 @@ async function classSetup(box, ov, reload, { compactWhenReady = false } = {}) {
   return ready;
 }
 
-// Open class to phones (or close it) without closing Vanguard: the server listens again in the other mode, then this
+// Open class to phones (or close it) without closing Cadet Foundry: the server listens again in the other mode, then this
 // page reloads once it answers. Sign-ins stay. Only from the instructor's own computer.
 async function switchClassroom(open, btn, msg) {
   if (btn) btn.disabled = true;
@@ -210,7 +210,7 @@ async function instToday(sec, ov) {
   sec.innerHTML = `<div id="setupBox"></div>
     <div class="card"><h3>👥 ${mine.length ? 'My Cadets' : 'Cadets'}</h3>
       ${d.cadets ? `<p><b>${d.cadets}</b> Cadet${d.cadets === 1 ? '' : 's'} · ${d.active} active in the last ${d.active_days} days</p>`
-        : `<p><b>No Cadets yet.</b> ${STATUS.lan ? 'Open the Join screen and have Cadets scan the code.' : 'Cadets make their own profile with a PIN the first time they open Vanguard.'}</p>`}
+        : `<p><b>No Cadets yet.</b> ${STATUS.lan ? 'Open the Join screen and have Cadets scan the code.' : 'Cadets make their own profile with a PIN the first time they open Cadet Foundry.'}</p>`}
       ${units.length ? `<div class="faint">Join codes — a Cadet who types one (or scans it on the Join screen) lands in that class:</div>
         ${units.map(u => `<div class="row" style="justify-content:space-between;margin:6px 0"><span>${esc(u.name)}</span>
           <b class="mono" style="letter-spacing:.15em;color:var(--tan2)">${esc(u.code || '')}</b></div>`).join('')}`
@@ -233,7 +233,7 @@ async function instClass(sec, ov, run) {
   const instOpts = sel => `<option value="">Shared — any instructor</option>` + (ov.instructors || []).map(i =>
     `<option value="${esc(i.id)}" ${i.id === sel ? 'selected' : ''}>${esc(i.name)}${i.id === ov.me ? ' (me)' : ''}</option>`).join('');
   sec.innerHTML = `${STATUS.lan ? `<div class="card"><h3>📡 Class is open</h3>
-      <p class="faint">Anyone on this Wi-Fi can reach Vanguard's sign-in screen (they see shortened names, and every profile needs a PIN).
+      <p class="faint">Anyone on this Wi-Fi can reach Cadet Foundry's sign-in screen (they see shortened names, and every profile needs a PIN).
       For a pilot, use a <b>dedicated hotspot</b> only your class joins — not the school's open or guest Wi-Fi. End class
       (Join screen → End class, or Me → Quit) when you're done. Details: SECURITY.md → "The classroom network".</p></div>` : ''}
     <div class="card"><h3>Classes, platoons and squads</h3>
@@ -267,7 +267,7 @@ async function instClass(sec, ov, run) {
         </div>
         <div class="faint" style="margin-top:6px">${c.status === 'waiting' ? '' : c.status === 'damaged' ? 'This Cadet’s class records couldn’t be read (a damaged file). The rest of the class is unaffected.' : `Quiz questions known: ${c.questions_known} · Exams: ${c.exams}${c.last_study ? ` · Last studied ${esc(c.last_study)}` : ''}`}</div>
         ${c.status === 'waiting' ? '' : `<button class="btn small" data-prog="${esc(c.id)}" style="margin-top:8px">📈 Progress and portfolio</button>`}
-      </div>`).join('') : `<p><b>No Cadets yet.</b> ${STATUS.lan ? 'Open the Join screen and have Cadets scan the code.' : 'Cadets make their own profile with a PIN the first time they open Vanguard.'}</p>`}
+      </div>`).join('') : `<p><b>No Cadets yet.</b> ${STATUS.lan ? 'Open the Join screen and have Cadets scan the code.' : 'Cadets make their own profile with a PIN the first time they open Cadet Foundry.'}</p>`}
       <p class="faint">You see class records only. Cadets' private check-ins, chats and notes are never shown.</p></div>`;
   $('#uAdd').addEventListener('click', async () => {
     const r = await api('/api/instructor/unit', { action: 'add', name: $('#uName').value, kind: $('#uKind').value, parent: $('#uParent').value });
@@ -315,26 +315,26 @@ async function instReports(sec, ov, run) {
   if (typeof instructorPilot === 'function') await instructorPilot(sec);             // pilot.js
 }
 
-// What Vanguard is and isn't -- plainly, for instructors (Settings) and everyone (Me). Vanguard supports what a program
+// What Cadet Foundry is and isn't -- plainly, for instructors (Settings) and everyone (Me). Cadet Foundry supports what a program
 // already does; it never claims to be official or to replace a program's own systems.
 function aboutVanguardHtml(open = false) {
   const li = xs => xs.map(x => `<li>${x}</li>`).join('');
-  return `<div class="card"><details ${open ? 'open' : ''}><summary style="cursor:pointer;min-height:40px"><b>ℹ️ What Vanguard is — and isn't</b></summary>
+  return `<div class="card"><details ${open ? 'open' : ''}><summary style="cursor:pointer;min-height:40px"><b>ℹ️ What Cadet Foundry is — and isn't</b></summary>
     <div class="row" style="flex-wrap:wrap;gap:16px;align-items:flex-start;margin-top:8px">
-      <div style="flex:1;min-width:230px"><b>Vanguard is</b><ul style="margin:6px 0 0 18px;padding:0">${li([
+      <div style="flex:1;min-width:230px"><b>Cadet Foundry is</b><ul style="margin:6px 0 0 18px;padding:0">${li([
         'A supplemental learning and leadership tool for your classroom',
         'Instructor-controlled — you decide what Cadets get and when',
         'Offline-first: it runs on this computer, with no student accounts in the cloud',
         'A leadership and learning resource built from cited public sources',
         `A pilot product under active development (version ${esc(STATUS.version || '')})`])}</ul></div>
-      <div style="flex:1;min-width:230px"><b>Vanguard isn't</b><ul style="margin:6px 0 0 18px;padding:0">${li([
+      <div style="flex:1;min-width:230px"><b>Cadet Foundry isn't</b><ul style="margin:6px 0 0 18px;padding:0">${li([
         'An official JROTC, military, school or government system — and no one has endorsed it',
         "A replacement for your program's official systems, curriculum or records",
         'A grading authority — its scores are for practice and feedback',
         'A student information system',
         "A substitute for the instructor's judgment",
         'A crisis service — the safety check shows help numbers but notifies no one'])}</ul></div></div>
-    <p class="faint" style="margin:10px 0 0">Vanguard complements what your program already does. A free community project — the Vanguard project ·
+    <p class="faint" style="margin:10px 0 0">Cadet Foundry complements what your program already does. A free community project — the Cadet Foundry project ·
       <a href="#" data-legal="terms">Terms of use</a> · <a href="#" data-legal="privacy">Privacy notice</a> · support@winklers-llc.com</p></details></div>`;
 }
 
@@ -343,14 +343,14 @@ function instSettings(sec) {
   const CAT_NAMES = { leadership: 'Leadership', citizenship: 'Citizenship', military: 'Military Knowledge', health: 'Health & Fitness',
     careers: 'Careers', explore: 'Explore Military Service', basic: 'Basic Training & Beyond (only for Cadets who opt in)' };
   const on = STATUS.categories_enabled || Object.keys(CAT_NAMES);
-  const MODS = { faith: 'Faith texts (scripture lookup and reading plans)', letters: 'Letters and address book', voice: 'Talk to Vanguard (offline voice)' };
+  const MODS = { faith: 'Faith texts (scripture lookup and reading plans)', letters: 'Letters and address book', voice: 'Talk to Cadet Foundry (offline voice)' };
   const modsOff = STATUS.modules_off || [];
   const progs = STATUS.programs || {};
   sec.innerHTML = `${aboutVanguardHtml(true)}<div class="card"><h3>🎖️ Your JROTC program</h3>
-      <p class="faint">Sets the words Vanguard uses (for example, the year a Cadet is in: LET 1 in Army JROTC, NS 1 in Navy JROTC, LE 1 in Marine Corps JROTC, Year 1 in Air Force JROTC) and puts your branch first in Learn. Cadets can still explore every branch.</p>
+      <p class="faint">Sets the words Cadet Foundry uses (for example, the year a Cadet is in: LET 1 in Army JROTC, NS 1 in Navy JROTC, LE 1 in Marine Corps JROTC, Year 1 in Air Force JROTC) and puts your branch first in Learn. Cadets can still explore every branch.</p>
       <select id="progPick" aria-label="JROTC program" style="width:100%;min-height:46px"><option value="">Not set / more than one program</option>
         ${Object.entries(progs).map(([k, v]) => `<option value="${k}" ${STATUS.program === k ? 'selected' : ''}>${esc(v)}</option>`).join('')}</select>
-      ${STATUS.program === 'coast_guard' ? '<p class="faint">Vanguard has no Coast Guard study cards yet. Cadets still see every other branch, and the shared lessons, scenarios and subjects.</p>' : ''}
+      ${STATUS.program === 'coast_guard' ? '<p class="faint">Cadet Foundry has no Coast Guard study cards yet. Cadets still see every other branch, and the shared lessons, scenarios and subjects.</p>' : ''}
       <p class="faint" id="progMsg" role="status"></p></div>
     <div class="card"><h3>📘 What Cadets can study</h3><p class="faint">Turn sections of Learn on or off for every Cadet on this device.</p>
       ${Object.entries(CAT_NAMES).map(([k, v]) => `<label style="display:flex;gap:10px;align-items:center;min-height:44px">
@@ -370,7 +370,7 @@ function instSettings(sec) {
   sec.querySelectorAll('[data-mod]').forEach(cb => cb.addEventListener('change', async () => {
     const off = [...sec.querySelectorAll('[data-mod]')].filter(x => !x.checked).map(x => x.dataset.mod);
     const r = await api('/api/instructor/modules', { off });
-    $('#modMsg').textContent = r.error || 'Saved. Profiles see the change the next time they open Vanguard.';
+    $('#modMsg').textContent = r.error || 'Saved. Profiles see the change the next time they open Cadet Foundry.';
     if (!r.error) STATUS.modules_off = r.modules_off;
   }));
   $('#progPick').addEventListener('change', async e => {

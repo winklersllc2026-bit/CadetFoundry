@@ -162,7 +162,7 @@ function starterLessonsHtml(starters, have) {
   const left = (starters || []).filter(s => !s.added);
   if (!left.length) return '';
   return `<div class="card" id="starterCard" style="border-color:var(--tan)"><h3>📦 Starter lessons</h3>
-    <p class="faint">${left.length} ready-to-assign lessons built from Vanguard's cited study cards, each with four questions and a reflection.
+    <p class="faint">${left.length} ready-to-assign lessons built from Cadet Foundry's cited study cards, each with four questions and a reflection.
       ${have ? '' : 'A quick way to assign something today. '}Once added they're yours to edit or delete. The ${esc(STATUS.level_label || 'Year')} levels are suggestions.</p>
     <div style="max-height:300px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:4px 10px">${left.map(s => `<label style="display:flex;gap:10px;align-items:center;min-height:44px">
       <input type="checkbox" data-starter="${esc(s.key)}" checked style="width:22px;height:22px;flex:none">

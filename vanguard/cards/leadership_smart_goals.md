@@ -22,7 +22,7 @@ source: ATP 6-22.1, The Counseling Process (13 February 2024), paras 1-67 to 1-6
 
 **Example**
 - Not SMART: "Get better at running."
-- SMART: "Cut my mile time from 9:30 to 8:45 by the spring fitness test by running three times a week, and log every run in Vanguard."
+- SMART: "Cut my mile time from 9:30 to 8:45 by the spring fitness test by running three times a week, and log every run in Cadet Foundry."
 
 ## Quiz
 Q: What does SMART stand for? | A: Specific, measurable, achievable, realistic, time-bound

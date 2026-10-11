@@ -110,7 +110,7 @@ class ClassDayTests(unittest.TestCase):
         self.ok("POST", "/api/lesson/submit", {"a": aid, "answers": right, "reflection": "My squad leader, then the PSG."}, A)
         self.ok("POST", "/api/lesson/submit", {"a": aid, "answers": wrong1, "reflection": "My team leader."}, B)
 
-        # ── typed quiz (graded by Vanguard), an exam, scenarios, service, fitness ──
+        # ── typed quiz (graded by Cadet Foundry), an exam, scenarios, service, fitness ──
         q = next(x for x in self.ok("GET", "/api/quiz?n=50&topic=citizenship_three_branches", cookie=A)
                  if "how many branches" in x["q"].lower())
         self.assertTrue(self.ok("POST", "/api/quiz/answer", {"id": q["id"], "answer": "three, legislative executive judicial"}, A)["correct"])

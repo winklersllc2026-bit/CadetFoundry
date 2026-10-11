@@ -1,7 +1,7 @@
 """
 The Terms of use and Privacy notice (vanguard/legal/*.md, inside the app folder so every updater accepts them).
 
-Setting up Vanguard needs a ticked "I agree" box; the acceptance (which version, and the date -- nothing about who) is
+Setting up Cadet Foundry needs a ticked "I agree" box; the acceptance (which version, and the date -- nothing about who) is
 kept in this computer's config.json. A new VERSION asks again: on first-run setup, or on the instructor's Home.
 """
 from __future__ import annotations

@@ -1,5 +1,5 @@
 """
-Start Vanguard.
+Start Cadet Foundry.
 
     python run.py              open on this device (http://127.0.0.1:8780)
     python run.py --lan        also reachable from other devices on this Wi-Fi/hotspot
@@ -48,8 +48,8 @@ def quiet_start() -> None:
 
 
 def write_pid() -> None:
-    """The running server's process id, next to the log, so the installer can close Vanguard before an update.
-    Written only once this process really serves -- a second click that just shows the running Vanguard must never
+    """The running server's process id, next to the log, so the installer can close Cadet Foundry before an update.
+    Written only once this process really serves -- a second click that just shows the running Cadet Foundry must never
     overwrite (and then delete) the running one's id, or an update can't close it."""
     import atexit
     import os
@@ -89,7 +89,7 @@ def main() -> int:
         for stream in (sys.stdout, sys.stderr):
             if hasattr(stream, "reconfigure"):
                 stream.reconfigure(errors="replace")
-    ap = argparse.ArgumentParser(description="Vanguard")
+    ap = argparse.ArgumentParser(description="Cadet Foundry")
     ap.add_argument("--port", type=int, default=8780)   # its own port: never mistaken for another app
     ap.add_argument("--lan", action="store_true", help="listen on all network interfaces")
     ap.add_argument("--no-browser", action="store_true")
@@ -108,20 +108,20 @@ def main() -> int:
             args.port = port
             break
         except OSError:
-            # Something already uses the port. The same Vanguard (its icon clicked again, same data): just show it.
-            # Another Vanguard with different data (a USB drive while the computer's own copy runs) or another
+            # Something already uses the port. The same Cadet Foundry (its icon clicked again, same data): just show it.
+            # Another Cadet Foundry with different data (a USB drive while the computer's own copy runs) or another
             # program: never show that one -- try the next port.
             other = _vanguard_instance(url)
             if other is not None and other == store.data_id():
                 if _serves_pages(url):
-                    print(f"Vanguard is already running at {url}")
+                    print(f"Cadet Foundry is already running at {url}")
                     if not args.no_browser:
                         webbrowser.open(url)
                     return 0
                 # Same data folder, but it can't show its pages: a leftover copy whose program files were removed
                 # (an uninstall while it ran). Close it and take its place -- otherwise every click would open a
                 # "Not Found" page forever.
-                print(f"A Vanguard at {url} isn't working (its pages are missing) — closing it.")
+                print(f"A Cadet Foundry at {url} isn't working (its pages are missing) — closing it.")
                 if _close_broken(url, port):
                     try:
                         httpd = serve(host, port, lan=args.lan)
@@ -131,7 +131,7 @@ def main() -> int:
                         pass
                 print(f"  Couldn't close it — using port {port + 1} instead.")
                 continue
-            what = "another Vanguard (different data)" if other is not None else "another program"
+            what = "another Cadet Foundry (different data)" if other is not None else "another program"
             print(f"Port {port} is used by {what} — trying {port + 1}.")
     if httpd is None:
         print(f"Ports {args.port}–{args.port + 9} are all in use. Close another program, or choose one: "
@@ -141,13 +141,13 @@ def main() -> int:
         threading.Thread(target=sample.build, args=(args.port, httpd.RequestHandlerClass.app), daemon=True).start()
         sample.watch_idle(httpd)
     if sys.stdout is not None and getattr(sys.stdout, "name", "").endswith("vanguard.log"):
-        write_pid()                                 # the icon's quiet Vanguard: the installer closes it by this id
+        write_pid()                                 # the icon's quiet Cadet Foundry: the installer closes it by this id
     stats = httpd.RequestHandlerClass.app.library.stats()
-    print(f"Vanguard is running at {url}")
+    print(f"Cadet Foundry is running at {url}")
     print(f"  Library: {stats['cards']} study cards, {len(stats['documents'])} documents, "
           f"{stats['quiz_questions']} quiz questions")
     _print_mode(args.lan, args.port)
-    print("  Press Ctrl+C to stop (or Me > Quit Vanguard).")
+    print("  Press Ctrl+C to stop (or Me > Quit Cadet Foundry).")
     # Start Classroom opens the Join screen (a big QR code for the projector); the app is one click from it.
     show = url + ("/join" if args.lan else "/")
     if args.kiosk:
@@ -161,7 +161,7 @@ def main() -> int:
             break
         httpd.server_close()
         want = getattr(httpd, "switch_lan", None)   # the instructor's "Open class to phones" (or close it)
-        if want is None:                            # Quit Vanguard
+        if want is None:                            # Quit Cadet Foundry
             break
         try:
             httpd = reopen(args.port, want)
@@ -171,13 +171,13 @@ def main() -> int:
             try:
                 httpd = reopen(args.port, args.lan)
             except OSError:
-                print(f"  Port {args.port} isn't available any more. Start Vanguard again.")
+                print(f"  Port {args.port} isn't available any more. Start Cadet Foundry again.")
                 return 1
         print()
         print("Class is now " + ("OPEN to phones on this Wi-Fi." if args.lan else "on this computer only."))
         _print_mode(args.lan, args.port)
     httpd.server_close()
-    sample.stop_child()                             # a sample class this Vanguard opened closes with it
+    sample.stop_child()                             # a sample class this Cadet Foundry opened closes with it
     return 0
 
 
@@ -198,7 +198,7 @@ def _print_mode(lan: bool, port: int) -> None:
 def _start_portable_ai() -> None:
     """USB mode (tools/make_usb.py --with-ai): the drive carries Ollama and a model. If no Ollama is answering yet,
     start the drive's copy with its models folder on the drive. It runs in the same console window, so closing that
-    window (or Me > Quit Vanguard) stops it too -- nothing keeps running on the school's computer."""
+    window (or Me > Quit Cadet Foundry) stops it too -- nothing keeps running on the school's computer."""
     import atexit
     import os
     import subprocess
@@ -212,15 +212,15 @@ def _start_portable_ai() -> None:
     try:
         proc = subprocess.Popen([exe, "serve"], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except OSError as e:
-        print(f"  Offline AI on this drive couldn't start ({e}). Vanguard works without it.")
+        print(f"  Offline AI on this drive couldn't start ({e}). Cadet Foundry works without it.")
         return
     atexit.register(proc.terminate)
     print("  Offline AI: starting from this drive (the first answer can take a minute while the model loads).")
 
 
 def _vanguard_instance(url: str) -> str | None:
-    """The data ID of the Vanguard answering at `url` ("" if it's an older Vanguard without one), or None if what
-    answers isn't Vanguard."""
+    """The data ID of the Cadet Foundry answering at `url` ("" if it's an older Cadet Foundry without one), or None if what
+    answers isn't Cadet Foundry."""
     import json
     import urllib.request
     if not _is_vanguard(url):
@@ -233,7 +233,7 @@ def _vanguard_instance(url: str) -> str | None:
 
 
 def _serves_pages(url: str) -> bool:
-    """The Vanguard at `url` can show its app page (a leftover whose program files were deleted can't)."""
+    """The Cadet Foundry at `url` can show its app page (a leftover whose program files were deleted can't)."""
     import urllib.request
     try:
         with urllib.request.urlopen(url + "/", timeout=5) as r:
@@ -243,8 +243,8 @@ def _serves_pages(url: str) -> bool:
 
 
 def _close_broken(url: str, port: int) -> bool:
-    """Close a broken Vanguard that uses our data folder. First politely (/api/quit answers this computer); for an
-    older version, end the process that owns the port -- only after checking it's Vanguard with our data folder."""
+    """Close a broken Cadet Foundry that uses our data folder. First politely (/api/quit answers this computer); for an
+    older version, end the process that owns the port -- only after checking it's Cadet Foundry with our data folder."""
     import json
     import time
     import urllib.request
@@ -277,7 +277,7 @@ def _close_broken(url: str, port: int) -> bool:
 
 
 def _is_vanguard(url: str) -> bool:
-    """Whatever answers at `url` identifies itself as Vanguard (its Server header)."""
+    """Whatever answers at `url` identifies itself as Cadet Foundry (its Server header)."""
     import urllib.request
     try:
         with urllib.request.urlopen(url + "/api/lock", timeout=3) as r:

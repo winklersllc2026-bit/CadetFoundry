@@ -29,7 +29,7 @@ OUT = ROOT / "faith"
 sys.path.insert(0, str(ROOT))
 from vanguard.faith import BOOKS  # noqa: E402
 
-UA = {"User-Agent": "Vanguard faith installer"}
+UA = {"User-Agent": "Cadet Foundry faith installer"}
 
 CATALOG = [
     # id, name, tradition, kind, source

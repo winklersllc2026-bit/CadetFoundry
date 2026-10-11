@@ -1,7 +1,7 @@
 > **Next session: read ROADMAP.md (what's next) and ARCHITECTURE.md (how it fits together).** Earlier phase-by-phase
 > handoff notes are in docs/history/ — historical only.
 
-# Vanguard — notes for anyone (or any AI session) working on this repo
+# Cadet Foundry — notes for anyone (or any AI session) working on this repo
 
 Learning and leadership platform for JROTC Cadets and instructors (see README.md, ROADMAP.md). Everything runs on the
 device: Python 3.10+ standard library server (`run.py`, `vanguard/`), one-page web UI (`web/`), optional
@@ -68,8 +68,8 @@ replacing it locks out every device with the old public key.
 Bump `vanguard/__init__.py` `__version__` for every release (signed updates refuse equal/older versions).
 `python site/build.py` builds `site/dist/` (page + zip, signed if `~/.vanguard-release/release_key.pem`
 exists — see `tools/sign.py`); `--deploy` publishes with wrangler (needs a Cloudflare login). `--release` publishes the installer and zip as a GitHub release (needs the `gh` CLI, logged in).
-The Windows installer (`Vanguard-Setup-<version>.exe`, from `site/installer.iss`) is built with Inno Setup 6
+The Windows installer (`CadetFoundry-Setup-<version>.exe`, from `site/installer.iss`) is built with Inno Setup 6
 when it's installed (`winget install -e --id JRSoftware.InnoSetup`); without it only the zip is built. The installer bundles
-Python (official embeddable build, pinned SHA-256 in `site/build.py`, plus `cryptography`) and starts Vanguard with
+Python (official embeddable build, pinned SHA-256 in `site/build.py`, plus `cryptography`) and starts Cadet Foundry with
 `pythonw.exe` — no console. It must only copy files and make shortcuts: never run scripts mid-install (Defender's ML
 flagged that as Trojan:Win32/Wacatac.B!ml). Optional extras install from inside the app (`vanguard/addons.py`).

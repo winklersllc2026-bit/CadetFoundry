@@ -40,7 +40,7 @@ class HostRuleTests(unittest.TestCase):
                     "laptop.local:8780",            # any name at all
                     "192.168.1.99:8780",            # another address than the one connected to
                     "192.168.1.20:9999",            # wrong port
-                    "192.168.1.20",                 # no port (Vanguard isn't on 80)
+                    "192.168.1.20",                 # no port (Cadet Foundry isn't on 80)
                     "192.168.1.20:8780:1", ""):
             self.assertFalse(ok(bad), bad)
         self.assertFalse(security.host_ok("192.168.1.20:8780", 8780, lan=True, local_ip=None))

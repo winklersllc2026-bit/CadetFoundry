@@ -43,7 +43,7 @@ async function boardPacket() {
     <h3>Logbook</h3>${d.log.length ? `<table><tr><th style="width:16%">Date</th><th style="width:14%">Kind</th><th>Entry</th></tr>
       ${d.log.map(r => `<tr><td>${esc(r.date)}</td><td>${esc(r.kind)}</td><td>${r.score ? `<b>${esc(r.score)}</b> — ` : ''}${esc(r.text)}</td></tr>`).join('')}</table>`
       : '<p>Nothing logged yet.</p>'}
-    <p style="margin-top:12px;font-size:8pt">Printed ${esc(d.made)} from Vanguard, a personal study aid and logbook. Entries are the Soldier's own records, not official Army records.</p></div>`;
+    <p style="margin-top:12px;font-size:8pt">Printed ${esc(d.made)} from Cadet Foundry, a personal study aid and logbook. Entries are the Soldier's own records, not official Army records.</p></div>`;
   $('#logList').innerHTML = `<div class="card"><div class="row"><button class="btn small" id="packetBack">← Logbook</button><button class="btn primary" id="packetPrint">Print</button></div>
     <p class="faint">Your record on paper — for a board, a counseling session or your own files. Prints black on white.</p></div>
     <div id="packetPreview" style="background:#fff;color:#000;padding:12px;border-radius:8px">${html}</div>`;
@@ -118,7 +118,7 @@ async function showAftPlan() {
     <p><b>${esc(p.goal.short)}</b></p><p>${esc(p.goal.steps)}</p>
     <details><summary>H2F drills by what they train</summary><ul style="font-size:14px">${Object.entries(p.drills).map(([k, v]) =>
       `<li><b>${esc(k)}:</b> ${v.map(esc).join(', ')}</li>`).join('')}</ul></details>
-    <div class="row" style="margin-top:8px"><button class="btn small" id="planAsk">Ask Vanguard how to train my ${esc(p.goal.name)}</button></div>
+    <div class="row" style="margin-top:8px"><button class="btn small" id="planAsk">Ask Cadet Foundry how to train my ${esc(p.goal.name)}</button></div>
     <p class="faint">${esc(p.source)} Train with your unit's program and your cadre — this is a study aid.</p></div>`;
   $('#planAsk').onclick = () => { openView('ask'); send(`How do I improve my ${p.goal.name} for the Army Fitness Test? Use FM 7-22.`); };
 }
@@ -153,7 +153,7 @@ async function loadAft() {
         <b style="color:${e.points < r.min_event ? 'var(--red)' : 'inherit'}">${e.points}</b></div>
         <div class="bar"><i style="width:${e.points}%"></i></div></div>`).join('')}
       ${r.weakest ? `<p>Biggest gain available: <b>${esc(names[r.weakest])}</b>.</p>` : ''}
-      <div class="row">${r.weakest ? '<button class="btn" id="aftAsk">Ask Vanguard how to improve it</button>' : ''}<button class="btn primary" id="aftSave">Save to logbook</button></div>
+      <div class="row">${r.weakest ? '<button class="btn" id="aftAsk">Ask Cadet Foundry how to improve it</button>' : ''}<button class="btn primary" id="aftSave">Save to logbook</button></div>
       <p class="faint">${esc(r.source)}. Your unit's graders and the official tables decide your record score.</p></div>`;
     if ($('#aftAsk')) $('#aftAsk').onclick = () => { openView('ask'); send(`How do I improve my ${names[r.weakest]}? Use FM 7-22.`); };
     $('#aftSave').onclick = async () => {
@@ -207,7 +207,7 @@ async function loadCheckin() {
     ${concern ? `<div class="card" style="border-color:var(--tan)"><p>${esc(concern)}</p>${peopleList(support)}</div>` : ''}
     ${sleepCard(sleep)}
     <div class="card"><h3>🤝 My people</h3>
-      <p class="faint">The people you'd call on a hard day. Vanguard shows them next to the crisis lines — on this device only.</p>
+      <p class="faint">The people you'd call on a hard day. Cadet Foundry shows them next to the crisis lines — on this device only.</p>
       <div id="spRows">${(support.length ? support : [{ role: 'Battle buddy' }]).map(r => spRow(r, roles)).join('')}</div>
       <div class="row"><button class="btn small" id="spAdd">+ Add someone</button><button class="btn primary small" id="spSave">Save</button><span class="faint" id="spMsg"></span></div></div>
     <div class="card"><h3>Tactical breathing</h3>
@@ -284,7 +284,7 @@ async function lesDecoder() {
   const show = f => {
     open = f;
     $('#lesInfo').innerHTML = `<div class="card" style="margin:0"><div class="faint">Block ${f.n} · ${esc(f.section)}</div><h3 style="margin:4px 0">${esc(f.label)}</h3>
-      <p>${esc(text(f))}</p>${f.note ? `<p class="faint">Vanguard's note: ${esc(f.note)}</p>` : ''}</div>`;
+      <p>${esc(text(f))}</p>${f.note ? `<p class="faint">Cadet Foundry's note: ${esc(f.note)}</p>` : ''}</div>`;
     $('#lesGrid').querySelectorAll('[data-les]').forEach(b => b.classList.toggle('primary', +b.dataset.les === f.n));
   };
   const grid = list => {
@@ -346,7 +346,7 @@ async function loadMoney(local) {
       <div class="row"><select id="lesKind" style="flex:1"><option value="active">Active duty</option><option value="reserve">Reserve / National Guard</option></select>
         <input id="lesFind" placeholder="Block name or number" style="flex:2"></div>
       <div id="lesInfo" style="margin:10px 0"></div><div id="lesGrid"></div>
-      <p class="faint">Explanations are DFAS's own wording (<i>How to read an active duty Army LES</i> and <i>How to read a Reserve and National Guard LES</i>, dfas.mil). Vanguard's notes are marked. Questions about your pay go to your finance office.</p></div>
+      <p class="faint">Explanations are DFAS's own wording (<i>How to read an active duty Army LES</i> and <i>How to read a Reserve and National Guard LES</i>, dfas.mil). Cadet Foundry's notes are marked. Questions about your pay go to your finance office.</p></div>
     <div class="card" style="margin-top:14px"><h3>TSP calculator (Blended Retirement System)</h3>
       <div class="row">
         <div style="flex:1"><label>Monthly basic pay ($)</label><input id="tspPay" type="number" min="0" step="1" placeholder="from your LES"></div>
@@ -431,7 +431,7 @@ async function loadLetters(keepDraft) {
       <textarea id="ltNotes" rows="3" placeholder="e.g. tell mom I passed the PT test, food is better than I thought, miss her cooking, made a good friend named Ruiz"></textarea>
       <div class="row" style="margin-top:8px"><button class="btn primary" id="ltDraft">✍️ Help me write it</button><span class="faint" id="ltMsg"></span></div>
       <label for="ltText">Your letter</label>
-      <textarea id="ltText" rows="10" placeholder="Write here, or let Vanguard draft it from your notes and then make it yours."></textarea>
+      <textarea id="ltText" rows="10" placeholder="Write here, or let Cadet Foundry draft it from your notes and then make it yours."></textarea>
       <div id="ltFlags"></div>
       <div class="row" style="margin-top:8px"><button class="btn" id="ltCheck">🛡️ OPSEC check</button><button class="btn" id="ltSave">💾 Save</button><button class="btn" id="ltBig">🔍 Large print</button></div>
     </div>

@@ -12,9 +12,9 @@ async function showAddons() {
       ${j.name === key && j.state ? `<div style="margin-top:6px">${j.state === 'error' ? `<span style="color:var(--red)">${esc(j.msg)}</span>`
         : `<div style="height:8px;background:var(--line);border-radius:4px;overflow:hidden"><div style="height:100%;width:${j.pct || 0}%;background:var(--tan)"></div></div>
            <div class="faint">${esc(j.state === 'done' ? j.msg : j.step)}</div>`}</div>` : ''}</div>`;
-  const html = `<h3>🧩 Add-ons</h3><p class="faint">Optional. Each needs internet once, then works offline. You can keep using Vanguard while one installs.</p>
+  const html = `<h3>🧩 Add-ons</h3><p class="faint">Optional. Each needs internet once, then works offline. You can keep using Cadet Foundry while one installs.</p>
     ${row('ai', 'Offline AI', 'answers in full sentences, simpler explanations, mock board grading', st.ai)}
-    ${row('voice', 'Voice', 'talk to Vanguard with the 🎤 button', st.voice)}`;
+    ${row('voice', 'Voice', 'talk to Cadet Foundry with the 🎤 button', st.voice)}`;
   let card = $('#addonsCard');
   if (!card) { $('#meBody').insertAdjacentHTML('beforeend', '<div class="card" id="addonsCard"></div>'); card = $('#addonsCard'); }
   card.innerHTML = html;
@@ -41,7 +41,7 @@ async function showIntegrity() {
     <p>${icon} ${esc(st.message)}</p>${list('Changed', st.changed)}${list('Missing', st.missing)}${list('New, not fingerprinted', st.added)}
     <div class="row"><button class="btn small" id="intCheck">Check again</button></div>
     <h4>Class PIN</h4>
-    <p class="faint">${adm ? 'Set. It opens your class in 🎓 Instructor and controls the AI setting, Learn sections, updates and the library. It is separate from everyone\'s own PIN.' : 'Not set. Installing updates needs a Class PIN, so one profile can\'t change Vanguard for everyone on a shared device. Whoever looks after this device should set it.'}</p>
+    <p class="faint">${adm ? 'Set. It opens your class in 🎓 Instructor and controls the AI setting, Learn sections, updates and the library. It is separate from everyone\'s own PIN.' : 'Not set. Installing updates needs a Class PIN, so one profile can\'t change Cadet Foundry for everyone on a shared device. Whoever looks after this device should set it.'}</p>
     <div class="row">${adm ? '<input id="admCur" type="password" inputmode="numeric" maxlength="12" placeholder="Current Class PIN" style="flex:1">' : ''}
       <input id="admNew" type="password" inputmode="numeric" maxlength="12" placeholder="New Class PIN (6–12 digits)" style="flex:1">
       <button class="btn small" id="admSave">${adm ? 'Change' : 'Set Class PIN'}</button></div><p class="faint" id="admMsg"></p>
@@ -52,7 +52,7 @@ async function showIntegrity() {
     <div class="row"><input id="libAdm" type="password" inputmode="numeric" maxlength="12" placeholder="Class PIN" style="flex:1" ${adm ? '' : 'disabled'}>
       <button class="btn small" id="aiSave" ${adm ? '' : 'disabled'}>Save AI setting</button></div>
     <p class="faint" id="libMsg">${adm ? '' : 'Set a Class PIN above first.'}</p>
-    <p class="faint">Vanguard ${esc(st.version)}. ${st.update_key ? 'Updates must be signed by the publisher.' : 'No release key on this copy — signed updates aren\'t set up yet.'}</p>
+    <p class="faint">Cadet Foundry ${esc(st.version)}. ${st.update_key ? 'Updates must be signed by the publisher.' : 'No release key on this copy — signed updates aren\'t set up yet.'}</p>
     ${st.update_key ? `<details><summary>Install an update from a USB stick</summary>
       <label>Update file (.zip)</label><input type="file" id="updZip" accept=".zip">
       <label>Signature (.sig)</label><input type="file" id="updSig" accept=".sig">
@@ -74,7 +74,7 @@ async function showIntegrity() {
     $('#updMsg').textContent = 'Checking the signature…';
     const b64 = await new Promise(res => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.readAsDataURL(z); });
     const r = await api('/api/update', { zip: b64, sig: await g.text(), admin: $('#updAdmin').value });
-    $('#updMsg').innerHTML = r.ok ? `<b style="color:var(--green)">✓ Installed version ${esc(r.version)}</b> (was ${esc(r.current)}). Close Vanguard and start it again to finish.`
+    $('#updMsg').innerHTML = r.ok ? `<b style="color:var(--green)">✓ Installed version ${esc(r.version)}</b> (was ${esc(r.current)}). Close Cadet Foundry and start it again to finish.`
       : `<b style="color:var(--red)">Not installed.</b> ${esc(r.error || '')}`;
   };
 }
@@ -124,11 +124,11 @@ loaders.me = async () => {
       ${cat.length ? `<label>My faith texts (optional — used first in the Faith tab and when you ask about a passage)</label><div>${faithBoxes}</div>` : ''}
       <div class="row" style="margin-top:10px"><button class="btn primary">Save</button><span class="faint" id="profSaved"></span></div>
     </form>
-    ${isInst ? '' : `<div class="card"><h3>What Vanguard remembers about you</h3>
-      ${mems.length ? mems.map(m => `<div class="row" style="justify-content:space-between;border-bottom:1px solid var(--line);padding:6px 0"><span>${esc(m.text)}</span><button class="btn small danger" data-forget="${esc(m.id)}">Forget</button></div>`).join('') : '<p class="faint">Nothing yet. Vanguard learns as you talk, or add something:</p>'}
+    ${isInst ? '' : `<div class="card"><h3>What Cadet Foundry remembers about you</h3>
+      ${mems.length ? mems.map(m => `<div class="row" style="justify-content:space-between;border-bottom:1px solid var(--line);padding:6px 0"><span>${esc(m.text)}</span><button class="btn small danger" data-forget="${esc(m.id)}">Forget</button></div>`).join('') : '<p class="faint">Nothing yet. Cadet Foundry learns as you talk, or add something:</p>'}
       <div class="row" style="margin-top:8px"><input id="memIn" placeholder="e.g. I'm working on my plank time" style="flex:1"><button class="btn small" id="memAdd">Add</button></div></div>`}
     <div class="card"><h3>Security</h3>
-      <p class="muted">${lock.pin_set ? `A PIN protects Vanguard. It locks after <b>${lock.idle_minutes}</b> minutes without use.${lock.encrypted ? ' Your files are <b>protected with your PIN</b> on this device.' : ''}` : 'No PIN set — anyone who picks up this device can open Vanguard, and your files are not protected. Set a PIN of 6–12 digits.'}</p>
+      <p class="muted">${lock.pin_set ? `A PIN protects Cadet Foundry. It locks after <b>${lock.idle_minutes}</b> minutes without use.${lock.encrypted ? ' Your files are <b>protected with your PIN</b> on this device.' : ''}` : 'No PIN set — anyone who picks up this device can open Cadet Foundry, and your files are not protected. Set a PIN of 6–12 digits.'}</p>
       <p class="faint">Your PIN and your <b>backup code</b> are the only keys to your protected files. If you forget your PIN, use "Forgot your PIN?" on the sign-in screen. Lost your code? Make a new one here (it replaces the old one).</p>
       <div class="row">
         ${lock.pin_set ? '<input id="pinCur" type="password" inputmode="numeric" maxlength="12" placeholder="Current PIN" style="flex:1">' : ''}
@@ -144,20 +144,20 @@ loaders.me = async () => {
     </div>
     <div class="card"><h3>About this device</h3>
       <p class="muted">${e.model ? `Offline AI model: <b>${esc(e.model)}</b>.` : 'No offline AI model installed — the library, study tools and logbook still work.'}</p>
-      <p class="muted">Library: ${lib.cards} study cards, ${lib.quiz_questions} quiz questions, ${lib.documents.length} official documents. Vanguard works completely offline.</p>
-      <p class="muted">Voice: ${speech.ok ? `read-aloud ready (${esc(speech.voice.name)}, on this device)` : 'no offline voice found for read-aloud'}${STATUS.voice ? ' · 🎤 talk-to-Vanguard installed' : ' · 🎤 talk-to-Vanguard not installed (tools/install_voice.py)'}.</p>
+      <p class="muted">Library: ${lib.cards} study cards, ${lib.quiz_questions} quiz questions, ${lib.documents.length} official documents. Cadet Foundry works completely offline.</p>
+      <p class="muted">Voice: ${speech.ok ? `read-aloud ready (${esc(speech.voice.name)}, on this device)` : 'no offline voice found for read-aloud'}${STATUS.voice ? ' · 🎤 talk-to-Cadet Foundry installed' : ' · 🎤 talk-to-Cadet Foundry not installed (tools/install_voice.py)'}.</p>
       ${speech.ok ? `<label style="color:var(--text)"><input type="checkbox" id="autoRead" ${speech.auto ? 'checked' : ''} style="width:auto"> Read every answer aloud automatically</label>` : ''}
-      <div class="row" style="margin-top:8px"><button class="btn small" id="quitApp">⏻ Quit Vanguard</button>${isInst ? '' : '<button class="btn small" id="tourAgain">Take the tour</button>'}<button class="btn small" id="reloadLib">Reload library</button><button class="btn small danger" id="clearChat">Clear chat history</button></div>
+      <div class="row" style="margin-top:8px"><button class="btn small" id="quitApp">⏻ Quit Cadet Foundry</button>${isInst ? '' : '<button class="btn small" id="tourAgain">Take the tour</button>'}<button class="btn small" id="reloadLib">Reload library</button><button class="btn small danger" id="clearChat">Clear chat history</button></div>
     </div>
     <div class="card"><h3>Backup and move to a new device</h3>
-      <p class="muted">Saves your profile, logbook, letters, address book, study progress and what Vanguard remembers into one <b>encrypted</b> file. Device settings are never included.</p>
+      <p class="muted">Saves your profile, logbook, letters, address book, study progress and what Cadet Foundry remembers into one <b>encrypted</b> file. Device settings are never included.</p>
       ${isInst ? '<p class="faint">This backs up your own profile only. Your program — classes, lessons, scenarios, fitness events — isn\'t in it yet; a program export is coming in a later update.</p>' : ''}
       <label>Backup password (at least 10 characters — three or four words works well)</label>
       <input id="bkPass" type="password" autocomplete="new-password" maxlength="200" placeholder="Needed to open the backup later — write it down">
       <div class="row" style="margin-top:8px"><button class="btn small" id="bkSave">⬇ Download encrypted backup</button>
         <label class="btn small" style="margin:0;color:var(--text)">⬆ Restore from backup<input type="file" id="restoreFile" accept=".json,application/json" hidden></label></div>
       <p class="faint" id="restoreMsg">Restoring replaces what's on this device with the backup. Without the backup password, nobody can open the file.</p></div>
-    <p class="faint">Vanguard is designed to support JROTC instruction. It isn't an official JROTC, military or school source — your instructor and official sources come first. What you enter is saved on this device and there is no tracking. If this device uses an online AI service, ordinary Ask questions go to it — without your name, notes or earlier chats.</p>
+    <p class="faint">Cadet Foundry is designed to support JROTC instruction. It isn't an official JROTC, military or school source — your instructor and official sources come first. What you enter is saved on this device and there is no tracking. If this device uses an online AI service, ordinary Ask questions go to it — without your name, notes or earlier chats.</p>
     ${aboutVanguardHtml()}`;
   $('#profForm').onsubmit = async ev => {
     ev.preventDefault();
@@ -235,9 +235,9 @@ loaders.me = async () => {
   if ($('#autoRead')) $('#autoRead').onchange = ev => speech.setAuto(ev.target.checked);
   if ($('#tourAgain')) $('#tourAgain').onclick = () => tour(lock.current.id);
   $('#quitApp').onclick = async () => {
-    if (!confirm('Close Vanguard? Open it again any time from the desktop icon.')) return;
+    if (!confirm('Close Cadet Foundry? Open it again any time from the desktop icon.')) return;
     await api('/api/quit', {});
-    document.body.innerHTML = '<div style="display:grid;place-items:center;height:100vh;padding:16px;text-align:center"><div><h2>Vanguard is closed.</h2><p>Open it again from the <b>Vanguard</b> icon. You can close this tab.</p></div></div>';
+    document.body.innerHTML = '<div style="display:grid;place-items:center;height:100vh;padding:16px;text-align:center"><div><h2>Cadet Foundry is closed.</h2><p>Open it again from the <b>Cadet Foundry</b> icon. You can close this tab.</p></div></div>';
   };
   $('#reloadLib').onclick = async () => {
     const admin = (await api('/api/lock')).admin_set ? prompt('Class PIN:') : '';
@@ -270,7 +270,7 @@ async function tour(pid) {
     if (b) b.style.outline = '3px solid var(--tan)';
     o.innerHTML = `<div class="card" role="dialog" aria-modal="true" aria-labelledby="tourH" style="max-width:420px;width:100%">
       <div class="faint">${i + 1} of ${TOUR.length}</div><h3 id="tourH">${name}</h3><p>${text}</p>
-      ${i === TOUR.length - 1 ? '<p class="faint">Your work is saved on this device. Vanguard supports your instructor — it doesn’t replace your instructor, your curriculum or official sources.</p>' : ''}
+      ${i === TOUR.length - 1 ? '<p class="faint">Your work is saved on this device. Cadet Foundry supports your instructor — it doesn’t replace your instructor, your curriculum or official sources.</p>' : ''}
       <div class="row"><button class="btn primary" id="tourNext">${i === TOUR.length - 1 ? 'Done' : 'Next'}</button>
       ${i < TOUR.length - 1 ? '<button class="btn small" id="tourSkip">Skip the tour</button>' : ''}</div></div>`;
     $('#tourNext').onclick = () => { i++; show(); };

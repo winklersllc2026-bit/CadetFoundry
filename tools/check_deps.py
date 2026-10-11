@@ -1,5 +1,5 @@
 """
-Check Vanguard's pinned third-party packages against the OSV vulnerability database (needs internet).
+Check Cadet Foundry's pinned third-party packages against the OSV vulnerability database (needs internet).
 
     python tools/check_deps.py
 

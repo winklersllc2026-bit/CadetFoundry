@@ -1,9 +1,9 @@
 """
-Answers Vanguard gives straight from its own data -- the DFAS pay tables, the AFT score tables, the DFAS LES guide
+Answers Cadet Foundry gives straight from its own data -- the DFAS pay tables, the AFT score tables, the DFAS LES guide
 and the Army job list -- so a number or a job description never depends on a small AI model restating it.
 
 Each answer is {"question", "answer", "source"}; "final": True means the answer is complete and no AI text follows
-(a pay grade that doesn't exist, a manual Vanguard doesn't have).
+(a pay grade that doesn't exist, a manual Cadet Foundry doesn't have).
 """
 from __future__ import annotations
 

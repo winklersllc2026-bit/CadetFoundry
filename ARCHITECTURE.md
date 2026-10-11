@@ -1,6 +1,6 @@
-# Vanguard — architecture (version 0.1.x)
+# Cadet Foundry — architecture (version 0.1.x)
 
-Vanguard is a learning and leadership platform for JROTC instructors and Cadets. One computer (the instructor's
+Cadet Foundry is a learning and leadership platform for JROTC instructors and Cadets. One computer (the instructor's
 laptop, a USB drive, or a Raspberry Pi demo box) runs everything; Cadets use a web browser on the same network.
 
 ## Shape

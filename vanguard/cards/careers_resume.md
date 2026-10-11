@@ -16,7 +16,7 @@ A **resume** is a short summary of your qualifications. A person typically scans
 3. **Education and training** — near the top if you're a new graduate
 4. **Work history** — most recent job first, working backward
 
-**For a first resume:** volunteer service, leadership roles, awards and activities count. Your Vanguard portfolio (service hours, leadership, recognition) can help you remember what you've done.
+**For a first resume:** volunteer service, leadership roles, awards and activities count. Your Cadet Foundry portfolio (service hours, leadership, recognition) can help you remember what you've done.
 
 **Always have someone review it** for spelling, grammar and how well it fits the job. American Job Centers offer free resume feedback.
 

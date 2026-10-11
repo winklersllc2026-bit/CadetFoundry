@@ -23,7 +23,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 LIB = ROOT / "library"
-UA = {"User-Agent": "Mozilla/5.0 (Vanguard library installer)"}
+UA = {"User-Agent": "Mozilla/5.0 (Cadet Foundry library installer)"}
 
 
 def _get(url: str, timeout: int = 120, tries: int = 3) -> bytes:
@@ -77,7 +77,7 @@ def ucmj() -> str:
 
 def pdf_to_markdown(raw: bytes, title: str, source: str) -> str:
     """Convert an official PDF to text ONCE, on the machine that downloads it, so devices
-    running Vanguard never need a PDF reader. Each page becomes its own section."""
+    running Cadet Foundry never need a PDF reader. Each page becomes its own section."""
     import io
     from pypdf import PdfReader          # needed only here, on the setup machine
     reader = PdfReader(io.BytesIO(raw))
@@ -187,7 +187,7 @@ def army_publications() -> str:
     manifest = _manifest()
     for number, page, title in ARMY_PUBS:
         name = ("DA " + number) if number.startswith("PAM") else number
-        # the file name becomes the source Vanguard cites, e.g. "AR 670-1 Wear and Appearance ..."
+        # the file name becomes the source Cadet Foundry cites, e.g. "AR 670-1 Wear and Appearance ..."
         out = LIB / (re.sub(r"[^A-Za-z0-9.\-]+", "_", f"{name} {title}".replace("'", "")).strip("_") + ".md")
         try:
             url, date = _apd_pdf_url(number, page, maps)

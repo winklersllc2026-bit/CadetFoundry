@@ -1,5 +1,5 @@
 """
-Make a clean Vanguard flash drive for Cadets from a copy of the instructor's drive -- no profiles, no class records.
+Make a clean Cadet Foundry flash drive for Cadets from a copy of the instructor's drive -- no profiles, no class records.
 
 The instructor's drive has a folder "Make more flash drives". Its instructions say: copy the drive's contents (all but
 VanguardData) to this computer, unplug that drive, plug in a blank one, and double-click "Make a Cadet drive.bat"
@@ -38,7 +38,7 @@ def removable_drives() -> list[str]:
 
 
 def has_people(drive: Path) -> bool:
-    """The drive already holds Vanguard profiles (someone's data) -- never overwrite those."""
+    """The drive already holds Cadet Foundry profiles (someone's data) -- never overwrite those."""
     profiles = drive / "VanguardData" / "profiles"
     return profiles.is_dir() and any(profiles.iterdir())
 
@@ -71,10 +71,10 @@ def main(argv: list[str]) -> int:
         return 1
     src = Path(argv[0]).resolve()
     if not (src / "Vanguard" / "run.py").exists():
-        print(f"This doesn't look like a copy of a Vanguard drive (no Vanguard\\run.py in {src}).")
+        print(f"This doesn't look like a copy of a Cadet Foundry drive (no Vanguard\\run.py in {src}).")
         return 1
     print("\n  MAKE A CADET FLASH DRIVE")
-    print("  Copies Vanguard to a blank flash drive. No profiles or class records are copied.\n")
+    print("  Copies Cadet Foundry to a blank flash drive. No profiles or class records are copied.\n")
     if len(argv) > 1:
         target = argv[1]
     else:
@@ -85,7 +85,7 @@ def main(argv: list[str]) -> int:
             return 1
         if len(drives) == 1:
             target = drives[0]
-            answer = input(f"  Put Vanguard on the flash drive {target} ? Type Y and press Enter: ").strip().lower()
+            answer = input(f"  Put Cadet Foundry on the flash drive {target} ? Type Y and press Enter: ").strip().lower()
             if answer not in ("y", "yes"):
                 print("  Nothing was changed.")
                 return 1
@@ -104,14 +104,14 @@ def main(argv: list[str]) -> int:
         print("  That's the drive you're copying from. Choose the blank flash drive.")
         return 1
     if has_people(dest):
-        print(f"  {dest} already has Vanguard profiles on it. To protect them, nothing was changed.")
+        print(f"  {dest} already has Cadet Foundry profiles on it. To protect them, nothing was changed.")
         print("  Use a blank flash drive (or move that drive's VanguardData folder somewhere safe first).")
         return 1
     need = sum(f.stat().st_size for item in items_to_copy(src)
                for f in ([item] if item.is_file() else item.rglob("*")) if f.is_file())
     free = shutil.disk_usage(dest).free
     if free < need:
-        print(f"  {dest} has {free / 2**30:.1f} GB free; Vanguard needs {need / 2**30:.1f} GB. Use a bigger flash drive.")
+        print(f"  {dest} has {free / 2**30:.1f} GB free; Cadet Foundry needs {need / 2**30:.1f} GB. Use a bigger flash drive.")
         return 1
     print(f"\n  Copying to {dest} … (this can take several minutes; leave the drive plugged in)")
     copy_all(src, dest)

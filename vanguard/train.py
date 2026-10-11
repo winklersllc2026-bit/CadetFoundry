@@ -1,7 +1,7 @@
 """
 Train (Phase 6): fitness measured against yourself.
 
-  * The instructor chooses the program's events (program/fitness_events.json). Until then, Vanguard suggests a few
+  * The instructor chooses the program's events (program/fitness_events.json). Until then, Cadet Foundry suggests a few
     common ones. No physical standard is built in -- the owner's spec: personal improvement, not pass/fail.
   * Results go in the Cadet's class records (fitness.jsonl), from the Cadet or from the instructor on test day.
   * Goals are the Cadet's own (goals.json, also a class record).

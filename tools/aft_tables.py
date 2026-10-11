@@ -5,7 +5,7 @@ Build vanguard/data/aft_tables.json from the official Army Fitness Test score ta
 
 The PDF is published at army.mil (www.army.mil/e2/downloads/rv7/aft/), which blocks
 automated downloads -- save it from a browser. Needs `pdftotext` (poppler) on the
-setup machine only; Vanguard itself reads the small JSON this writes.
+setup machine only; Cadet Foundry itself reads the small JSON this writes.
 """
 from __future__ import annotations
 

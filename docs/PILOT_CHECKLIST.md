@@ -17,7 +17,7 @@ One page to go through before, during and after a classroom pilot. Data rules: [
 ## Dry run (with fictional profiles, never real Cadets)
 
 - [ ] Optional first look: **See a sample class** (on the welcome screen, or the 🧪 tile on the instructor's Home). It
-      opens a separate copy of Vanguard with eight made-up Cadets; Leave sample closes it and nothing of yours changes.
+      opens a separate copy of Cadet Foundry with eight made-up Cadets; Leave sample closes it and nothing of yours changes.
 
 - [ ] Set the Class PIN, then make an instructor profile with its own PIN.
 - [ ] Make a class, open class to phones, and join from two phones as "Cadet Alpha" and "Cadet Bravo".
@@ -39,7 +39,7 @@ One page to go through before, during and after a classroom pilot. Data rules: [
 ## Every week
 
 - [ ] Take a snapshot. Close class to phones when class ends.
-- [ ] When you press **Finish class**, answer "How useful was Vanguard today?" (a few seconds; you can skip it).
+- [ ] When you press **Finish class**, answer "How useful was Cadet Foundry today?" (a few seconds; you can skip it).
 
 ## After
 

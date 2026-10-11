@@ -218,7 +218,7 @@
    "label": "ERND",
    "section": "Leave",
    "active": "The cumulative amount of leave earned in the current fiscal year or current term of enlistment if the member reenlisted/extended since the beginning of the fiscal year. Normally increases by 2.5 days each month.",
-   "note": "Track your own leave in Vanguard's leave tracker (2.5 days a month)."
+   "note": "Track your own leave in Cadet Foundry's leave tracker (2.5 days a month)."
   },
   {
    "n": 27,
@@ -450,7 +450,7 @@
    "label": "BASE PAY RATE",
    "section": "Thrift Savings Plan (TSP)",
    "active": "The percentage of base pay elected for TSP contributions.",
-   "note": "The TSP calculator in Vanguard shows how your contribution percentage adds up with the BRS match."
+   "note": "The TSP calculator in Cadet Foundry shows how your contribution percentage adds up with the BRS match."
   },
   {
    "n": 64,

@@ -6,7 +6,7 @@ source: U.S. Department of Education, Institute of Education Sciences, Organizin
 ---
 The Department of Education reviewed the research on how people learn and remember. Its recommendations, with how strong the evidence is:
 
-**1. Quiz yourself** — *strong evidence.* Being tested on material helps you learn and remember it — better than just re-reading. That's why Vanguard's quizzes make you **type the answer**: trying to recall it is what builds memory. (In Vanguard, a wrong answer while practicing is never a bad mark — it's how you find what to learn next.)
+**1. Quiz yourself** — *strong evidence.* Being tested on material helps you learn and remember it — better than just re-reading. That's why Cadet Foundry's quizzes make you **type the answer**: trying to recall it is what builds memory. (In Cadet Foundry, a wrong answer while practicing is never a bad mark — it's how you find what to learn next.)
 
 **2. Ask deep "why" and "how" questions** — *strong evidence.* Don't just memorize *what*. Ask *why does this work? how does it connect? what would happen if…?* and explain the answer in your own words.
 

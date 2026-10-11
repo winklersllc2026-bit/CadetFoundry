@@ -70,7 +70,7 @@ def daily_status() -> dict:
 
 
 def daily_done() -> dict:
-    """Finish today's Daily 10. The score comes from the answers Vanguard graded -- never from the screen."""
+    """Finish today's Daily 10. The score comes from the answers Cadet Foundry graded -- never from the screen."""
     today = _today_set()
     d = store.read_json("daily.json", {})
     d[_today().isoformat()] = {"right": sum(1 for v in today["answers"].values() if v),

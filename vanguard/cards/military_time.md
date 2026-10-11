@@ -2,7 +2,7 @@
 category: military
 title: Military Time
 topic: Basic Knowledge
-source: Vanguard study card — 24-hour clock arithmetic (no manual in the library covers it)
+source: Cadet Foundry study card — 24-hour clock arithmetic (no manual in the library covers it)
 ---
 The Army uses a 24-hour clock. Midnight is 0000, noon is 1200.
 For times after noon, add 12 to the hour: 1:00 p.m. = 1300, 6:30 p.m. = 1830, 11:59 p.m. = 2359.

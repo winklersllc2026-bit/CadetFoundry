@@ -1,6 +1,6 @@
 # The official library
 
-Vanguard answers from what's in `library/`. Add official **public** documents there as `.pdf`, `.txt` or `.md` — Vanguard indexes them automatically (Me → Reload library, or restart).
+Cadet Foundry answers from what's in `library/`. Add official **public** documents there as `.pdf`, `.txt` or `.md` — Cadet Foundry indexes them automatically (Me → Reload library, or restart).
 
 U.S. Army publications and federal law are works of the U.S. Government and free to use. Download publications from the **Army Publishing Directorate** (armypubs.army.mil — search by the publication number) or the other official sites below. Use the newest version.
 
@@ -14,7 +14,7 @@ To see whether the Army has published a newer edition of anything installed (dow
 
 Not automatic: **TC 3-25.26** (land navigation) is CAC-restricted on armypubs now, and **TC 4-02.1** (first aid) is no longer listed as active.
 
-Some official sites block automated downloads (dfas.mil, militarypay.defense.gov, and armypubs.army.mil during maintenance). Save those PDFs from a browser into `library/`, then run `python tools/fetch_library.py` again: it converts every PDF to text **once, on that computer**, so devices running Vanguard never need a PDF reader.
+Some official sites block automated downloads (dfas.mil, militarypay.defense.gov, and armypubs.army.mil during maintenance). Save those PDFs from a browser into `library/`, then run `python tools/fetch_library.py` again: it converts every PDF to text **once, on that computer**, so devices running Cadet Foundry never need a PDF reader.
 
 ## Start with these
 
