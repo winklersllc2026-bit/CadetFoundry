@@ -223,15 +223,34 @@ def my_log() -> list[dict]:
 
 
 # ── classroom mode: one live, anonymous vote ────────────────────────────────
+# The vote lives in this program's memory only, never on disk (security review, 2026-10-11): votes are tied to
+# profile ids (one vote each, and each Cadet sees their own), and a vote only lasts a class period. A live.json left
+# by an older version is read once and deleted.
+_LIVE: dict = {}
+_live_checked = False
+
+
 def live() -> dict:
-    return _read("live.json", {})
+    global _live_checked
+    if not _live_checked:
+        _live_checked = True
+        old = _read("live.json", {})
+        if isinstance(old, dict) and old and not _LIVE:
+            _LIVE.update(old)
+        _path("live.json").unlink(missing_ok=True)
+    return json.loads(json.dumps(_LIVE)) if _LIVE else {}
+
+
+def _live_write(state: dict) -> None:
+    _LIVE.clear()
+    _LIVE.update(json.loads(json.dumps(state)))
 
 
 def live_start(sid: str) -> dict:
     sc = get(sid)
     state = {"scenario": sc["id"], "started": time.time(), "revealed": False, "votes": {}}
     with _lock:
-        _write("live.json", state)
+        _live_write(state)
     return state
 
 
@@ -240,12 +259,13 @@ def live_reveal(on: bool = True) -> None:
         state = live()
         if state:
             state["revealed"] = bool(on)
-            _write("live.json", state)
+            _live_write(state)
 
 
 def live_stop() -> None:
     with _lock:
-        _path("live.json").unlink(missing_ok=True)
+        live()                                   # (removes an older version's file too)
+        _LIVE.clear()
 
 
 def live_vote(pid: str, choice: int) -> None:
@@ -257,7 +277,7 @@ def live_vote(pid: str, choice: int) -> None:
         if not isinstance(choice, int) or not 0 <= choice < len(sc["choices"]):
             raise ValueError("Pick one of the choices.")
         state["votes"][pid] = choice                     # one vote per Cadet; changing it replaces it
-        _write("live.json", state)
+        _live_write(state)
 
 
 def live_for_cadet(pid: str) -> dict:

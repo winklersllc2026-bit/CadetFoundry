@@ -22,7 +22,8 @@ from vanguard import store, vault
 VERSION = 1
 PROGRAM_FILES = ("roster.json", "lessons.json", "lesson_notes.json", "assignments.json", "scenarios.json",
                  "service_projects.json", "fitness_events.json", "quiz_overrides.json", "pilot.json",
-                 "pilot_snapshots.json", "feedback_cadets.json", "feedback_instructor.json")
+                 "pilot_snapshots.json", "feedback_cadets.json", "feedback_instructor.json",
+                 "pilot_survey.json")
 DEVICE_FILES = ("program.json", "admin.json")
 CONFIG_KEYS = ("ai_mode", "categories", "portfolio_sections")
 

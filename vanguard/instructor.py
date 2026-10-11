@@ -119,27 +119,55 @@ def unit_for_code(code) -> dict | None:
     return _read_plain("join_codes.json", {}).get(clean_code(code))
 
 
+def _pending_joins() -> dict:
+    """program/joins.json: {"sealed": [box, ...]} -- each join sealed TO the program public key by the joining
+    Cadet's session (security review, 2026-10-11: who joined which unit is a class record). An older version wrote
+    a plain {pid: unit}; that's still read, as {"plain": {...}}."""
+    data = _read_plain("joins.json", {})
+    if isinstance(data, dict) and isinstance(data.get("sealed"), list):
+        return {"sealed": data["sealed"], "plain": {}}
+    return {"sealed": [], "plain": data if isinstance(data, dict) else {}}
+
+
 def request_join(pid: str, unit: str) -> None:
     """A Cadet used a join code: filed into the roster the next time an instructor opens class records."""
     with _lock:
-        joins = _read_plain("joins.json", {})
-        joins[pid] = unit
-        _write_plain("joins.json", joins)
+        cur = _pending_joins()
+        pub = security.program_public()
+        if pub and vault.AVAILABLE:
+            boxes = cur["sealed"] + [vault.seal_to(pub, json.dumps({"pid": p, "unit": u}).encode("utf-8"), "join")
+                                     for p, u in cur["plain"].items()]          # an older plain file: sealed now
+            boxes.append(vault.seal_to(pub, json.dumps({"pid": pid, "unit": unit}).encode("utf-8"), "join"))
+            _write_plain("joins.json", {"sealed": boxes})
+        else:                                     # no program key yet (or no cryptography): as before
+            _write_plain("joins.json", {**cur["plain"], pid: unit})
 
 
 def apply_joins(priv: bytes) -> list[str]:
-    """Files waiting joins into the sealed roster. Returns the Cadets placed in a unit."""
+    """Files waiting joins into the sealed roster. Returns the Cadets placed in a unit. The pending file is cleared
+    only after they're filed, so an interruption can't lose a join."""
     with _lock:
-        joins = _read_plain("joins.json", {})
-        if not joins:
+        cur = _pending_joins()
+        if not cur["sealed"] and not cur["plain"]:
             return []
-        _write_plain("joins.json", {})
+        joins = dict(cur["plain"])
+        for box in cur["sealed"]:                 # in order: a later join by the same Cadet wins
+            try:
+                j = json.loads(vault.open_from(priv, box, "join").decode("utf-8"))
+                joins[str(j["pid"])] = str(j["unit"])
+            except (vault.VaultError, ValueError, KeyError):
+                pass                              # sealed to an older program key: that Cadet can join again
     units = {u["id"] for u in roster(priv)["units"]}
     placed = []
     for pid, unit in joins.items():
         if unit in units and (profiles.get(pid) or {}).get("kind") == "cadet":
             assign(priv, pid, unit)
             placed.append(pid)
+    with _lock:                                   # clear what was filed; keep any join that arrived meanwhile
+        now = _pending_joins()
+        if now["sealed"][:len(cur["sealed"])] == cur["sealed"] and now["plain"] == cur["plain"]:
+            rest = now["sealed"][len(cur["sealed"]):]
+            _write_plain("joins.json", {"sealed": rest} if rest else {})
     return placed
 
 

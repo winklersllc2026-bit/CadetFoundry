@@ -11,7 +11,9 @@ never sent to a Cadet's screen before the instructor reveals it; and a wrong ans
 * The projector shows counts only (how many answered, how many right). Like the scenario vote, it never shows who
   answered what.
 
-State lives in DATA/program/live_quiz.json (plain JSON, like the scenario vote: a question and right/wrong marks).
+State lives in this program's memory only, never on disk (security review, 2026-10-11): the answers are tied to
+profile ids for one-answer-each and each Cadet's own result, and a live question only lasts a class period. If
+Vanguard closes, the live question ends. A live_quiz.json left by an older version is read once and deleted.
 """
 from __future__ import annotations
 
@@ -27,23 +29,33 @@ from vanguard import board, exam, store
 _lock = threading.Lock()
 
 
-def _path() -> Path:
+_STATE: dict = {}                                     # the live question, in memory only
+_legacy_checked = False
+
+
+def _legacy_path() -> Path:
     return store.DATA / "program" / "live_quiz.json"
 
 
 def _read() -> dict:
-    try:
-        return json.loads(_path().read_text(encoding="utf-8"))
-    except (OSError, ValueError):
-        return {}
+    """The live question (a copy). The first call takes over a live_quiz.json an older version left on disk."""
+    global _legacy_checked
+    if not _legacy_checked:
+        _legacy_checked = True
+        path = _legacy_path()
+        try:
+            old = json.loads(path.read_text(encoding="utf-8"))
+            if isinstance(old, dict) and old and not _STATE:
+                _STATE.update(old)
+        except (OSError, ValueError):
+            pass
+        path.unlink(missing_ok=True)
+    return json.loads(json.dumps(_STATE)) if _STATE else {}
 
 
 def _write(state: dict) -> None:
-    path = _path()
-    path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_suffix(".tmp")
-    tmp.write_text(json.dumps(state), encoding="utf-8")
-    tmp.replace(path)
+    _STATE.clear()
+    _STATE.update(json.loads(json.dumps(state)))
 
 
 def _clean(s, n: int) -> str:
@@ -90,7 +102,8 @@ def reveal(on: bool = True) -> None:
 
 def stop() -> None:
     with _lock:
-        _path().unlink(missing_ok=True)
+        _read()                                  # (removes an older version's file too)
+        _STATE.clear()
 
 
 def answer(pid: str, text: str = "", choice: str | None = None, use_ai: bool = False) -> dict:

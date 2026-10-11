@@ -346,11 +346,11 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                     dash = reports.dashboard(priv, app.library, owner=self._pid)
                 else:
                     dash = reports.dashboard(priv, app.library, unit)
-                if not q.get("unit") and pilot.config().get("start"):
-                    pilot.take_snapshot(dash)            # about weekly during a pilot: change over time
+                if not q.get("unit") and pilot.config(priv).get("start"):
+                    pilot.take_snapshot(priv, dash)            # about weekly during a pilot: change over time
                 return self._json(dash)
             if r == "/api/instructor/pilot":
-                return self._json({**pilot.report(reports.dashboard(priv, app.library)), "survey": pilot.SURVEY,
+                return self._json({**pilot.report(priv, reports.dashboard(priv, app.library)), "survey": pilot.SURVEY,
                                    "scale": pilot.SCALE})
             if r == "/api/instructor/report.csv":       # an explicit export, only for the instructor
                 unit = str(q.get("unit", ""))[:10]
@@ -1028,13 +1028,13 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                         return self._json({"ok": True})
                     return self._json({"error": "Choose add, rename or delete."}, 400)
                 if r == "/api/instructor/pilot":
-                    return self._json(pilot.save_config(b))
+                    return self._json(pilot.save_config(priv, b))
                 if r == "/api/instructor/pilot/snapshot":
-                    return self._json(pilot.take_snapshot(reports.dashboard(priv, app.library), force=True))
+                    return self._json(pilot.take_snapshot(priv, reports.dashboard(priv, app.library), force=True))
                 if r == "/api/instructor/pilot/survey":
-                    return self._json(pilot.set_survey(bool(b.get("open"))))
+                    return self._json(pilot.set_survey(priv, bool(b.get("open"))))
                 if r == "/api/instructor/pilot/feedback":
-                    return self._json(pilot.add_instructor_feedback(b.get("satisfaction"), b.get("minutes_saved"),
+                    return self._json(pilot.add_instructor_feedback(priv, b.get("satisfaction"), b.get("minutes_saved"),
                                                                     str(b.get("use_again", "")), b.get("comment")))
                 if r == "/api/instructor/quiz":
                     qid = str(b.get("id", ""))[:80]

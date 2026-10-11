@@ -114,6 +114,14 @@ class PilotTests(unittest.TestCase):
         self.assertIn("More scenarios please", rep["feedback"]["cadet_comments"])
         self.assertEqual(rep["feedback"]["latest_instructor"]["use_again"], "yes")
         self.assertIsNotNone(rep["weeks"])
+        # at rest (security review): none of it is readable on disk; only the instructor's session opened it above
+        disk = b"".join((store.DATA / "program" / n).read_bytes() for n in PILOT_FILES)
+        for secret in (b"More scenarios please", b"Central High", b"SFC Ruiz", b"Grading time went down", b'"learn"'):
+            self.assertNotIn(secret, disk)
+        # a Cadet's session never gets the answers or the setup back
+        for path in ("/api/instructor/pilot",):
+            self.assertEqual(self.req("GET", path, cookie=nia)[0], 403)
+        self.assertNotIn("More scenarios", json.dumps(self.req("GET", "/api/pilot/survey", cookie=nia)[1]))
 
 
 if __name__ == "__main__":
