@@ -215,6 +215,17 @@ class Handler(BaseHTTPRequestHandler):
         """The request comes from this computer (not another device on the classroom network)."""
         return self.client_address[0] in ("127.0.0.1", "::1", "::ffff:127.0.0.1")
 
+    def _device_admin(self, b: dict) -> str | None:
+        """Device-wide changes (AI mode, the Class PIN, updates, add-ons, library reload): None if allowed, else why
+        not. Once a Class PIN exists, only an instructor profile may try it here -- a Cadet's guesses never reach
+        check_admin, so a Cadet can't lock the instructor out with wrong PINs. Before any Class PIN exists, only this
+        computer (the first-run setup), never a device on the network."""
+        if not security.admin_set():
+            return None if self._local() else "Set up Vanguard on the instructor's computer first."
+        if (profiles.get(self._pid or "") or {}).get("kind") != "instructor":
+            return "Only an instructor can change this."
+        return security.check_admin(str(b.get("admin", ""))[:32])
+
     def _program_key(self) -> bytes | None:
         """The program private key -- only in an instructor profile's session after the Instructor PIN."""
         if (profiles.get(self._pid or "") or {}).get("kind") != "instructor":
@@ -1211,7 +1222,7 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                 return self._json({"error": str(e)}, 400)
             return self._json({"error": "Unknown instructor action."}, 404)
         if r == "/api/admin/ai-mode":                    # device-wide AI setting -> Instructor PIN
-            err = security.check_admin(str(b.get("admin", ""))[:32])
+            err = self._device_admin(b) or (None if security.admin_set() else "Set the Class PIN first.")
             if err:
                 return self._json({"error": err}, 403)
             mode = str(b.get("mode", ""))
@@ -1220,10 +1231,14 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
             store.save_config({"ai_mode": mode})
             return self._json({"ok": True, "ai_mode": mode})
         if r == "/api/admin/pin":
+            if security.admin_set() and (profiles.get(self._pid or "") or {}).get("kind") != "instructor":
+                return self._json({"ok": False, "error": "Only an instructor can change the Class PIN."}, 403)
+            if not security.admin_set() and not self._local():
+                return self._json({"ok": False, "error": "Set up Vanguard on the instructor's computer first."}, 403)
             err = security.set_admin_pin(str(b.get("new", "")), str(b.get("current", "")))
             return self._json({"ok": False, "error": err} if err else {"ok": True}, 400 if err else 200)
         if r == "/api/update":
-            err = security.check_admin(str(b.get("admin", "")))
+            err = self._device_admin(b) or (None if security.admin_set() else "Set the Class PIN first.")
             if err:
                 return self._json({"error": err}, 403)
             if not integrity.PUBLIC_KEY.exists():
@@ -1283,7 +1298,7 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
         if r == "/api/chats/delete":
             return self._json({"ok": store.delete_chat(str(b.get("id", "")))})
         if r == "/api/addons/install":                   # offline AI / voice: changes the device -> Instructor PIN
-            err = security.admin_set() and security.check_admin(str(b.get("admin", "")))
+            err = self._device_admin(b)
             if err:
                 return self._json({"error": err}, 403)
             try:
@@ -1301,7 +1316,7 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
             store.clear_history()
             return self._json({"ok": True})
         if r == "/api/library/reload":
-            err = security.admin_set() and security.check_admin(str(b.get("admin", "")))
+            err = self._device_admin(b)
             if err:
                 return self._json({"error": err}, 403)
             app.library.load()
