@@ -2,7 +2,7 @@
 
 Current version: **0.2.5** (not yet released; 0.2.3 and 0.2.4 released 2026-10-11).
 
-**0.2.5 — terms and privacy:** plain-English Terms of use and Privacy notice (vanguard/legal/), a required "I agree" box on first-run setup (and once on the instructor's Home for existing installs), readable in the app and on the website (/terms, /privacy) · "the Cadet Foundry project" instead of a company name · support@winklers-llc.com everywhere · security.txt · "No internet required" on the website. Downloads: the public Vanguard-releases repo on GitHub; page: vanguard.winklers-llc.com (public).
+**0.2.5 — terms and privacy:** plain-English Terms of use and Privacy notice (vanguard/legal/), a required "I agree" box on first-run setup (and once on the instructor's Home for existing installs), readable in the app and on the website (/terms, /privacy) · "the Cadet Foundry project" instead of a company name · support@cadetfoundry.org everywhere · security.txt · "No internet required" on the website. Downloads: the public Vanguard-releases repo on GitHub; page: cadetfoundry.org (public).
 
 ## Where it stands
 

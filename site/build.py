@@ -1,5 +1,5 @@
 """
-Build the public page for vanguard.winklers-llc.com.
+Build the public page for cadetfoundry.org.
 
     python site/build.py            build site/dist (page + Windows installer + download zip)
     python site/build.py --deploy   build, then publish with wrangler
@@ -44,7 +44,7 @@ ROADMAP = [
     (True, "0.2: military jobs in every service from official sites; ASVAB practice with exact scoring"),
     (True, "0.2.1: deeper Navy, Air Force, Space Force and Marine Corps cards; official military videos (offline once saved)"),
     (True, "0.2.2: Class day — the instructor's Home walks through setup, then Start class runs today's lesson, scenarios, live questions and videos from one run sheet"),
-    (True, "0.2.5: Terms of use and Privacy notice (agree on first run), support@winklers-llc.com, \"No internet required\" on the website"),
+    (True, "0.2.5: Terms of use and Privacy notice (agree on first run), support@cadetfoundry.org, \"No internet required\" on the website"),
     (True, "0.2.4: sample class, Pilot mode and End pilot; Start class in named steps; scenario debriefs; after-class feedback and a one-page pilot summary"),
     (True, "0.2.3: security review — classroom network locked to this computer's address, program data sealed, safer restores and updates, pinned dependencies, honest privacy notes"),
     (True, "Roles: Cadet, guardian and instructor profiles; Class PIN; class records only for the instructor"),
@@ -271,7 +271,7 @@ def shell(title: str, here: str, body: str, description: str = "") -> str:
 <a href="/security">Privacy</a><a class="btn small" href="/#download">Download</a></nav></div></header>
 {body}
 <footer><div class="wrap"><p>{html.escape(DISCLAIMER)}</p>
-<p>A free community project — the Cadet Foundry project · <a href="/security">Privacy and security</a> · <a href="/terms">Terms of use</a> · <a href="/privacy">Privacy notice</a> · <a href="/pilot">Run a pilot</a> · <a href="mailto:support@winklers-llc.com">support@winklers-llc.com</a> · Version {html.escape(__version__)}</p></div></footer>
+<p>A free community project — the Cadet Foundry project · <a href="/security">Privacy and security</a> · <a href="/terms">Terms of use</a> · <a href="/privacy">Privacy notice</a> · <a href="/pilot">Run a pilot</a> · <a href="mailto:support@cadetfoundry.org">support@cadetfoundry.org</a> · Version {html.escape(__version__)}</p></div></footer>
 </body></html>"""
 
 
@@ -404,7 +404,7 @@ def page(zip_name: str, size: int, commit: str, history, sha: str = "", setup=No
   <details><summary>What computer do I need?</summary><p>A Windows laptop. (It also runs on Linux and a Raspberry Pi.) No special hardware.</p></details>
   <details><summary>Can Cadets study at home?</summary><p>Yes. Cadet Foundry can run from a USB flash drive with no installation, and each Cadet can have their own drive. Their work stays on the drive, locked with their PIN.</p></details>
   <details><summary>Is this an official JROTC product?</summary><p>No. Cadet Foundry is designed to support JROTC instruction, but it isn't an official JROTC, military or school product, and it doesn't replace your program's curriculum. Study material comes from official public sources, and each card says which one.</p></details>
-  <details><summary>Who makes Cadet Foundry?</summary><p>Cadet Foundry is a free community project — the Cadet Foundry project. It isn't a company product. Questions, problems, or a copy for another instructor: <a href="mailto:support@winklers-llc.com">support@winklers-llc.com</a>.</p></details>
+  <details><summary>Who makes Cadet Foundry?</summary><p>Cadet Foundry is a free community project — the Cadet Foundry project. It isn't a company product. Questions, problems, or a copy for another instructor: <a href="mailto:support@cadetfoundry.org">support@cadetfoundry.org</a>.</p></details>
   <details><summary>Can I try it without setting anything up?</summary><p>Yes. On Cadet Foundry's first screen, choose <b>See a sample class</b>. It opens a separate copy with eight made-up Cadets, lessons, scenarios and a pilot in progress. Leave it and nothing of yours has changed.</p></details>
   <details><summary>What if a Cadet forgets their PIN?</summary><p>When they make their PIN, Cadet Foundry shows a one-time backup code. With it they can choose a new PIN — their work stays protected the whole time.</p></details>
 </div></section>
@@ -429,7 +429,7 @@ def pilot_page() -> str:
 <li><b>Print the pilot report</b><p>Every number comes from real records, and what Cadet Foundry can't measure is said plainly.</p></li>
 </ol>
 <div class="tip"><b>What a school needs:</b> one Windows laptop for the instructor and Cadets' devices on the same Wi-Fi. No server, no cloud account, no subscription.</div>
-<p style="margin-top:24px">Interested? Email <a href="mailto:support@winklers-llc.com">support@winklers-llc.com</a> to talk about a pilot.</p>
+<p style="margin-top:24px">Interested? Email <a href="mailto:support@cadetfoundry.org">support@cadetfoundry.org</a> to talk about a pilot.</p>
 </div></section>"""
     return shell("Cadet Foundry — Run a pilot", "pilot", body)
 

@@ -26,7 +26,7 @@ class TermsDocumentTests(unittest.TestCase):
         for doc in terms.DOCS:
             text = terms.text(doc)
             self.assertTrue(text and f"Version {terms.VERSION}" in text, doc)
-            self.assertIn("support@winklers-llc.com", text)
+            self.assertIn("support@cadetfoundry.org", text)
             self.assertIn("the Cadet Foundry project", text)
         # inside vanguard/: an older updater (0.2.3) accepts them, so the update path keeps working
         self.assertTrue(integrity.__dict__["_ALLOWED_DIRS"][0] == "vanguard/")

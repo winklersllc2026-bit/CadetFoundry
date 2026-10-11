@@ -83,5 +83,5 @@ letters never do. Before turning it on, the school should read that provider's t
 
 ## Reporting a security problem
 
-Report suspected vulnerabilities privately to **support@winklers-llc.com**, not in a public issue. The same address
+Report suspected vulnerabilities privately to **support@cadetfoundry.org**, not in a public issue. The same address
 answers questions, requests for deletion help, and instructors who'd like their own copy.

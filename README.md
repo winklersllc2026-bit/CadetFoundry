@@ -18,7 +18,7 @@ Version 0.2.5. What's built and what's next: ROADMAP.md. How it fits together: A
 
 ## Start here
 
-1. **Install:** download Cadet Foundry for Windows from **vanguard.winklers-llc.com** and double-click it (or run it from a
+1. **Install:** download Cadet Foundry for Windows from **cadetfoundry.org** and double-click it (or run it from a
    USB drive — below).
 2. **Just looking?** On the first screen choose **See a sample class**: a separate copy with eight made-up Cadets,
    lessons, scenarios and a pilot in progress. Leaving it changes nothing.
@@ -28,7 +28,7 @@ Version 0.2.5. What's built and what's next: ROADMAP.md. How it fits together: A
 
 Running a pilot? Read [docs/PILOT_CHECKLIST.md](docs/PILOT_CHECKLIST.md) and
 [docs/PILOT_DATA_HANDLING.md](docs/PILOT_DATA_HANDLING.md). Questions, problems, security reports, or a copy for
-another instructor: **support@winklers-llc.com**. Please don't pass your copy on — other instructors get their own
+another instructor: **support@cadetfoundry.org**. Please don't pass your copy on — other instructors get their own
 clean copy, with no one else's data on it.
 
 ## For Cadets

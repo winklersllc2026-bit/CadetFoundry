@@ -1,6 +1,6 @@
 # Cadet Foundry — Privacy notice
 
-Version 2026-10-11 · Questions: **support@winklers-llc.com**
+Version 2026-10-11 · Questions: **support@cadetfoundry.org**
 
 Cadet Foundry is a free community project — **the Cadet Foundry project.** This notice is for instructors, schools, Cadets and parents. The short version: **everything stays on the instructor's computer, and the Cadet Foundry project never receives any of it.**
 
@@ -33,13 +33,13 @@ Online AI is **off** unless the person who manages the device turns it on with t
 When an instructor opens class to phones, pages travel over that Wi-Fi network without HTTPS. Use a network only the class joins (WPA3 if possible), not open or guest Wi-Fi. Details for school IT are in SECURITY.md.
 
 ## The website
-vanguard.winklers-llc.com sets **no cookies**, runs **no analytics**, and has **no accounts**. It is hosted by Cloudflare, whose servers keep the standard technical logs any website host keeps (such as IP addresses). Downloads come from a public GitHub page, under GitHub's own terms.
+cadetfoundry.org sets **no cookies**, runs **no analytics**, and has **no accounts**. It is hosted by Cloudflare, whose servers keep the standard technical logs any website host keeps (such as IP addresses). Downloads come from a public GitHub page, under GitHub's own terms.
 
 ## Email
-If you email support@winklers-llc.com, your message is forwarded to the project's email inbox and used only to answer you. Please don't send student records or Cadets' private information by email.
+If you email support@cadetfoundry.org, your message is forwarded to the project's email inbox and used only to answer you. Please don't send student records or Cadets' private information by email.
 
 ## Children
 Cadets are often under 18. Cadet Foundry is designed so that their information stays with their own program, on their instructor's computer, and never reaches the Cadet Foundry project.
 
 ## Changes and contact
-This notice may be updated; the version date is at the top. Questions, deletion help or security reports: **support@winklers-llc.com**.
+This notice may be updated; the version date is at the top. Questions, deletion help or security reports: **support@cadetfoundry.org**.

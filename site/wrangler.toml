@@ -2,7 +2,9 @@ name = "vanguard-site"
 main = "worker.js"
 compatibility_date = "2026-09-01"
 routes = [
-  { pattern = "vanguard.winklers-llc.com", custom_domain = true },
+  { pattern = "cadetfoundry.org", custom_domain = true },
+  { pattern = "www.cadetfoundry.org", custom_domain = true },       # forwards to cadetfoundry.org
+  { pattern = "vanguard.winklers-llc.com", custom_domain = true },  # the address before the rename: forwards too
 ]
 
 [assets]

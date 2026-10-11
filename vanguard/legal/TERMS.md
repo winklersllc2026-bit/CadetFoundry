@@ -1,6 +1,6 @@
 # Cadet Foundry — Terms of use
 
-Version 2026-10-11 · Questions: **support@winklers-llc.com**
+Version 2026-10-11 · Questions: **support@cadetfoundry.org**
 
 Cadet Foundry is a free community project — **the Cadet Foundry project** — made to support JROTC instructors and Cadets. It is not a company product. By setting up Cadet Foundry, or using it after setup, you agree to these terms. If you don't agree, don't use it.
 
@@ -15,7 +15,7 @@ Cadet Foundry is free to use. If that ever changes, it will be announced in adva
 
 ## 3. Who may use it
 - An instructor may install Cadet Foundry and use it **within their own JROTC program**, including making copies for their own Cadets (for example with "Make more flash drives").
-- **Please don't pass Cadet Foundry on to other instructors, programs or schools.** Ask them to email support@winklers-llc.com instead, and they'll get their own clean copy — with no one else's data on it.
+- **Please don't pass Cadet Foundry on to other instructors, programs or schools.** Ask them to email support@cadetfoundry.org instead, and they'll get their own clean copy — with no one else's data on it.
 - Don't sell Cadet Foundry, rebrand it, or present it as your own or as official.
 
 ## 4. Your data stays with you
@@ -42,4 +42,4 @@ To the fullest extent the law allows, the Cadet Foundry project and the people w
 These terms may be updated. The version date is at the top; Cadet Foundry will ask you to accept a new version before you continue using it.
 
 ## 11. Contact
-**support@winklers-llc.com** — questions, problems, security reports, or a copy for another instructor.
+**support@cadetfoundry.org** — questions, problems, security reports, or a copy for another instructor.

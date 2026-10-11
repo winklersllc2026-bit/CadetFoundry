@@ -1,4 +1,4 @@
-// vanguard.winklers-llc.com — Cadet Foundry's public page (since 0.2.2). Downloads come from the public
+// cadetfoundry.org — Cadet Foundry's public page (since 0.2.2). Downloads come from the public
 // Vanguard-releases repo on GitHub; this site only serves the page and its screenshots.
 // Optional password: set the Worker secret VANGUARD_PAGE_PASSWORD to require one for every request
 // (npx wrangler secret put VANGUARD_PAGE_PASSWORD); while it's set, search engines are told not to list the page.
@@ -24,11 +24,16 @@ function same(a, b) {
 
 export default {
   async fetch(request, env) {
+    // One address: www and the address used before the rename forward to cadetfoundry.org (same page, same path)
+    const here = new URL(request.url);
+    if (here.hostname === 'www.cadetfoundry.org' || here.hostname === 'vanguard.winklers-llc.com') {
+      return Response.redirect('https://cadetfoundry.org' + here.pathname + here.search, 301);
+    }
     // RFC 9116: where to report a security problem (always public, even if a page password is set)
     if (new URL(request.url).pathname === '/.well-known/security.txt') {
-      return new Response('Contact: mailto:support@winklers-llc.com\nExpires: 2027-10-11T00:00:00.000Z\n'
-        + 'Preferred-Languages: en\nCanonical: https://vanguard.winklers-llc.com/.well-known/security.txt\n'
-        + 'Policy: https://vanguard.winklers-llc.com/privacy\n',
+      return new Response('Contact: mailto:support@cadetfoundry.org\nExpires: 2027-10-11T00:00:00.000Z\n'
+        + 'Preferred-Languages: en\nCanonical: https://cadetfoundry.org/.well-known/security.txt\n'
+        + 'Policy: https://cadetfoundry.org/privacy\n',
         { headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'public, max-age=86400' } });
     }
     const secret = env.VANGUARD_PAGE_PASSWORD;
