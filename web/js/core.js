@@ -78,7 +78,7 @@ async function showLock(msg) {
         <button class="btn primary" style="width:100%;margin-top:10px">Sign in</button>
         <p class="faint" id="unlockMsg" role="alert">${p.lockout ? `Too many wrong PINs. Wait ${p.lockout} seconds and try again.` : ''}</p>
         <button type="button" class="btn small" id="forgotPin">Forgot your PIN?</button>
-        ${s.profiles.length > 1 ? '<button type="button" class="btn small" id="backPick">← Someone else</button>' : ''}</form>`;
+        <button type="button" class="btn small" id="backPick">${s.profiles.length > 1 ? '← Someone else' : '← Someone else, or a new profile'}</button></form>`;
     $('#pinIn').focus();
     if ($('#backPick')) $('#backPick').onclick = pick;
     $('#forgotPin').onclick = () => recoverFor(p);

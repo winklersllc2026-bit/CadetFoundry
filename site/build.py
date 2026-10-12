@@ -34,7 +34,7 @@ LATEST = "CadetFoundry-Setup-latest.exe"        # uploaded with every release (p
 OLD_LATEST = "Vanguard-Setup-latest.exe"        # the same file under the name used before the rename (old links)
 LATEST_URL = f"{RELEASES}/releases/latest/download/{LATEST}"
 
-INCLUDE_DIRS = ["cadetfoundry", "web", "tools", "tests", "faith", "library", "books"]
+INCLUDE_DIRS = ["cadetfoundry", "web", "tools", "faith", "library", "books"]    # never tests/: its fixtures are test data
 INCLUDE_FILES = ["run.py", "start-cadetfoundry.bat", "start-cadetfoundry.sh", "install-cadetfoundry.bat", "install-cadetfoundry.sh", "README.md", "LIBRARY.md", "SECURITY.md"]
 
 ROADMAP = [

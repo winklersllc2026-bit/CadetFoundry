@@ -1,9 +1,11 @@
 # Cadet Foundry roadmap
 
-Current version: **0.2.6** (not yet released; 0.2.3, 0.2.4 and 0.2.5 released 2026-10-11). Downloads: the public
+Current version: **0.2.7** (not yet released; 0.2.6 released 2026-10-12; 0.2.3, 0.2.4 and 0.2.5 released 2026-10-11). Downloads: the public
 releases repo on GitHub; page: cadetfoundry.org (public). Code: the private CadetFoundry repo (C:\Code\CadetFoundry).
 
-**0.2.6 — Cadet Foundry inside and out:** the code folder, start files, update files and data folders carry the new name too (a computer's data moves from its old folder on first start; a USB drive's folders are renamed when make_usb updates it; backups made before the rename still restore). Installed copies move to 0.2.6 with the installer or a new USB drive, not Me → Install an update; after that, in-app updates work again.
+**0.2.7 — fixes:** a computer with one profile no longer traps you on its PIN screen ("Someone else, or a new profile") · the download no longer carries the tests folder and its made-up fixture data (a test now checks every download for data files).
+
+**0.2.6 — Cadet Foundry inside and out, presentation mode, Cadet flash drives, no online AI:** the code folder, start files, update files and data folders carry the new name too (a computer's data moves from its old folder on first start; a USB drive's folders are renamed when make_usb updates it; backups made before the rename still restore). Installed copies move to 0.2.6 with the installer or a new USB drive, not Me → Install an update; after that, in-app updates work again.
 
 **0.2.5 — terms and privacy:** plain-English Terms of use and Privacy notice (cadetfoundry/legal/), a required "I agree" box on first-run setup (and once on the instructor's Home for existing installs), readable in the app and on the website (/terms, /privacy) · "the Cadet Foundry project" instead of a company name · support@cadetfoundry.org everywhere · security.txt · "No internet required" on the website.
 
