@@ -1,0 +1,21 @@
+{
+  "salt": "8fdf07a63a611aa0d0f9367e4cd8727f",
+  "hash": "cfb6f401bc236b80513c5a276180e6bb1dcdb10bf668e42954ad1c8496e6f610",
+  "iterations": 400000,
+  "vault": {
+    "kdf": "scrypt",
+    "n": 32768,
+    "r": 8,
+    "p": 1,
+    "salt": "81d40ffe5d347d9be38c04f93ddb0a17",
+    "nonce": "d335acaaa589500740735dad",
+    "key": "7d48a070403e0ce0d045cef56dd96045208f8d2bbacf44ba50ab8ee14ad4976149e2babcfb68f2b1e53407ac3a24fed3"
+  },
+  "class_vault": "52435631ea3fc5915c1e70da1659a8f72983ca46f9304202ffc78a9d22a36630cb144070f3155d2ec1ed9fa8ed692de95d7a043b48db34f44da3f0258c8c8ce7",
+  "class_for": {
+    "eph": "2172d109f10758990d4dba4258b8aa761db7504043ec351852d16fc755d16949",
+    "nonce": "93fae76d523a418185e3498e",
+    "to": "f62092da539d13b2",
+    "data": "d5a4aac8e42f954c2066f45487b9ce85f2084c52169ce2e85bbe5626c34a3b84db35a51f7a015b082e291c8d6fed8b0b"
+  }
+}

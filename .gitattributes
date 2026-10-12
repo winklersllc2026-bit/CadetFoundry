@@ -2,3 +2,5 @@
 *.bat text eol=crlf
 # Shell scripts run on Linux / Raspberry Pi: always LF
 *.sh text eol=lf
+# Data written by older versions for tests/test_old_data.py: encrypted bytes, never line-ending converted
+tests/fixtures/** binary

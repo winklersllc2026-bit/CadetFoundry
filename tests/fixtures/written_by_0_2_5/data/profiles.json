@@ -1,0 +1,16 @@
+{
+  "profiles": [
+    {
+      "id": "684eabc1ca41",
+      "name": "Fixture Instructor",
+      "created": "2026-10-11",
+      "kind": "instructor"
+    },
+    {
+      "id": "84ac69b357fc",
+      "name": "Fixture Cadet",
+      "created": "2026-10-11",
+      "kind": "cadet"
+    }
+  ]
+}

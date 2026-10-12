@@ -1,0 +1,16 @@
+{
+ "class_pin": "271828",
+ "instructor": "684eabc1ca41",
+ "instructor_pin": "161803",
+ "cadet": "84ac69b357fc",
+ "cadet_pin": "482915",
+ "backup_password": "correct horse battery",
+ "unit": "Fixture Class",
+ "sealed_to_program": {
+  "eph": "31ac3ea47b4d990f4d33067cf38c96535bca8f32426dac9cdb37ef2b82051655",
+  "nonce": "f0f80db3bacaeef2e13e846a",
+  "to": "f62092da539d13b2",
+  "data": "5baaadad9108a5f2302a385e212e17eeed5573caf4c3ee891292edcc0289"
+ },
+ "program_data_key": "88962dd44d411a041a16986bf9700ab2da805147aa3ecf99018a63fcc70b4800"
+}

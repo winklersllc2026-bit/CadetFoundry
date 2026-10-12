@@ -320,7 +320,11 @@ def unlock(pid: str, pin: str) -> tuple[str | None, str]:
                 _save(st)
             key = None
             if st.get("vault"):
-                key = vault.unwrap(st["vault"], pin)
+                try:
+                    key = vault.unwrap(st["vault"], pin)
+                except vault.VaultError:     # the PIN is right but the key won't open: never a crash, never a lockout
+                    return None, ("Your PIN is right, but this profile's files couldn't be opened on this version of "
+                                  "Cadet Foundry. Nothing was changed. Please email support@cadetfoundry.org.")
             elif st.get("hash"):             # PIN set before encryption existed: encrypt now
                 key = _encrypt_profile(st, pin)
             ck = _ensure_class_key(st, key)

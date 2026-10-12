@@ -42,6 +42,7 @@ class BrandTests(unittest.TestCase):
             r"OLD_LATEST = \"Vanguard-Setup-latest\.exe\"|OLD_LATEST|Vanguard\*\\n|OLD_DATA_FOLDER = \"\.vanguard\"|OLD_DATA_FOLDER|OLD_APP_ITEMS = .*|OLD = \"vanguard\"|data\.vanguard_backup_sealed|"
             r"\"VanguardData\"|\(\"Vanguard\", \"Cadet Foundry\"\)|Install Vanguard\*|\"Start Vanguard|start-vanguard-usb\.sh|"
             r"\\\.vanguard\\vanguard\.pid|\{app\}\\vanguard|\{app\}\\(start|install)-vanguard|Vanguard( Classroom)?\.lnk|"
+            r"b\"vanguard (data key|backup|box\||program data)\"|FILE-FORMAT LABELS.*|vanguard program data\" below.*|" 
             r"Name = 'Vanguard'|exactly \"Vanguard\"|Vanguard 0\.1\.0|before the rename|formerly Vanguard|renamed from Vanguard",
             re.I)
         try:
@@ -50,7 +51,7 @@ class BrandTests(unittest.TestCase):
             self.skipTest("not a git checkout")
         hits = []
         for name in tracked:
-            if name in ALLOWED or name.startswith(("library/", "books/", "docs/history/")) \
+            if name in ALLOWED or name.startswith(("library/", "books/", "docs/history/", "tests/fixtures/")) \
                     or name == "docs/SECURITY_REVIEW_2026-10.md":           # a dated record, left as written
                 continue
             if "vanguard" in name.lower():

@@ -1,0 +1,1 @@
+{"public": "4782572b9c8fcd99d22f448306de37c2adc0d948f6f7732fd9efca94f7f9a524", "private": {"kdf": "scrypt", "n": 32768, "r": 8, "p": 1, "salt": "b32304a0bbf0fc37871974517c8a18e2", "nonce": "dbe52ddd6b2b288e3fe8e332", "key": "03e057d541ddaf0c4ee8d2db7677e675a6b4eba777b484d7c5bb936ea1cd606de9e30437c7060d308a49fd86127e6cb2"}}

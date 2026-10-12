@@ -17,6 +17,12 @@ lock the app, not the files -- SECURITY.md says so and the status shows it.
 """
 from __future__ import annotations
 
+# FILE-FORMAT LABELS -- NEVER CHANGE THESE. The byte strings b"vanguard data key", b"vanguard backup", b"vanguard box|"
+# and b"vanguard program data" below are mixed into the encryption of every profile key, backup, sealed class key and
+# program file ever written. They keep the app's name from before the rename (0.2.6) on purpose: changing them makes
+# all existing data unreadable even with the right PIN (that happened once, before release; tests/test_rename.py
+# now opens data written by 0.2.5 to make sure it can't happen again).
+
 import hashlib
 import secrets
 
@@ -50,7 +56,7 @@ def _kek(pin: str, salt: bytes, params: dict) -> bytes:
 def wrap(key: bytes, pin: str) -> dict:
     """Lock the data key with the PIN. Returns what's stored in security.json."""
     salt, nonce = secrets.token_bytes(16), secrets.token_bytes(12)
-    sealed = AESGCM(_kek(pin, salt, SCRYPT)).encrypt(nonce, key, b"cadetfoundry data key")
+    sealed = AESGCM(_kek(pin, salt, SCRYPT)).encrypt(nonce, key, b"vanguard data key")
     return {"kdf": "scrypt", **SCRYPT, "salt": salt.hex(), "nonce": nonce.hex(), "key": sealed.hex()}
 
 
@@ -58,7 +64,7 @@ def unwrap(box: dict, pin: str) -> bytes:
     params = {k: int(box[k]) for k in ("n", "r", "p")}
     try:
         return AESGCM(_kek(pin, bytes.fromhex(box["salt"]), params)).decrypt(
-            bytes.fromhex(box["nonce"]), bytes.fromhex(box["key"]), b"cadetfoundry data key")
+            bytes.fromhex(box["nonce"]), bytes.fromhex(box["key"]), b"vanguard data key")
     except (InvalidTag, ValueError, KeyError) as e:
         raise VaultError("wrong PIN or damaged key") from e
 
@@ -98,7 +104,7 @@ def backup_password_problem(password: str) -> str | None:
 def seal_backup(payload: bytes, password: str) -> dict:
     import base64
     salt, nonce = secrets.token_bytes(16), secrets.token_bytes(12)
-    data = AESGCM(_kek(password, salt, SCRYPT)).encrypt(nonce, payload, b"cadetfoundry backup")
+    data = AESGCM(_kek(password, salt, SCRYPT)).encrypt(nonce, payload, b"vanguard backup")
     return {"cadetfoundry_backup_sealed": 1, "kdf": "scrypt", **SCRYPT, "salt": salt.hex(), "nonce": nonce.hex(),
             "data": base64.b64encode(data).decode("ascii")}
 
@@ -110,7 +116,7 @@ def open_backup(box: dict, password: str) -> bytes:
         if params["n"] > 2 ** 20 or params["r"] > 16 or params["p"] > 4:      # a hostile file can't stall the device
             raise ValueError("cost too high")
         return AESGCM(_kek(password, bytes.fromhex(box["salt"]), params)).decrypt(
-            bytes.fromhex(box["nonce"]), base64.b64decode(box["data"]), b"cadetfoundry backup")
+            bytes.fromhex(box["nonce"]), base64.b64decode(box["data"]), b"vanguard backup")
     except (InvalidTag, ValueError, KeyError, TypeError) as e:
         raise VaultError("Wrong backup password, or the file is damaged.") from e
 
@@ -141,7 +147,7 @@ def seal_to(public: bytes, data: bytes, label: str) -> dict:
     from cryptography.hazmat.primitives.asymmetric.x25519 import X25519PrivateKey, X25519PublicKey
     eph = X25519PrivateKey.generate()
     eph_pub = eph.public_key().public_bytes(ser.Encoding.Raw, ser.PublicFormat.Raw)
-    key = _derive(eph.exchange(X25519PublicKey.from_public_bytes(public)), b"cadetfoundry box|" + eph_pub + public)
+    key = _derive(eph.exchange(X25519PublicKey.from_public_bytes(public)), b"vanguard box|" + eph_pub + public)
     nonce = secrets.token_bytes(12)
     return {"eph": eph_pub.hex(), "nonce": nonce.hex(), "to": hashlib.sha256(public).hexdigest()[:16],
             "data": AESGCM(key).encrypt(nonce, data, label.encode("utf-8")).hex()}
@@ -154,7 +160,7 @@ def open_from(private: bytes, box: dict, label: str) -> bytes:
         priv = X25519PrivateKey.from_private_bytes(private)
         public = priv.public_key().public_bytes(ser.Encoding.Raw, ser.PublicFormat.Raw)
         eph_pub = bytes.fromhex(box["eph"])
-        key = _derive(priv.exchange(X25519PublicKey.from_public_bytes(eph_pub)), b"cadetfoundry box|" + eph_pub + public)
+        key = _derive(priv.exchange(X25519PublicKey.from_public_bytes(eph_pub)), b"vanguard box|" + eph_pub + public)
         return AESGCM(key).decrypt(bytes.fromhex(box["nonce"]), bytes.fromhex(box["data"]), label.encode("utf-8"))
     except (InvalidTag, ValueError, KeyError) as e:
         raise VaultError("not sealed to this key, or damaged") from e
@@ -166,4 +172,4 @@ def key_id(public: bytes) -> str:
 
 def program_data_key(private: bytes) -> bytes:
     """A symmetric key for the instructor's own files (rosters, notes), derived from the program private key."""
-    return _derive(private, b"cadetfoundry program data")
+    return _derive(private, b"vanguard program data")
