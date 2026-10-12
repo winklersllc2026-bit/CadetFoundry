@@ -24,7 +24,8 @@ Version 0.2.5. What's built and what's next: ROADMAP.md. How it fits together: A
    lessons, scenarios and a pilot in progress. Leaving it changes nothing.
 3. **Set up:** tick the box to agree to the [Terms of use](cadetfoundry/legal/TERMS.md) and
    [Privacy notice](cadetfoundry/legal/PRIVACY.md), choose "I'm the instructor", and make your Class PIN and your own PIN.
-4. **Teach:** add the **starter lessons** (one click), open class to phones, and press **▶ Start class**.
+4. **Teach:** add the **starter lessons** (one click), press **▶ Start class**, tick today's plan, then
+   **🖥️ Present today's class** and click through it on the projector. Cadet phones are optional (**Turn phones on**).
 
 Running a pilot? Read [docs/PILOT_CHECKLIST.md](docs/PILOT_CHECKLIST.md) and
 [docs/PILOT_DATA_HANDLING.md](docs/PILOT_DATA_HANDLING.md). Questions, problems, security reports, or a copy for
@@ -117,8 +118,8 @@ python tools/make_usb.py E:\                  # app + its own Python + the libra
 python tools/make_usb.py E:\ --with-ai        # also the offline AI, copied from this computer (adds about 1–2 GB)
 ```
 
-On the drive, double-click **Start Cadet Foundry.bat**; to teach, press **Open class to phones** on your Home screen (Cadets
-join from their phones on the same Wi-Fi — it opens a Join screen with a QR code). Keep the window open while you use it; close it or use Me → Quit Cadet Foundry
+On the drive, double-click **Start Cadet Foundry.bat**; to teach, press **▶ Start class** on your Home screen and present
+today's class on the projector. Cadet phones are optional: **Turn phones on** lets Cadets on the same Wi-Fi join with a QR code. Keep the window open while you use it; close it or use Me → Quit Cadet Foundry
 before unplugging. Run the command again to update the drive — the `Cadet Foundry Data` folder is never touched.
 Linux / Mac: `sh start-cadet-foundry-usb.sh` (in the Mac and Linux folder) on the drive. `START HERE.html` on the drive explains which file does what.
 

@@ -248,16 +248,17 @@ async function showLock(msg) {
     };
     const ready = () => {
       step(`<div style="font-size:34px;text-align:center">✅</div><h2 style="text-align:center">You're ready</h2>
-        <p>How do you want to use Cadet Foundry right now?</p>
-        <button class="btn primary" id="suClass" style="width:100%;min-height:52px;font-size:18px">Open it for the class</button>
-        <button class="btn" id="suLocal" style="width:100%;margin-top:10px;min-height:48px">Use it on this computer only</button>
+        <p>Teach from this computer: put today's class on the projector and click through it. Cadet phones are optional —
+          you can turn them on any time from your Home screen.</p>
+        <button class="btn primary" id="suLocal" style="width:100%;min-height:52px;font-size:18px">Start</button>
+        <button class="btn" id="suClass" style="width:100%;margin-top:10px;min-height:48px">📱 Start with Cadet phones on</button>
         <p class="faint" id="suMsg" role="status"></p>`);
       $('#suLocal').onclick = go;
       $('#suClass').onclick = () => {
         if (s.lan) { location.replace('/join'); return; }
         // open class to phones right here (the desktop icon starts Cadet Foundry for this computer only)
         $('#suClass').disabled = true;
-        $('#suMsg').innerHTML = 'Opening class to phones… If Windows asks whether to allow Cadet Foundry (Python) on networks, choose <b>Allow</b>.';
+        $('#suMsg').innerHTML = 'Turning Cadet phones on… If Windows asks whether to allow Cadet Foundry (Python) on networks, choose <b>Allow</b>.';
         api('/api/instructor/classroom', { open: true }).then(async r => {
           if (r.error) { $('#suMsg').textContent = r.error; $('#suClass').disabled = false; return; }
           for (let i = 0; i < 60; i++) {

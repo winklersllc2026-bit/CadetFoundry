@@ -113,20 +113,22 @@ async function classSetup(box, ov, reload, { compactWhenReady = false } = {}) {
   let cls = {};
   try { cls = await api('/api/classroom'); } catch (e) { }
   const loose = ov.cadets.filter(c => !c.unit), noPin = cls.no_pin || [];
-  const ready = !!(ov.units.length && !loose.length && STATUS.lan);   // a no-PIN profile is a warning, not a blocker
+  // Phones are optional (owner, 2026-10-12): a class taught from the projector is ready without them.
+  const ready = !!(ov.units.length && !loose.length);           // a no-PIN profile is a warning, not a blocker
   const noPinNote = short => noPin.length ? `<p style="margin:10px 0 0">⚠ <b>No PIN yet:</b> ${noPin.map(esc).join(', ')}. <span class="faint">Phones can't open ${noPin.length === 1 ? 'this profile' : 'these profiles'}${short ? '' : ` until ${noPin.length === 1 ? 'it has' : 'they have'} a PIN`}. Sign in to ${noPin.length === 1 ? 'it' : 'each one'} on this computer, then 👤 Me → Security → Set a PIN.</span></p>` : '';
   const step = (done, title, body) => `<div class="row" style="align-items:flex-start;gap:12px;margin:12px 0;flex-wrap:nowrap">
-      <span style="font-size:22px;line-height:1.2">${done ? '✅' : '⬜'}</span><div style="flex:1"><b>${title}</b>${body ? `<div style="margin-top:6px">${body}</div>` : ''}</div></div>`;
+      <span style="font-size:22px;line-height:1.2">${typeof done === 'string' ? done : done ? '✅' : '⬜'}</span><div style="flex:1"><b>${title}</b>${body ? `<div style="margin-top:6px">${body}</div>` : ''}</div></div>`;
   if (STATUS.sample && ov.units.length && !loose.length) {   // the sample class stays on this computer: nothing to open
     box.innerHTML = `<div class="card"><span>✅ <b>The sample class is set up.</b> <span class="faint">${ov.units.map(u => esc(u.name)).join(' · ')}.
-      In your own Cadet Foundry, step 3 opens class to phones so Cadets can join; the sample stays on this computer.</span></span></div>`;
+      In your own Cadet Foundry, Cadet phones can be turned on so Cadets join and vote; the sample stays on this computer.</span></span></div>`;
     return true;
   }
   if (ready && compactWhenReady) {
     box.innerHTML = `<div class="card"><div class="row" style="justify-content:space-between;gap:10px;flex-wrap:wrap">
-      <span>✅ <b>Class is open.</b> <span class="faint">${ov.units.map(u => `${esc(u.name)} · code <b class="mono" style="letter-spacing:.12em;color:var(--tan2)">${esc(u.code || '')}</b>`).join(' · ')}</span></span>
-      <span class="row" style="gap:8px"><button class="btn" id="tJoin">📱 Join screen (QR code)</button>
-      ${cls.local ? '<button class="btn small" id="tClose" title="Phones can no longer reach Cadet Foundry; it keeps running on this computer">Close to phones</button>' : ''}</span></div>${noPinNote(true)}</div>`;
+      <span>✅ <b>Your class is set up.</b> <span class="faint">${ov.units.map(u => `${esc(u.name)} · code <b class="mono" style="letter-spacing:.12em;color:var(--tan2)">${esc(u.code || '')}</b>`).join(' · ')}
+        · Cadet phones ${STATUS.lan ? 'on' : 'off'}</span></span>
+      ${STATUS.lan ? `<span class="row" style="gap:8px"><button class="btn" id="tJoin">📱 Join screen (QR code)</button>
+      ${cls.local ? '<button class="btn small" id="tClose" title="Phones can no longer reach Cadet Foundry; it keeps running on this computer">Turn phones off</button>' : ''}</span>` : ''}</div>${noPinNote(true)}</div>`;
   } else {
     box.innerHTML = `<div class="card" style="border-color:var(--tan)"><h3>${ready ? '✅ Your class is ready' : '🧭 Set up your class'}</h3>
     ${step(ov.units.length, '1. Make your class', ov.units.length
@@ -134,21 +136,22 @@ async function classSetup(box, ov, reload, { compactWhenReady = false } = {}) {
       : `<div class="row" style="gap:8px;flex-wrap:wrap"><input id="sName" placeholder="Class name (e.g. LET 1, 3rd period)" maxlength="40" aria-label="Class name" style="flex:1;min-width:200px">
          <button class="btn primary" id="sMake">Create class</button></div><p class="faint" id="sMsg" role="alert" style="margin:4px 0 0"></p>`)}
     ${step(ov.units.length && !loose.length, '2. Put your Cadets in it', !ov.cadets.length
-      ? '<span class="faint">No Cadets yet. When class is open, Cadets scan the QR code on the Join screen and land in your class on their own.</span>'
+      ? '<span class="faint">No Cadets yet. With Cadet phones on, Cadets scan the QR code on the Join screen and land in your class on their own. You can teach from the projector without them.</span>'
       : loose.length && ov.units.length
         ? `<div class="faint" style="margin-bottom:6px">${loose.length} Cadet${loose.length === 1 ? ' isn’t' : 's aren’t'} in a class yet: ${loose.map(c => esc(c.name)).join(', ')}</div>
            <div class="row" style="gap:8px;flex-wrap:wrap"><select id="sUnit" aria-label="Class" style="flex:1;min-width:180px">${ov.units.map(u => `<option value="${esc(u.id)}">${esc(u.name)}</option>`).join('')}</select>
            <button class="btn primary" id="sPut">Add ${loose.length === 1 ? 'them' : `all ${loose.length}`} to this class</button></div>`
         : loose.length ? '<span class="faint">Make your class first (step 1).</span>'
           : `<span class="faint">All ${ov.cadets.length} Cadet${ov.cadets.length === 1 ? ' is' : 's are'} in a class. Move anyone in 👥 Class.</span>`)}
-    ${step(STATUS.lan, '3. Open class to phones', STATUS.lan
+    ${step(STATUS.lan ? '✅' : '📱', '3. Cadet phones (optional)', STATUS.lan
       ? `<button class="btn primary" id="tJoin">📱 Show the Join screen (QR code)</button>
-         ${cls.local ? '<button class="btn small" id="tClose" title="Phones can no longer reach Cadet Foundry; it keeps running on this computer">Close to phones</button>' : ''}
-         <div class="faint" style="margin-top:6px">Put it on the projector. Cadets scan it with their phone camera.</div>`
-      : cls.local ? `<button class="btn primary" id="tOpen">📱 Open class to phones</button>
-         <div class="faint" style="margin-top:6px">Right now only this computer can use Cadet Foundry. This lets Cadets on the same Wi-Fi join from their phones.
+         ${cls.local ? '<button class="btn small" id="tClose" title="Phones can no longer reach Cadet Foundry; it keeps running on this computer">Turn phones off</button>' : ''}
+         <div class="faint" style="margin-top:6px">Phones are on. Put the Join screen on the projector; Cadets scan it with their phone camera.</div>`
+      : cls.local ? `<div class="faint" style="margin-bottom:6px">Off — you don't need them. Questions and scenarios run as a show of hands.</div>
+         <button class="btn" id="tOpen">📱 Turn phones on</button>
+         <div class="faint" style="margin-top:6px">Lets Cadets on the same Wi-Fi join from their phones, vote and answer.
          If Windows asks whether to allow Cadet Foundry (Python) on networks, choose <b>Allow</b>.</div><p class="faint" id="tOpenMsg" role="status" style="margin:4px 0 0"></p>`
-        : '<span class="faint">Open class on the instructor’s own computer.</span>')}
+        : '<span class="faint">Turn phones on from the instructor’s own computer.</span>')}
     ${noPinNote(false)}
     </div>`;
   }
@@ -156,7 +159,7 @@ async function classSetup(box, ov, reload, { compactWhenReady = false } = {}) {
   if (q('#tJoin')) q('#tJoin').addEventListener('click', () => window.open('/join', '_blank', 'noopener'));
   if (q('#tOpen')) q('#tOpen').addEventListener('click', () => switchClassroom(true, q('#tOpen'), q('#tOpenMsg')));
   if (q('#tClose')) q('#tClose').addEventListener('click', () => {
-    if (confirm('Close class to phones? Cadets’ phones disconnect; Cadet Foundry keeps running on this computer. Everyone’s work is saved.'))
+    if (confirm('Turn Cadet phones off? Cadets’ phones disconnect; Cadet Foundry keeps running on this computer. Everyone’s work is saved.'))
       switchClassroom(false, q('#tClose'));
   });
   if (q('#sMake')) {
@@ -179,7 +182,7 @@ async function classSetup(box, ov, reload, { compactWhenReady = false } = {}) {
 // page reloads once it answers. Sign-ins stay. Only from the instructor's own computer.
 async function switchClassroom(open, btn, msg) {
   if (btn) btn.disabled = true;
-  if (msg) msg.textContent = open ? 'Opening class to phones… (a few seconds)' : 'Closing class to phones…';
+  if (msg) msg.textContent = open ? 'Turning Cadet phones on… (a few seconds)' : 'Turning Cadet phones off…';
   const r = await api('/api/instructor/classroom', { open });
   if (r.error) { if (msg) msg.textContent = r.error; if (btn) btn.disabled = false; return; }
   for (let i = 0; i < 60; i++) {                   // up to about 30 seconds while it switches

@@ -117,6 +117,14 @@ def _shape(h: str) -> str:
     return ""
 
 
+def _proper_name(h: str) -> bool:
+    """"Paul W. Airey", "Baron Friedrich von Steuben" -- a person's name, not a role like "The junior person"."""
+    if re.match(r"^(the|a|an)\b", h.strip(), re.I):
+        return False
+    words = [w for w in re.findall(r"[A-Za-z][\w.'’-]*", h) if w.lower() not in ("von", "de", "of", "jr", "jr.", "sr")]
+    return len(words) >= 2 and all(w[:1].isupper() for w in words)
+
+
 def _shapes_fit(a: str, b: str) -> bool:
     return a == b or not a or not b
 
@@ -382,6 +390,8 @@ def _fits(f: dict, g: dict) -> bool:
         return False
     if f["kind"] == "phrase" and f["cls"] and g["cls"] != f["cls"]:
         return False
+    if f["group"] == "who" and _proper_name(f["head"]) != _proper_name(g["head"]):
+        return False                                       # a name for a name, a role for a role
     if f["kind"] in ("term", "phrase") and bool(DIGITS.search(g["head"])) != bool(DIGITS.search(f["head"])):
         return False                                       # "9-line MEDEVAC request" for a question about line 9
     if f["kind"] == "number" and g["unit"] != f["unit"]:
@@ -434,8 +444,14 @@ def wrong_answers(library, card, q: str, a: str, k: int = 3, rng=random) -> list
             if qsim >= 0.75 and same_branch and c is not card:  # the same question on another card: likely right too
                 continue
             same_noun = bool(f["noun"]) and f["noun"] == g["noun"]
-            if not (c is card or qsim >= 0.2 or same_noun or (f["cls"] and c.topic == card.topic)):
+            # "Who salutes first?" must not offer "General John Raymond" from a Space Force history card: a choice
+            # that's related only by topic has to come from the same branch too.
+            shared = len(f["subject"] & g["subject"])             # one shared word ("leads") isn't enough
+            if not (c is card or (qsim >= 0.2 and shared >= 2) or qsim >= 0.5 or same_noun
+                    or (f["cls"] and c.topic == card.topic and same_branch)):
                 continue                                        # about something else entirely
+            if re.search(r"['’]s$", g["head"]):                 # a fragment ("General John A. Lejeune's")
+                continue
             score = 3 * qsim + 2 * same_noun + 1.0 * (c is card) + 0.7 * (c.topic == card.topic) \
                 + 0.4 * (c.category == card.category) + 0.3 * same_branch - 0.8 * abs(math.log(g["len"] / f["len"]))
             if f["kind"] == "list":

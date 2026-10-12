@@ -12,7 +12,7 @@ Sizes: the app about 50 MB; with the AI about 0.1 GB for the engine plus the mod
 Run it again to update the drive: the app is replaced, the data (Cadet Foundry Data) is never touched.
 
 On the drive:
-    Start Cadet Foundry.bat            starts it (open class to phones from the Home screen)
+    Start Cadet Foundry.bat            starts it (Cadet phones can be turned on from the Home screen)
     start-cadet-foundry-usb.sh         Linux / Mac (uses that computer's python3)
     START HERE.html                    which file does what (opens in any browser)
     Cadet Foundry\\                     the app, with python\\ (and ollama\\ with --with-ai)
@@ -115,7 +115,7 @@ GOOD TO KNOW
  - It will NOT overwrite a drive that already has Cadet Foundry profiles on it.
  - A Cadet's drive works on its own: plug it into any Windows computer and
    double-click "Start Cadet Foundry.bat".
- - To bring a Cadet into your class, open class to phones on your Home screen and
+ - To bring a Cadet into your class, turn Cadet phones on from your Home screen and
    show the QR code, or the Cadet types your class's join code in Me -> Join a class.
 """
 
@@ -172,7 +172,7 @@ isn't needed. If Windows says <i>"Windows protected your PC"</i>, choose <b>More
 <ol>
 <li>Open <span class="file">Start Cadet Foundry.bat</span>.</li>
 <li>Instructor: choose <b>I'm the instructor — set up this class</b>. Pick a <b>Class PIN</b> (it opens your class — don't share it with Cadets), then your name and your own PIN.</li>
-<li>Your <b>Home</b> screen walks you through the rest: make your class, put Cadets in it, open class to phones. Then press <b>▶ Start class</b> and tick today's lesson, scenarios, live questions and videos.</li>
+<li>Your <b>Home</b> screen walks you through the rest: make your class, then press <b>▶ Start class</b>, tick today's lesson, study cards, scenarios, questions and videos, and press <b>🖥️ Present today's class</b> to click through it on the projector. No internet needed. Cadet phones are optional (<b>Turn phones on</b>).</li>
 <li>Write down each <b>backup code</b> Cadet Foundry shows — it's the way back if a PIN is forgotten.</li>
 </ol>
 

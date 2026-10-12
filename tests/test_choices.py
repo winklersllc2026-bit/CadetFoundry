@@ -48,7 +48,7 @@ class ChoicesTests(unittest.TestCase):
                             self.assertFalse(g["nums"] and not f["nums"] and g["cls"] != "command" and len(p.split()) <= 3, p)
                         if f["cls"] and f["kind"] != "list":                            # a person for a person
                             self.assertEqual(g["cls"], f["cls"], p)
-        self.assertGreater(built, 700)
+        self.assertGreater(built, 600)                 # raise as cards get hand-written WRONG: lines
 
     def test_the_reported_questions(self):
         for question, never in (("Name three things drill builds", {"120", "180", "The Blue Book"}),

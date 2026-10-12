@@ -20,7 +20,8 @@ One page to go through before, during and after a classroom pilot. Data rules: [
       opens a separate copy of Cadet Foundry with eight made-up Cadets; Leave sample closes it and nothing of yours changes.
 
 - [ ] Set the Class PIN, then make an instructor profile with its own PIN.
-- [ ] Make a class, open class to phones, and join from two phones as "Cadet Alpha" and "Cadet Bravo".
+- [ ] Make a class, press **▶ Start class**, and present a short plan on the projector with the arrow keys.
+- [ ] Turn Cadet phones on, and join from two phones as "Cadet Alpha" and "Cadet Bravo".
 - [ ] Assign a lesson. Complete it on one phone; check the score on the instructor's screen.
 - [ ] Run a scenario with a class vote and a live question: the instructor sees counts, not names.
 - [ ] Ask on a phone; check the help line shows for "I want to kill myself" and doesn't for "this homework is

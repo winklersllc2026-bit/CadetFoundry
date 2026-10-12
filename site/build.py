@@ -221,6 +221,10 @@ h3 { font-size:22px; margin:0 0 8px; }
 .shot { display:block; width:100%; height:auto; border-radius:14px; border:1px solid var(--line);
   box-shadow:0 24px 60px rgba(0,0,0,.45); background:#0b0d0a; }
 .phone { max-width:300px; border-radius:28px; border:6px solid #262d22; }
+.hero-grid { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:40px; align-items:center; }
+.poster { display:block; width:100%; max-width:400px; height:auto; justify-self:center; border-radius:16px;
+  border:1px solid var(--line); box-shadow:0 24px 60px rgba(0,0,0,.55); }
+@media (max-width:820px) { .hero-grid { grid-template-columns:1fr; gap:24px; } .poster { max-width:300px; } }
 .duo { display:grid; grid-template-columns:minmax(0,3fr) minmax(0,1fr); gap:28px; align-items:end; margin-top:40px; }
 @media (max-width:820px) { .duo { grid-template-columns:1fr; } .duo .phone { max-width:260px; margin:0 auto; } }
 .steps { display:grid; gap:56px; margin-top:36px; }
@@ -287,12 +291,16 @@ def page(zip_name: str, size: int, commit: str, history, sha: str = "", setup=No
         download = f'<a class="btn" href="{esc(RELEASES)}/releases/latest">⬇ Download Cadet Foundry</a>'
     body = f"""
 <section class="hero"><div class="wrap">
+  <div class="hero-grid"><div>
   <p class="kicker">For JROTC instructors</p>
   <h1>Run your whole class<br>from one laptop.</h1>
-  <p class="lead">Cadets join from their phones by scanning a QR code. You press <b>Start class</b> and teach — lessons,
-  leadership votes, live questions and videos, all from one screen. No accounts. No internet. Free during the pilot.</p>
+  <p class="lead">Press <b>Start class</b>, tick today's plan, and click through it on the projector — lessons, study cards,
+  official videos, leadership scenarios and questions, every fact with its source. No hunting for material. Cadet phones are
+  optional. No accounts. No internet. Free during the pilot.</p>
   <div class="row"><a class="btn" href="#download">⬇ Download</a><a class="btn ghost" href="#class-day">See a class day →</a></div>
-  <small>Windows laptop · works with any phone, tablet or Chromebook · everything stays in your classroom</small>
+  <small>Windows laptop · a projector · phones optional · everything stays in your classroom</small></div>
+  <img class="poster" src="/img/poster.jpg" width="832" height="1248"
+    alt="Cadet Foundry: a glowing letter C on a blacksmith's anvil, with a young Cadet standing inside it, and the silhouettes of a soldier, a scientist and a businessperson behind"></div>
   <div class="duo"><img class="shot" src="/shots/run-sheet.png" alt="The instructor's Today's class screen: a lesson, two scenarios, two live questions and a video, each with its own button">
     <img class="shot phone" src="/shots/phone-vote.png" alt="A Cadet voting on a leadership scenario on their phone"></div>
 </div></section>
@@ -320,12 +328,14 @@ def page(zip_name: str, size: int, commit: str, history, sha: str = "", setup=No
 <section class="alt" id="offline"><div class="wrap">
   <p class="kicker">Built for the classroom</p>
   <h2>No internet required.</h2>
-  <p class="lead">Cadet Foundry runs on your laptop. Cadets connect to it over your classroom Wi-Fi — that Wi-Fi doesn't need to reach the internet.</p>
+  <p class="lead">Cadet Foundry runs on your laptop — installed, or straight from a USB flash drive with nothing to install.
+  After you download it, it never needs the internet. If you turn Cadet phones on, they connect over your classroom Wi-Fi,
+  and that Wi-Fi doesn't need to reach the internet either.</p>
   <div class="grid">
-    <div class="card"><span class="ic">📶</span><h3>Works offline</h3><p>Everything you need for class runs with no internet connection at all.</p></div>
+    <div class="card"><span class="ic">📶</span><h3>Works offline, even from a USB drive</h3><p>Study cards, lessons, scenarios, questions and the official videos saved on your computer all run with no internet connection at all.</p></div>
     <div class="card"><span class="ic">☁️</span><h3>No student accounts in the cloud</h3><p>Cadets sign in with a name and a PIN on your laptop. Nothing to sign up for, nothing stored online.</p></div>
     <div class="card"><span class="ic">🚫</span><h3>No ads, no tracking</h3><p>No advertising, no analytics and no data sent to us. We never see your Cadets' work.</p></div>
-    <div class="card"><span class="ic">🎓</span><h3>Instructor-controlled</h3><p>You decide what Cadets get, when class opens to phones, and when it closes.</p></div>
+    <div class="card"><span class="ic">🎓</span><h3>Instructor-controlled</h3><p>You decide what goes on the projector, what Cadets get, and whether Cadet phones are on at all.</p></div>
   </div>
 </div></section>
 
@@ -334,9 +344,9 @@ def page(zip_name: str, size: int, commit: str, history, sha: str = "", setup=No
   <h2>Less prep. More of your Cadets talking.</h2>
   <div class="grid">
     <div class="card"><span class="ic">⏱️</span><h3>Plan class in two minutes</h3><p>Start with 12 ready-made lessons and 20 leadership scenarios with debrief notes — or write your own once and reuse it every year.</p></div>
-    <div class="card"><span class="ic">🙋</span><h3>Every Cadet participates</h3><p>Anonymous votes and live questions on their own phones. You see the whole room's answer, not just the front row's.</p></div>
+    <div class="card"><span class="ic">🙋</span><h3>Every Cadet participates</h3><p>Questions and scenarios work as a show of hands from the projector — or turn Cadet phones on for anonymous votes, and see the whole room's answer, not just the front row's.</p></div>
     <div class="card"><span class="ic">🔒</span><h3>Private by design</h3><p>Everything stays on your laptop. No cloud, no accounts, no ads, no tracking. Each Cadet's work is locked with their own PIN.</p></div>
-    <div class="card"><span class="ic">📶</span><h3>No internet needed</h3><p>Works in a classroom with no internet at all. Cadets only need to be on the same Wi-Fi as your laptop.</p></div>
+    <div class="card"><span class="ic">📶</span><h3>No internet needed</h3><p>Works in a classroom with no internet at all — from your laptop or a USB drive. Cadet phones, if you use them, only need the same Wi-Fi as your laptop.</p></div>
     <div class="card"><span class="ic">📘</span><h3>Every branch, official sources</h3><p>Army, Navy, Air Force, Marine Corps and Space Force study cards — each one names the official manual or page it comes from.</p></div>
     <div class="card"><span class="ic">💲</span><h3>Free during the pilot</h3><p>Nothing for your school to buy while we pilot Cadet Foundry with JROTC programs. Your laptop is the whole system — no server, no subscription to manage.</p></div>
   </div>
@@ -374,8 +384,9 @@ def page(zip_name: str, size: int, commit: str, history, sha: str = "", setup=No
     <li><b>Open Cadet Foundry and make your Class PIN.</b><p>Just looking? Choose <b>See a sample class</b> to explore a finished class with made-up Cadets first.
       When you're ready, tick the box to agree to the <a href="/terms">Terms of use</a> and <a href="/privacy">Privacy notice</a>, choose "I'm the instructor", pick your JROTC program, and make two PINs:
       a <b>Class PIN</b> that opens your class, and your own PIN. Write down the backup code it shows you.</p></li>
-    <li><b>On class day, press "Open class to phones".</b><p>It's on your Home screen in Cadet Foundry. The Join screen with the QR
-      code is one tap away — put it on the projector, then press <b>▶ Start class</b>. Your Home screen walks you through anything left to do.</p></li>
+    <li><b>On class day, press <b>▶ Start class</b>.</b><p>Tick today's plan — a study card, a video, a scenario, a lesson — then press
+      <b>🖥️ Present today's class</b> and click through it on the projector with the arrow keys or a presentation clicker.
+      Cadet phones are optional: press <b>Turn phones on</b> if you want Cadets to join with a QR code and vote on their phones.</p></li>
   </ol>
   <div class="tip"><b>If Cadets' phones can't connect:</b> some school Wi-Fi blocks devices from talking to each other. Ask IT to
   allow it, or bring a small travel router (about $30 — it doesn't need internet) and have everyone join that instead. For a
@@ -399,10 +410,12 @@ def page(zip_name: str, size: int, commit: str, history, sha: str = "", setup=No
   <p class="kicker">Questions</p>
   <h2>Good to know</h2>
   <details><summary>Does it cost anything?</summary><p>Not during the pilot. Cadet Foundry is free to download and use while we pilot it with JROTC programs.</p></details>
-  <details><summary>Does it need the internet?</summary><p>No. Your laptop runs everything. Cadets only need to join the same Wi-Fi as your laptop — that Wi-Fi doesn't need internet.</p></details>
-  <details><summary>What do Cadets need?</summary><p>Any phone, tablet, Chromebook or school computer with a web browser. Nothing to install and no accounts to make — a name and a PIN.</p></details>
+  <details><summary>Does it need the internet?</summary><p>No. Once downloaded, Cadet Foundry runs entirely on your laptop, or from a USB flash drive — no internet at any point.
+    If you turn Cadet phones on, they only need to join the same Wi-Fi as your laptop, and that Wi-Fi doesn't need internet.
+    The one exception: videos marked "YouTube" open on YouTube, so those need internet. Videos saved on your computer don't.</p></details>
+  <details><summary>What do Cadets need?</summary><p>Nothing, if you teach from the projector. If you turn Cadet phones on so they can vote and answer: any phone, tablet, Chromebook or school computer with a web browser, on the same Wi-Fi as your laptop. Nothing to install and no accounts to make — a name and a PIN.</p></details>
   <details><summary>What computer do I need?</summary><p>A Windows laptop. (It also runs on Linux and a Raspberry Pi.) No special hardware.</p></details>
-  <details><summary>Can Cadets study at home?</summary><p>Yes. Cadet Foundry can run from a USB flash drive with no installation, and each Cadet can have their own drive. Their work stays on the drive, locked with their PIN.</p></details>
+  <details><summary>Can Cadets study at home?</summary><p>Yes, on a Windows computer: Cadet Foundry can run from a USB flash drive with no installation and no internet, and each Cadet can have their own drive. Their work stays on the drive, locked with their PIN.</p></details>
   <details><summary>Is this an official JROTC product?</summary><p>No. Cadet Foundry is designed to support JROTC instruction, but it isn't an official JROTC, military or school product, and it doesn't replace your program's curriculum. Study material comes from official public sources, and each card says which one.</p></details>
   <details><summary>Who makes Cadet Foundry?</summary><p>Cadet Foundry is a free community project — the Cadet Foundry project. It isn't a company product. Questions, problems, or a copy for another instructor: <a href="mailto:support@cadetfoundry.org">support@cadetfoundry.org</a>.</p></details>
   <details><summary>Can I try it without setting anything up?</summary><p>Yes. On Cadet Foundry's first screen, choose <b>See a sample class</b>. It opens a separate copy with eight made-up Cadets, lessons, scenarios and a pilot in progress. Leave it and nothing of yours has changed.</p></details>
@@ -511,6 +524,11 @@ def main() -> int:
         if (DIST / name).stat().st_size > 25 * 2**20:
             print(f"Warning: {name} is over 25 MB — Cloudflare won't host files that big.")
     shutil.copy(ROOT / "web" / "icon.svg", DIST / "icon.svg")
+    img = SITE / "img"                            # the owner's artwork (poster.jpg)
+    if img.is_dir():
+        (DIST / "img").mkdir(exist_ok=True)
+        for f in img.glob("*.*"):
+            shutil.copy(f, DIST / "img" / f.name.lower())
     shots = SITE / "shots"                        # python site/shots.py makes these from the real app
     if shots.is_dir():
         (DIST / "shots").mkdir(exist_ok=True)

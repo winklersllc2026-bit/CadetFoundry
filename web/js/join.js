@@ -13,9 +13,9 @@
     try { c = await (await fetch('/api/classroom')).json(); } catch (e) { return; }
     if (!c.lan) {
       box.innerHTML = `<h1>Phones can't join yet</h1>
-        <p class="lead">Cadet Foundry is open on this computer only.</p>
+        <p class="lead">Cadet phones are off. Cadet Foundry is running on the instructor's computer only.</p>
         <div class="card"><p class="big">To let Cadets join from their phones:</p>
-          <ol><li>Open Cadet Foundry and sign in as the instructor.</li><li>On your Home screen, press <b>📱 Open class to phones</b>.</li></ol></div>
+          <ol><li>Open Cadet Foundry and sign in as the instructor.</li><li>On your Home screen, press <b>📱 Turn phones on</b>.</li></ol></div>
         <div class="row"><a class="btn" href="/">Open Cadet Foundry</a></div>`;
       return;
     }
