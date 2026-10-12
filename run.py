@@ -154,6 +154,8 @@ def main() -> int:
         threading.Timer(0.8, lambda: open_kiosk(url)).start()
     elif not args.no_browser:
         threading.Timer(0.8, lambda: webbrowser.open(show)).start()
+    current = {"httpd": httpd}                      # turning phones on/off restarts the server: Quit stops the current one
+    icon = _tray(url, current, quiet=args.no_browser)
     while True:
         try:
             httpd.serve_forever()
@@ -165,6 +167,7 @@ def main() -> int:
             break
         try:
             httpd = reopen(args.port, want)
+            current["httpd"] = httpd
             args.lan = want
         except OSError:
             print("  Couldn't switch class mode — the port didn't free up. Staying as before.")
@@ -177,8 +180,34 @@ def main() -> int:
         print("Class is now " + ("OPEN to phones on this Wi-Fi." if args.lan else "on this computer only."))
         _print_mode(args.lan, args.port)
     httpd.server_close()
+    if icon:
+        icon.stop()                                 # the taskbar icon goes with it
     sample.stop_child()                             # a sample class this Cadet Foundry opened closes with it
     return 0
+
+
+def _tray(url: str, current: dict, quiet: bool = False):
+    """The taskbar icon while Cadet Foundry runs (Windows): hover says it's running and where it saves; click opens it;
+    right-click has Open and Quit. Not for --no-browser (kiosks, demo boxes, tests) or the sample class."""
+    if sys.platform != "win32" or quiet or sample.ACTIVE or os.environ.get("CADETFOUNDRY_NO_TRAY"):
+        return None
+    from cadetfoundry import tray, usb_home
+    home = usb_home.home()
+    where = f"USB drive {home['drive']}" if home["where"] == "usb" else "this computer"
+    marker = store.DATA / "tray_hint_shown"
+    hint = "" if marker.exists() else "It runs in the background. Click this icon to open it; right-click it to quit."
+
+    def quit_now():
+        threading.Thread(target=current["httpd"].shutdown, daemon=True).start()
+
+    tip = "Cadet Foundry is running" + chr(10) + f"Saved on {where}"
+    icon = tray.Tray(lambda: webbrowser.open(url), quit_now, tip, hint)
+    if icon.start() and hint:
+        try:
+            marker.write_text("1", encoding="ascii")
+        except OSError:
+            pass
+    return icon
 
 
 def _print_mode(lan: bool, port: int) -> None:

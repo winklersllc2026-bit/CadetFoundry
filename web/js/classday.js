@@ -14,6 +14,17 @@ const cdLoad = () => {
 };
 const cdSave = p => { try { localStorage.setItem(CD_KEY, JSON.stringify(p)); } catch (e) { } };
 const cdClear = () => { try { localStorage.removeItem(CD_KEY); } catch (e) { } };
+// A plan still being built (owner, 2026-10-12: leaving the screen lost everything ticked). Saved on every change; Home
+// opens the planner again with it until Build or Cancel. Today only, like the plan itself.
+const CD_DRAFT = 'cadetfoundry-classday-draft';
+const cdDraftLoad = () => {
+  try {
+    const p = JSON.parse(localStorage.getItem(CD_DRAFT) || 'null');
+    return p && p.date === cdToday() ? p : null;
+  } catch (e) { return null; }
+};
+const cdDraftSave = p => { try { localStorage.setItem(CD_DRAFT, JSON.stringify(p)); } catch (e) { } };
+const cdDraftClear = () => { try { localStorage.removeItem(CD_DRAFT); } catch (e) { } };
 const CD_ICON = { lesson: '📋', scenario: '🗳️', question: '📡', video: '🎬', prompt: '💬', card: '🗂️' };
 // Today's class runs in named steps (owner, 2026-10-11): Opening, Learn, Discuss, Engage, Assign, Close, then Progress.
 const CD_PHASES = [['open', 'Opening', 'A question to get them thinking'], ['learn', 'Learn', 'Study cards and videos'],
@@ -92,6 +103,8 @@ async function classDayHome() {
   if ($('#cdSample')) $('#cdSample').addEventListener('click', () => startSample($('#cdSample'), $('#cdSampleMsg')));
   const ready = await classSetup($('#cdSetup'), ov, classDayHome, { compactWhenReady: true });
   const main = $('#cdMain');
+  const draft = cdDraftLoad();
+  if (draft) return planner(main, ov, { ...draft, resumed: true });   // pick up where they left off
   if (plan) return runSheet(main, plan, ov);
   main.innerHTML = `<button class="btn primary" id="cdStart" style="width:100%;min-height:72px;font-size:24px;margin:4px 0 16px">▶ Start class</button>
     ${ready ? '' : '<p class="faint" style="margin-top:-8px">You can plan class now; finish the setup steps above before Cadets join.</p>'}`;
@@ -105,6 +118,8 @@ async function planner(main, ov, prev) {
     api('/api/instructor/quiz'), api('/api/videos')]);
   const lessons = ls.lessons || [], scenarios = sc.scenarios || [], cards = qz.cards || [], videos = vd.videos || [];
   const was = prev || {}, had = (t, id) => (was.items || []).some(i => i.type === t && i.id === id);
+  let ready = false;
+  const saveDraft = () => { if (ready && $('#cdBuild')) cdDraftSave(collect()); };
   let questions = (was.items || []).filter(i => i.type === 'question');
   const teach = (was.items || []).filter(i => i.type === 'card');
   const svcName = s => s === 'joint' ? 'All services' : (STATUS.services || {})[s] || s;
@@ -112,7 +127,8 @@ async function planner(main, ov, prev) {
   const pick = (type, id, label, sub, checked, kind = 'checkbox', name = '') => `<label style="display:flex;gap:10px;align-items:center;min-height:44px;cursor:pointer">
     <input type="${kind}" ${name ? `name="${name}"` : ''} data-cd="${type}" value="${esc(id)}" ${checked ? 'checked' : ''} style="width:22px;height:22px;flex:none">
     <span>${label}${sub ? ` <span class="faint">${sub}</span>` : ''}</span></label>`;
-  main.innerHTML = `<div class="card" style="border-color:var(--tan)"><h3>▶ Start class</h3>
+  main.innerHTML = `${was.resumed ? '<p class="faint" style="margin:0 0 8px">✎ Picked up where you left off — everything you ticked is still here.</p>' : ''}
+    <div class="card" style="border-color:var(--tan)"><h3>▶ Start class</h3>
       <label for="cdUnit"><b>1. Which class?</b></label>
       ${ov.units.length ? `<select id="cdUnit">${ov.units.map(u => `<option value="${esc(u.id)}" ${u.id === was.unit ? 'selected' : ''}>${esc(u.name)}</option>`).join('')}</select>`
         : '<p class="faint">Make your class first (step 1 above). You can still plan today, and assign the lesson to everyone.</p>'}
@@ -154,6 +170,7 @@ async function planner(main, ov, prev) {
     $('#cdQList').innerHTML = questions.map((q, i) => `<div class="row" style="justify-content:space-between;gap:8px;margin:4px 0;flex-wrap:nowrap">
       <span>📡 ${esc(q.title)} <span class="faint">${esc(q.sub)}</span></span><button class="btn small" data-cdrmq="${i}" aria-label="Remove">✕</button></div>`).join('');
     $('#cdQList').querySelectorAll('[data-cdrmq]').forEach(b => b.addEventListener('click', () => { questions.splice(Number(b.dataset.cdrmq), 1); drawQ(); }));
+    saveDraft();
   };
   const fillTeach = () => {
     const f = $('#cdTeachFind').value.trim().toLowerCase();
@@ -164,6 +181,7 @@ async function planner(main, ov, prev) {
     $('#cdTeachList').innerHTML = teach.map((c, i) => `<div class="row" style="justify-content:space-between;gap:8px;margin:4px 0;flex-wrap:nowrap">
       <span>🗂️ ${esc(c.title)}</span><button class="btn small" data-cdrmt="${i}" aria-label="Remove">✕</button></div>`).join('');
     $('#cdTeachList').querySelectorAll('[data-cdrmt]').forEach(b => b.addEventListener('click', () => { teach.splice(Number(b.dataset.cdrmt), 1); drawTeach(); }));
+    saveDraft();
   };
   fillTeach(); drawTeach();
   $('#cdTeachFind').addEventListener('input', fillTeach);
@@ -188,10 +206,9 @@ async function planner(main, ov, prev) {
     $('#cdStarters').textContent = 'Adding…';
     const r = await api('/api/instructor/lessons/starter', {});
     if (r.error) { $('#cdMsg').textContent = r.error; $('#cdStarters').disabled = false; return; }
-    planner(main, ov, prev);                        // the same plan, now with lessons to pick from
+    planner(main, ov, collect());                   // what's ticked so far, now with lessons to pick from
   });
-  $('#cdCancel').addEventListener('click', classDayHome);
-  $('#cdBuild').addEventListener('click', () => {
+  function collect() {
     const items = [];
     const prompt = id => {
       const on = $(`#cdP-${id}`).checked, text = $(`#cdT-${id}`).value.trim();
@@ -208,13 +225,25 @@ async function planner(main, ov, prev) {
     });
     items.push(...questions);
     const lid = (main.querySelector('[data-cd="lesson"]:checked') || {}).value;
-    if (lid) items.push({ type: 'lesson', id: lid, title: lessons.find(l => l.id === lid).title, sub: 'Assign it; Cadets find it on their Home screen' });
+    const lesson = lid && lessons.find(l => l.id === lid);
+    if (lesson) items.push({ type: 'lesson', id: lid, title: lesson.title, sub: 'Assign it; Cadets find it on their Home screen' });
     prompt('close');
+    return { date: cdToday(), unit: $('#cdUnit') ? $('#cdUnit').value : '', items };
+  }
+  $('#cdCancel').addEventListener('click', () => { cdDraftClear(); classDayHome(); });
+  // one handler each (assigned, not added): an earlier planner on this page must never save its old lists
+  main.onchange = saveDraft;                          // ticks, the class, the prompts' boxes
+  main.oninput = e => { if (/^cdT-/.test(e.target.id)) saveDraft(); };   // the prompts' text
+  ready = true;
+  saveDraft();
+  $('#cdBuild').addEventListener('click', () => {
+    const { items } = collect();
     if (!items.length) { $('#cdMsg').textContent = 'Tick at least one thing for today — a question, a study card, a video, a scenario, a live question or a lesson.'; return; }
     const keep = Object.fromEntries((was.items || []).filter(i => i.done).map(i => [i.type + ':' + i.id, true]));
     items.forEach(i => { if (keep[i.type + ':' + i.id]) i.done = true; });
     const plan = { date: cdToday(), unit: $('#cdUnit') ? $('#cdUnit').value : '', items };
     cdSave(plan);
+    cdDraftClear();
     classDayActive = true;
     runSheet(main, plan, ov);
     window.scrollTo(0, 0);
