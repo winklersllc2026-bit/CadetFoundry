@@ -73,6 +73,9 @@ def upload() -> int:
         return 1
     import sign
     manifest = make(key=sign.load_key(KEY))
+    if not manifest["videos"]:                    # never replace the list online with an empty one
+        print(f"No videos found in {videos.VIDEOS}. Run python tools/fetch_videos.py first. Nothing was uploaded.")
+        return 1
     total = sum(v["bytes"] for v in manifest["videos"])
     print(f"{len(manifest['videos'])} videos, {total / 2**30:.2f} GB, in {sum(len(v['pieces']) for v in manifest['videos'])} pieces")
     try:

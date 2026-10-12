@@ -1451,6 +1451,8 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
             err = self._device_admin(b)
             if err:
                 return self._json({"error": err}, 403)
+            if b.get("confirm") is not True:             # deleting needs a deliberate "yes", never an empty request
+                return self._json({"error": "Nothing removed (not confirmed)."}, 400)
             try:
                 return self._json(addons.remove_videos())
             except ValueError as e:

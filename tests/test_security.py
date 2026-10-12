@@ -67,7 +67,13 @@ class SecurityTests(unittest.TestCase):
         # can take longer than the request timeout, so the test sometimes failed; here the AI answers "no model".
         from unittest import mock
         no_ai = RuntimeError("no AI model in this test")
-        with mock.patch("cadetfoundry.engine.stream", side_effect=no_ai), mock.patch("cadetfoundry.engine.quick", return_value=""):
+        # 2026-10-12: an empty POST to the new Remove-videos route deleted the real videos/ folder (no Class PIN in this
+        # test, so this computer may change the device). Routes that touch files beside the app work on a throwaway copy.
+        import tempfile
+        from cadetfoundry import videos
+        spare = Path(tempfile.mkdtemp())
+        (spare / "dvids-777200.mp4").write_bytes(b"not a real video")
+        with mock.patch("cadetfoundry.engine.stream", side_effect=no_ai), mock.patch("cadetfoundry.engine.quick", return_value=""),                 mock.patch.object(videos, "VIDEOS", spare):
             for r in routes:
                 if r in skip:
                     continue
@@ -77,6 +83,7 @@ class SecurityTests(unittest.TestCase):
                     except TimeoutError:
                         self.fail(f"{method} {r} timed out")
                     self.assertLess(status, 500, f"{method} {r} -> {status}")
+        self.assertTrue((spare / "dvids-777200.mp4").exists(), "an empty request removed the videos")
 
     def test_0_page_scripts_load_while_locked(self):
         """The lock screen lives in web/js/core.js, so the page's scripts load before anyone unlocks -- nothing else does."""

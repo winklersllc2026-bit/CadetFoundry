@@ -40,7 +40,7 @@ async function showAddons() {
     if (!confirm(`Remove the ${st.videos.saved} saved official videos from here? They'd need internet (or a new download) to play again.`)) return;
     const admin = (await api('/api/lock')).admin_set ? prompt('Class PIN:') : '';
     if (admin === null) return;
-    const r = await api('/api/addons/remove-videos', { admin });
+    const r = await api('/api/addons/remove-videos', { admin, confirm: true });
     if (r.error) alert(r.error);
     showAddons();
   };
