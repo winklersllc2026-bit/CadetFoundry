@@ -2,11 +2,11 @@
 
 Study cards cite U.S. government sources (or the Army manuals in `library/`). Most facts don't change, but the ones
 below do. Before each school year (suggested: **every July**), open each source, compare, and edit the card in
-`vanguard/cards/`. Then run `python -m unittest discover -s tests`. Each card's `source:` line says where it came from.
+`cadetfoundry/cards/`. Then run `python -m unittest discover -s tests`. Each card's `source:` line says where it came from.
 
 Last full check: **2026-10-09** (Phase 11).
 
-Starter lessons (`vanguard/data/starter_lessons.json`): each copies its card's text and source **when an instructor
+Starter lessons (`cadetfoundry/data/starter_lessons.json`): each copies its card's text and source **when an instructor
 adds it**, so a later card fix doesn't change lessons already added. If you correct one of those 12 cards, check the
 matching starter questions too; instructors can re-add a lesson after deleting their copy.
 
@@ -56,5 +56,5 @@ restricted to CAC holders; `map_reading_topo` covers the basics from USGS instea
 List them with:
 
 ```
-grep -l "verified: no" vanguard/cards/*.md
+grep -l "verified: no" cadetfoundry/cards/*.md
 ```

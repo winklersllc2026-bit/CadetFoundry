@@ -317,7 +317,7 @@ async function instReports(sec, ov, run) {
 
 // What Cadet Foundry is and isn't -- plainly, for instructors (Settings) and everyone (Me). Cadet Foundry supports what a program
 // already does; it never claims to be official or to replace a program's own systems.
-function aboutVanguardHtml(open = false) {
+function aboutHtml(open = false) {
   const li = xs => xs.map(x => `<li>${x}</li>`).join('');
   return `<div class="card"><details ${open ? 'open' : ''}><summary style="cursor:pointer;min-height:40px"><b>ℹ️ What Cadet Foundry is — and isn't</b></summary>
     <div class="row" style="flex-wrap:wrap;gap:16px;align-items:flex-start;margin-top:8px">
@@ -346,7 +346,7 @@ function instSettings(sec) {
   const MODS = { faith: 'Faith texts (scripture lookup and reading plans)', letters: 'Letters and address book', voice: 'Talk to Cadet Foundry (offline voice)' };
   const modsOff = STATUS.modules_off || [];
   const progs = STATUS.programs || {};
-  sec.innerHTML = `${aboutVanguardHtml(true)}<div class="card"><h3>🎖️ Your JROTC program</h3>
+  sec.innerHTML = `${aboutHtml(true)}<div class="card"><h3>🎖️ Your JROTC program</h3>
       <p class="faint">Sets the words Cadet Foundry uses (for example, the year a Cadet is in: LET 1 in Army JROTC, NS 1 in Navy JROTC, LE 1 in Marine Corps JROTC, Year 1 in Air Force JROTC) and puts your branch first in Learn. Cadets can still explore every branch.</p>
       <select id="progPick" aria-label="JROTC program" style="width:100%;min-height:46px"><option value="">Not set / more than one program</option>
         ${Object.entries(progs).map(([k, v]) => `<option value="${k}" ${STATUS.program === k ? 'selected' : ''}>${esc(v)}</option>`).join('')}</select>

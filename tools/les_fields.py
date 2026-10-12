@@ -1,5 +1,5 @@
 """
-Build vanguard/data/les_fields.json (the LES decoder) from DFAS's own guides:
+Build cadetfoundry/data/les_fields.json (the LES decoder) from DFAS's own guides:
 
     tools/pay_source/DFAS_Army_reading_your_LES.txt    (active duty)
     tools/pay_source/DFAS_ResNG_reading_your_LES.txt   (Reserve and National Guard)
@@ -17,7 +17,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "tools" / "pay_source"
-OUT = ROOT / "vanguard" / "data" / "les_fields.json"
+OUT = ROOT / "cadetfoundry" / "data" / "les_fields.json"
 
 SECTIONS = [  # (first block, last block, name)
     (1, 9, "Identification"), (10, 24, "Pay summary"), (25, 32, "Leave"), (33, 38, "Federal taxes"),

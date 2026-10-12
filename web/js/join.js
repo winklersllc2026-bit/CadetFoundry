@@ -5,7 +5,7 @@
 (() => {
   const box = document.getElementById('join');
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  let KEY = 'vanguard-join-unit', unit = '';
+  let KEY = 'cadetfoundry-join-unit', unit = '';
   try { unit = localStorage.getItem(KEY) || ''; } catch (e) { }
 
   async function draw() {

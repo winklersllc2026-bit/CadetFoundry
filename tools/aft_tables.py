@@ -1,5 +1,5 @@
 """
-Build vanguard/data/aft_tables.json from the official Army Fitness Test score tables.
+Build cadetfoundry/data/aft_tables.json from the official Army Fitness Test score tables.
 
     python tools/aft_tables.py AFT_Scoring_Scales_250601.pdf
 
@@ -17,7 +17,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-OUT = ROOT / "vanguard" / "data" / "aft_tables.json"
+OUT = ROOT / "cadetfoundry" / "data" / "aft_tables.json"
 
 AGES = ["17-21", "22-26", "27-31", "32-36", "37-41", "42-46", "47-51", "52-56", "57-61", "62+"]
 # id, heading text in the PDF, unit, higher_is_better

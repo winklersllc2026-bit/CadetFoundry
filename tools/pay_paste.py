@@ -1,5 +1,5 @@
 """
-Update vanguard/data/pay_tables.json from DFAS pay tables copied out of a browser.
+Update cadetfoundry/data/pay_tables.json from DFAS pay tables copied out of a browser.
 
 DFAS blocks scripts, but copying the page works: open the table on dfas.mil,
 select all, copy, paste into a text file, then
@@ -16,7 +16,7 @@ import re
 import sys
 from pathlib import Path
 
-OUT = Path(__file__).resolve().parent.parent / "vanguard" / "data" / "pay_tables.json"
+OUT = Path(__file__).resolve().parent.parent / "cadetfoundry" / "data" / "pay_tables.json"
 
 GRADE = re.compile(r"^\s*([EWO]-\d{1,2}E?)\b", re.M)
 MONEY = re.compile(r"\d{1,3}(?:,\d{3})*\.\d{2}")

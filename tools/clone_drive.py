@@ -2,14 +2,14 @@
 Make a clean Cadet Foundry flash drive for Cadets from a copy of the instructor's drive -- no profiles, no class records.
 
 The instructor's drive has a folder "Make more flash drives". Its instructions say: copy the drive's contents (all but
-VanguardData) to this computer, unplug that drive, plug in a blank one, and double-click "Make a Cadet drive.bat"
+Cadet Foundry Data) to this computer, unplug that drive, plug in a blank one, and double-click "Make a Cadet drive.bat"
 in the copy. That runs this script with the drive's own Python:
 
-    python Vanguard/tools/clone_drive.py <the copied folder>            asks which drive to fill
-    python Vanguard/tools/clone_drive.py <the copied folder> E:\\        straight to E:
+    python CadetFoundry/tools/clone_drive.py <the copied folder>            asks which drive to fill
+    python CadetFoundry/tools/clone_drive.py <the copied folder> E:\\        straight to E:
 
-Copies the app (Vanguard\\, with its Python, videos and offline AI if present) and the start files. Never copies
-VanguardData: the new drive gets an empty one, so every Cadet starts fresh. Standard library only.
+Copies the app (Cadet Foundry\\, with its Python, videos and offline AI if present) and the start files. Never copies
+Cadet Foundry Data: the new drive gets an empty one, so every Cadet starts fresh. Standard library only.
 """
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ import string
 import sys
 from pathlib import Path
 
-SKIP = {"VanguardData", "System Volume Information", "$RECYCLE.BIN"}
+SKIP = {"Cadet Foundry Data", "VanguardData", "System Volume Information", "$RECYCLE.BIN"}
 
 
 def removable_drives() -> list[str]:
@@ -39,7 +39,7 @@ def removable_drives() -> list[str]:
 
 def has_people(drive: Path) -> bool:
     """The drive already holds Cadet Foundry profiles (someone's data) -- never overwrite those."""
-    profiles = drive / "VanguardData" / "profiles"
+    profiles = drive / "Cadet Foundry Data" / "profiles"
     return profiles.is_dir() and any(profiles.iterdir())
 
 
@@ -48,7 +48,7 @@ def items_to_copy(src: Path) -> list[Path]:
 
 
 def copy_all(src: Path, dest: Path, say=print) -> int:
-    """Copy everything but VanguardData from src to dest. Returns the bytes copied."""
+    """Copy everything but Cadet Foundry Data from src to dest. Returns the bytes copied."""
     files = [f for item in items_to_copy(src) for f in ([item] if item.is_file() else item.rglob("*")) if f.is_file()]
     total = sum(f.stat().st_size for f in files)
     done, last = 0, -1
@@ -61,7 +61,7 @@ def copy_all(src: Path, dest: Path, say=print) -> int:
         if pct // 5 != last:
             last = pct // 5
             say(f"  {pct:3d}%  ({done / 2**30:.2f} of {total / 2**30:.2f} GB)")
-    (dest / "VanguardData").mkdir(exist_ok=True)                 # empty: every Cadet starts fresh
+    (dest / "Cadet Foundry Data").mkdir(exist_ok=True)                 # empty: every Cadet starts fresh
     return done
 
 
@@ -70,8 +70,8 @@ def main(argv: list[str]) -> int:
         print(__doc__)
         return 1
     src = Path(argv[0]).resolve()
-    if not (src / "Vanguard" / "run.py").exists():
-        print(f"This doesn't look like a copy of a Cadet Foundry drive (no Vanguard\\run.py in {src}).")
+    if not (src / "Cadet Foundry" / "run.py").exists():
+        print(f"This doesn't look like a copy of a Cadet Foundry drive (no Cadet Foundry\\run.py in {src}).")
         return 1
     print("\n  MAKE A CADET FLASH DRIVE")
     print("  Copies Cadet Foundry to a blank flash drive. No profiles or class records are copied.\n")
@@ -105,7 +105,7 @@ def main(argv: list[str]) -> int:
         return 1
     if has_people(dest):
         print(f"  {dest} already has Cadet Foundry profiles on it. To protect them, nothing was changed.")
-        print("  Use a blank flash drive (or move that drive's VanguardData folder somewhere safe first).")
+        print("  Use a blank flash drive (or move that drive's Cadet Foundry Data folder somewhere safe first).")
         return 1
     need = sum(f.stat().st_size for item in items_to_copy(src)
                for f in ([item] if item.is_file() else item.rglob("*")) if f.is_file())

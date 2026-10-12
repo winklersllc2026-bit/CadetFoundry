@@ -24,7 +24,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tools"))
-from vanguard.books import BOOKS_DIR, CATALOG  # noqa: E402
+from cadetfoundry.books import BOOKS_DIR, CATALOG  # noqa: E402
 import fetch_library  # noqa: E402  (shared download + PDF/HTML conversion helpers)
 
 

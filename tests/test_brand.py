@@ -31,23 +31,37 @@ class BrandTests(unittest.TestCase):
             hits += [f"{name}:{i}" for i, line in enumerate(text.splitlines(), 1) if OLD.search(line)]
         self.assertEqual(hits, [], "old product name found")
 
-    def test_people_never_see_the_name_before_the_rename(self):
-        """Renamed from Vanguard to Cadet Foundry (owner, 2026-10-11). The app keeps a few internal names on purpose --
-        the vanguard/ code folder, the Vanguard/ folder inside update zips (0.2.3-0.2.4 updaters require it), the
-        .vanguard and VanguardData data folders -- but nothing a person reads may say Vanguard."""
-        internal = re.compile(r"Vanguard(?=[/\\])|VanguardData|Vanguard-releases|winklersllc2026-bit/Vanguard|Vanguard-Setup-latest|"
-                              r"StopVanguard|RemoveOldVanguard|Name = 'Vanguard'|exactly \"Vanguard\"|"
-                              r"\"Start Vanguard|'Vanguard \(classroom\)|Vanguard\.lnk|Vanguard Classroom\.lnk|Install Vanguard\*|"
-                              r"server_version = \"Vanguard\"|startswith\(\"Vanguard\"\)|/ \"Vanguard\"|Vanguard 0\.1\.0|"
-                              r"before the rename|this app's name before")
-        seen = [ROOT / "web" / "index.html", ROOT / "web" / "join.html", ROOT / "web" / "manifest.webmanifest",
-                *(ROOT / "web" / "js").glob("*.js"), *(ROOT / "vanguard" / "legal").glob("*.md"),
-                ROOT / "README.md", ROOT / "site" / "build.py", ROOT / "site" / "installer.iss",
-                ROOT / "tools" / "make_usb.py", *(ROOT / "vanguard" / "scenarios").glob("*.md"),
-                *(ROOT / "vanguard" / "cards").glob("*.md"), ROOT / "vanguard" / "brain.py", ROOT / "vanguard" / "safety.py"]
-        hits = [f"{p.relative_to(ROOT)}:{i}" for p in seen for i, line in enumerate(p.read_text(encoding="utf-8").splitlines(), 1)
-                if re.search(r"\bVanguard\b|\bVANGUARD\b(?!_)", internal.sub("", line))]
-        self.assertEqual(hits, [], "the old name is still visible")
+    def test_the_name_before_the_rename_is_gone(self):
+        """Renamed from Vanguard to Cadet Foundry (owner, 2026-10-11), inside and out (0.2.6). The old name may appear
+        only where a computer, drive or backup from before the rename is recognised and moved over, plus three things
+        outside the app: the owner's release-key folder, the website Worker's internal name, and the old web address
+        (which forwards)."""
+        moving_over = re.compile(
+            r"\.vanguard-release|vanguard-site|vanguard\.winklers-llc\.com|Vanguard-releases|winklersllc2026-bit/Vanguard\b|"
+            r"OLD_LATEST = \"Vanguard-Setup-latest\.exe\"|OLD_LATEST|Vanguard\*\\n|OLD_DATA_FOLDER = \"\.vanguard\"|OLD_DATA_FOLDER|OLD_APP_ITEMS = \[[^\]]*\]|OLD = \"vanguard\"|data\.vanguard_backup_sealed|"
+            r"\"VanguardData\"|\(\"Vanguard\", \"Cadet Foundry\"\)|Install Vanguard\*|\"Start Vanguard|start-vanguard-usb\.sh|"
+            r"\\\.vanguard\\vanguard\.pid|\{app\}\\vanguard|\{app\}\\(start|install)-vanguard|Vanguard( Classroom)?\.lnk|"
+            r"Name = 'Vanguard'|exactly \"Vanguard\"|Vanguard 0\.1\.0|before the rename|formerly Vanguard|renamed from Vanguard",
+            re.I)
+        try:
+            tracked = subprocess.run(["git", "ls-files"], cwd=ROOT, capture_output=True, text=True, check=True).stdout.split()
+        except (OSError, subprocess.CalledProcessError):
+            self.skipTest("not a git checkout")
+        hits = []
+        for name in tracked:
+            if name in ALLOWED or name.startswith(("library/", "books/", "docs/history/")) \
+                    or name == "docs/SECURITY_REVIEW_2026-10.md":           # a dated record, left as written
+                continue
+            if "vanguard" in name.lower():
+                hits.append(name)
+                continue
+            try:
+                text = (ROOT / name).read_text(encoding="utf-8")
+            except (UnicodeDecodeError, OSError):
+                continue
+            hits += [f"{name}:{i}" for i, line in enumerate(text.splitlines(), 1)
+                     if re.search(r"vanguard", moving_over.sub("", line), re.I)]
+        self.assertEqual(hits, [], "the old name is still here")
 
 
 if __name__ == "__main__":

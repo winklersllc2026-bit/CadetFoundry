@@ -15,11 +15,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-os.environ.setdefault("VANGUARD_DATA", tempfile.mkdtemp())
-os.environ["VANGUARD_NO_WARMUP"] = "1"
+os.environ.setdefault("CADETFOUNDRY_DATA", tempfile.mkdtemp())
+os.environ["CADETFOUNDRY_NO_WARMUP"] = "1"
 
-from vanguard import security  # noqa: E402
-from vanguard.server import Handler, serve  # noqa: E402
+from cadetfoundry import security  # noqa: E402
+from cadetfoundry.server import Handler, serve  # noqa: E402
 
 
 class HostRuleTests(unittest.TestCase):
@@ -51,7 +51,7 @@ class HostRuleTests(unittest.TestCase):
 
 
 class OriginRuleTests(unittest.TestCase):
-    def test_origin_must_be_vanguard_itself(self):
+    def test_origin_must_be_cadet_foundry_itself(self):
         self.assertTrue(security.origin_ok(None, "192.168.1.20:8780"))         # same-origin GET: browsers send none
         self.assertTrue(security.origin_ok("http://192.168.1.20:8780", "192.168.1.20:8780"))
         for bad in ("http://evil.example", "null", "https://192.168.1.20:8780", "http://192.168.1.20:8781",

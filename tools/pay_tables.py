@@ -1,5 +1,5 @@
 """
-Build vanguard/data/pay_tables.json from the official DFAS pay table pages.
+Build cadetfoundry/data/pay_tables.json from the official DFAS pay table pages.
 
     python tools/pay_tables.py EM.html WO.html BAS.html [CO.html CO_FE.html]
 
@@ -19,7 +19,7 @@ import sys
 from html.parser import HTMLParser
 from pathlib import Path
 
-OUT = Path(__file__).resolve().parent.parent / "vanguard" / "data" / "pay_tables.json"
+OUT = Path(__file__).resolve().parent.parent / "cadetfoundry" / "data" / "pay_tables.json"
 
 
 class _Tables(HTMLParser):

@@ -12,11 +12,11 @@ from unittest import mock
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-os.environ.setdefault("VANGUARD_DATA", tempfile.mkdtemp())
-os.environ["VANGUARD_NO_WARMUP"] = "1"
+os.environ.setdefault("CADETFOUNDRY_DATA", tempfile.mkdtemp())
+os.environ["CADETFOUNDRY_NO_WARMUP"] = "1"
 
-from vanguard import profiles, security, store  # noqa: E402
-from vanguard.server import serve  # noqa: E402
+from cadetfoundry import profiles, security, store  # noqa: E402
+from cadetfoundry.server import serve  # noqa: E402
 
 
 class SecurityTests(unittest.TestCase):
@@ -58,7 +58,7 @@ class SecurityTests(unittest.TestCase):
         """Call every /api route (GET and an empty POST) as a logged-in Soldier: nothing may crash (5xx).
         Catches a route that uses a module it never imported -- the unit tests call modules directly."""
         import re
-        routes = sorted(set(re.findall(r'if r == "(/api/[^"]+)"', (ROOT / "vanguard" / "server.py").read_text(encoding="utf-8"))))
+        routes = sorted(set(re.findall(r'if r == "(/api/[^"]+)"', (ROOT / "cadetfoundry" / "server.py").read_text(encoding="utf-8"))))
         self.assertGreater(len(routes), 40)
         skip = {"/api/quit", "/api/chat", "/api/simplify", "/api/voice", "/api/lock", "/api/profiles/delete", "/api/pin/remove",
                 "/api/history/clear", "/api/library/reload", "/api/restore", "/api/update"}      # slow, or ends the session
@@ -67,7 +67,7 @@ class SecurityTests(unittest.TestCase):
         # can take longer than the request timeout, so the test sometimes failed; here the AI answers "no model".
         from unittest import mock
         no_ai = RuntimeError("no AI model in this test")
-        with mock.patch("vanguard.engine.stream", side_effect=no_ai), mock.patch("vanguard.engine.quick", return_value=""):
+        with mock.patch("cadetfoundry.engine.stream", side_effect=no_ai), mock.patch("cadetfoundry.engine.quick", return_value=""):
             for r in routes:
                 if r in skip:
                     continue
@@ -97,7 +97,7 @@ class SecurityTests(unittest.TestCase):
         self.assertEqual(self.req("POST", "/api/log", {"text": "x"}, {"Origin": "http://evil.example"})[0], 403)
 
     def test_3_non_json_post_refused(self):
-        s, _, _ = self.req("POST", "/api/restore", '{"vanguard_backup":1}', {"Content-Type": "text/plain"})
+        s, _, _ = self.req("POST", "/api/restore", '{"cadetfoundry_backup":1}', {"Content-Type": "text/plain"})
         self.assertEqual(s, 415)
 
     def test_4_preflight_refused(self):
@@ -107,7 +107,7 @@ class SecurityTests(unittest.TestCase):
 
     def test_5_path_traversal_refused(self):
         cookie = self.login(self.alice["id"], "482915")
-        for p in ("/../vanguard/store.py", "/..%2fvanguard%2fstore.py", "/%2e%2e/run.py", "/web/../run.py"):
+        for p in ("/../cadetfoundry/store.py", "/..%2fcadetfoundry%2fstore.py", "/%2e%2e/run.py", "/web/../run.py"):
             self.assertIn(self.req("GET", p)[0], (401, 404), p)                      # locked: refused
             self.assertEqual(self.req("GET", p, headers={"Cookie": cookie})[0], 404, p)  # unlocked: still refused
 
@@ -133,7 +133,7 @@ class SecurityTests(unittest.TestCase):
         _, _, alice_log = self.req("GET", "/api/log", headers={"Cookie": a})
         self.assertIn("Alice private note", alice_log.decode())
         # a forged / foreign cookie never opens anyone's data
-        self.assertEqual(self.req("GET", "/api/log", headers={"Cookie": "vanguard_session=forged"})[0], 401)
+        self.assertEqual(self.req("GET", "/api/log", headers={"Cookie": "cadetfoundry_session=forged"})[0], 401)
         self.assertIsNotNone(profiles.get(self.alice["id"]))
 
     def test_9_lockout_after_repeated_wrong_pins(self):
@@ -201,9 +201,9 @@ class SecurityTests(unittest.TestCase):
         s, _, raw = self.req("POST", "/api/backup", {"password": "blue river tank 42"}, {"Cookie": d})
         self.assertEqual(s, 200)
         sealed = json.loads(raw)["file"]
-        self.assertTrue(sealed["vanguard_backup_sealed"])
+        self.assertTrue(sealed["cadetfoundry_backup_sealed"])
         self.assertNotIn("Dana", json.dumps(sealed))                        # nothing readable in the file
-        from vanguard import backup as _backup
+        from cadetfoundry import backup as _backup
         backup_file = _backup.open_any(sealed, "blue river tank 42")
         self.assertEqual(backup_file["kind"], "guardian")
         e = self.login(evan["id"], "694028")
@@ -223,7 +223,7 @@ class SecurityTests(unittest.TestCase):
         self.assertEqual(store.config(), before)                              # device settings untouched
 
     def test_13_files_are_encrypted_on_disk_and_only_the_pin_opens_them(self):
-        from vanguard import vault
+        from cadetfoundry import vault
         p = profiles.create(f"Fay-{uuid.uuid4().hex[:8]}")
         folder = profiles.folder(p["id"])
         with security.as_profile(p["id"]):
@@ -244,7 +244,7 @@ class SecurityTests(unittest.TestCase):
                 store.read_lines("log.jsonl")
 
     def test_14_tampered_or_swapped_files_are_refused(self):
-        from vanguard import vault
+        from cadetfoundry import vault
         p = profiles.create(f"Gus-{uuid.uuid4().hex[:8]}")
         with security.as_profile(p["id"]):
             self.assertIsNone(security.set_pin("640275"))
@@ -512,13 +512,13 @@ class SecurityTests(unittest.TestCase):
 
 
 class IntegrityAndUpdateTests(unittest.TestCase):
-    """Library tamper check and signed offline updates (vanguard/integrity.py), with a throwaway signing key."""
+    """Library tamper check and signed offline updates (cadetfoundry/integrity.py), with a throwaway signing key."""
 
     def setUp(self):
         import base64
         import tempfile
         from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
-        from vanguard import integrity
+        from cadetfoundry import integrity
         self.integrity, self.b64 = integrity, base64
         self.key = Ed25519PrivateKey.generate()
         self.pub = self.key.public_key()
@@ -547,16 +547,16 @@ class IntegrityAndUpdateTests(unittest.TestCase):
         import zipfile
         buf = io.BytesIO()
         with zipfile.ZipFile(buf, "w") as z:
-            z.writestr("Vanguard/vanguard/__init__.py", f'__version__ = "{version}"\n')
-            z.writestr("Vanguard/web/app.js", "// new\n")
+            z.writestr("CadetFoundry/cadetfoundry/__init__.py", f'__version__ = "{version}"\n')
+            z.writestr("CadetFoundry/web/app.js", "// new\n")
             for name, data in (extra or {}).items():
                 z.writestr(name, data)
         return buf.getvalue()
 
     def _root(self) -> Path:
         root = self.tmp / "app"
-        (root / "vanguard").mkdir(parents=True)
-        (root / "vanguard" / "__init__.py").write_text('__version__ = "1.0.0"\n')
+        (root / "cadetfoundry").mkdir(parents=True)
+        (root / "cadetfoundry" / "__init__.py").write_text('__version__ = "1.0.0"\n')
         return root
 
     def test_signed_update_installs(self):
@@ -578,7 +578,7 @@ class IntegrityAndUpdateTests(unittest.TestCase):
         for name, (z, sig) in cases.items():
             with self.assertRaises(ValueError, msg=name):
                 self.integrity.install_update(z, sig, root, self.pub)
-        for bad in ({"Vanguard/../evil.py": "x"}, {"Vanguard/autorun.bat": "x"}, {"elsewhere/a.txt": "x"}):
+        for bad in ({"CadetFoundry/../evil.py": "x"}, {"CadetFoundry/autorun.bat": "x"}, {"elsewhere/a.txt": "x"}):
             z = self._zip(extra=bad)
             with self.assertRaises(ValueError, msg=str(bad)):
                 self.integrity.install_update(z, self.sign(z), root, self.pub)
@@ -594,8 +594,8 @@ class IntegrityAndUpdateTests(unittest.TestCase):
         same = self._zip("1.0.0")
         with self.assertRaises(ValueError):
             self.integrity.install_update(same, self.sign(same), root, self.pub)
-        for bad in ({"Vanguard/vanguard/server.py:hidden": "x"}, {"Vanguard/web/C:/x.js": "x"},
-                    {"Vanguard/web/a\x01.js": "x"}):
+        for bad in ({"CadetFoundry/cadetfoundry/server.py:hidden": "x"}, {"CadetFoundry/web/C:/x.js": "x"},
+                    {"CadetFoundry/web/a\x01.js": "x"}):
             z = self._zip(extra=bad)
             with self.assertRaises(ValueError, msg=str(bad)):
                 self.integrity.install_update(z, self.sign(z), root, self.pub)
@@ -612,7 +612,7 @@ class IntegrityAndUpdateTests(unittest.TestCase):
         root = self._root()
         (root / "web").mkdir()
         (root / "web" / "app.js").write_text("// old\n")
-        data = self._zip(extra={"Vanguard/web/new.js": "// added\n"})
+        data = self._zip(extra={"CadetFoundry/web/new.js": "// added\n"})
         real = Path.replace
         calls = {"n": 0}
 
@@ -649,11 +649,11 @@ class IntegrityAndUpdateTests(unittest.TestCase):
         on its list)."""
         sys.path.insert(0, str(ROOT / "site"))
         import build
-        z = self.tmp / "Vanguard-release.zip"
+        z = self.tmp / "CadetFoundry-release.zip"
         build.make_zip(z)
         data = z.read_bytes()
         root = self._root()
-        (root / "vanguard" / "__init__.py").write_text('__version__ = "0.0.1"\n')
+        (root / "cadetfoundry" / "__init__.py").write_text('__version__ = "0.0.1"\n')
         r = self.integrity.install_update(data, self.sign(data), root, self.pub)
         self.assertEqual(r["version"], self.integrity.current_version(ROOT))
         self.assertTrue((root / "run.py").exists() and (root / "start-classroom.bat").exists())
@@ -661,8 +661,8 @@ class IntegrityAndUpdateTests(unittest.TestCase):
         # and the same zip with one byte changed is refused
         bad = data[:-10] + bytes([data[-10] ^ 1]) + data[-9:]
         root2 = self.tmp / "app2"
-        (root2 / "vanguard").mkdir(parents=True)
-        (root2 / "vanguard" / "__init__.py").write_text('__version__ = "0.0.1"\n')
+        (root2 / "cadetfoundry").mkdir(parents=True)
+        (root2 / "cadetfoundry" / "__init__.py").write_text('__version__ = "0.0.1"\n')
         with self.assertRaises(ValueError):
             self.integrity.install_update(bad, self.sign(data), root2, self.pub)
 
@@ -675,7 +675,7 @@ class IntegrityAndUpdateTests(unittest.TestCase):
             p = ROOT / f
             if p.suffix in (".py", ".md", ".json", ".txt", ".js", ".html", ".pub", ".iss", ".toml") and p.is_file():
                 self.assertNotIn(marker, p.read_text(encoding="utf-8", errors="ignore"), f)
-        pub = ROOT / "vanguard" / "data" / "release_key.pub"
+        pub = ROOT / "cadetfoundry" / "data" / "release_key.pub"
         if pub.exists():                                                      # 32 raw bytes: a public key, nothing more
             self.assertEqual(len(self.b64.b64decode(pub.read_text().strip())), 32)
 

@@ -9,15 +9,15 @@ nothing is installed on that computer, and every profile and class record stays 
 
 Sizes: the app about 50 MB; with the AI about 0.1 GB for the engine plus the model (qwen2.5:1.5b 0.9 GB, 3b 1.9 GB).
 
-Run it again to update the drive: the app is replaced, the data (VanguardData) is never touched.
+Run it again to update the drive: the app is replaced, the data (Cadet Foundry Data) is never touched.
 
 On the drive:
     Start Cadet Foundry.bat                 this computer only
     Start Classroom.bat                Cadets on the same Wi-Fi join from their phones
     start-cadet-foundry-usb.sh         Linux / Mac (uses that computer's python3)
     START HERE.html                    which file does what (opens in any browser)
-    Vanguard\\                          the app, with python\\ (and ollama\\ with --with-ai)
-    VanguardData\\                      profiles and class records (each profile encrypted with its own PIN)
+    Cadet Foundry\\                     the app, with python\\ (and ollama\\ with --with-ai)
+    Cadet Foundry Data\\                      profiles and class records (each profile encrypted with its own PIN)
 """
 from __future__ import annotations
 
@@ -33,29 +33,30 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "site"))
 import build  # noqa: E402  (site/build.py: the same file list and bundled Python as the installer)
 
-APP_ITEMS = ["vanguard", "web", "tools", "library", "books", "faith", "python", "run.py", "README.md", "LIBRARY.md",
-             "SECURITY.md", "install-vanguard.bat", "install-vanguard.sh", "start-vanguard.bat", "start-vanguard.sh",
+APP_ITEMS = ["cadetfoundry", "web", "tools", "library", "books", "faith", "python", "run.py", "README.md", "LIBRARY.md",
+             "SECURITY.md", "install-cadetfoundry.bat", "install-cadetfoundry.sh", "start-cadetfoundry.bat", "start-cadetfoundry.sh",
              "start-classroom.bat", "start-classroom.sh"]
+OLD_APP_ITEMS = ["vanguard", "install-vanguard.bat", "install-vanguard.sh", "start-vanguard.bat", "start-vanguard.sh"]
 
 START_BAT = r"""@echo off
 title Cadet Foundry
 rem Cadet Foundry from this USB drive. Nothing is installed on this computer; all data stays on the drive.
-cd /d "%~dp0Vanguard"
-set "VANGUARD_DATA=%~dp0VanguardData"
-if exist "%~dp0Vanguard\ollama\ollama.exe" set "VANGUARD_OLLAMA=%~dp0Vanguard\ollama\ollama.exe"
+cd /d "%~dp0Cadet Foundry"
+set "CADETFOUNDRY_DATA=%~dp0Cadet Foundry Data"
+if exist "%~dp0Cadet Foundry\ollama\ollama.exe" set "CADETFOUNDRY_OLLAMA=%~dp0Cadet Foundry\ollama\ollama.exe"
 echo.
 echo   CADET FOUNDRY - running from this USB drive
 echo   Keep this window open while you use Cadet Foundry.
 echo   To stop: Me ^> Quit Cadet Foundry, or close this window. Then unplug the drive.
 echo.
-"%~dp0Vanguard\python\python.exe" run.py {args} %*
+"%~dp0Cadet Foundry\python\python.exe" run.py {args} %*
 if errorlevel 1 pause
 """
 
 START_SH = """#!/bin/sh
 # Cadet Foundry from this USB drive on Linux or a Mac (uses this computer's python3 and its cryptography package).
 here="$(cd "$(dirname "$0")/.." && pwd)"     # this file is in "Mac and Linux"; the drive is one level up
-export VANGUARD_DATA="$here/VanguardData"
+export CADETFOUNDRY_DATA="$here/Cadet Foundry Data"
 cd "$here/Cadet Foundry" || exit 1
 if ! python3 -c "import sys, cryptography; sys.exit(int(cryptography.__version__.split('.')[0]) < 50)" 2>/dev/null; then
   echo "Cadet Foundry needs Python 3.10+ with the 'cryptography' package, version 50 or newer:"
@@ -68,7 +69,7 @@ exec python3 run.py "$@"
 MAKE_BAT = r"""@echo off
 title Make a Cadet flash drive
 rem Copies Cadet Foundry from this folder's copy to a blank flash drive -- without anyone's profiles or records.
-"%~dp0..\Vanguard\python\python.exe" "%~dp0..\Vanguard\tools\clone_drive.py" "%~dp0.."
+"%~dp0..\Cadet Foundry\python\python.exe" "%~dp0..\Cadet Foundry\tools\clone_drive.py" "%~dp0.."
 echo.
 pause
 """
@@ -85,9 +86,9 @@ You need: this flash drive, a Windows computer, and blank flash drives (8 GB or 
 STEP 1 - Copy this flash drive to the computer
    a. Open this flash drive in File Explorer.
    b. Make a new folder on the computer's Desktop, for example "Cadet Foundry drive".
-   c. Select everything on the flash drive EXCEPT the folder named VanguardData
+   c. Select everything on the flash drive EXCEPT the folder named Cadet Foundry Data
       (that folder is your class's data - it stays on your drive).
-      Tip: press Ctrl+A to select all, then hold Ctrl and click VanguardData to un-select it.
+      Tip: press Ctrl+A to select all, then hold Ctrl and click Cadet Foundry Data to un-select it.
    d. Copy it (Ctrl+C) and paste it (Ctrl+V) into the new Desktop folder. Wait for it to finish.
 
 STEP 2 - Swap the flash drives
@@ -148,7 +149,7 @@ ask IT, or use a phone hotspot or the Cadet Foundry demo box.</div>
 
 <div class="box"><h3>📁 <span class="file">Make more flash drives</span> — a clean drive for each Cadet</h3>
 Open <span class="file">HOW TO MAKE MORE DRIVES.txt</span> in that folder. In short: copy this drive to a computer (all but
-<span class="file">VanguardData</span>), swap in a blank drive, and double-click <span class="file">Make a Cadet drive.bat</span>.
+<span class="file">Cadet Foundry Data</span>), swap in a blank drive, and double-click <span class="file">Make a Cadet drive.bat</span>.
 The new drive has no profiles or records on it.</div>
 
 <div class="box"><h3>📁 <span class="file">Mac and Linux</span> — not Windows</h3>
@@ -163,7 +164,7 @@ isn't needed. If Windows says <i>"Windows protected your PC"</i>, choose <b>More
 <table>
 <tr><th></th><th>Start Cadet Foundry</th><th>Start Classroom</th><th>Install …exe</th></tr>
 <tr><td>Who can use it</td><td>This computer only</td><td>This computer + Cadets' devices on the same Wi-Fi</td><td>That computer (Cadet Foundry Classroom in its Start menu)</td></tr>
-<tr><td>Where the data lives</td><td colspan="2">On this drive (<span class="file">VanguardData</span>)</td><td>On that computer</td></tr>
+<tr><td>Where the data lives</td><td colspan="2">On this drive (<span class="file">Cadet Foundry Data</span>)</td><td>On that computer</td></tr>
 <tr><td>Installs anything?</td><td colspan="2">No — runs from the drive</td><td>Yes</td></tr>
 <tr><td>Best for</td><td>Preparing, one person</td><td>Teaching a class</td><td>A computer used every day</td></tr>
 </table>
@@ -185,10 +186,10 @@ isn't needed. If Windows says <i>"Windows protected your PC"</i>, choose <b>More
 
 <h2>Your data</h2>
 <ul>
-<li>Everything — profiles, class records, lessons, settings — is in <span class="file">VanguardData</span>. Each profile is encrypted with its own PIN, and class records also need the Class PIN, so a lost drive doesn't expose anyone's data.</li>
-<li><b>Back it up:</b> copy the <span class="file">VanguardData</span> folder somewhere safe now and then.</li>
-<li><b>Move everyone to an installed computer:</b> with Cadet Foundry closed on both, copy <span class="file">VanguardData</span> into
-<code>C:\\Users\\&lt;name&gt;\\.vanguard</code> on that computer (before anyone makes profiles there — it replaces them).</li>
+<li>Everything — profiles, class records, lessons, settings — is in <span class="file">Cadet Foundry Data</span>. Each profile is encrypted with its own PIN, and class records also need the Class PIN, so a lost drive doesn't expose anyone's data.</li>
+<li><b>Back it up:</b> copy the <span class="file">Cadet Foundry Data</span> folder somewhere safe now and then.</li>
+<li><b>Move everyone to an installed computer:</b> with Cadet Foundry closed on both, copy <span class="file">Cadet Foundry Data</span> into
+<code>C:\\Users\\&lt;name&gt;\\.cadetfoundry</code> on that computer (before anyone makes profiles there — it replaces them).</li>
 <li><b>Move one person:</b> Me → <i>Download encrypted backup</i>, then restore it on the other computer.</li>
 </ul>
 
@@ -261,28 +262,39 @@ def main(argv: list[str]) -> int:
         print(f"{drive} doesn't exist. Plug in the USB drive and give its letter, e.g. E:\\")
         return 1
     model = argv[argv.index("--model") + 1] if "--model" in argv else "qwen2.5:3b"
-    app = drive / "Vanguard"
+    app = drive / "Cadet Foundry"
+    # A drive made before the rename (0.2.5): its folders move to the new names -- data, offline AI and videos kept
+    for old, new in (("Vanguard", "Cadet Foundry"), ("VanguardData", "Cadet Foundry Data")):
+        if (drive / old).is_dir() and not (drive / new).exists():
+            _retry((drive / old).rename, drive / new)
+            print(f"Renamed {old} -> {new}")
 
     print("Building the app …")
     with tempfile.TemporaryDirectory() as tmp:
-        z = Path(tmp) / "vanguard.zip"
+        z = Path(tmp) / "cadetfoundry.zip"
         build.make_zip(z)
         stage = Path(tmp) / "stage"
         with zipfile.ZipFile(z) as zf:
             zf.extractall(stage)
-        shutil.rmtree(stage / "Vanguard" / "tests", ignore_errors=True)
-        if not build.bundle_python(stage / "Vanguard"):
+        shutil.rmtree(stage / "CadetFoundry" / "tests", ignore_errors=True)
+        if not build.bundle_python(stage / "CadetFoundry"):
             print("Couldn't add Python — nothing was changed on the drive.")
             return 1
         print(f"Copying to {app} …")
         app.mkdir(parents=True, exist_ok=True)
-        for item in APP_ITEMS:                           # replace the app; never VanguardData or ollama\
+        for old in OLD_APP_ITEMS:                        # left in a drive's app folder from before the rename
+            target = app / old
+            if target.is_dir():
+                _retry(shutil.rmtree, target)
+            elif target.exists():
+                _retry(target.unlink)
+        for item in APP_ITEMS:                           # replace the app; never Cadet Foundry Data or ollama\
             target = app / item
             if target.is_dir():
                 shutil.rmtree(target)
             elif target.exists():
                 target.unlink()
-            src = stage / "Vanguard" / item
+            src = stage / "CadetFoundry" / item
             if src.is_dir():
                 _retry(shutil.copytree, src, target, dirs_exist_ok=True)
             elif src.exists():
@@ -303,7 +315,7 @@ def main(argv: list[str]) -> int:
             if (vids / "status.json").exists():
                 _retry(shutil.copy2, vids / "status.json", app / "videos" / "status.json")
 
-    # The installer and zip ride along: on the drive's root for whoever holds it, and in Vanguard\downloads so a
+    # The installer and zip ride along: on the drive's root for whoever holds it, and in Cadet Foundry\downloads so a
     # Cadet Foundry started from this drive (or a demo Pi set up from it) offers them on /download -- no internet needed.
     version = build.__version__
     setup, zipf = build.DIST / f"CadetFoundry-Setup-{version}.exe", build.DIST / f"CadetFoundry-{version}.zip"
@@ -318,7 +330,7 @@ def main(argv: list[str]) -> int:
         _retry(shutil.copy2, setup, drive / f"Install Cadet Foundry {version} on this computer.exe")
     else:
         print(f"Note: no installer for {version} in site/dist — run  python site/build.py  first to put it on the drive.")
-    (drive / "VanguardData").mkdir(exist_ok=True)
+    (drive / "Cadet Foundry Data").mkdir(exist_ok=True)
     for old in ("Start Vanguard (classroom).bat", "Start Vanguard.bat"):    # older names (0.1; before the rename)
         (drive / old).unlink(missing_ok=True)
     for name, args_ in (("Start Cadet Foundry.bat", ""), ("Start Classroom.bat", "--lan")):

@@ -7,10 +7,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-os.environ.setdefault("VANGUARD_DATA", tempfile.mkdtemp())
-os.environ["VANGUARD_NO_WARMUP"] = "1"
+os.environ.setdefault("CADETFOUNDRY_DATA", tempfile.mkdtemp())
+os.environ["CADETFOUNDRY_NO_WARMUP"] = "1"
 
-from vanguard import board, knowledge  # noqa: E402
+from cadetfoundry import board, knowledge  # noqa: E402
 
 CASES = [
     ("Which amendment gave women the right to vote?", "The 19th Amendment", "19th", "right"),

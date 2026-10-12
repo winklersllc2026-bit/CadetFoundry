@@ -3,7 +3,7 @@ Build the demo kit: a USB drive to hand over, plus everything to turn a Raspberr
 portable Cadet Foundry with its own Wi-Fi.
 
     python tools/make_demo_kit.py E:\\
-    python tools/make_demo_kit.py E:\\ --wifi-password "eagle-river-472" --ssid Cadet Foundry
+    python tools/make_demo_kit.py E:\\ --wifi-password "eagle-river-472" --ssid CadetFoundry
     python tools/make_demo_kit.py E:\\ --with-ai          (the USB also carries the offline AI for laptops)
 
 Needs Pillow and qrcode on THIS computer (python -m pip install qrcode pillow); Cadet Foundry itself needs neither.
@@ -11,7 +11,7 @@ Run  python site/build.py  first so the installer goes on the drive and onto the
 
 Adds to the drive (besides everything tools/make_usb.py puts there):
     demo/Demo-Card.html       print it: Wi-Fi name, password and address, with QR codes for phones
-    demo/vanguard-demo.conf   the Wi-Fi name and password tools/pi_setup.sh reads on the Pi
+    demo/cadetfoundry-demo.conf   the Wi-Fi name and password tools/pi_setup.sh reads on the Pi
     demo/README-PI.txt        how to set up the Pi
 """
 from __future__ import annotations
@@ -28,7 +28,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "tools"))
 import make_usb  # noqa: E402
 
-ADDRESS = "http://vanguard.lan"
+ADDRESS = "http://cadetfoundry.lan"
 FALLBACK = "http://10.42.0.1"
 WORDS = ("eagle", "river", "summit", "anchor", "harbor", "ranger", "falcon", "cedar", "valley", "compass",
          "granite", "liberty", "beacon", "meadow", "canyon", "timber", "glacier", "prairie", "orchard", "lantern")
@@ -42,13 +42,13 @@ and - once, for setup - internet for the Pi.
 1. On a computer, use Raspberry Pi Imager to write "Raspberry Pi OS Lite (64-bit)" to the microSD card.
    In Imager's settings (the gear / "Edit settings"): set a username and password, your home Wi-Fi, and turn on SSH.
 2. Put the card in the Pi and power it on. Wait two minutes for it to join your home Wi-Fi.
-3. Copy the "Vanguard" and "demo" folders from this USB drive to the Pi. From a Windows computer on the same Wi-Fi
+3. Copy the "Cadet Foundry" and "demo" folders from this USB drive to the Pi. From a Windows computer on the same Wi-Fi
    (replace pi with your username and raspberrypi with the Pi's name):
        scp -r E:\\Cadet Foundry E:\\demo pi@raspberrypi.local:~/
    (Or plug this drive into the Pi with a micro-USB OTG adapter and copy the two folders from it.)
 4. Connect to the Pi and run the setup (it asks you to choose the Instructor PIN):
        ssh pi@raspberrypi.local
-       sudo sh ~/Vanguard/tools/pi_setup.sh
+       sudo sh ~/CadetFoundry/tools/pi_setup.sh
 5. At the end the Pi switches to its own Wi-Fi network: {ssid}. From now on it starts Cadet Foundry by itself
    whenever it has power - no internet, no screen, no keyboard.
 
@@ -61,8 +61,8 @@ Using it
     data during the demo helps.
   * Visitors can download Cadet Foundry for their own computer from the sign-in screen ("Get Cadet Foundry for your own computer").
 
-Back on your home Wi-Fi (for updates):   sudo nmcli connection down vanguard-hotspot
-Demo network again:                      sudo nmcli connection up vanguard-hotspot
+Back on your home Wi-Fi (for updates):   sudo nmcli connection down cadetfoundry-hotspot
+Demo network again:                      sudo nmcli connection up cadetfoundry-hotspot
 Update Cadet Foundry on the Pi: copy a newer Cadet Foundry folder over and run pi_setup.sh again (profiles are kept).
 """
 
@@ -125,10 +125,10 @@ def main(argv: list[str]) -> int:
     # Re-running on the same drive keeps its Wi-Fi name and password (a printed card and a set-up Pi still match)
     # unless new ones are given.
     old = {}
-    conf = drive / "demo" / "vanguard-demo.conf"
+    conf = drive / "demo" / "cadetfoundry-demo.conf"
     if conf.exists():
         old = dict(re.findall(r"^(SSID|PASSWORD)='([^'\n]*)'$", conf.read_text(encoding="utf-8"), re.M))
-    ssid = opt("--ssid") or old.get("SSID") or "Vanguard"
+    ssid = opt("--ssid") or old.get("SSID") or "CadetFoundry"
     password = opt("--wifi-password") or old.get("PASSWORD") or friendly_password()
     if len(password) < 8 or any(c in password for c in "'\n\r"):
         print("The Wi-Fi password needs at least 8 characters (and no quote marks).")
@@ -142,7 +142,7 @@ def main(argv: list[str]) -> int:
 
     demo = drive / "demo"
     demo.mkdir(exist_ok=True)
-    (demo / "vanguard-demo.conf").write_bytes(f"SSID='{ssid}'\nPASSWORD='{password}'\n".encode("utf-8"))
+    (demo / "cadetfoundry-demo.conf").write_bytes(f"SSID='{ssid}'\nPASSWORD='{password}'\n".encode("utf-8"))
     (demo / "Demo-Card.html").write_text(card(ssid, password), encoding="utf-8")
     (demo / "README-PI.txt").write_bytes(README_PI.format(ssid=ssid, password=password, address=ADDRESS,
                                                           fallback=FALLBACK).replace("\n", "\r\n").encode("utf-8"))

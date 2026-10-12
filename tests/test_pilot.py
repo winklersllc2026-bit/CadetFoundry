@@ -11,11 +11,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-os.environ.setdefault("VANGUARD_DATA", tempfile.mkdtemp())
-os.environ["VANGUARD_NO_WARMUP"] = "1"
+os.environ.setdefault("CADETFOUNDRY_DATA", tempfile.mkdtemp())
+os.environ["CADETFOUNDRY_NO_WARMUP"] = "1"
 
-from vanguard import profiles, security, store, vault  # noqa: E402
-from vanguard.server import serve  # noqa: E402
+from cadetfoundry import profiles, security, store, vault  # noqa: E402
+from cadetfoundry.server import serve  # noqa: E402
 
 ADMIN = "905172"
 PILOT_FILES = ("pilot.json", "pilot_snapshots.json", "feedback_cadets.json", "feedback_instructor.json")

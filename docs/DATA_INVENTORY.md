@@ -4,7 +4,7 @@ Last reviewed: 2026-10-11 (security review, Phase 2). This lists every file Cade
 sensitive it is, how it's protected at rest, and who can read it. It also states the limits plainly. Encryption at
 rest and access control are separate things; both are listed for each file.
 
-All data lives in one folder: `%USERPROFILE%\.vanguard` on an installed computer, or `VanguardData\` on a USB drive.
+All data lives in one folder: `%USERPROFILE%\.cadetfoundry` on an installed computer, or `Cadet Foundry Data\` on a USB drive.
 Nothing is sent anywhere unless the instructor turns on online AI with their own key (see "Leaving the device").
 
 ## Keys
@@ -61,7 +61,7 @@ computer.
 | `program.json` | Program public key; private key wrapped by the Class PIN | Wrapped only |
 | `config.json` | Device settings (AI mode, Learn categories, online-AI keys if the instructor added any) | Plain — **online-AI keys, if entered, are stored here in plain text** |
 | `library_index.json` | Search index of the public library | Not personal |
-| `vanguard.log` | Startup messages for the installed app (no requests, PINs or answers are logged) | Plain |
+| `cadetfoundry.log` | Startup messages for the installed app (no requests, PINs or answers are logged) | Plain |
 
 ## Backups and exports
 

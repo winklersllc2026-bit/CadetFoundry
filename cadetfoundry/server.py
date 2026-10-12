@@ -1,0 +1,1463 @@
+"""
+Cadet Foundry's local web server (Python standard library only -- runs anywhere,
+including a Raspberry Pi with no internet).
+
+Listens only on this device (127.0.0.1) by default. `--lan` lets other devices on
+the same Wi-Fi reach it, and is only allowed when a PIN is set.
+
+Every request goes through security checks (cadetfoundry/security.py): the Host must
+be Cadet Foundry's own address, cross-site requests are refused, commands must be JSON,
+and when a PIN is set everything except the lock screen needs an unlocked session.
+"""
+from __future__ import annotations
+
+import base64
+import binascii
+import html
+import json
+import mimetypes
+import re
+import os
+import shutil
+import threading
+import time
+import urllib.parse
+from http import HTTPStatus
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+
+from cadetfoundry import (addons, asvab, backup, videos, board, books, careers, daily, engine, exam, fitness, instructor, integrity, knowledge,
+                      lessons, letters, network, live_quiz, pay, pilot, profiles, program_backup, progress, quiz_edits, reports, scenarios, security, service, store, train, voice)
+from cadetfoundry import __version__, sample, terms
+from cadetfoundry.brain import Brain
+from cadetfoundry.faith import Faith
+from cadetfoundry.knowledge import Library
+
+WEB = (Path(__file__).parent.parent / "web").resolve()
+# Installers a demo box or USB drive hands out on its own network (tools/make_usb.py fills it): public, read-only.
+DOWNLOADS = Path(os.environ.get("CADETFOUNDRY_DOWNLOADS") or (Path(__file__).parent.parent / "downloads")).resolve()
+DOWNLOAD_TYPES = {".exe": "application/octet-stream", ".zip": "application/zip", ".sig": "text/plain",
+                  ".pdf": "application/pdf", ".txt": "text/plain"}
+mimetypes.add_type("application/manifest+json", ".webmanifest")
+PUBLIC_GET = {"/", "/index.html", "/icon.svg", "/api/lock",       # the app shell: installable before sign-in
+              "/join", "/api/classroom", "/api/join-code", "/api/sample/status", "/api/legal",    # the class Join screen and its QR code (no names, no records)
+              "/manifest.webmanifest", "/icon-192.png", "/icon-512.png", "/icon-maskable-512.png", "/apple-touch-icon.png"}       # reachable while locked (plus the page's scripts in /js/)
+PUBLIC_POST = {"/api/unlock", "/api/profiles/create", "/api/recover",
+               "/api/sample/start", "/api/sample/enter", "/api/sample/leave",   # the sample class: this computer only
+               "/api/terms/accept",                                         # first-run setup: the "I agree" box
+               "/api/quit"}                 # End class on the Join screen: this computer (or an instructor) only
+
+
+
+def _short_name(name: str) -> str:
+    """'Ana Rivera' -> 'Ana R.'; one word stays as it is (it's already what the person chose to show)."""
+    parts = (name or "").split()
+    return f"{parts[0]} {parts[-1][0]}." if len(parts) > 1 else (name or "")
+
+
+def _download_files() -> list[Path]:
+    try:
+        return sorted(f for f in DOWNLOADS.iterdir() if f.is_file() and f.suffix.lower() in DOWNLOAD_TYPES)
+    except OSError:
+        return []
+
+
+class App:
+    def __init__(self, port: int, lan: bool):
+        self.library = Library(cache_dir=store.DATA)
+        self.faith = Faith()
+        self.brain = Brain(self.library, self.faith)
+        self.lock = threading.Lock()
+        self.integrity = integrity.check_library(self.library.library_dir)   # tamper check at startup
+        self.port = port
+        self.lan = lan
+
+
+class Handler(BaseHTTPRequestHandler):
+    app: App = None  # set in serve()
+    server_version = "CadetFoundry"
+    sys_version = ""
+
+    def log_message(self, fmt, *args):      # quiet console
+        pass
+
+    # ── responses ───────────────────────────────────────────────────────────
+    def _headers(self, status: int, ctype: str, length: int, extra: dict | None = None) -> None:
+        self.send_response(status)
+        self.send_header("Content-Type", ctype)
+        self.send_header("Content-Length", str(length))
+        self.send_header("Cache-Control", "no-store")
+        for k, v in security.SECURITY_HEADERS.items():
+            self.send_header(k, v)
+        for k, v in (extra or {}).items():
+            self.send_header(k, v)
+        self.end_headers()
+
+    def _json(self, value, status: int = 200, extra: dict | None = None) -> None:
+        body = json.dumps(value, ensure_ascii=False).encode("utf-8")
+        self._headers(status, "application/json; charset=utf-8", len(body), extra)
+        self.wfile.write(body)
+
+    def _deny(self, status: int, msg: str) -> None:
+        # Read (and throw away) an unread request body first: answering before it's read makes some
+        # systems (Windows) reset the connection, so the refusal wouldn't arrive cleanly.
+        if not self._body_read:
+            self._body_read = True
+            try:
+                n = int(self.headers.get("Content-Length") or 0)
+                if 0 < n <= 25_000_000:
+                    self.rfile.read(n)
+            except (ValueError, OSError):
+                pass
+        self.close_connection = True
+        self._json({"error": msg}, status)
+
+    # ── request parsing ─────────────────────────────────────────────────────
+    def _body(self) -> dict:
+        self._body_read = True
+        try:
+            n = int(self.headers.get("Content-Length") or 0)
+        except ValueError:
+            return {}
+        if n <= 0 or n > 25_000_000:
+            return {}
+        try:
+            data = json.loads(self.rfile.read(n).decode("utf-8"))
+            return data if isinstance(data, dict) else {}
+        except Exception:
+            return {}
+
+    def _query(self) -> dict:
+        return {k: v[0] for k, v in urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query).items()}
+
+    def _route(self) -> str:
+        return urllib.parse.urlparse(self.path).path
+
+    def _token(self) -> str | None:
+        return security.token_from_cookie(self.headers.get("Cookie"))
+
+    _ctx = None
+    _kctx = None
+    _cctx = None
+    _catctx = None
+    _pid = None
+    _body_read = False
+
+    def _checks(self, method: str, route: str) -> bool:
+        """Common security checks. Sends the refusal itself and returns False when a request is refused.
+        On success, the request runs with the session's profile as the only reachable data folder."""
+        self._ctx, self._kctx, self._cctx, self._pid, self._body_read = None, None, None, None, False
+        self._catctx = None
+        if sample.ACTIVE:
+            sample.touch()
+        host = self.headers.get("Host")
+        if not security.host_ok(host, self.app.port, self.app.lan, self._server_ip()):
+            self._deny(421, "Wrong host.")                  # DNS-rebinding protection
+            return False
+        if not security.origin_ok(self.headers.get("Origin"), host):
+            self._deny(403, "Cross-site request refused.")  # other websites can't command Cadet Foundry
+            return False
+        if method == "POST" and not (self.headers.get("Content-Type") or "").startswith("application/json"):
+            self._deny(415, "Requests must be JSON.")       # forces browsers to preflight, which Cadet Foundry refuses
+            return False
+        pid = security.session_profile(self._token())
+        public = PUBLIC_GET if method == "GET" else PUBLIC_POST
+        if (route not in public and not pid and not (method == "GET" and route.startswith("/js/") and route.endswith(".js"))
+                and not (method == "GET" and (route == "/download" or route.startswith("/downloads/")))):
+            self._deny(401, "Locked.")
+            return False
+        if pid:
+            self._pid = pid
+            self._ctx = store.use_profile(profiles.folder(pid))
+            self._kctx = store.use_key(security.session_key(self._token()))   # decrypts this profile only
+            self._cctx = store.use_class_key(security.session_class_key(self._token()))
+            # which study-card categories this profile may see -- applied to quizzes, Daily 10, exams, Ask, lists
+            try:
+                cats = store.visible_categories((profiles.get(pid) or {}).get("kind", "cadet"))
+            except Exception:                            # a profile that can't be read yet sees the safe default
+                cats = [c for c in store.categories_enabled() if c != "basic"]
+            self._catctx = knowledge.use_categories(cats)
+        return True
+
+    def _done(self) -> None:
+        if self._catctx is not None:
+            knowledge.reset_categories(self._catctx)
+            self._catctx = None
+        if self._cctx is not None:
+            store.reset_class_key(self._cctx)
+            self._cctx = None
+        if self._kctx is not None:
+            store.reset_key(self._kctx)
+            self._kctx = None
+        if self._ctx is not None:
+            store.reset_profile(self._ctx)
+            self._ctx = None
+
+    # ── methods ─────────────────────────────────────────────────────────────
+    def do_OPTIONS(self):                       # no CORS: cross-site preflights always fail
+        self._deny(405, "Not allowed.")
+
+    def do_PUT(self):
+        self._deny(405, "Not allowed.")
+
+    do_DELETE = do_PATCH = do_PUT
+
+    def do_GET(self):
+        r = self._route()
+        if not self._checks("GET", r):
+            return
+        try:
+            self._get(r)
+        finally:
+            self._done()
+
+    def _file_joins(self, priv: bytes) -> None:
+        """Cadets who joined with a code since the class records were last open: into the roster now."""
+        for pid in instructor.apply_joins(priv):
+            lessons.sync_cadet(priv, pid)
+
+    def _server_ip(self) -> str | None:
+        """This computer's address that the device connected to (for the Host check)."""
+        try:
+            return self.connection.getsockname()[0]
+        except OSError:
+            return None
+
+    def _local(self) -> bool:
+        """The request comes from this computer (not another device on the classroom network)."""
+        return self.client_address[0] in ("127.0.0.1", "::1", "::ffff:127.0.0.1")
+
+    def _device_admin(self, b: dict) -> str | None:
+        """Device-wide changes (AI mode, the Class PIN, updates, add-ons, library reload): None if allowed, else why
+        not. Once a Class PIN exists, only an instructor profile may try it here -- a Cadet's guesses never reach
+        check_admin, so a Cadet can't lock the instructor out with wrong PINs. Before any Class PIN exists, only this
+        computer (the first-run setup), never a device on the network."""
+        if sample.ACTIVE:
+            return "This is the sample class: device settings can't be changed here."
+        if not security.admin_set():
+            return None if self._local() else "Set up Cadet Foundry on the instructor's computer first."
+        if (profiles.get(self._pid or "") or {}).get("kind") != "instructor":
+            return "Only an instructor can change this."
+        return security.check_admin(str(b.get("admin", ""))[:32])
+
+    def _program_key(self) -> bytes | None:
+        """The program private key -- only in an instructor profile's session after the Instructor PIN."""
+        if (profiles.get(self._pid or "") or {}).get("kind") != "instructor":
+            return None
+        return security.session_program_key(self._token())
+
+    _MODULE_ROUTES = (("faith", ("/api/faith/",)), ("letters", ("/api/letters", "/api/contacts")),
+                      ("voice", ("/api/voice",)))
+
+    def _module_off(self, r: str) -> bool:
+        """A tool the instructor switched off for this device: its routes are refused, not just hidden."""
+        return any(r.startswith(prefixes) and not store.module_on(m) for m, prefixes in self._MODULE_ROUTES)
+
+    def _download_page(self):
+        """The installers on this box, for visitors to take Cadet Foundry home -- no internet needed."""
+        esc = html.escape
+        rows = "".join(f'<li><a href="/downloads/{urllib.parse.quote(f.name)}">{esc(f.name)}</a> '
+                       f'<span>({f.stat().st_size / 2**20:.1f} MB)</span></li>' for f in _download_files())
+        page = f"""<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Get Cadet Foundry</title>
+<style>body{{margin:0;background:#0f120e;color:#ece6d6;font:17px/1.55 system-ui,sans-serif}} .w{{max-width:640px;margin:0 auto;padding:24px 16px}}
+a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</style></head><body><div class="w">
+<h1>Get Cadet Foundry for your computer</h1>
+<p>Download straight from this Cadet Foundry — no internet needed.</p><ul>{rows or '<li>No downloads on this device.</li>'}</ul>
+<p><b>Windows:</b> the <i>Setup</i> file. If Windows says "Windows protected your PC", choose <i>More info → Run anyway</i>.<br>
+<b>Linux, Mac or Raspberry Pi:</b> the zip — unzip it and run <code>sh install-cadetfoundry.sh</code>.</p>
+<p><a href="/">← Back to Cadet Foundry</a></p></div></body></html>"""
+        data = page.encode("utf-8")
+        self._headers(200, "text/html; charset=utf-8", len(data))
+        self.wfile.write(data)
+
+    def _download_file(self, r: str):
+        name = urllib.parse.unquote(r[len("/downloads/"):])
+        f = next((x for x in _download_files() if x.name == name), None)      # only files listed, never a path
+        if not f:
+            return self._deny(404, "Not found.")
+        self._headers(200, DOWNLOAD_TYPES[f.suffix.lower()], f.stat().st_size,
+                      extra={"Content-Disposition": f'attachment; filename="{f.name}"'})
+        with f.open("rb") as fh:
+            shutil.copyfileobj(fh, self.wfile, 1 << 20)
+
+    def _video(self, name: str):
+        f = videos.path_for_request(name)
+        if not f:
+            return self._deny(404, "Not found.")
+        size = f.stat().st_size
+        start, end = 0, size - 1
+        rng = re.match(r"bytes=(\d*)-(\d*)$", self.headers.get("Range") or "")
+        if rng and (rng.group(1) or rng.group(2)):
+            if rng.group(1):
+                start = int(rng.group(1))
+                end = min(int(rng.group(2)), size - 1) if rng.group(2) else size - 1
+            else:                                        # "bytes=-500": the last 500 bytes
+                start = max(0, size - int(rng.group(2)))
+            if start > end or start >= size:
+                return self._headers(416, "text/plain", 0, {"Content-Range": f"bytes */{size}"})
+        part = bool(rng and (rng.group(1) or rng.group(2)))
+        length = end - start + 1
+        extra = {"Accept-Ranges": "bytes"}
+        if part:
+            extra["Content-Range"] = f"bytes {start}-{end}/{size}"
+        self._headers(206 if part else 200, "video/mp4", length, extra)
+        with f.open("rb") as fh:
+            fh.seek(start)
+            left = length
+            while left > 0:
+                chunk = fh.read(min(1 << 20, left))
+                if not chunk:
+                    break
+                try:
+                    self.wfile.write(chunk)
+                except (BrokenPipeError, ConnectionResetError):   # the player jumped elsewhere
+                    return None
+                left -= len(chunk)
+        return None
+
+    def _get(self, r: str):
+        q, app = self._query(), self.app
+        if r == "/download":
+            return self._download_page()
+        if r.startswith("/downloads/"):
+            return self._download_file(r)
+        if self._module_off(r):
+            return self._json({"error": "Your instructor has turned this tool off."}, 403)
+        if r.startswith("/api/instructor/"):            # instructor only: profile role + Instructor PIN this session
+            priv = self._program_key()
+            if not priv:
+                return self._json({"error": "Instructor only. Open Instructor and enter the Class PIN."}, 403)
+            self._file_joins(priv)
+            if r == "/api/instructor/overview":
+                return self._json({**instructor.overview(priv), "me": self._pid})
+            if r == "/api/instructor/scenarios":
+                cadets = [p for p in profiles.all_profiles() if p["kind"] == "cadet"]
+                logs = {p["id"]: instructor.read_class_file(priv, p["id"], "scenarios.jsonl", []) for p in cadets}
+                return self._json({"scenarios": [{**scenarios.summary(s), "text": scenarios.to_text(s),
+                                                  "debrief": scenarios.debrief(s),     # instructor's screen only
+                                                  "done": sum(1 for L in logs.values() for e in (L or []) if e.get("scenario") == s["id"])}
+                                                 for s in scenarios.all_scenarios()],
+                                   "cadets": [{"id": p["id"], "name": p["name"], "count": len(logs[p["id"]] or []),
+                                               "shared": logs[p["id"]] is not None} for p in cadets]})
+            if r == "/api/instructor/leadership-log":
+                pid = str(q.get("id", ""))[:12]
+                if (profiles.get(pid) or {}).get("kind") != "cadet":
+                    return self._json({"error": "No such Cadet."}, 404)
+                log = instructor.read_class_file(priv, pid, "scenarios.jsonl", [])
+                return self._json({"shared": log is not None, "entries": list(reversed(log or []))})
+            if r == "/api/instructor/quiz":
+                c = app.library.card(str(q.get("card", ""))[:60])
+                if not c:
+                    return self._json({"cards": [{"id": x.id, "title": x.title, "category": x.category, "questions": len(x.quiz)}
+                                                 for x in app.library.cards if x.quiz]})
+                edits = quiz_edits.overrides()
+                return self._json({"card": {"id": c.id, "title": c.title, "source": c.source},
+                                   "questions": [{"id": f"{c.id}#{i}", "q": qq, "a": aa, "edit": edits.get(f"{c.id}#{i}", {})}
+                                                 for i, (qq, aa) in enumerate(c.quiz)]})
+            if r == "/api/instructor/dashboard":
+                unit = str(q.get("unit", ""))[:10]
+                if unit == "mine":                       # "My Cadets": the units this instructor teaches
+                    dash = reports.dashboard(priv, app.library, owner=self._pid)
+                else:
+                    dash = reports.dashboard(priv, app.library, unit)
+                if not q.get("unit") and pilot.config(priv).get("start"):
+                    pilot.take_snapshot(priv, dash)            # about weekly during a pilot: change over time
+                return self._json(dash)
+            if r == "/api/instructor/pilot":
+                return self._json({**pilot.report(priv, reports.dashboard(priv, app.library)), "survey": pilot.SURVEY,
+                                   "scale": pilot.SCALE, "stored": pilot.stored(priv)})
+            if r == "/api/instructor/report.csv":       # an explicit export, only for the instructor
+                unit = str(q.get("unit", ""))[:10]
+                rows = (reports.cadet_rows(priv, app.library, owner=self._pid) if unit == "mine"
+                        else reports.cadet_rows(priv, app.library, unit))
+                body = reports.to_csv(rows).encode("utf-8-sig")
+                self._headers(200, "text/csv; charset=utf-8", len(body), {
+                    "Content-Disposition": f'attachment; filename="cadetfoundry-class-report-{time.strftime("%Y-%m-%d")}.csv"'})
+                self.wfile.write(body)
+                return
+            if r == "/api/instructor/progress":
+                pid = str(q.get("id", ""))[:12]
+                p = profiles.get(pid)
+                if (p or {}).get("kind") != "cadet":
+                    return self._json({"error": "No such Cadet."}, 404)
+                ck, status = instructor.class_key(priv, pid)
+                if status == "waiting":
+                    return self._json({"name": p["name"], "status": status})
+                with security.as_profile(pid, None, ck):
+                    return self._json({"name": p["name"], "status": status, **progress.portfolio(app.library, pid),
+                                       "sections": progress.portfolio_sections(), "section_names": progress.SECTIONS,
+                                       "kinds": progress.KINDS})
+            if r == "/api/instructor/service":
+                cadets = []
+                for p in profiles.all_profiles():
+                    if p["kind"] != "cadet":
+                        continue
+                    rows = instructor.read_class_file(priv, p["id"], "service.jsonl", [])
+                    cadets.append({"id": p["id"], "name": p["name"], "shared": rows is not None,
+                                   "entries": sorted(rows or [], key=lambda r: (r["date"], r["id"]), reverse=True),
+                                   "totals": service.totals(rows or [])})
+                return self._json({"cadets": cadets, "projects": service.projects(),
+                                   "pending": sum(1 for c in cadets for e in c["entries"] if e.get("status") == "pending")})
+            if r == "/api/instructor/train":
+                out = []
+                for p in profiles.all_profiles():
+                    if p["kind"] != "cadet":
+                        continue
+                    rows = instructor.read_class_file(priv, p["id"], "fitness.jsonl", [])
+                    goals = instructor.read_class_file(priv, p["id"], "goals.json", {}) or {}
+                    out.append({"id": p["id"], "name": p["name"], "shared": rows is not None,
+                                "events": [train.stats(e, rows or [], goals.get(e["id"])) for e in train.events()]})
+                return self._json({"events": train.events(), "units": train.UNITS, "cadets": out})
+            if r == "/api/instructor/live":
+                return self._json(scenarios.live_for_instructor())
+            if r == "/api/instructor/live-quiz":
+                return self._json(live_quiz.for_instructor())
+            if r == "/api/instructor/lessons":
+                return self._json({**lessons.for_instructor(priv), "starters": lessons.starter_list(app.library)})
+            if r == "/api/instructor/assignment":
+                try:
+                    return self._json(lessons.details(priv, str(q.get("id", ""))[:12]))
+                except ValueError as e:
+                    return self._json({"error": str(e)}, 404)
+            if r == "/api/instructor/cadet":
+                pid = str(q.get("id", ""))[:12]
+                if (profiles.get(pid) or {}).get("kind") != "cadet":
+                    return self._json({"error": "No such Cadet."}, 404)
+                return self._json(instructor.records(priv, pid))
+        if r == "/api/pilot/survey":
+            if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
+                return self._json({"open": False})
+            return self._json(pilot.survey_status())
+        if r == "/api/progress":
+            p = profiles.get(self._pid or "") or {}
+            if p.get("kind") != "cadet":
+                return self._json({"not_cadet": True})
+            return self._json({"name": p["name"], **progress.portfolio(app.library, self._pid),
+                               "sections": progress.portfolio_sections(), "section_names": progress.SECTIONS,
+                               "kinds": progress.KINDS})
+        if r == "/api/service":
+            if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
+                return self._json({"entries": [], "totals": service.totals([]), "projects": service.projects(),
+                                   "not_cadet": True})
+            return self._json(service.mine())
+        if r == "/api/train":
+            if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
+                return self._json({"events": [], "units": train.UNITS, "not_cadet": True})
+            return self._json(train.my_train())
+        if r == "/api/scenarios":
+            done = {}
+            if (profiles.get(self._pid or "") or {}).get("kind") == "cadet":
+                for e in scenarios.my_log():
+                    done[e["scenario"]] = done.get(e["scenario"], 0) + 1
+            return self._json({"scenarios": [{**scenarios.summary(s), "done": done.get(s["id"], 0)}
+                                             for s in scenarios.all_scenarios()]})
+        if r == "/api/scenario":
+            try:
+                return self._json(scenarios.for_cadet(scenarios.get(str(q.get("id", ""))[:40])))
+            except LookupError as e:
+                return self._json({"error": str(e)}, 404)
+        if r == "/api/leadership-log":
+            return self._json({"entries": scenarios.my_log()})
+        if r == "/api/live":
+            return self._json(scenarios.live_for_cadet(self._pid or ""))
+        if r == "/api/live/quiz":                       # the live pop quiz: never the answer before the reveal
+            if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
+                return self._json({})
+            return self._json(live_quiz.for_cadet(self._pid))
+        if r == "/api/lessons":                          # the signed-in Cadet's own assignments
+            if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
+                return self._json({"assignments": []})
+            return self._json({"assignments": lessons.my_assignments(self._pid)})
+        if r == "/api/lesson":
+            try:
+                return self._json(lessons.open_lesson(self._pid or "", str(q.get("a", ""))[:12]))
+            except LookupError as e:
+                return self._json({"error": str(e)}, 404)
+        if r == "/api/legal":                            # the Terms of use and Privacy notice, readable before setup
+            doc = terms.text(str(q.get("doc", "")))
+            return self._json({"version": terms.VERSION, "text": doc} if doc else {"error": "No such document."},
+                              200 if doc else 404)
+        if r == "/api/sample/status":                    # is the sample class built yet? (no names, no records)
+            return self._json(sample.status())
+        if r == "/join":                                 # the class Join screen (a QR code for the projector)
+            return self._static("/join.html")
+        if r == "/api/classroom":
+            # What the Join screen shows: the addresses Cadets open. Join codes only for an instructor with the class
+            # records open (the screen is projected; a code puts a new Cadet in that unit).
+            out = {"lan": app.lan, "urls": network.class_urls(app.port) if app.lan else [],
+                   "local": self._local(), "cadets": sum(1 for p in profiles.all_profiles() if p["kind"] == "cadet")}
+            if self._local() and app.lan:                # the instructor sees which profiles phones can't open yet
+                out["no_pin"] = [p["name"] for p in profiles.all_profiles() if not security.has_pin(p["id"])]
+            priv = self._program_key()
+            if priv:
+                self._file_joins(priv)
+                ov = instructor.overview(priv)
+                mine = [u for u in ov["units"] if u.get("owner") == self._pid]
+                out["units"] = [{"id": u["id"], "name": u["name"], "code": u["code"]} for u in (mine or ov["units"])]
+            elif self._local():
+                # Start Classroom opens the Join screen before anyone signs in: on the instructor's own computer it
+                # still shows the classes' join codes (the plain list a signed-in instructor published); never to
+                # other devices on the network.
+                out["units"] = [{"id": v["unit"], "name": v["name"], "code": code}
+                                for code, v in sorted(instructor.join_codes().items(), key=lambda kv: kv[1]["name"])]
+            return self._json(out)
+        if r == "/api/join-code":                        # the signup form names the unit a code joins
+            u = instructor.unit_for_code(q.get("c", ""))
+            return self._json({"name": u["name"]} if u else {})
+        if r == "/api/lock":
+            # Before sign-in, other devices on the classroom network see shortened names ("Ana R."), never full names.
+            short = self.app.lan and not self._local() and not self._pid
+            remote = self.app.lan and not self._local()      # other devices don't see profiles they can't open
+            out = {"profiles": [{"id": p["id"], "name": _short_name(p["name"]) if short else p["name"], "kind": p["kind"],
+                                 "has_pin": security.has_pin(p["id"]),
+                                 "lockout": security.lockout_remaining(p["id"])} for p in profiles.all_profiles()
+                                if not (remote and not security.has_pin(p["id"]))],
+                   "unlocked": bool(self._pid), "admin_set": security.admin_set(),
+                   "on_this_computer": self._local(), "demo": bool(store.config().get("demo")), "lan": self.app.lan, "instance": store.data_id(),
+                   "sample": sample.ACTIVE, "sample_back": sample.BACK if sample.ACTIVE else "",
+                   "terms_ok": terms.accepted() or sample.ACTIVE, "terms_version": terms.VERSION,
+                   "downloads": bool(_download_files())}
+            if self._pid:
+                cur = profiles.get(self._pid)
+                out.update({"current": {"id": cur["id"], "name": cur["name"], "joined": cur.get("joined", "")}, "pin_set": security.pin_set(),
+                            "idle_minutes": security.idle_minutes(),
+                            "encrypted": security.session_key(self._token()) is not None,
+                            "has_recovery": security.has_recovery(), "admin_set": security.admin_set()})
+            return self._json(out)
+        if r == "/api/status":
+            return self._json({"engine": engine.status(), "library": app.library.stats(),
+                               "profile": store.profile(), "grades": store.GRADES, "interests": store.INTERESTS, "log_kinds": store.LOG_KINDS,
+                               "lan": app.lan, "sample": sample.ACTIVE, "version": __version__, "voice": voice.available() and store.module_on("voice"),
+                               "modules_off": [m for m in store.MODULES if not store.module_on(m)],
+                               "ai_mode": store.ai_mode(), "library_only": store.ai_mode() == "off",
+                               "services": knowledge.SERVICES,
+                               "categories": {c: knowledge.CATEGORIES[c] for c in store.visible_categories(
+                                   (profiles.get(self._pid) or {}).get("kind", "cadet"))},
+                               "categories_enabled": store.categories_enabled(),
+                               "program": store.program(), "level_label": store.level_label(),
+                               "programs": {k: v[0] for k, v in store.PROGRAMS.items()},
+                               "cadet_title": instructor.cadet_title(self._pid or "")
+                               if (profiles.get(self._pid or "") or {}).get("kind") == "cadet" else {},
+                               "kind": (profiles.get(self._pid) or {}).get("kind", "cadet")})
+        if r == "/api/topics":
+            prog = app.brain.progress()
+            return self._json([{"topic": t, "cards": [{"id": c.id, "title": c.title, "questions": len(c.quiz),
+                                                       "category": c.category, "service": c.service} for c in cs],
+                                "progress": prog.get(t, {"known": 0, "total": 0})}
+                               for t, cs in app.library.topics().items()])
+        if r == "/api/card":
+            c = app.library.card(q.get("id", ""))
+            return self._json({"id": c.id, "title": c.title, "topic": c.topic, "category": c.category, "service": c.service,
+                               "source": c.source, "body": c.body,
+                               "verified": c.verified,
+                               "quiz": [{"q": a, "a": b} for a, b in c.quiz]} if c else {"error": "not found"},
+                              200 if c else 404)
+        if r == "/api/quiz":
+            try:
+                n = max(1, min(50, int(q.get("n", "10") or 10)))
+            except ValueError:
+                n = 10
+            # questions only: the answer is revealed after the Cadet answers (POST /api/quiz/answer)
+            return self._json(app.brain.for_screen(app.brain.quiz(q.get("topic", ""), n), q.get("mode", "")))
+        if r == "/api/log":
+            return self._json(store.log_entries())
+        if r == "/api/memory":
+            return self._json(store.memories())
+        if r == "/api/addons":
+            return self._json(addons.status())
+        if r == "/api/history":
+            return self._json(store.history())
+        if r == "/api/chats":
+            return self._json(store.chat_list())
+        if r == "/api/letters":
+            return self._json({"contacts": letters.contacts(), "letters": letters.letters()})
+        if r == "/api/daily":
+            return self._json({"status": daily.daily_status(),
+                               "questions": app.brain.for_screen(daily.daily_questions(app.brain), q.get("mode", ""))})
+        if r == "/api/checkin":
+            return self._json({"rows": daily.checkins()[:30], "concern": daily.concern(), "sleep": daily.sleep_summary(),
+                               "support": daily.support(), "roles": daily.SUPPORT_ROLES})
+        if r == "/api/support":
+            return self._json(daily.support())
+        if r == "/api/pcs":
+            return self._json(daily.pcs())
+        if r == "/api/bct":
+            return self._json(daily.bct())
+        if r == "/api/integrity":
+            return self._json({**app.integrity, "version": integrity.current_version(),
+                               "update_key": integrity.PUBLIC_KEY.exists()})
+        if r == "/api/packet":                          # everything for a printed board / counseling packet
+            rows = store.log_entries()
+            return self._json({"profile": store.profile(), "log": rows, "aft": fitness.history(rows),
+                               "exams": exam.history(), "made": time.strftime("%Y-%m-%d")})
+        if r == "/api/exam/history":
+            return self._json(exam.history())
+        if r == "/api/leave":
+            return self._json(daily.leave_summary())
+        if r == "/api/budget":
+            return self._json(daily.budget())
+        if r == "/api/pay":
+            t = pay.tables()
+            return self._json({"grades": pay.grades(), "effective": sorted(set(t.get("effective", {}).values())),
+                               "bas_effective": (t.get("bas") or {}).get("effective", "")})
+        if r == "/api/les":
+            return self._json(pay.les_fields())
+        if r == "/api/aft/plan":
+            return self._json(fitness.plan(store.log_entries()))
+        if r == "/api/aft":
+            return self._json({"events": [{"id": e, "help": fitness.EVENT_HELP[e]} for e in fitness.EVENT_ORDER],
+                               "note": fitness.STANDARD_NOTE, "source": fitness.score_test({}, 17, "M")["source"]})
+        if r == "/api/faith/plans":
+            return self._json(daily.plans(app.faith))
+        if r == "/api/faith/plan":
+            day = q.get("day")
+            preferred = [x for x in (store.profile().get("faith_texts") or "").split(",") if x]
+            return self._json(daily.plan_day(app.faith, q.get("id", ""), int(day) if day and day.isdigit() else None, preferred))
+        if r == "/api/jobs":
+            scores = {}                                  # a Cadet's own official line scores (never stored)
+            for name in careers.LINE_SCORES:
+                v = str(q.get(name.lower(), "")).strip()
+                if v.isdigit() and 0 < int(v) <= 99:
+                    scores[name] = int(v)
+            return self._json(careers.search(app.library.library_dir, q.get("q", "")[:100], q.get("area", "")[:60],
+                                             service=str(q.get("service", ""))[:20], scores=scores,
+                                             only_meets=q.get("meets") == "1"))
+        if r == "/api/asvab":                            # ASVAB practice: sections and this profile's results
+            return self._json({"sections": asvab.SECTIONS, "order": asvab.ORDER, "history": asvab.history()})
+        if r == "/api/videos":                           # official videos: saved DVIDS files and YouTube links
+            return self._json(videos.listing())
+        if r.startswith("/videos/"):                     # a saved video, with seeking (HTTP range requests)
+            return self._video(r[len("/videos/"):])
+        if r == "/api/books":                            # free, public-domain books on this device
+            return self._json(books.shelf())
+        if r == "/api/books/read":
+            try:
+                return self._json(books.read(q.get("id", "")[:40], int(q.get("ch", "0") or 0)))
+            except ValueError as e:
+                return self._json({"error": str(e)}, 404)
+        if r == "/api/books/search":
+            return self._json({"hits": books.search(q.get("q", "")[:120])})
+        if r == "/api/faith/catalog":
+            return self._json({"installed": app.faith.catalog})
+        if r == "/api/faith/lookup":
+            ids = [x for x in q.get("ids", "").split(",") if x]
+            return self._json(app.faith.lookup(q.get("ref", "")[:200], ids, compare=q.get("compare") == "1"))
+        if r == "/api/faith/search":
+            ids = [x for x in q.get("ids", "").split(",") if x]
+            return self._json(app.faith.search(q.get("q", "")[:200], ids))
+        if r == "/api/search":
+            try:
+                k = max(1, min(25, int(q.get("k", "8") or 8)))
+            except ValueError:
+                k = 8
+            hits = app.library.search(q.get("q", "")[:500], k=k)
+            touched = set(app.integrity.get("changed", []))
+            return self._json([{"source": p.source, "where": p.where, "text": p.text, "score": round(s, 2),
+                                 "edition": app.library.edition(p.source),
+                                 "changed": any(p.source.endswith(f"({n})") for n in touched)} for s, p in hits])
+        return self._static(r)
+
+    def _static(self, r: str):
+        name = "index.html" if r in ("/", "") else r.lstrip("/")
+        path = (WEB / name).resolve()
+        if not path.is_relative_to(WEB) or not path.is_file():   # no path traversal
+            return self._deny(404, "Not found.")
+        data = path.read_bytes()
+        ctype = (mimetypes.guess_type(str(path))[0] or "application/octet-stream")
+        if path.suffix in (".html", ".js", ".css"):
+            ctype += "; charset=utf-8"
+        self._headers(200, ctype, len(data))
+        self.wfile.write(data)
+
+    def do_POST(self):
+        r = self._route()
+        if not self._checks("POST", r):
+            return
+        try:
+            self._post(r)
+        finally:
+            self._done()
+
+    def _post(self, r: str):
+        app, b = self.app, self._body()
+        if self._module_off(r):
+            return self._json({"error": "Your instructor has turned this tool off."}, 403)
+        if r == "/api/unlock":
+            pid = str(b.get("profile", ""))[:12]
+            if self.app.lan and not self._local() and profiles.get(pid) and not security.has_pin(pid):
+                # a profile with no PIN is open to anyone who taps it: on the classroom network only this computer may
+                return self._json({"ok": False, "error": "This profile has no PIN yet. Open it on the instructor's "
+                                                         "computer and add one in Me → Security."}, 403)
+            token, msg = security.unlock(pid, str(b.get("pin", ""))[:32])
+            if not token:
+                return self._json({"ok": False, "error": msg}, 401)
+            return self._json({"ok": True}, extra={"Set-Cookie": security.cookie_header(token)})
+        if r == "/api/join":                             # Me -> Join a class: a signed-in Cadet types a join code
+            if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
+                return self._json({"error": "Join codes are for Cadet profiles."}, 400)
+            join = instructor.unit_for_code(b.get("code"))
+            if not join:
+                return self._json({"error": "That join code isn't right. Check it with your instructor."}, 400)
+            instructor.request_join(self._pid, join["unit"])
+            lessons.sync_unit(self._pid, join["unit"])
+            profiles.set_joined(self._pid, join["name"])
+            return self._json({"ok": True, "joined": join["name"]})
+        if r == "/api/profiles/create":
+            try:
+                kind = profiles.role_of(str(b.get("kind", "cadet")))
+                join = None
+                if kind == "cadet" and instructor.clean_code(b.get("join")):
+                    join = instructor.unit_for_code(b.get("join"))
+                    if not join:
+                        return self._json({"ok": False, "error": "That join code isn't right. Check it with your "
+                                                                 "instructor, or leave it blank."}, 400)
+                if kind == "instructor":                 # only the Instructor PIN can make an instructor
+                    admin = str(b.get("admin", ""))[:32]
+                    if not security.admin_set():
+                        # first-time setup: the first instructor chooses the Instructor PIN -- on the laptop itself,
+                        # never over the classroom network (a Cadet must not be able to claim it first)
+                        if not self._local():
+                            return self._json({"ok": False, "error": "Set up the first instructor on the "
+                                                                     "instructor's own computer first."}, 403)
+                        err = security.set_admin_pin(admin)
+                    else:
+                        err = security.check_admin(admin)
+                    if err:
+                        return self._json({"ok": False, "error": err}, 403)
+                    err = security.valid_new_pin(str(b.get("pin", "")))
+                    if err:
+                        return self._json({"ok": False, "error": "An instructor profile needs its own PIN. " + err}, 400)
+                if (kind != "instructor" and not security.admin_set() and not self._local()
+                        and not store.config().get("demo")):
+                    # the instructor's laptop is the first device: no Cadet profiles from phones before the
+                    # instructor has set up the class (a demo box with no screen is the one exception)
+                    return self._json({"ok": False, "error": "Your instructor hasn't set up Cadet Foundry yet. Ask them "
+                                                             "to set it up on their computer first."}, 403)
+                if self.app.lan:                         # on the classroom network every profile needs a PIN
+                    err = security.valid_new_pin(str(b.get("pin", "")))
+                    if err:
+                        return self._json({"ok": False, "error": "When class is open, every profile needs a PIN. "
+                                                                 + err}, 400)
+                p = profiles.create(str(b.get("name", "")), kind)
+            except ValueError as e:
+                return self._json({"ok": False, "error": str(e)}, 400)
+            pin, code = str(b.get("pin", "")), None
+            if pin:
+                with security.as_profile(p["id"]):
+                    err = security.set_pin(pin)
+                    code = None if err else security.make_recovery_code(pin)
+                if err:
+                    profiles.delete(p["id"])
+                    return self._json({"ok": False, "error": err}, 400)
+            if join:                                     # placed in the instructor's unit, with its lessons
+                instructor.request_join(p["id"], join["unit"])
+                lessons.sync_unit(p["id"], join["unit"])
+                profiles.set_joined(p["id"], join["name"])
+            token, _ = security.unlock(p["id"], pin)
+            if kind == "instructor":                     # they just typed the Class PIN: their class opens now
+                security.unlock_program(token, str(b.get("admin", ""))[:32])
+            return self._json({"ok": True, "profile": p, "recovery": code, "joined": join["name"] if join else ""},
+                              extra={"Set-Cookie": security.cookie_header(token)})
+        if r == "/api/recover":
+            token, msg, code = security.recover(str(b.get("profile", ""))[:12], str(b.get("code", ""))[:40],
+                                                str(b.get("pin", ""))[:32])
+            if not token:
+                return self._json({"ok": False, "error": msg}, 401)
+            return self._json({"ok": True, "recovery": code}, extra={"Set-Cookie": security.cookie_header(token)})
+        if r == "/api/lock":
+            security.lock(self._token())
+            return self._json({"ok": True})
+        if r == "/api/profiles/rename":
+            try:
+                profiles.rename(self._pid, str(b.get("name", "")))
+            except ValueError as e:
+                return self._json({"ok": False, "error": str(e)}, 400)
+            return self._json({"ok": True})
+        if r == "/api/profiles/delete":
+            if not security.verify_current(str(b.get("pin", ""))):
+                return self._json({"ok": False, "error": "Wrong PIN."}, 401)
+            pid = self._pid
+            self._done()
+            security.end_sessions(pid)
+            profiles.delete(pid)
+            return self._json({"ok": True})
+        if r == "/api/pin/set":
+            err = security.set_pin(str(b.get("new", "")), str(b.get("current", "")))
+            if err:
+                return self._json({"ok": False, "error": err}, 400)
+            code = None if security.has_recovery() else security.make_recovery_code(str(b.get("new", "")))
+            security.end_sessions(self._pid)                         # sign out other sessions of this profile
+            token, _ = security.unlock(self._pid, str(b.get("new", "")))   # stay signed in here
+            return self._json({"ok": True, "recovery": code},
+                              extra={"Set-Cookie": security.cookie_header(token)} if token else None)
+        if r == "/api/pin/recovery":                     # a new recovery code (replaces the old one)
+            code = security.make_recovery_code(str(b.get("pin", ""))[:32])
+            return self._json({"recovery": code} if code else {"error": "Wrong PIN."}, 200 if code else 401)
+        if r == "/api/pin/remove":
+            if self.app.lan:
+                return self._json({"ok": False, "error": "When class is open, every profile keeps its PIN."}, 403)
+            if (profiles.get(self._pid or "") or {}).get("kind") == "instructor":
+                return self._json({"ok": False, "error": "An instructor profile always keeps its PIN."}, 403)
+            err = security.remove_pin(str(b.get("current", "")))
+            return self._json({"ok": not err, "error": err}, 400 if err else 200)
+        if r == "/api/pin/idle":
+            return self._json({"idle_minutes": security.set_idle_minutes(b.get("minutes", 15))})
+        if r == "/api/chat":
+            return self._chat(str(b.get("message", "")))
+        if r == "/api/simplify":
+            return self._stream(self.app.brain.simplify(str(b.get("text", ""))))
+        if r == "/api/voice":
+            try:
+                rate = int(b.get("rate", 16000))
+                if rate not in (8000, 16000):
+                    return self._json({"error": "Unsupported audio rate."}, 400)
+                if b.get("mode") == "radio":            # 9-line drill: radio words only
+                    return self._json(voice.transcribe_radio(str(b.get("audio", "")), rate))
+                return self._json({"text": voice.transcribe(str(b.get("audio", "")), rate)})
+            except Exception as e:
+                return self._json({"error": str(e)[:200]}, 400)
+        if r == "/api/quiz/answer":
+            # The Cadet types an answer; Cadet Foundry grades it. Scores are never self-reported (owner's rule).
+            item = app.brain.quiz_item(str(b.get("id", ""))[:80])
+            if not item:
+                return self._json({"error": "No such question."}, 404)
+            if isinstance(b.get("choice"), str):        # practice: a multiple-choice pick, checked here
+                ok = exam._norm(b["choice"]) == exam._norm(item["a"])
+                g = {"verdict": "right" if ok else "wrong", "correct": ok, "how": "choice", "why": ""}
+            else:                                        # challenge: a typed answer
+                g = board.quiz_grade(item["q"], item["a"], str(b.get("answer", "")), use_ai=store.ai_mode() != "off")
+            store.record_answer(item["id"], g["correct"])
+            if b.get("daily"):
+                daily.daily_record(item["id"], g["correct"])
+            return self._json({**g, "answer": item["a"], "source": item["source"]})
+        if r == "/api/log":
+            if not (b.get("text") or "").strip():
+                return self._json({"error": "empty entry"}, 400)
+            return self._json(store.add_log(str(b.get("kind", "Note")), str(b.get("text", "")),
+                                            str(b.get("date", ""))[:10], str(b.get("score", ""))))
+        if r == "/api/log/delete":
+            return self._json({"ok": store.delete_log(str(b.get("id", "")))})
+        if r == "/api/profile":
+            try:
+                return self._json(store.save_profile(b))
+            except ValueError as e:
+                return self._json({"error": str(e)}, 400)
+        if r == "/api/memory":
+            return self._json({"ok": store.remember(str(b.get("text", "")))})
+        if r == "/api/memory/forget":
+            return self._json({"ok": store.forget(str(b.get("id", "")))})
+        if r == "/api/contacts":
+            return self._json(letters.save_contact(b))
+        if r == "/api/contacts/delete":
+            return self._json({"ok": letters.delete_contact(str(b.get("id", "")))})
+        if r == "/api/letters":
+            return self._json(letters.save_letter(b))
+        if r == "/api/letters/delete":
+            return self._json({"ok": letters.delete_letter(str(b.get("id", "")))})
+        if r == "/api/letters/check":
+            return self._json(letters.opsec_check(str(b.get("text", ""))[:20000]))
+        if r == "/api/letters/draft":
+            with app.lock:
+                text = letters.draft(str(b.get("to", ""))[:80], str(b.get("relation", ""))[:40], str(b.get("notes", ""))[:3000])
+            return self._json({"text": text, "flags": letters.opsec_check(text)} if text else
+                              {"error": "No AI model is available to draft — you can still write the letter yourself."})
+        if r == "/api/backup":                           # always encrypted with the Soldier's backup password
+            try:
+                sealed = backup.export_sealed((profiles.get(self._pid) or {}).get("kind", "cadet"),
+                                              str(b.get("password", ""))[:200])
+            except ValueError as e:
+                return self._json({"error": str(e)}, 400)
+            return self._json({"file": sealed, "name": f"cadetfoundry-backup-{time.strftime('%Y-%m-%d')}.json"})
+        if r == "/api/restore":
+            try:
+                out = backup.restore(backup.open_any(b.get("file", b), str(b.get("password", ""))[:200]))
+                # a backup can make a profile a cadet or guardian again -- never an instructor
+                if out.get("kind") in ("cadet", "guardian") and profiles.get(self._pid)["kind"] != "instructor":
+                    profiles.set_kind(self._pid, out["kind"])
+                return self._json(out)
+            except ValueError as e:
+                return self._json({"error": str(e)}, 400)
+        if r == "/api/daily/done":
+            return self._json(daily.daily_done())
+        if r == "/api/checkin":
+            try:
+                return self._json(daily.add_checkin(b.get("mood", 3), b.get("stress", 3), b.get("sleep", 7), str(b.get("note", ""))))
+            except (TypeError, ValueError):
+                return self._json({"error": "Check the numbers."}, 400)
+        if r == "/api/leave":
+            try:
+                return self._json(daily.save_leave(b))
+            except (TypeError, ValueError):
+                return self._json({"error": "Check the dates and numbers."}, 400)
+        if r == "/api/budget":
+            try:
+                return self._json(daily.save_budget(b))
+            except (TypeError, ValueError):
+                return self._json({"error": "Amounts must be numbers."}, 400)
+        if r == "/api/pay":
+            try:
+                months = int(b.get("months") or 0) + 12 * int(b.get("years") or 0)
+                return self._json(pay.estimate(str(b.get("grade", "")), months / 12, months, float(b.get("bah") or 0)))
+            except (TypeError, ValueError) as e:
+                return self._json({"error": str(e) or "Check the numbers."}, 400)
+        if r == "/api/aft/score":
+            try:
+                return self._json(fitness.score_test(b["raw"] if isinstance(b.get("raw"), dict) else {}, int(b.get("age", 0)), str(b.get("sex", "M")),
+                                                     str(b.get("standard", "general"))))
+            except (TypeError, ValueError) as e:
+                return self._json({"error": str(e) or "Check the numbers."}, 400)
+        if r == "/api/drill/time":
+            try:
+                secs = float(b.get("seconds", 0))
+                if not 0 < secs < 3600:
+                    raise ValueError
+                return self._json(daily.drill_time(str(b.get("drill", "")), secs, bool(b.get("perfect"))))
+            except (TypeError, ValueError):
+                return self._json({"error": "Bad time."}, 400)
+        if r == "/api/pcs":
+            return self._json(daily.save_pcs(b))
+        if r == "/api/integrity/check":
+            app.integrity = integrity.check_library(app.library.library_dir)
+            return self._json(app.integrity)
+        if r == "/api/books/place":                       # where this Soldier is in a book (per profile)
+            try:
+                return self._json(books.save_place(str(b.get("id", ""))[:40], int(b.get("ch", 0) or 0)))
+            except (ValueError, TypeError) as e:
+                return self._json({"error": str(e)}, 400)
+        if r == "/api/pilot/survey":
+            if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
+                return self._json({"error": "The survey is for Cadets."}, 403)
+            try:
+                pilot.submit_survey(b.get("answers") if isinstance(b.get("answers"), dict) else {}, str(b.get("comment", "")))
+                return self._json({"ok": True})
+            except ValueError as e:
+                return self._json({"error": str(e)}, 400)
+        if r in ("/api/service/add", "/api/service/edit", "/api/service/delete"):
+            if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
+                return self._json({"error": "The service log is for Cadets."}, 403)
+            try:
+                if r == "/api/service/add":
+                    service.add(b)
+                elif r == "/api/service/edit":
+                    service.edit(str(b.get("id", ""))[:10], b)
+                else:
+                    service.delete(str(b.get("id", ""))[:10])
+                return self._json(service.mine())
+            except LookupError as e:
+                return self._json({"error": str(e)}, 404)
+            except ValueError as e:
+                return self._json({"error": str(e)}, 400)
+        if r in ("/api/train/add", "/api/train/delete", "/api/train/goal"):
+            if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
+                return self._json({"error": "Train is for Cadets."}, 403)
+            try:
+                eid = str(b.get("event", ""))[:12]
+                if r == "/api/train/add":
+                    train.add_result(eid, b.get("value"), str(b.get("date", ""))[:10], str(b.get("note", "")))
+                elif r == "/api/train/delete":
+                    train.delete_result(str(b.get("id", ""))[:12])
+                else:
+                    train.set_goal(eid, b.get("target"), str(b.get("by", ""))[:10])
+                return self._json(train.my_train())
+            except LookupError as e:
+                return self._json({"error": str(e)}, 404)
+            except ValueError as e:
+                return self._json({"error": str(e)}, 400)
+        if r in ("/api/scenario/choose", "/api/scenario/log"):
+            try:
+                sc = scenarios.get(str(b.get("id", ""))[:40])
+                choice = b.get("choice") if isinstance(b.get("choice"), int) else -1
+                if r == "/api/scenario/choose":
+                    return self._json(scenarios.explain(sc, choice))
+                if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
+                    return self._json({"error": "Only Cadets keep a leadership log."}, 403)
+                entry = scenarios.log_entry(sc, choice, str(b.get("reasoning", "")), str(b.get("reflection", "")),
+                                            str(b.get("learned", "")))
+                return self._json({"entry": entry, "all_outcomes": scenarios.all_outcomes(sc)})
+            except LookupError as e:
+                return self._json({"error": str(e)}, 404)
+            except ValueError as e:
+                return self._json({"error": str(e)}, 400)
+        if r == "/api/live/quiz/answer":
+            if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
+                return self._json({"error": "Only Cadets answer."}, 403)
+            try:
+                ch = b.get("choice")
+                live_quiz.answer(self._pid, str(b.get("answer", "")), ch if isinstance(ch, str) else None,
+                                 use_ai=False)              # fast word grading: a whole class answers at once
+                return self._json(live_quiz.for_cadet(self._pid))
+            except LookupError as e:
+                return self._json({"error": str(e)}, 404)
+            except ValueError as e:
+                return self._json({"error": str(e)}, 400)
+        if r == "/api/live/vote":
+            if (profiles.get(self._pid or "") or {}).get("kind") != "cadet":
+                return self._json({"error": "Only Cadets vote."}, 403)
+            try:
+                scenarios.live_vote(self._pid, b.get("choice") if isinstance(b.get("choice"), int) else -1)
+                return self._json({"ok": True})
+            except LookupError as e:
+                return self._json({"error": str(e)}, 404)
+            except ValueError as e:
+                return self._json({"error": str(e)}, 400)
+        if r == "/api/lesson/submit":
+            ans = b.get("answers") if isinstance(b.get("answers"), dict) else {}
+            try:
+                return self._json(lessons.submit(self._pid or "", str(b.get("a", ""))[:12], ans,
+                                                 str(b.get("reflection", ""))[:4000]))
+            except LookupError as e:
+                return self._json({"error": str(e)}, 404)
+            except ValueError as e:
+                return self._json({"error": str(e)}, 400)
+        if r == "/api/instructor/unlock":               # instructor profile + Instructor PIN -> class records
+            err = security.unlock_program(self._token(), str(b.get("admin", ""))[:32])
+            return self._json({"ok": False, "error": err} if err else {"ok": True}, 403 if err else 200)
+        if r == "/api/instructor/classroom":
+            # Open class to phones (or close it) from the instructor's Home -- the desktop icon starts Cadet Foundry for this
+            # computer only. The running program listens again on the same port; sign-ins and everything loaded stay.
+            if (profiles.get(self._pid or "") or {}).get("kind") != "instructor" or not self._program_key():
+                return self._json({"error": "Open your class first (Class PIN)."}, 403)
+            if not self._local():                        # never from a device on the network
+                return self._json({"error": "Open or close class on the instructor's own computer."}, 403)
+            if sample.ACTIVE:
+                return self._json({"error": "The sample class stays on this computer."}, 403)
+            want = bool(b.get("open"))
+            if want == bool(app.lan):
+                return self._json({"ok": True, "lan": want})
+            self.server.switch_lan = want                # run.py reopens the server in the new mode
+            self._json({"ok": True, "lan": want, "restarting": True})
+            threading.Thread(target=self.server.shutdown, daemon=True).start()
+            return None
+        if r.startswith("/api/instructor/"):
+            priv = self._program_key()
+            if not priv:
+                return self._json({"error": "Instructor only. Open Instructor and enter the Class PIN."}, 403)
+            self._file_joins(priv)
+            try:
+                if r == "/api/instructor/unit":
+                    act = str(b.get("action", ""))
+                    if act == "add":
+                        return self._json(instructor.add_unit(priv, b.get("name"), str(b.get("kind", "")),
+                                                              str(b.get("parent", ""))[:10], self._pid or ""))
+                    if act == "code":                    # a fresh join code; the old one stops working
+                        return self._json({"code": instructor.new_code(priv, str(b.get("id", ""))[:10])})
+                    if act == "owner":
+                        instructor.set_owner(priv, str(b.get("id", ""))[:10], str(b.get("owner", ""))[:12])
+                        return self._json({"ok": True})
+                    if act == "rename":
+                        instructor.rename_unit(priv, str(b.get("id", ""))[:10], b.get("name"))
+                        return self._json({"ok": True})
+                    if act == "delete":
+                        instructor.delete_unit(priv, str(b.get("id", ""))[:10])
+                        return self._json({"ok": True})
+                    return self._json({"error": "Choose add, rename or delete."}, 400)
+                if r == "/api/instructor/pilot":
+                    return self._json(pilot.save_config(priv, b))
+                if r == "/api/instructor/pilot/daily":   # after class: how useful was Cadet Foundry today (no Cadet data)
+                    return self._json(pilot.add_class_feedback(priv, b.get("useful"), str(b.get("again", "")),
+                                                               **{k: b.get(k) for k in pilot.DAILY_QUESTIONS}))
+                if r == "/api/instructor/pilot/mode":    # Pilot mode: online AI stays off, "what's stored", End pilot
+                    store.save_config({"pilot_mode": bool(b.get("on"))})
+                    return self._json(pilot.stored(priv))
+                if r == "/api/instructor/pilot/end":     # permanently remove the pilot's Cadets and class data
+                    if not self._local():
+                        return self._json({"error": "End the pilot on the instructor's own computer."}, 403)
+                    if str(b.get("confirm", "")) != "DELETE":
+                        return self._json({"error": "Type DELETE to confirm."}, 400)
+                    err = security.check_admin(str(b.get("admin", ""))[:32])
+                    if err:
+                        return self._json({"error": err}, 403)
+                    return self._json(pilot.end(priv))
+                if r == "/api/instructor/pilot/snapshot":
+                    return self._json(pilot.take_snapshot(priv, reports.dashboard(priv, app.library), force=True))
+                if r == "/api/instructor/pilot/survey":
+                    return self._json(pilot.set_survey(priv, bool(b.get("open"))))
+                if r == "/api/instructor/pilot/feedback":
+                    return self._json(pilot.add_instructor_feedback(priv, b.get("satisfaction"), b.get("minutes_saved"),
+                                                                    str(b.get("use_again", "")), b.get("comment")))
+                if r == "/api/instructor/quiz":
+                    qid = str(b.get("id", ""))[:80]
+                    cid, _, idx = qid.partition("#")
+                    c = app.library.card(cid)
+                    if not c or not idx.isdigit() or int(idx) >= len(c.quiz):
+                        return self._json({"error": "No such question."}, 404)
+                    if b.get("action") == "reset":
+                        quiz_edits.reset(qid)
+                        return self._json({"ok": True})
+                    return self._json(quiz_edits.save(qid, b.get("q", ""), b.get("a", ""), bool(b.get("hidden"))))
+                if r == "/api/instructor/pop-quiz":
+                    # a quick, questions-only lesson, assigned right away and due today
+                    as_list = lambda v: [str(x)[:12] for x in v][:200] if isinstance(v, list) else []
+                    title = " ".join(str(b.get("title") or "").split())[:80] or "Pop quiz"
+                    lesson = lessons.save_lesson(priv, {"title": "Pop quiz: " + title, "competency": "Pop quiz",
+                                                        "questions": str(b.get("questions", "")), "reflection": ""})
+                    try:
+                        a = lessons.assign(priv, lesson["id"], bool(b.get("everyone")), as_list(b.get("units")),
+                                           as_list(b.get("cadets")), time.strftime("%Y-%m-%d"))
+                    except ValueError:
+                        lessons.delete_lesson(priv, lesson["id"])    # no one to give it to: don't leave it behind
+                        raise
+                    return self._json({"lesson": lesson, "assignment": a})
+                if r == "/api/instructor/program-backup":
+                    sealed = program_backup.export(str(b.get("password", ""))[:200])
+                    return self._json({"file": sealed, "name": f"cadetfoundry-program-{time.strftime('%Y-%m-%d')}.json"})
+                if r == "/api/instructor/program-restore":
+                    out = program_backup.restore(b.get("file") if isinstance(b.get("file"), dict) else {},
+                                                 str(b.get("password", ""))[:200])
+                    security.drop_program_keys()
+                    return self._json({**out, "relock": True})
+                if r == "/api/instructor/recognition":
+                    pid = str(b.get("cadet", ""))[:12]
+                    if (profiles.get(pid) or {}).get("kind") != "cadet":
+                        return self._json({"error": "No such Cadet."}, 404)
+                    ck, status = instructor.class_key(priv, pid)
+                    if status == "waiting":
+                        return self._json({"error": "This Cadet's records aren't shared yet."}, 409)
+                    with security.as_profile(pid, None, ck):
+                        if b.get("action") == "remove":
+                            progress.remove_recognition(str(b.get("id", ""))[:10])
+                            return self._json({"ok": True})
+                        return self._json(progress.add_recognition(str(b.get("kind", "")), b.get("title"),
+                                                                   str(b.get("date", ""))[:10], b.get("note")))
+                if r == "/api/instructor/portfolio-sections":
+                    secs = b.get("sections")
+                    if not isinstance(secs, list) or not all(x in progress.SECTIONS for x in secs):
+                        return self._json({"error": "Unknown section."}, 400)
+                    store.save_config({"portfolio_sections": [x for x in progress.SECTIONS if x in secs]})
+                    return self._json({"sections": progress.portfolio_sections()})
+                if r == "/api/instructor/service/project":
+                    if b.get("action") == "remove":
+                        service.remove_project(str(b.get("id", ""))[:8])
+                        return self._json({"ok": True})
+                    return self._json(service.add_project(b.get("title"), b.get("organization"), str(b.get("date", ""))[:10],
+                                                          b.get("hours"), b.get("description")))
+                if r == "/api/instructor/service/review":
+                    pid = str(b.get("cadet", ""))[:12]
+                    if (profiles.get(pid) or {}).get("kind") != "cadet":
+                        return self._json({"error": "No such Cadet."}, 404)
+                    ck, status = instructor.class_key(priv, pid)
+                    if status == "waiting":
+                        return self._json({"error": "This Cadet's records aren't shared yet."}, 409)
+                    with security.as_profile(pid, None, ck):
+                        return self._json(service.review(str(b.get("id", ""))[:10], str(b.get("action", "")),
+                                                         str(b.get("note", ""))))
+                if r == "/api/instructor/train/event":
+                    if b.get("action") == "remove":
+                        train.remove_event(str(b.get("id", ""))[:12])
+                        return self._json({"ok": True})
+                    return self._json(train.add_event(b.get("name"), str(b.get("unit", "")), str(b.get("better", "")),
+                                                      b.get("description", "")))
+                if r == "/api/instructor/train/record":
+                    # test day: the instructor records results for several Cadets into their class records
+                    ev = train.event(str(b.get("event", ""))[:12])
+                    results = b.get("results") if isinstance(b.get("results"), dict) else {}
+                    saved, skipped, errors = [], [], {}
+                    for pid, raw in list(results.items())[:200]:
+                        pid = str(pid)[:12]
+                        if str(raw).strip() == "":
+                            continue
+                        if (profiles.get(pid) or {}).get("kind") != "cadet":
+                            errors[pid] = "Not a Cadet."
+                            continue
+                        ck, status = instructor.class_key(priv, pid)
+                        if status == "waiting":
+                            skipped.append(pid)
+                            continue
+                        try:
+                            with security.as_profile(pid, None, ck):
+                                train.add_result(ev["id"], raw, str(b.get("date", ""))[:10], "", by="instructor")
+                            saved.append(pid)
+                        except ValueError as e:
+                            errors[pid] = str(e)
+                    return self._json({"saved": saved, "skipped": skipped, "errors": errors})
+                if r == "/api/instructor/modules":       # optional tools on or off for every profile on this device
+                    off = b.get("off")
+                    if not isinstance(off, list) or not all(m in store.MODULES for m in off):
+                        return self._json({"error": "Unknown tool."}, 400)
+                    store.save_config({"modules_off": [m for m in store.MODULES if m in off]})
+                    return self._json({"modules_off": [m for m in store.MODULES if not store.module_on(m)]})
+                if r == "/api/instructor/program":       # which JROTC program this device serves (labels only)
+                    prog = str(b.get("program", ""))
+                    if prog and prog not in store.PROGRAMS:
+                        return self._json({"error": "Unknown program."}, 400)
+                    c = store.config()
+                    c.pop("program", None)
+                    store.write_json("config.json", c)
+                    if prog:
+                        store.save_config({"program": prog})
+                    return self._json({"program": store.program(), "level_label": store.level_label()})
+                if r == "/api/instructor/categories":    # which Learn categories Cadets get on this device
+                    cats = b.get("categories")
+                    if not isinstance(cats, list) or not all(c in store.ALL_CATEGORIES for c in cats):
+                        return self._json({"error": "Unknown category."}, 400)
+                    store.save_config({"categories": [c for c in store.ALL_CATEGORIES if c in cats]})
+                    return self._json({"categories_enabled": store.categories_enabled()})
+                if r == "/api/instructor/scenario":
+                    sid = str(b.get("id", ""))[:40]
+                    if b.get("action") == "delete":
+                        if not sid.startswith("i-"):
+                            return self._json({"error": "Practice scenarios can't be deleted."}, 400)
+                        scenarios.delete_custom(sid)
+                        return self._json({"ok": True})
+                    if sid and not sid.startswith("i-"):
+                        sid = ""                          # editing a practice scenario saves your own copy
+                    return self._json(scenarios.save_custom(sid, str(b.get("text", ""))[:20000]))
+                if r == "/api/instructor/live-quiz":
+                    act = str(b.get("action", ""))
+                    try:
+                        if act == "start":
+                            ch = b.get("choices") if isinstance(b.get("choices"), list) else []
+                            live_quiz.start(app.brain, str(b.get("id", ""))[:80], str(b.get("q", "")), str(b.get("a", "")),
+                                            [str(c) for c in ch[:6]], str(b.get("mode", "")))
+                        elif act == "reveal":
+                            live_quiz.reveal(bool(b.get("on", True)))
+                        elif act == "stop":
+                            live_quiz.stop()
+                        else:
+                            return self._json({"error": "Choose start, reveal or stop."}, 400)
+                    except LookupError as e:
+                        return self._json({"error": str(e)}, 404)
+                    except ValueError as e:
+                        return self._json({"error": str(e)}, 400)
+                    return self._json(live_quiz.for_instructor())
+                if r == "/api/instructor/live":
+                    act = str(b.get("action", ""))
+                    if act == "start":
+                        scenarios.live_start(str(b.get("scenario", ""))[:40])
+                    elif act == "reveal":
+                        scenarios.live_reveal(bool(b.get("on", True)))
+                    elif act == "stop":
+                        scenarios.live_stop()
+                    else:
+                        return self._json({"error": "Choose start, reveal or stop."}, 400)
+                    return self._json(scenarios.live_for_instructor())
+                if r == "/api/instructor/lesson":
+                    if b.get("action") == "delete":
+                        lessons.delete_lesson(priv, str(b.get("id", ""))[:12])
+                        return self._json({"ok": True})
+                    return self._json(lessons.save_lesson(priv, b))
+                if r == "/api/instructor/lessons/starter":   # ready-made lessons from cited study cards
+                    keys = b.get("keys")
+                    keys = [str(k)[:40] for k in keys][:50] if isinstance(keys, list) else None
+                    return self._json(lessons.add_starters(priv, app.library, keys))
+                if r == "/api/instructor/assign-lesson":
+                    as_list = lambda v: [str(x)[:12] for x in v][:200] if isinstance(v, list) else []
+                    return self._json(lessons.assign(priv, str(b.get("lesson", ""))[:12], bool(b.get("everyone")),
+                                                     as_list(b.get("units")), as_list(b.get("cadets")),
+                                                     str(b.get("due", ""))[:10]))
+                if r == "/api/instructor/assignment":
+                    if b.get("action") == "delete":
+                        lessons.delete_assignment(str(b.get("id", ""))[:12])
+                        return self._json({"ok": True})
+                    return self._json({"error": "Unknown action."}, 400)
+                if r == "/api/instructor/assign":
+                    let, pid = b.get("let"), str(b.get("cadet", ""))[:12]
+                    out = instructor.assign(priv, pid, None if b.get("unit") is None else str(b.get("unit"))[:10],
+                                            None if let in (None, "") else int(let),
+                                            None if b.get("rank") is None else str(b.get("rank")),
+                                            None if b.get("billet") is None else str(b.get("billet")))
+                    if b.get("unit"):                    # joining a unit brings that unit's assignments, to this Cadet only
+                        out = {**out, "new_assignments": lessons.sync_cadet(priv, pid)}
+                    return self._json(out)
+            except LookupError as e:
+                return self._json({"error": str(e)}, 404)
+            except (ValueError, TypeError) as e:
+                return self._json({"error": str(e)}, 400)
+            return self._json({"error": "Unknown instructor action."}, 404)
+        if r == "/api/admin/ai-mode":                    # device-wide AI setting -> Instructor PIN
+            err = self._device_admin(b) or (None if security.admin_set() else "Set the Class PIN on this computer first (👤 Me → Class PIN).")
+            if err:
+                return self._json({"error": err}, 403)
+            mode = str(b.get("mode", ""))
+            if mode not in store.AI_MODES:
+                return self._json({"error": "Choose off, library or ai."}, 400)
+            store.save_config({"ai_mode": mode})
+            return self._json({"ok": True, "ai_mode": mode})
+        if r == "/api/admin/pin":
+            if security.admin_set() and (profiles.get(self._pid or "") or {}).get("kind") != "instructor":
+                return self._json({"ok": False, "error": "Only an instructor can change the Class PIN."}, 403)
+            if not security.admin_set() and not self._local():
+                return self._json({"ok": False, "error": "Set up Cadet Foundry on the instructor's computer first."}, 403)
+            err = security.set_admin_pin(str(b.get("new", "")), str(b.get("current", "")))
+            return self._json({"ok": False, "error": err} if err else {"ok": True}, 400 if err else 200)
+        if r == "/api/update":
+            err = self._device_admin(b) or (None if security.admin_set() else "Set the Class PIN on this computer first (👤 Me → Class PIN).")
+            if err:
+                return self._json({"error": err}, 403)
+            if not integrity.PUBLIC_KEY.exists():
+                return self._json({"error": "This copy of Cadet Foundry has no release key, so it can't verify updates. "
+                                            "The publisher sets one up with tools/sign.py keygen."}, 400)
+            try:
+                raw = base64.b64decode(str(b.get("zip", "")), validate=True)
+                with app.lock:
+                    return self._json(integrity.install_update(raw, str(b.get("sig", ""))[:500]))
+            except (ValueError, binascii.Error) as e:
+                return self._json({"error": str(e)}, 400)
+        if r == "/api/exam/start":
+            try:
+                return self._json(exam.start(app.library, str(b.get("topic", ""))[:80], int(b.get("n") or 10)))
+            except (TypeError, ValueError) as e:
+                return self._json({"error": str(e) or "Couldn't start the exam."}, 400)
+        if r == "/api/asvab/start":
+            secs = b.get("sections") if isinstance(b.get("sections"), list) else []
+            return self._json(asvab.start([str(x)[:3] for x in secs][:4]))
+        if r == "/api/asvab/submit":
+            try:
+                return self._json(asvab.submit(str(b.get("id", ""))[:12], b.get("answers") if isinstance(b.get("answers"), dict) else {}))
+            except ValueError as e:
+                return self._json({"error": str(e)}, 400)
+        if r == "/api/exam/submit":
+            try:
+                return self._json(exam.submit(str(b.get("id", "")), b.get("answers") if isinstance(b.get("answers"), dict) else {}))
+            except ValueError as e:
+                return self._json({"error": str(e)}, 400)
+        if r == "/api/bct":
+            return self._json(daily.save_bct(str(b.get("start", ""))))
+        if r == "/api/support":
+            return self._json(daily.save_support(b.get("contacts") if isinstance(b.get("contacts"), list) else []))
+        if r == "/api/board/grade":
+            # by question id: the reference answer stays on the device until graded; the result is recorded here
+            item = app.brain.quiz_item(str(b.get("id", ""))[:80])
+            if not item:
+                return self._json({"error": "No such question."}, 404)
+            answer = str(b.get("answer", ""))
+            with app.lock:                               # may use the AI model
+                g = board.grade(item["q"], item["a"], answer) if answer.strip() else                     {"verdict": "nogo", "score": 0.0, "missing": [], "how": "words", "why": "No answer given."}
+            store.record_answer(item["id"], g.get("verdict") == "go")
+            return self._json({**g, "answer": item["a"], "source": item["source"]})
+        if r == "/api/board/recite":
+            return self._json(board.recite(str(b.get("text", ""))[:5000]))
+        if r == "/api/faith/plan/done":
+            return self._json(daily.plan_mark(str(b.get("id", ""))[:40], int(b.get("day", 0))))
+        if r == "/api/chats/new":
+            return self._json({"id": store.new_chat()["id"]})
+        if r == "/api/chats/open":
+            try:
+                return self._json({"messages": store.open_chat(str(b.get("id", "")))})
+            except KeyError:
+                return self._json({"error": "No such conversation."}, 404)
+        if r == "/api/chats/rename":
+            return self._json({"ok": store.rename_chat(str(b.get("id", "")), str(b.get("title", ""))[:80])})
+        if r == "/api/chats/delete":
+            return self._json({"ok": store.delete_chat(str(b.get("id", "")))})
+        if r == "/api/addons/install":                   # offline AI / voice: changes the device -> Instructor PIN
+            err = self._device_admin(b)
+            if err:
+                return self._json({"error": err}, 403)
+            try:
+                return self._json(addons.install(str(b.get("name", ""))))
+            except ValueError as e:
+                return self._json({"error": str(e)}, 400)
+        if r == "/api/terms/accept":                     # the device's "I agree": on first-run setup, or an instructor
+            first_run = self._local() and not security.admin_set()
+            if not (first_run or (profiles.get(self._pid or "") or {}).get("kind") == "instructor"):
+                return self._json({"error": "The instructor accepts the terms for this computer."}, 403)
+            return self._json({"ok": True, **terms.accept()})
+        if r == "/api/sample/start":                     # "See a sample class": a separate copy with made-up Cadets
+            if sample.ACTIVE:
+                return self._json({"error": "This is already the sample class."}, 400)
+            if not self._local():
+                return self._json({"error": "The sample class opens on the instructor's own computer."}, 403)
+            try:
+                return self._json({"url": sample.start(f"http://127.0.0.1:{self.app.port}/")})
+            except (OSError, RuntimeError) as e:
+                return self._json({"error": str(e)}, 500)
+        if r == "/api/sample/enter":                     # in the sample: straight in as its made-up instructor
+            token = sample.enter() if self._local() else None
+            if not token:
+                return self._json({"error": "The sample class isn't ready."}, 403)
+            return self._json({"ok": True}, extra={"Set-Cookie": security.cookie_header(token)})
+        if r == "/api/sample/leave":                     # close the sample; the visitor goes back to their Cadet Foundry
+            if not (sample.ACTIVE and self._local()):
+                return self._json({"error": "Not the sample class."}, 400)
+            self._json({"ok": True, "back": sample.BACK})
+            threading.Thread(target=self.server.shutdown, daemon=True).start()
+            return None
+        if r == "/api/quit":                             # Me -> Quit Cadet Foundry (there's no console window to close)
+            # a Cadet's phone on the class Wi-Fi must not be able to end class for everyone
+            if not self._local() and (profiles.get(self._pid or "") or {}).get("kind") != "instructor":
+                return self._json({"error": "Only your instructor can close Cadet Foundry for the class."}, 403)
+            self._json({"ok": True})
+            threading.Thread(target=self.server.shutdown, daemon=True).start()
+            return None
+        if r == "/api/history/clear":
+            store.clear_history()
+            return self._json({"ok": True})
+        if r == "/api/library/reload":
+            err = self._device_admin(b)
+            if err:
+                return self._json({"error": err}, 403)
+            app.library.load()
+            app.faith.reload()
+            return self._json(app.library.stats())
+        self._deny(404, "Not found.")
+
+    def _chat(self, message: str):
+        family = (profiles.get(self._pid) or {}).get("kind") == "guardian"
+        return self._stream(self.app.brain.chat(message[:4000], family))
+
+    def _stream(self, events):
+        self.send_response(200)
+        self.send_header("Content-Type", "text/event-stream; charset=utf-8")
+        self.send_header("Cache-Control", "no-store")
+        for k, v in security.SECURITY_HEADERS.items():
+            self.send_header(k, v)
+        self.end_headers()
+        try:
+            with self.app.lock:              # one answer at a time on small hardware
+                for event in events:
+                    self.wfile.write(f"data: {json.dumps(event, ensure_ascii=False)}\n\n".encode("utf-8"))
+                    self.wfile.flush()
+        except (BrokenPipeError, ConnectionResetError):
+            pass
+
+
+class _Server(ThreadingHTTPServer):
+    """One program per port. Python's HTTP server sets SO_REUSEADDR, which on Windows lets a SECOND program bind a
+    port that's already in use -- two copies of Cadet Foundry (a USB drive and the computer's own) would then share an address and
+    the browser would reach either one. Windows: exclusive use. Elsewhere SO_REUSEADDR only allows a quick restart."""
+    allow_reuse_address = os.name != "nt"
+
+    def server_bind(self):
+        import socket
+        if os.name == "nt" and hasattr(socket, "SO_EXCLUSIVEADDRUSE"):
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
+        super().server_bind()
+
+
+def reopen(port: int, lan: bool, wait: float = 20.0) -> ThreadingHTTPServer:
+    """The classroom switch: listen again on the same port, on every network (lan) or this computer only. Keeps the
+    running App -- library, sign-ins, live votes. Windows frees a just-closed port after a moment: try again a while."""
+    import time
+    host = "0.0.0.0" if lan else "127.0.0.1"
+    end = time.time() + wait
+    while True:
+        try:
+            httpd = _Server((host, port), Handler)
+            break
+        except OSError:
+            if time.time() > end:
+                raise
+            time.sleep(0.25)
+    Handler.app.lan = lan
+    httpd.daemon_threads = True
+    return httpd
+
+
+def serve(host: str = "127.0.0.1", port: int = 8780, lan: bool = False) -> ThreadingHTTPServer:
+    profiles.migrate_legacy()
+    program_backup.finish_pending()              # a program restore that was interrupted: finish it or roll it back
+    integrity.finish_pending_update()            # an update that stopped part-way: put the app back as it was
+    # Class opens even if some profiles on this device have no PIN yet (owner's decision, 2026-10-10): those can only
+    # be opened on this computer -- /api/unlock refuses them from other devices and /api/lock hides them there.
+    httpd = _Server((host, port), Handler)                 # take the port first: if it's busy, change nothing
+    try:
+        Handler.app = App(port, lan)
+    except BaseException:
+        httpd.server_close()
+        raise
+    httpd.daemon_threads = True
+    if not os.environ.get("CADETFOUNDRY_NO_WARMUP"):          # load the AI while the Soldier picks a profile
+        threading.Thread(target=lambda: (addons.start_ollama(), engine.warm_up()), daemon=True).start()
+    return httpd

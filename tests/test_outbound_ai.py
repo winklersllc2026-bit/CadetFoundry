@@ -17,18 +17,18 @@ from unittest import mock
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-os.environ.setdefault("VANGUARD_DATA", tempfile.mkdtemp())
-os.environ["VANGUARD_NO_WARMUP"] = "1"
+os.environ.setdefault("CADETFOUNDRY_DATA", tempfile.mkdtemp())
+os.environ["CADETFOUNDRY_NO_WARMUP"] = "1"
 
-from vanguard import board, engine, profiles, store  # noqa: E402
-from vanguard.brain import Brain  # noqa: E402
-from vanguard.knowledge import Library  # noqa: E402
+from cadetfoundry import board, engine, profiles, store  # noqa: E402
+from cadetfoundry.brain import Brain  # noqa: E402
+from cadetfoundry.knowledge import Library  # noqa: E402
 
 ONLINE = {"online": True, "groq_key": "test-key-not-real", "ai_mode": "ai"}
 
 
 class OutboundAITests(unittest.TestCase):
-    lib = Library(cache_dir=Path(os.environ["VANGUARD_DATA"]))
+    lib = Library(cache_dir=Path(os.environ["CADETFOUNDRY_DATA"]))
 
     def setUp(self):
         self.sent = []                                    # everything the "online provider" received

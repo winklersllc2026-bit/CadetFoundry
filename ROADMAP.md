@@ -1,8 +1,11 @@
 # Cadet Foundry roadmap
 
-Current version: **0.2.5** (not yet released; 0.2.3 and 0.2.4 released 2026-10-11).
+Current version: **0.2.6** (not yet released; 0.2.3, 0.2.4 and 0.2.5 released 2026-10-11). Downloads: the public
+releases repo on GitHub; page: cadetfoundry.org (public). Code: the private CadetFoundry repo (C:\Code\CadetFoundry).
 
-**0.2.5 — terms and privacy:** plain-English Terms of use and Privacy notice (vanguard/legal/), a required "I agree" box on first-run setup (and once on the instructor's Home for existing installs), readable in the app and on the website (/terms, /privacy) · "the Cadet Foundry project" instead of a company name · support@cadetfoundry.org everywhere · security.txt · "No internet required" on the website. Downloads: the public Vanguard-releases repo on GitHub; page: cadetfoundry.org (public).
+**0.2.6 — Cadet Foundry inside and out:** the code folder, start files, update files and data folders carry the new name too (a computer's data moves from its old folder on first start; a USB drive's folders are renamed when make_usb updates it; backups made before the rename still restore). Installed copies move to 0.2.6 with the installer or a new USB drive, not Me → Install an update; after that, in-app updates work again.
+
+**0.2.5 — terms and privacy:** plain-English Terms of use and Privacy notice (cadetfoundry/legal/), a required "I agree" box on first-run setup (and once on the instructor's Home for existing installs), readable in the app and on the website (/terms, /privacy) · "the Cadet Foundry project" instead of a company name · support@cadetfoundry.org everywhere · security.txt · "No internet required" on the website.
 
 ## Where it stands
 
@@ -63,7 +66,7 @@ sources (Enlisted Force Structure, Air Force Symbol, SPFMAN 36-2905, Marine Corp
 
 ## Before the first classroom pilot (owner)
 
-1. ~~Cadet Foundry's release-signing key~~ — done 2026-10-11: `vanguard/data/release_key.pub` is committed and releases
+1. ~~Cadet Foundry's release-signing key~~ — done 2026-10-11: `cadetfoundry/data/release_key.pub` is committed and releases
    sign themselves. Keep `~/.vanguard-release/release_key.pem` backed up somewhere safe, off every school device.
 2. **Code-sign the Windows installer** so Windows doesn't show "Windows protected your PC" (needs a code-signing
    certificate in the company's name; then sign `CadetFoundry-Setup-*.exe` in `site/build.py`).

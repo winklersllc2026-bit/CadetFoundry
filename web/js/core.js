@@ -274,7 +274,7 @@ async function showLock(msg) {
   else pick();
 }
 
-// ── The Terms of use and Privacy notice (vanguard/legal/), readable anywhere -- even before setup, and offline ──
+// ── The Terms of use and Privacy notice (cadetfoundry/legal/), readable anywhere -- even before setup, and offline ──
 async function showLegal(doc) {
   let d = {};
   try { d = await (await fetch('/api/legal?doc=' + encodeURIComponent(doc), { cache: 'no-store' })).json(); } catch (e) { }
@@ -294,7 +294,7 @@ document.addEventListener('click', e => {
   if (a) { e.preventDefault(); showLegal(a.dataset.legal); }
 });
 
-// ── The sample class (vanguard/sample.py): a separate copy of Cadet Foundry with made-up Cadets ──
+// ── The sample class (cadetfoundry/sample.py): a separate copy of Cadet Foundry with made-up Cadets ──
 async function startSample(btn, msgEl) {
   if (btn) btn.disabled = true;
   if (msgEl) msgEl.textContent = 'Opening the sample class…';
@@ -377,9 +377,9 @@ function md(text) {
   const btn = $('#textBtn');
   const apply = big => { document.documentElement.dataset.text = big ? 'large' : ''; btn.setAttribute('aria-pressed', String(big)); btn.textContent = big ? 'A−' : 'A+'; };
   let big = false;
-  try { big = localStorage.getItem('vanguard-text') === 'large'; } catch (e) {}
+  try { big = localStorage.getItem('cadetfoundry-text') === 'large'; } catch (e) {}
   apply(big);
-  btn.onclick = () => { big = !big; apply(big); try { localStorage.setItem('vanguard-text', big ? 'large' : ''); } catch (e) {} };
+  btn.onclick = () => { big = !big; apply(big); try { localStorage.setItem('cadetfoundry-text', big ? 'large' : ''); } catch (e) {} };
 })();
 
 // Icon-only buttons (✕, 🔊, 🎤 …) get a spoken name for screen readers from their title.
@@ -399,11 +399,11 @@ new MutationObserver(() => {
     meta.content = red ? '#000000' : '#0f120e';
   };
   let red = false;
-  try { red = localStorage.getItem('vanguard-mode') === 'red'; } catch (e) {}
+  try { red = localStorage.getItem('cadetfoundry-mode') === 'red'; } catch (e) {}
   apply(red);
   btn.onclick = () => {
     red = !red; apply(red);
-    try { localStorage.setItem('vanguard-mode', red ? 'red' : ''); } catch (e) {}
+    try { localStorage.setItem('cadetfoundry-mode', red ? 'red' : ''); } catch (e) {}
   };
 })();
 
@@ -431,13 +431,13 @@ let landed = false;
 // "/?go=class" (the Join screen's "Set up my class"): remembered through sign-in, which reloads the page
 try {
   const go = new URLSearchParams(location.search).get('go');
-  if (go && /^[a-z]{2,12}$/.test(go)) sessionStorage.setItem('vanguard-go', go);
+  if (go && /^[a-z]{2,12}$/.test(go)) sessionStorage.setItem('cadetfoundry-go', go);
 } catch (e) { }
 async function refreshStatus() {
   STATUS = await api('/api/status');
   if (!landed) {
     let go = '';
-    try { go = sessionStorage.getItem('vanguard-go') || ''; sessionStorage.removeItem('vanguard-go'); } catch (e) { }
+    try { go = sessionStorage.getItem('cadetfoundry-go') || ''; sessionStorage.removeItem('cadetfoundry-go'); } catch (e) { }
     const toTools = STATUS.kind === 'instructor' && go && typeof INST_SECTIONS !== 'undefined' && INST_SECTIONS.some(s => s[0] === go);
     if (toTools) instSection = go;
     openView(toTools ? 'instructor' : 'home');     // everyone starts on Home; for an instructor that's Class day

@@ -18,10 +18,10 @@ from unittest import mock
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-os.environ.setdefault("VANGUARD_DATA", tempfile.mkdtemp())
-os.environ["VANGUARD_NO_WARMUP"] = "1"
+os.environ.setdefault("CADETFOUNDRY_DATA", tempfile.mkdtemp())
+os.environ["CADETFOUNDRY_NO_WARMUP"] = "1"
 
-from vanguard import engine, profiles, sample, store, vault  # noqa: E402
+from cadetfoundry import engine, profiles, sample, store, vault  # noqa: E402
 
 
 class _Parent(http.server.BaseHTTPRequestHandler):
@@ -38,12 +38,12 @@ class _Parent(http.server.BaseHTTPRequestHandler):
 class SampleFolderTests(unittest.TestCase):
     def test_only_a_marked_sample_folder_is_ever_deleted(self):
         with tempfile.TemporaryDirectory() as tmp:
-            real = Path(tmp) / "VanguardData"
+            real = Path(tmp) / "Cadet Foundry Data"
             real.mkdir()
             (real / "library_index.json").write_text("{}", encoding="utf-8")
             with mock.patch.object(store, "DATA", real):
                 target = sample.folder()
-                self.assertEqual(target.name, "VanguardData-sample")
+                self.assertEqual(target.name, "Cadet Foundry Data-sample")
                 target.mkdir()
                 (target / "someone's file.txt").write_text("keep me", encoding="utf-8")
                 with self.assertRaises(RuntimeError):
@@ -59,7 +59,7 @@ class SampleFolderTests(unittest.TestCase):
 
 
 class SampleLifetimeTests(unittest.TestCase):
-    def test_a_sample_closes_when_the_vanguard_that_opened_it_is_gone(self):
+    def test_a_sample_closes_when_the_copy_that_opened_it_is_gone(self):
         class FakeServer:
             closed = threading.Event()
 
@@ -156,7 +156,7 @@ class SampleClassTests(unittest.TestCase):
     def test_1_the_sample_class_is_built_and_opens_straight_to_the_instructor(self):
         self.assertTrue(self.status.get("ready"), self.status)
         ck = self.enter()
-        self.assertTrue(ck.startswith("vanguard_sample="))             # never replaces the real Cadet Foundry's sign-in
+        self.assertTrue(ck.startswith("cadetfoundry_sample="))             # never replaces the real Cadet Foundry's sign-in
         self.assertTrue(self.get("/api/lock", ck)[1]["sample"])
         ov = self.get("/api/instructor/overview", ck)[1]
         self.assertEqual(len(ov["cadets"]), len(sample.CADETS))

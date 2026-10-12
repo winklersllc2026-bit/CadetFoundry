@@ -9,17 +9,17 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-os.environ["VANGUARD_DATA"] = tempfile.mkdtemp()
-os.environ["VANGUARD_NO_WARMUP"] = "1"
+os.environ["CADETFOUNDRY_DATA"] = tempfile.mkdtemp()
+os.environ["CADETFOUNDRY_NO_WARMUP"] = "1"
 
-from vanguard import board, daily, exam, fitness, pay, profiles, safety, store, voice  # noqa: E402
-from vanguard.brain import Brain  # noqa: E402
-from vanguard.faith import Faith, parse_ref  # noqa: E402
-from vanguard.knowledge import Library  # noqa: E402
+from cadetfoundry import board, daily, exam, fitness, pay, profiles, safety, store, voice  # noqa: E402
+from cadetfoundry.brain import Brain  # noqa: E402
+from cadetfoundry.faith import Faith, parse_ref  # noqa: E402
+from cadetfoundry.knowledge import Library  # noqa: E402
 
 
 class LibraryTests(unittest.TestCase):
-    lib = Library(cache_dir=Path(os.environ["VANGUARD_DATA"]))
+    lib = Library(cache_dir=Path(os.environ["CADETFOUNDRY_DATA"]))
 
     def test_cards_load_with_sources_and_quizzes(self):
         self.assertGreaterEqual(len(self.lib.cards), 15)
@@ -65,7 +65,7 @@ class LibraryTests(unittest.TestCase):
 
     def test_invented_numbers_are_flagged_and_ai_text_is_marked(self):
         from unittest import mock
-        from vanguard.knowledge import unsupported_numbers
+        from cadetfoundry.knowledge import unsupported_numbers
         given = "Five events. At least 60 points in every event. Drink up to three gallons. Rush 3 to 5 seconds."
         self.assertEqual(unsupported_numbers("You need 10 pull-ups.", given), ["10 pull-ups"])
         self.assertEqual(unsupported_numbers("Get 60 points; drink 3 gallons; rush 3 to 5 seconds.", given), [])
@@ -74,7 +74,7 @@ class LibraryTests(unittest.TestCase):
         self.addCleanup(profiles.delete, p["id"])
         tok = store.use_profile(profiles.folder(p["id"]))
         self.addCleanup(store.reset_profile, tok)
-        with mock.patch("vanguard.engine.stream", lambda m, max_tokens=0: iter(["The AFT has five events. ", "The AFT needs 10 pull-ups."])),              mock.patch.object(Brain, "_learn", lambda *a: None):
+        with mock.patch("cadetfoundry.engine.stream", lambda m, max_tokens=0: iter(["The AFT has five events. ", "The AFT needs 10 pull-ups."])),              mock.patch.object(Brain, "_learn", lambda *a: None):
             events = list(Brain(self.lib).chat("what does the aft test"))
         text = "".join(e.get("t", "") for e in events)
         self.assertIn("five events", text)                                 # a supported sentence stays...
@@ -88,13 +88,13 @@ class LibraryTests(unittest.TestCase):
         tok = store.use_profile(profiles.folder(p["id"]))
         self.addCleanup(store.reset_profile, tok)
         fake = ["Also ✅ **Check", "ed answer:** you get 30 days. ", "📄 AR 600-8-10"]       # split across chunks
-        with mock.patch("vanguard.engine.stream", lambda m, max_tokens=0: iter(fake)),              mock.patch.object(Brain, "_learn", lambda *a: None):
+        with mock.patch("cadetfoundry.engine.stream", lambda m, max_tokens=0: iter(fake)),              mock.patch.object(Brain, "_learn", lambda *a: None):
             text = "".join(e.get("t", "") for e in Brain(self.lib).chat("Do I salute a sergeant first class?"))
             seen = {}
             def spy(msgs, max_tokens=0):
                 seen["history"] = [m["content"] for m in msgs[1:-1]]
                 return iter(["ok"])
-            with mock.patch("vanguard.engine.stream", spy):
+            with mock.patch("cadetfoundry.engine.stream", spy):
                 list(Brain(self.lib).chat("anything else?"))
         self.assertEqual(text.count("Checked answer"), 1)                  # only Cadet Foundry's real one, from AR 600-25
         self.assertTrue(text.startswith("✅ **Checked answer:** No"))
@@ -114,7 +114,7 @@ class LibraryTests(unittest.TestCase):
         self.addCleanup(store.save_config, {"ai_mode": before})
         def no_ai(*a, **k):
             raise AssertionError("the AI was called in library-only mode")
-        with mock.patch("vanguard.engine.stream", no_ai), mock.patch.object(Brain, "_learn", lambda *a: None):
+        with mock.patch("cadetfoundry.engine.stream", no_ai), mock.patch.object(Brain, "_learn", lambda *a: None):
             events = list(Brain(self.lib).chat("how far must a latrine be from water"))
             care = list(Brain(self.lib).chat("I don't want to live anymore"))
         text = "".join(e.get("t", "") for e in events)
@@ -122,11 +122,11 @@ class LibraryTests(unittest.TestCase):
         self.assertFalse(events[-1]["ai"])
         self.assertIn("988", "".join(e.get("t", "") for e in care))                          # crisis care still works
 
-    def test_facts_come_from_vanguards_data_not_the_ai(self):
+    def test_facts_come_from_our_own_data_not_the_ai(self):
         """From a real test run: the AI invented BAS 'varies by location', an AFT run-time formula, an E-12, and
         'AR 999-99' haircut rules. Those now come from the tables -- or Cadet Foundry says it doesn't know."""
         from unittest import mock
-        from vanguard import facts
+        from cadetfoundry import facts
         lib_dir = self.lib.library_dir
         self.assertIn("13:22", facts.direct_answer("What's the AFT run time for a 20-year-old male to get 100 points?")["answer"])
         self.assertIn("$476.95", facts.direct_answer("How much is BAS for enlisted?")["answer"])
@@ -144,7 +144,7 @@ class LibraryTests(unittest.TestCase):
         self.addCleanup(store.reset_profile, tok)
         def no_ai(*a, **k):
             raise AssertionError("the AI was called")
-        with mock.patch("vanguard.engine.stream", no_ai), mock.patch.object(Brain, "_learn", lambda *a: None):
+        with mock.patch("cadetfoundry.engine.stream", no_ai), mock.patch.object(Brain, "_learn", lambda *a: None):
             e12 = "".join(e.get("t", "") for e in Brain(self.lib).chat("How much does an E-12 make?"))
             fake = "".join(e.get("t", "") for e in Brain(self.lib).chat("What does AR 999-99 say about haircuts?"))
         self.assertIn("no E-12", e12)
@@ -162,7 +162,7 @@ class LibraryTests(unittest.TestCase):
         self.addCleanup(store.reset_profile, tok)
         fake = ["The five events of the AFT are:\n", "- Push-ups: 45 reps\n", "Squats are also tested. ",
                 "Train all five events every week. ", "If you have any other questions, feel free to ask!"]
-        with mock.patch("vanguard.engine.stream", lambda m, max_tokens=0: iter(fake)), \
+        with mock.patch("cadetfoundry.engine.stream", lambda m, max_tokens=0: iter(fake)), \
                 mock.patch.object(Brain, "_learn", lambda *a: None):
             text = "".join(e.get("t", "") for e in Brain(self.lib).chat("What are the events on the Army Fitness Test?"))
         self.assertTrue(text.startswith("✅ **Checked answer:** 3-rep max deadlift"))
@@ -177,7 +177,7 @@ class LibraryTests(unittest.TestCase):
         tok = store.use_profile(profiles.folder(p["id"]))
         self.addCleanup(store.reset_profile, tok)
         self.assertEqual(self.lib.unknown_pubs("See AR 670-1, DA PAM 670-1, TC 3-22.9 and DA Form 4856."), [])
-        with mock.patch("vanguard.engine.stream", lambda m, max_tokens=0: iter(["Keep latrines away from water. ", "Dig it far away (TC 7-25.4)."])),              mock.patch.object(Brain, "_learn", lambda *a: None):
+        with mock.patch("cadetfoundry.engine.stream", lambda m, max_tokens=0: iter(["Keep latrines away from water. ", "Dig it far away (TC 7-25.4)."])),              mock.patch.object(Brain, "_learn", lambda *a: None):
             text = "".join(e.get("t", "") for e in Brain(self.lib).chat("how far is a latrine from water"))
         self.assertIn("away from water", text)
         self.assertNotIn("TC 7-25.4", text)                                # a sentence citing a manual Cadet Foundry lacks is dropped
@@ -192,7 +192,7 @@ class LibraryTests(unittest.TestCase):
         def fake(msgs, max_tokens=0):
             seen["system"] = msgs[0]["content"]
             yield "Model text."
-        with mock.patch("vanguard.engine.stream", fake), mock.patch.object(Brain, "_learn", lambda *a: None):
+        with mock.patch("cadetfoundry.engine.stream", fake), mock.patch.object(Brain, "_learn", lambda *a: None):
             events = list(Brain(self.lib).chat("Do I salute a sergeant first class?"))
         self.assertTrue(events[0]["t"].startswith("✅ **Checked answer:** No"))
         self.assertIn("ANSWER (already shown to the Cadet)", seen["system"])
@@ -211,7 +211,7 @@ class LibraryTests(unittest.TestCase):
         def fake(msgs, max_tokens=0):
             seen["system"] = msgs[0]["content"]
             yield "Focus on your MOS skills (FM 7-22)."
-        with mock.patch("vanguard.engine.stream", fake), mock.patch.object(Brain, "_learn", lambda *a: None):
+        with mock.patch("cadetfoundry.engine.stream", fake), mock.patch.object(Brain, "_learn", lambda *a: None):
             events = list(Brain(self.lib).chat("im just getting there, what do i need to know?"))
         self.assertIn("AIT = advanced individual training", seen["system"])
         self.assertIn("Army Fitness Test (AFT), never the APFT", seen["system"])
@@ -219,16 +219,16 @@ class LibraryTests(unittest.TestCase):
         cites = events[-1]["cites"]
         self.assertTrue(all("FM 7-22" in c["source"] for c in cites), [c["source"] for c in cites])
 
-    def test_questions_about_vanguard_itself_get_the_same_help_every_time(self):
+    def test_questions_about_the_app_itself_get_the_same_help_every_time(self):
         from unittest import mock
-        from vanguard.brain import APP_HELP, app_help_question
+        from cadetfoundry.brain import APP_HELP, app_help_question
         self.assertTrue(app_help_question("How does this work? what am i supposed to do with it"))
         self.assertFalse(app_help_question("how does a tourniquet work"))
         p = profiles.create(f"help-test-{uuid.uuid4().hex[:8]}")
         tok = store.use_profile(profiles.folder(p["id"]))
         self.addCleanup(store.reset_profile, tok)
         self.addCleanup(profiles.delete, p["id"])
-        with mock.patch("vanguard.engine.stream", side_effect=AssertionError("no AI needed")):
+        with mock.patch("cadetfoundry.engine.stream", side_effect=AssertionError("no AI needed")):
             events = list(Brain(self.lib).chat("how does this work?"))
         self.assertEqual(events[0]["t"], APP_HELP)
         self.assertEqual(events[-1]["cites"], [])
@@ -269,13 +269,13 @@ class LibraryTests(unittest.TestCase):
         self.assertEqual(len(store.open_chat(first["current"])), 2)
         self.assertTrue(store.delete_chat(first["current"]))
         self.assertEqual(store.history()[0]["content"], "How do I wear the AGSU?")
-        self.assertIn("chats.json", __import__("vanguard.backup", fromlist=["x"]).JSON_FILES)
+        self.assertIn("chats.json", __import__("cadetfoundry.backup", fromlist=["x"]).JSON_FILES)
 
     def test_addons_report_status_and_unpack_safely(self):
         import tempfile
         import zipfile as zf
         from pathlib import Path
-        from vanguard import addons
+        from cadetfoundry import addons
         st = addons.status()
         self.assertIn("installed", st["ai"]) and self.assertIn("installed", st["voice"])
         with self.assertRaises(ValueError):
@@ -324,7 +324,7 @@ class LibraryTests(unittest.TestCase):
         tok = store.use_profile(profiles.folder(p["id"]))
         self.addCleanup(store.reset_profile, tok)
         daily.save_support([{"role": "Chaplain", "name": "CH Reyes", "phone": "555-0100"}])
-        with mock.patch("vanguard.engine.stream", side_effect=RuntimeError("no model")), \
+        with mock.patch("cadetfoundry.engine.stream", side_effect=RuntimeError("no model")), \
              mock.patch.object(Brain, "_learn", lambda *a: None):
             events = list(Brain(self.lib).chat("I don't want to live anymore"))
         text = "".join(e.get("t", "") for e in events)
@@ -340,13 +340,13 @@ class LibraryTests(unittest.TestCase):
         def fake_stream(msgs, max_tokens):
             seen["msgs"] = msgs
             yield "Plain words."
-        with mock.patch("vanguard.engine.stream", fake_stream):
+        with mock.patch("cadetfoundry.engine.stream", fake_stream):
             out = "".join(e.get("t", "") for e in Brain(self.lib).simplify("Per AR 670-1, hair must be neat."))
         self.assertEqual(out, "Plain words.")
         self.assertEqual(len(seen["msgs"]), 2)                       # instructions + the answer; no history or profile
         self.assertIn("Keep every fact", seen["msgs"][0]["content"])
         self.assertEqual(seen["msgs"][1]["content"], "Per AR 670-1, hair must be neat.")
-        with mock.patch("vanguard.engine.stream", side_effect=RuntimeError("no model")):
+        with mock.patch("cadetfoundry.engine.stream", side_effect=RuntimeError("no model")):
             self.assertIn("isn't running", "".join(e.get("t", "") for e in Brain(self.lib).simplify("x")))
 
     def test_exam_mode(self):
@@ -406,7 +406,7 @@ class LibraryTests(unittest.TestCase):
         st = daily.save_pcs({"remove": c["id"]})
         self.assertEqual((st["custom"], st["done"]), ([], []))
 
-    def test_family_profile_changes_who_vanguard_talks_to(self):
+    def test_family_profile_changes_who_the_app_talks_to(self):
         from unittest import mock
         p = profiles.create(f"family-test-{uuid.uuid4().hex[:8]}", "family")              # old value still works
         self.assertEqual(profiles.get(p["id"])["kind"], "guardian")
@@ -416,7 +416,7 @@ class LibraryTests(unittest.TestCase):
         tok = store.use_profile(profiles.folder(p["id"]))
         self.addCleanup(store.reset_profile, tok)
         seen = []
-        with mock.patch("vanguard.engine.stream", lambda msgs, max_tokens: (seen.append(msgs), iter(["ok"]))[1]), \
+        with mock.patch("cadetfoundry.engine.stream", lambda msgs, max_tokens: (seen.append(msgs), iter(["ok"]))[1]), \
              mock.patch.object(Brain, "_learn", lambda *a: None):
             list(Brain(self.lib).chat("What do ranks mean?", family=True))
             list(Brain(self.lib).chat("What do ranks mean?"))
@@ -468,7 +468,7 @@ class FaithTests(unittest.TestCase):
 
 class VoiceTextTests(unittest.TestCase):
     def test_spoken_numbers_and_terms(self):
-        from vanguard.voice import tidy
+        from cadetfoundry.voice import tidy
         cases = {
             "what is an article fifteen and how do i read a great coordinate":
                 "What is an article 15 and how do i read a grid coordinate",
@@ -583,9 +583,9 @@ class BoardTests(unittest.TestCase):
 
     def test_ai_grade_used_when_available_else_words(self):
         from unittest import mock
-        with mock.patch("vanguard.engine.quick", return_value='{"verdict": "go", "why": "Same meaning."}'):
+        with mock.patch("cadetfoundry.engine.quick", return_value='{"verdict": "go", "why": "Same meaning."}'):
             self.assertEqual(board.grade("q", "A chaplain", "the chaplain")["how"], "ai")
-        with mock.patch("vanguard.engine.quick", return_value=""):
+        with mock.patch("cadetfoundry.engine.quick", return_value=""):
             self.assertEqual(board.grade("q", "A chaplain", "the chaplain")["how"], "words")
 
     def test_creed_recitation_marks_each_word(self):
@@ -640,7 +640,7 @@ class PayTests(unittest.TestCase):
 
 class LettersAndJobsTests(unittest.TestCase):
     def test_letter_opsec_check_flags_what_shares_too_much(self):
-        from vanguard import letters
+        from cadetfoundry import letters
         flags = {f["sentence"]: f["why"] for f in letters.opsec_check(
             "Miss you all. We ship out on March 3rd with 40 guys. Our grid is 18S UJ 2337 0651. "
             "My drill sergeant yelled today. The gate code is 4471.")}
@@ -653,7 +653,7 @@ class LettersAndJobsTests(unittest.TestCase):
         self.assertIn("mentions security details", flags["The gate code is 4471."])
 
     def test_letters_and_contacts_are_kept_per_profile(self):
-        from vanguard import letters
+        from cadetfoundry import letters
         p = profiles.create(f"letters-test-{uuid.uuid4().hex[:8]}")
         tok = store.use_profile(profiles.folder(p["id"]))
         self.addCleanup(store.reset_profile, tok)
@@ -665,7 +665,7 @@ class LettersAndJobsTests(unittest.TestCase):
         self.assertEqual(letters.contacts(), [])
 
     def test_job_search_finds_everyday_words_and_codes(self):
-        from vanguard import careers
+        from cadetfoundry import careers
         lib = ROOT / "library"
         if not (lib / "_jobs.json").exists():
             self.skipTest("job list not downloaded (tools/fetch_library.py)")
@@ -678,10 +678,10 @@ class LettersAndJobsTests(unittest.TestCase):
 
 
 class BooksTests(unittest.TestCase):
-    """Free books (vanguard/books.py): chapters from each book's headings, contents lists skipped, search, place."""
+    """Free books (cadetfoundry/books.py): chapters from each book's headings, contents lists skipped, search, place."""
 
     def test_chapters_skip_contents_and_keep_book_names(self):
-        from vanguard import books
+        from cadetfoundry import books
         para = "Some words of the chapter. " * 30
         text = ("CONTENTS\nCHAPTER I. THE FIRST\nCHAPTER II. THE SECOND\n\n" + "Preface text. " * 40 +
                 "\n\nBOOK I. ON THINGS\n\nCHAPTER I.\n\n" + para + "\n\nCHAPTER II.\n\n" + para +
@@ -695,14 +695,14 @@ class BooksTests(unittest.TestCase):
         self.assertEqual(books.split_chapters("Just one short document.", None)[0]["title"], "Full text")
 
     def test_gutenberg_license_kept_on_disk_but_not_shown(self):
-        from vanguard import books
+        from cadetfoundry import books
         raw = "Header\n*** START OF THE PROJECT GUTENBERG EBOOK X ***\nThe book.\n*** END OF THE PROJECT GUTENBERG EBOOK X ***\nLicense"
         self.assertEqual(books._body(raw), "The book.")
 
     def test_search_and_place_per_profile(self):
         import tempfile
         from unittest import mock
-        from vanguard import books
+        from cadetfoundry import books
         d = Path(tempfile.mkdtemp())
         (d / "declaration.txt").write_text("We hold these truths to be self-evident, that all men are created equal.",
                                            encoding="utf-8")

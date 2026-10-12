@@ -4,7 +4,7 @@
 // plan is kept for the rest of the day on this computer. Listeners in JS (the page's policy blocks inline handlers).
 'use strict';
 
-const CD_KEY = 'vanguard-classday';
+const CD_KEY = 'cadetfoundry-classday';
 const cdToday = () => new Date().toISOString().slice(0, 10);
 const cdLoad = () => {
   try {

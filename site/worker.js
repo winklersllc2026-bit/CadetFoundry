@@ -1,8 +1,8 @@
 // cadetfoundry.org — Cadet Foundry's public page (since 0.2.2). Downloads come from the public
 // Vanguard-releases repo on GitHub; this site only serves the page and its screenshots.
-// Optional password: set the Worker secret VANGUARD_PAGE_PASSWORD to require one for every request
-// (npx wrangler secret put VANGUARD_PAGE_PASSWORD); while it's set, search engines are told not to list the page.
-// Public (the default): npx wrangler secret delete VANGUARD_PAGE_PASSWORD
+// Optional password: set the Worker secret CADETFOUNDRY_PAGE_PASSWORD to require one for every request
+// (npx wrangler secret put CADETFOUNDRY_PAGE_PASSWORD); while it's set, search engines are told not to list the page.
+// Public (the default): npx wrangler secret delete CADETFOUNDRY_PAGE_PASSWORD
 
 const REALM = 'Cadet Foundry (private)';
 
@@ -36,7 +36,7 @@ export default {
         + 'Policy: https://cadetfoundry.org/privacy\n',
         { headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'public, max-age=86400' } });
     }
-    const secret = env.VANGUARD_PAGE_PASSWORD;
+    const secret = env.CADETFOUNDRY_PAGE_PASSWORD;
     if (secret) {
       const auth = request.headers.get('Authorization') || '';
       if (!auth.startsWith('Basic ')) return unauthorized();

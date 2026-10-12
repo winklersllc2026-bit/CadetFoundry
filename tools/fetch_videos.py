@@ -1,5 +1,5 @@
 """
-Save the official DVIDS videos listed in vanguard/data/videos.json onto this device, so they play offline.
+Save the official DVIDS videos listed in cadetfoundry/data/videos.json onto this device, so they play offline.
 
     python tools/fetch_videos.py --key YOUR_DVIDS_API_KEY      (or set DVIDS_API_KEY)
     python tools/fetch_videos.py --list                        what would be saved, and what already is
@@ -21,7 +21,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-from vanguard import videos  # noqa: E402
+from cadetfoundry import videos  # noqa: E402
 
 UA = {"User-Agent": "Cadet Foundry video installer (offline classroom app)"}
 

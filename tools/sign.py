@@ -7,7 +7,7 @@ Release signing for Cadet Foundry updates and the library (run on the BUILD mach
 
 The private key is written OUTSIDE the project (default ~/.vanguard-release/release_key.pem) so it
 never ends up in git, a zip or a device. Back it up somewhere safe: without it you can't sign updates,
-and anyone who has it can. The public key goes into vanguard/data/release_key.pub, which ships with the app.
+and anyone who has it can. The public key goes into cadetfoundry/data/release_key.pub, which ships with the app.
 """
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-from vanguard import integrity  # noqa: E402
+from cadetfoundry import integrity  # noqa: E402
 
 DEFAULT_KEY = Path.home() / ".vanguard-release" / "release_key.pem"
 

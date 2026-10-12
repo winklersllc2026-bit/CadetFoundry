@@ -13,11 +13,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-os.environ.setdefault("VANGUARD_DATA", tempfile.mkdtemp())
-os.environ["VANGUARD_NO_WARMUP"] = "1"
+os.environ.setdefault("CADETFOUNDRY_DATA", tempfile.mkdtemp())
+os.environ["CADETFOUNDRY_NO_WARMUP"] = "1"
 
-from vanguard import backup, profiles, security, store, vault  # noqa: E402
-from vanguard.server import Handler, serve  # noqa: E402
+from cadetfoundry import backup, profiles, security, store, vault  # noqa: E402
+from cadetfoundry.server import Handler, serve  # noqa: E402
 
 ADMIN = "905172"                                         # same Class PIN as test_authz (they share a data folder)
 
@@ -174,7 +174,7 @@ class SessionTests(unittest.TestCase):
         token = security.token_from_cookie(self.sign_in(self.cadet, "482915"))
         with security.as_profile(self.cadet["id"], security.session_key(token), security.session_class_key(token)):
             before = store.read_json("assignments.json", {})
-            crafted = {"vanguard_backup": backup.VERSION, "kind": "instructor",
+            crafted = {"cadetfoundry_backup": backup.VERSION, "kind": "instructor",
                        "json": {"assignments.json": {"x": {"state": "complete", "score": 99, "total": 1}},
                                 "config.json": {"online_ai": True}, "study.json": {"ok": 1}, "daily.json": 7}}
             out = backup.restore(crafted)

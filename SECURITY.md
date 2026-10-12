@@ -45,13 +45,13 @@ When the library is installed, Cadet Foundry records a SHA-256 fingerprint of ev
 
 ## Signed offline updates
 An update is the normal release zip plus a `.sig` file. On a device: **Me → Install an update from a USB stick**, choose both files, and give the Class PIN (instructor profiles only). Cadet Foundry installs it only if:
-- the signature is a well-formed Ed25519 signature (exactly 64 bytes, strict base64) that matches the publisher's public key (`vanguard/data/release_key.pub`);
+- the signature is a well-formed Ed25519 signature (exactly 64 bytes, strict base64) that matches the publisher's public key (`cadetfoundry/data/release_key.pub`);
 - it's a **newer** version (no downgrades, no reinstalling the same version);
 - every file is inside the app's own folders (no unexpected names, `..`, drive letters, `:` stream names or control characters).
 
 A copy without a public key refuses every update (fail closed). Everything is unpacked before anything changes, and
 every file the update replaces is copied aside first: if a step fails, the app is put back exactly as it was, and if
-Cadet Foundry stops part-way, the next start rolls it back. Cadets' data (`~/.vanguard`) is never touched. Then restart
+Cadet Foundry stops part-way, the next start rolls it back. Cadets' data (`~/.cadetfoundry`) is never touched. Then restart
 Cadet Foundry. Tested in `tests/test_security.py` (valid, tampered, unsigned, malformed, wrong key, downgrade, equal
 version, unsafe paths, no public key, failed and interrupted installs).
 
@@ -64,7 +64,7 @@ installer itself; it's an owner action that hasn't been done yet, so Windows sho
 
 **For the publisher (build machine only):**
 1. **Create (once):** `python tools/sign.py keygen` — writes the private key to `~/.vanguard-release/release_key.pem`
-   and the public key to `vanguard/data/release_key.pub`. Commit only the `.pub`. Done by the owner on 2026-10-11.
+   and the public key to `cadetfoundry/data/release_key.pub`. Commit only the `.pub`. Done by the owner on 2026-10-11.
 2. **Store:** keep `release_key.pem` only on the build computer (BitLocker on, standard account), never in git, a
    zip, a USB that goes to schools, chat or email. A test checks that no private key is tracked in the repository.
 3. **Back up:** one offline copy (a password manager's secure file, or an encrypted USB kept locked away). Without it
@@ -100,7 +100,7 @@ even though this section said grading never used it.
 ## Safety check on Ask (what it does and doesn't do)
 
 Every message typed into **Ask** is checked against patterns for self-harm, suicide, abuse, sexual assault and
-hazing (`vanguard/safety.py`). What happens:
+hazing (`cadetfoundry/safety.py`). What happens:
 - **A first-person disclosure** ("I want to…", "my dad hits me"): help comes first — call or text 988, text HOME to
   741741, RAINN, Childhelp, 911, and the Cadet's own trusted people if they added any — then a short, caring reply that
   encourages them to reach a person now. It works with no internet and no AI (a fixed caring message).
@@ -172,7 +172,7 @@ Cadet Foundry is Python's standard library plus one package, `cryptography` (PyC
 | Python 3.14.8, embeddable (Windows installer) | python.org | exact URL + SHA-256 in `site/build.py` (matches the hash python.org publishes) |
 | `cryptography` 50.0.2, `cffi` 2.1.1, `pycparser` 3.0 (Windows installer) | PyPI | exact versions + SHA-256 in `site/bundle-requirements.txt`; the build uses `pip --require-hashes`, so a changed file stops the build |
 | `cryptography` (Linux, Raspberry Pi, Mac, source installs) | PyPI, through `tools/setup.py` | at least 50.0.0 (every earlier release has published advisories); not exact, because each platform needs its own wheel. The USB's Mac/Linux starter refuses an older copy and says how to upgrade |
-| Voice add-on: pip 26.2.1 (as one file), `vosk` 0.3.45, the small English model 0.15 | bootstrap.pypa.io, PyPI, alphacephei.com | pip and the model: exact URL + SHA-256 in `vanguard/addons.py`, refused on mismatch. `vosk` and its own dependencies: exact `vosk` version only |
+| Voice add-on: pip 26.2.1 (as one file), `vosk` 0.3.45, the small English model 0.15 | bootstrap.pypa.io, PyPI, alphacephei.com | pip and the model: exact URL + SHA-256 in `cadetfoundry/addons.py`, refused on mismatch. `vosk` and its own dependencies: exact `vosk` version only |
 | AI add-on: Ollama | ollama.com (latest installer) | Windows checks the installer's Authenticode signature is valid and from Ollama before running it; the model is pulled by Ollama itself |
 | `wrangler` 4.141.0 (publishing the website only, owner's computer) | npm | exact version in `site/build.py` |
 | `pypdf` (`tools/setup.py`, converts official PDFs on the owner's computer) | PyPI | not pinned; it never ships to Cadets |
@@ -184,11 +184,11 @@ Cadet Foundry is Python's standard library plus one package, `cryptography` (PyC
 **Secrets:** the repository is checked by `tests/test_security.py` for a release private key, and history was searched for keys and passwords during the 2026-10 review (see the review report). If a secret is ever found, rotate it first — removing it from the files doesn't un-publish it.
 
 ## Sample class and End pilot (added 2026-10-11)
-- **Sample class** (`vanguard/sample.py`): a separate Cadet Foundry process on this computer only (127.0.0.1, its own port), with its own data folder next to the real one (`<data>-sample`, marked by `SAMPLE_DATA.txt`; only a marked folder is ever deleted, and it's rebuilt from scratch each time). Its people are made up, it uses its own cookie name so it never signs anyone out of the real Cadet Foundry, it refuses device settings and opening to the network, and it closes itself after 45 idle minutes or on Leave sample. Only the library's public search index is copied in; nothing is read from or written to the real data. Starting it is allowed only from the instructor's own computer.
+- **Sample class** (`cadetfoundry/sample.py`): a separate Cadet Foundry process on this computer only (127.0.0.1, its own port), with its own data folder next to the real one (`<data>-sample`, marked by `SAMPLE_DATA.txt`; only a marked folder is ever deleted, and it's rebuilt from scratch each time). Its people are made up, it uses its own cookie name so it never signs anyone out of the real Cadet Foundry, it refuses device settings and opening to the network, and it closes itself after 45 idle minutes or on Leave sample. Only the library's public search index is copied in; nothing is read from or written to the real data. Starting it is allowed only from the instructor's own computer.
 - **End pilot** (`pilot.end`): instructor session with the Class PIN open, **on the instructor's own computer**, the Class PIN typed again, and the word DELETE. It removes every Cadet and guardian profile (via `profiles.delete`, which deletes the whole profile folder), their sessions, assignments, the roster's Cadets, titles and pending joins, live answers, the pilot's files, and `program.before-restore-*` safety copies; units keep going with new join codes. It doesn't touch personal or program backups already saved elsewhere, and it doesn't wipe free disk space.
 
 ## For military IT: adding CAC sign-in
-Cadet Foundry deliberately ships without CAC/PIV sign-in so that it can be configured by the Army's own IT, with its certificate validation and approval. All sign-in logic is in `vanguard/security.py`: a profile is unlocked by `unlock(profile, secret)`, which creates a session bound to that one profile. A smart-card provider would (1) have the card sign a random challenge with its PIV authentication key, (2) validate the certificate chain against the DoD PKI roots (and revocation, where a network is available), and (3) map the certificate to a profile by a hash of the certificate — never storing the DoD ID number. Nothing else in Cadet Foundry needs to change.
+Cadet Foundry deliberately ships without CAC/PIV sign-in so that it can be configured by the Army's own IT, with its certificate validation and approval. All sign-in logic is in `cadetfoundry/security.py`: a profile is unlocked by `unlock(profile, secret)`, which creates a session bound to that one profile. A smart-card provider would (1) have the card sign a random challenge with its PIV authentication key, (2) validate the certificate chain against the DoD PKI roots (and revocation, where a network is available), and (3) map the certificate to a profile by a hash of the certificate — never storing the DoD ID number. Nothing else in Cadet Foundry needs to change.
 
 ## Official use
 Use inside military networks or as an issued device would additionally require formal accreditation (Authority to Operate, STIG compliance). This project is designed to make that process straightforward: no network services unless an instructor opens class to phones, one well-known dependency (`cryptography`, PyCA, for AES via OpenSSL; see Dependencies), all data local.

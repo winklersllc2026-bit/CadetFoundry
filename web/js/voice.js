@@ -13,7 +13,7 @@ const speech = {
       this.ok = !!this.voice;
     };
     pick(); speechSynthesis.onvoiceschanged = pick;
-    try { this.auto = localStorage.getItem('vanguard-autoread') === '1'; } catch (e) {}
+    try { this.auto = localStorage.getItem('cadetfoundry-autoread') === '1'; } catch (e) {}
   },
   btn: null, utter: null,                      // the 🔊 button and the speech of whatever is being read right now
   // One tap reads aloud and the button turns into ⏹; a second tap stops it. Starting another answer stops this one.
@@ -41,7 +41,7 @@ const speech = {
     const b = this.btn; this.btn = null;
     if (b) { b.textContent = '🔊'; b.title = 'Read aloud (on this device)'; b.classList.remove('primary'); }
   },
-  setAuto(on) { this.auto = on; try { localStorage.setItem('vanguard-autoread', on ? '1' : ''); } catch (e) {} },
+  setAuto(on) { this.auto = on; try { localStorage.setItem('cadetfoundry-autoread', on ? '1' : ''); } catch (e) {} },
 };
 speech.init();
 

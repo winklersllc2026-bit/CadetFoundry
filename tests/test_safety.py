@@ -12,9 +12,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-os.environ.setdefault("VANGUARD_DATA", tempfile.mkdtemp())
+os.environ.setdefault("CADETFOUNDRY_DATA", tempfile.mkdtemp())
 
-from vanguard import safety  # noqa: E402
+from cadetfoundry import safety  # noqa: E402
 
 DISCLOSURES = [                       # -> care: resources first, then a caring reply
     "I want to kill myself", "im gonna kms", "i want to unalive myself", "I wish I was dead",

@@ -13,11 +13,11 @@ from unittest import mock
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-os.environ.setdefault("VANGUARD_DATA", tempfile.mkdtemp())
-os.environ["VANGUARD_NO_WARMUP"] = "1"
+os.environ.setdefault("CADETFOUNDRY_DATA", tempfile.mkdtemp())
+os.environ["CADETFOUNDRY_NO_WARMUP"] = "1"
 
-from vanguard import profiles, security, server, store, vault  # noqa: E402
-from vanguard.server import serve  # noqa: E402
+from cadetfoundry import profiles, security, server, store, vault  # noqa: E402
+from cadetfoundry.server import serve  # noqa: E402
 
 
 @unittest.skipUnless(vault.AVAILABLE, "cryptography not installed")
@@ -33,7 +33,7 @@ class DemoBoxTests(unittest.TestCase):
         cls.ip_patch.start()
         threading.Thread(target=cls.httpd.serve_forever, daemon=True).start()
         cls.dl = tempfile.TemporaryDirectory()
-        Path(cls.dl.name, "Vanguard-Setup-9.9.9.exe").write_bytes(b"MZ" + b"x" * 1000)
+        Path(cls.dl.name, "CadetFoundry-Setup-9.9.9.exe").write_bytes(b"MZ" + b"x" * 1000)
         Path(cls.dl.name, "notes.py").write_text("secret = 1")
         cls.old_downloads, server.DOWNLOADS = server.DOWNLOADS, Path(cls.dl.name)
         cls.made = []
@@ -60,11 +60,11 @@ class DemoBoxTests(unittest.TestCase):
     def test_downloads_are_public_and_listed_files_only(self):
         s, page, _ = self.req("GET", "/download")                 # no sign-in needed
         self.assertEqual(s, 200)
-        self.assertIn(b"Vanguard-Setup-9.9.9.exe", page)
+        self.assertIn(b"CadetFoundry-Setup-9.9.9.exe", page)
         self.assertNotIn(b"notes.py", page)
-        s, data, r = self.req("GET", "/downloads/Vanguard-Setup-9.9.9.exe")
+        s, data, r = self.req("GET", "/downloads/CadetFoundry-Setup-9.9.9.exe")
         self.assertEqual((s, data[:2], r.getheader("Content-Disposition")),
-                         (200, b"MZ", 'attachment; filename="Vanguard-Setup-9.9.9.exe"'))
+                         (200, b"MZ", 'attachment; filename="CadetFoundry-Setup-9.9.9.exe"'))
         for path in ("/downloads/notes.py", "/downloads/..%2Frun.py", "/downloads/../run.py", "/downloads/"):
             self.assertEqual(self.req("GET", path)[0], 404, path)
         self.assertEqual(json.loads(self.req("GET", "/api/lock")[1])["downloads"], True)
@@ -102,7 +102,7 @@ class DemoBoxTests(unittest.TestCase):
         self.assertIn(name, names)
 
     def test_a_busy_port_is_never_shared(self):
-        """Two Vanguards on one port would let the browser reach the wrong data (a USB drive vs the computer's own)."""
+        """Two copies on one port would let the browser reach the wrong data (a USB drive vs the computer's own)."""
         with self.assertRaises(OSError):
             serve("127.0.0.1", self.port)
 

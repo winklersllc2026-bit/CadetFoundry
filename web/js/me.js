@@ -158,7 +158,7 @@ loaders.me = async () => {
         <label class="btn small" style="margin:0;color:var(--text)">⬆ Restore from backup<input type="file" id="restoreFile" accept=".json,application/json" hidden></label></div>
       <p class="faint" id="restoreMsg">Restoring replaces what's on this device with the backup. Without the backup password, nobody can open the file.</p></div>
     <p class="faint">Cadet Foundry is designed to support JROTC instruction. It isn't an official JROTC, military or school source — your instructor and official sources come first. What you enter is saved on this device and there is no tracking. If this device uses an online AI service, ordinary Ask questions go to it — without your name, notes or earlier chats.</p>
-    ${aboutVanguardHtml()}`;
+    ${aboutHtml()}`;
   $('#profForm').onsubmit = async ev => {
     ev.preventDefault();
     const data = Object.fromEntries(new FormData(ev.target));
@@ -216,7 +216,7 @@ loaders.me = async () => {
     if (!confirm('Replace everything on this device with this backup?')) { ev.target.value = ''; return; }
     let data; try { data = JSON.parse(await f.text()); } catch (e) { $('#restoreMsg').textContent = "That file couldn't be read."; return; }
     ev.target.value = '';
-    if (data.vanguard_backup_sealed && !$('#bkPass').value) { $('#restoreMsg').textContent = 'Type the backup password first, then choose the file again.'; $('#bkPass').focus(); return; }
+    if ((data.cadetfoundry_backup_sealed || data.vanguard_backup_sealed) && !$('#bkPass').value) { $('#restoreMsg').textContent = 'Type the backup password first, then choose the file again.'; $('#bkPass').focus(); return; }
     $('#restoreMsg').textContent = 'Opening the backup…';
     const r = await api('/api/restore', { file: data, password: $('#bkPass').value });
     $('#restoreMsg').textContent = r.error ? r.error : `Restored (${r.restored.length} parts, backup from ${r.from}).`;

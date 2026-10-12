@@ -3,7 +3,7 @@ Remove a profile whose owner can't sign in any more (a Cadet who left the progra
 
     python tools/remove_profile.py                       list the profiles
     python tools/remove_profile.py "Cadet Ruiz"          remove that profile (asks first)
-    python tools/remove_profile.py "Cadet Ruiz" --data E:\\VanguardData    (Cadet Foundry running from a USB drive)
+    python tools/remove_profile.py "Cadet Ruiz" --data E:\\Cadet Foundry Data    (Cadet Foundry running from a USB drive)
 
 Close Cadet Foundry first. Every file in that profile's folder is deleted -- private files and class records alike -- and
 the profile leaves the sign-in list. Nothing is read or decrypted. Export the class report first if the school keeps
@@ -19,10 +19,10 @@ ROOT = Path(__file__).resolve().parent.parent
 def main(argv: list[str]) -> int:
     if "--data" in argv:
         i = argv.index("--data")
-        os.environ["VANGUARD_DATA"] = argv[i + 1]
+        os.environ["CADETFOUNDRY_DATA"] = argv[i + 1]
         argv = argv[:i] + argv[i + 2:]
     sys.path.insert(0, str(ROOT))
-    from vanguard import profiles, store
+    from cadetfoundry import profiles, store
 
     every = profiles.all_profiles()
     print(f"Data folder: {store.DATA}")

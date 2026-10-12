@@ -7,7 +7,7 @@ One-time setup for a Cadet Foundry device (needs internet once; afterwards every
 
 Steps: faith texts -> official library -> offline voice -> offline AI (Ollama + a small model)
 -> desktop shortcut -> self-check. Each step can fail without stopping the others; a summary
-at the end says what worked. install-vanguard.bat (Windows) and install-vanguard.sh (Linux) run this.
+at the end says what worked. install-cadetfoundry.bat (Windows) and install-cadetfoundry.sh (Linux) run this.
 """
 from __future__ import annotations
 
@@ -118,7 +118,7 @@ def ai(model: str) -> bool:
 def shortcut() -> bool:
     if WINDOWS:
         # The real Desktop folder (it may be moved into OneDrive), the app's icon, and a minimized server window.
-        target, icon = ROOT / "start-vanguard.bat", ROOT / "web" / "icon.ico"
+        target, icon = ROOT / "start-cadetfoundry.bat", ROOT / "web" / "icon.ico"
         ps = ("$d=[Environment]::GetFolderPath('Desktop');"
               "$s=(New-Object -ComObject WScript.Shell).CreateShortcut((Join-Path $d 'Cadet Foundry.lnk'));"
               f"$s.TargetPath='{target}';$s.WorkingDirectory='{ROOT}';$s.IconLocation='{icon},0';"
@@ -126,15 +126,15 @@ def shortcut() -> bool:
         return run(["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", ps])
     apps = Path.home() / ".local" / "share" / "applications"
     apps.mkdir(parents=True, exist_ok=True)
-    entry = apps / "vanguard.desktop"
-    entry.write_text("[Desktop Entry]\nType=Application\nName=Vanguard\nComment=Offline study companion\n"
-                     f"Exec=sh \"{ROOT / 'start-vanguard.sh'}\"\nPath={ROOT}\nIcon={ROOT / 'web' / 'icon.svg'}\nTerminal=false\n", encoding="utf-8")
+    entry = apps / "cadetfoundry.desktop"
+    entry.write_text("[Desktop Entry]\nType=Application\nName=Cadet Foundry\nComment=Offline study companion\n"
+                     f"Exec=sh \"{ROOT / 'start-cadetfoundry.sh'}\"\nPath={ROOT}\nIcon={ROOT / 'web' / 'icon.svg'}\nTerminal=false\n", encoding="utf-8")
     print(f"  Added {entry} (shows in the app menu)")
     return True
 
 
 def self_check() -> bool:
-    code = ("import sys; sys.path.insert(0, '.'); from vanguard.knowledge import Library; "
+    code = ("import sys; sys.path.insert(0, '.'); from cadetfoundry.knowledge import Library; "
             "s = Library().stats(); print(f\"  {s['cards']} study cards, {len(s['documents'])} library documents, "
             "{s['passages']} passages\")")
     return py("-c", code)
@@ -187,7 +187,7 @@ def main(argv: list[str]) -> int:
     print("\nSummary")
     for name, ok in results:
         print(f"  {'✓' if ok else '✗'} {name}")
-    print("\nStart Cadet Foundry with the shortcut, start-vanguard.bat (Windows) or sh start-vanguard.sh (Linux).")
+    print("\nStart Cadet Foundry with the shortcut, start-cadetfoundry.bat (Windows) or sh start-cadetfoundry.sh (Linux).")
     print("Then set a PIN — it encrypts your files — and write down your recovery code. See SECURITY.md.")
     return 0 if all(ok for _n, ok in results) else 1
 

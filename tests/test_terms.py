@@ -14,11 +14,11 @@ from unittest import mock
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-os.environ.setdefault("VANGUARD_DATA", tempfile.mkdtemp())
-os.environ["VANGUARD_NO_WARMUP"] = "1"
+os.environ.setdefault("CADETFOUNDRY_DATA", tempfile.mkdtemp())
+os.environ["CADETFOUNDRY_NO_WARMUP"] = "1"
 
-from vanguard import integrity, profiles, security, store, terms  # noqa: E402
-from vanguard.server import Handler, serve  # noqa: E402
+from cadetfoundry import integrity, profiles, security, store, terms  # noqa: E402
+from cadetfoundry.server import Handler, serve  # noqa: E402
 
 
 class TermsDocumentTests(unittest.TestCase):
@@ -28,12 +28,12 @@ class TermsDocumentTests(unittest.TestCase):
             self.assertTrue(text and f"Version {terms.VERSION}" in text, doc)
             self.assertIn("support@cadetfoundry.org", text)
             self.assertIn("the Cadet Foundry project", text)
-        # inside vanguard/: an older updater (0.2.3) accepts them, so the update path keeps working
-        self.assertTrue(integrity.__dict__["_ALLOWED_DIRS"][0] == "vanguard/")
+        # inside cadetfoundry/: an older updater (0.2.3) accepts them, so the update path keeps working
+        self.assertTrue(integrity.__dict__["_ALLOWED_DIRS"][0] == "cadetfoundry/")
         self.assertIsNone(terms.text("../README"))
 
     def test_no_claim_of_a_company_that_doesnt_exist(self):
-        for path in [*ROOT.glob("*.md"), *(ROOT / "docs").glob("*.md"), *(ROOT / "vanguard" / "legal").glob("*.md"),
+        for path in [*ROOT.glob("*.md"), *(ROOT / "docs").glob("*.md"), *(ROOT / "cadetfoundry" / "legal").glob("*.md"),
                      ROOT / "site" / "build.py", ROOT / "site" / "installer.iss", ROOT / "tools" / "make_usb.py"]:
             text = path.read_text(encoding="utf-8")
             self.assertNotRegex(text, r"\bLLC\b", path.name)               # the domain winklers-llc.com is fine

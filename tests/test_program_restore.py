@@ -16,10 +16,10 @@ from unittest import mock
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-os.environ.setdefault("VANGUARD_DATA", tempfile.mkdtemp())
-os.environ["VANGUARD_NO_WARMUP"] = "1"
+os.environ.setdefault("CADETFOUNDRY_DATA", tempfile.mkdtemp())
+os.environ["CADETFOUNDRY_NO_WARMUP"] = "1"
 
-from vanguard import program_backup, store, vault  # noqa: E402
+from cadetfoundry import program_backup, store, vault  # noqa: E402
 
 PW = "long enough backup pass"
 
@@ -52,7 +52,7 @@ class ProgramRestoreTests(unittest.TestCase):
         return program_backup.export(PW)
 
     def seal_payload(self, payload: dict) -> dict:
-        return {"vanguard_program_backup_sealed": 1, **vault.seal_backup(json.dumps(payload).encode("utf-8"), PW)}
+        return {"cadetfoundry_program_backup_sealed": 1, **vault.seal_backup(json.dumps(payload).encode("utf-8"), PW)}
 
     # ── what a restore produces ────────────────────────────────────────────
     def test_restore_into_an_empty_installation(self):
@@ -112,27 +112,27 @@ class ProgramRestoreTests(unittest.TestCase):
         good = self.backup_of({"lessons.json": [{"id": "x"}]})
         self.assert_refused(good, "the wrong password!")                        # wrong password
         self.assert_refused({})                                                  # missing / not a backup
-        self.assert_refused({"vanguard_program_backup_sealed": 1})               # malformed
+        self.assert_refused({"cadetfoundry_program_backup_sealed": 1})               # malformed
         bad = dict(good)
         bad["data"] = ("00" if good["data"][:2] != "00" else "11") + good["data"][2:]   # one byte changed: tag fails
         self.assert_refused(bad)
-        self.assert_refused(self.seal_payload({"vanguard_program_backup": 1, "files": {}}))          # empty
-        self.assert_refused(self.seal_payload({"vanguard_program_backup": 1,
+        self.assert_refused(self.seal_payload({"cadetfoundry_program_backup": 1, "files": {}}))          # empty
+        self.assert_refused(self.seal_payload({"cadetfoundry_program_backup": 1,
                                                "files": {"program/lessons.json": "!!not base64!!"}}))
-        self.assert_refused(self.seal_payload({"vanguard_program_backup": 1,
+        self.assert_refused(self.seal_payload({"cadetfoundry_program_backup": 1,
                                                "files": {"program/lessons.json": base64.b64encode(b"{broken").decode()}}))
-        self.assert_refused(self.seal_payload({"vanguard_program_backup": 2, "files": {}}))          # future version
+        self.assert_refused(self.seal_payload({"cadetfoundry_program_backup": 2, "files": {}}))          # future version
 
     def test_path_traversal_and_unexpected_names_are_refused(self):
         for name in ("program/../../evil.py", "../admin.json", "program/sub/x.json", "C:/Windows/x", "program/",
                      "program/roster.json/../../x", "profiles/abc/security.json", "config.json"):
             with self.subTest(name=name):
-                self.assert_refused(self.seal_payload({"vanguard_program_backup": 1,
+                self.assert_refused(self.seal_payload({"cadetfoundry_program_backup": 1,
                                                        "files": {name: base64.b64encode(b"{}").decode()}}))
 
     def test_an_older_version_1_backup_still_restores(self):
         """Backups made before this change (no join codes, titles or pending joins) restore as before."""
-        old = self.seal_payload({"vanguard_program_backup": 1, "created": "2026-09-01 10:00",
+        old = self.seal_payload({"cadetfoundry_program_backup": 1, "created": "2026-09-01 10:00",
                                  "files": {"program/lessons.json": base64.b64encode(b'[{"id": "L"}]').decode()},
                                  "config": {"ai_mode": "library"}})
         self.put({"lessons.json": [], "join_codes.json": {"OLD": {}}})

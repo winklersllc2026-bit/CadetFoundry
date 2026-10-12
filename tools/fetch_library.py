@@ -569,9 +569,9 @@ def main(argv: list[str]) -> int:
         except Exception as e:
             failed.append(f"{job.__name__}: {e}")
             print("✗", failed[-1])
-    try:                                         # fingerprints for the tamper check (vanguard/integrity.py)
+    try:                                         # fingerprints for the tamper check (cadetfoundry/integrity.py)
         sys.path.insert(0, str(ROOT))
-        from vanguard import integrity
+        from cadetfoundry import integrity
         print("✓ fingerprints recorded:", integrity.write_manifest(LIB).name)
     except Exception as e:
         print("✗ couldn't record fingerprints:", e)

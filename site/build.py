@@ -25,7 +25,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SITE = ROOT / "site"
 DIST = SITE / "dist"
 sys.path.insert(0, str(ROOT))
-from vanguard import __version__  # noqa: E402
+from cadetfoundry import __version__  # noqa: E402
 
 REPO = "https://github.com/winklersllc2026-bit/CadetFoundry"                # the code: private
 RELEASES_REPO = "winklersllc2026-bit/Vanguard-releases"                     # downloads only: public, no source code
@@ -34,8 +34,8 @@ LATEST = "CadetFoundry-Setup-latest.exe"        # uploaded with every release (p
 OLD_LATEST = "Vanguard-Setup-latest.exe"        # the same file under the name used before the rename (old links)
 LATEST_URL = f"{RELEASES}/releases/latest/download/{LATEST}"
 
-INCLUDE_DIRS = ["vanguard", "web", "tools", "tests", "faith", "library", "books"]
-INCLUDE_FILES = ["run.py", "start-vanguard.bat", "start-vanguard.sh", "start-classroom.bat", "start-classroom.sh", "install-vanguard.bat", "install-vanguard.sh", "README.md", "LIBRARY.md", "SECURITY.md"]
+INCLUDE_DIRS = ["cadetfoundry", "web", "tools", "tests", "faith", "library", "books"]
+INCLUDE_FILES = ["run.py", "start-cadetfoundry.bat", "start-cadetfoundry.sh", "start-classroom.bat", "start-classroom.sh", "install-cadetfoundry.bat", "install-cadetfoundry.sh", "README.md", "LIBRARY.md", "SECURITY.md"]
 
 ROADMAP = [
     (True, "0.2: every branch — Army, Navy, Air Force, Marine Corps and Space Force sections in Learn; your program's labels"),
@@ -78,20 +78,20 @@ def make_zip(dest: Path) -> int:
         for f in INCLUDE_FILES:
             if f.endswith(".bat"):                # Windows cmd needs CRLF, whatever machine builds the zip
                 text = (ROOT / f).read_text(encoding="utf-8").replace("\r\n", "\n").replace("\n", "\r\n")
-                z.writestr(f"Vanguard/{f}", text)
+                z.writestr(f"CadetFoundry/{f}", text)
             elif f.endswith(".sh"):               # and Linux / Raspberry Pi needs LF
-                z.writestr(f"Vanguard/{f}", (ROOT / f).read_bytes().replace(b"\r\n", b"\n"))
+                z.writestr(f"CadetFoundry/{f}", (ROOT / f).read_bytes().replace(b"\r\n", b"\n"))
             else:
-                z.write(ROOT / f, f"Vanguard/{f}")
+                z.write(ROOT / f, f"CadetFoundry/{f}")
         for d in INCLUDE_DIRS:
             for p in sorted((ROOT / d).rglob("*")):
                 if p.is_file() and "__pycache__" not in p.parts:
                     if d in ("books", "library") and p.suffix.lower() == ".pdf":
                         continue                  # the converted text ships; a saved source PDF stays on the build PC
                     if p.suffix == ".sh":             # shell scripts run on Linux / a Pi: LF, whatever the build PC did
-                        z.writestr(f"Vanguard/{p.relative_to(ROOT).as_posix()}", p.read_bytes().replace(b"\r\n", b"\n"))
+                        z.writestr(f"CadetFoundry/{p.relative_to(ROOT).as_posix()}", p.read_bytes().replace(b"\r\n", b"\n"))
                         continue
-                    z.write(p, f"Vanguard/{p.relative_to(ROOT).as_posix()}")
+                    z.write(p, f"CadetFoundry/{p.relative_to(ROOT).as_posix()}")
     return dest.stat().st_size
 
 
@@ -141,7 +141,7 @@ def bundle_python(app: Path) -> bool:
     for name in PYTHON_UNUSED:
         (py / name).unlink(missing_ok=True)
     pth = next(py.glob("python3*._pth"))
-    # The app folder (..) holds run.py and vanguard/; Lib\site-packages holds cryptography and add-ons.
+    # The app folder (..) holds run.py and cadetfoundry/; Lib\site-packages holds cryptography and add-ons.
     pth.write_text(f"{pth.stem}.zip\r\n.\r\nLib\\site-packages\r\n..\r\nimport site\r\n", encoding="utf-8")
     r = subprocess.run([sys.executable, "-m", "pip", "install", "--quiet", "--disable-pip-version-check", "--no-compile",
                         "--target", str(py / "Lib" / "site-packages"), "--only-binary=:all:", "--platform", "win_amd64",
@@ -167,8 +167,8 @@ def make_installer(zip_path: Path, dest: Path) -> bool:
     shutil.rmtree(stage, ignore_errors=True)
     with zipfile.ZipFile(zip_path) as z:
         z.extractall(stage)
-    shutil.rmtree(stage / "Vanguard" / "tests", ignore_errors=True)    # not needed on the instructor's laptop
-    if not bundle_python(stage / "Vanguard"):
+    shutil.rmtree(stage / "CadetFoundry" / "tests", ignore_errors=True)    # not needed on the instructor's laptop
+    if not bundle_python(stage / "CadetFoundry"):
         shutil.rmtree(stage, ignore_errors=True)
         print("No installer built.")
         return False
@@ -176,7 +176,7 @@ def make_installer(zip_path: Path, dest: Path) -> bool:
     script = (SITE / "installer.iss").read_text(encoding="utf-8")
     for k, v in {"@VERSION@": __version__, "@VIVERSION@": ".".join(map(str, nums[:4])), "@OUTDIR@": str(dest.parent),
                  "@OUTNAME@": dest.stem, "@ICON@": str(ROOT / "web" / "icon.ico"),
-                 "@STAGE@": str(stage / "Vanguard")}.items():
+                 "@STAGE@": str(stage / "CadetFoundry")}.items():
         script = script.replace(k, v)
     iss = stage / "installer.iss"
     iss.write_text(script, encoding="utf-8-sig")
@@ -435,7 +435,7 @@ def pilot_page() -> str:
 
 
 def _md_page(md_text: str) -> str:
-    """The small Markdown in vanguard/legal/*.md -> HTML (headings, bullet lists, paragraphs, **bold**)."""
+    """The small Markdown in cadetfoundry/legal/*.md -> HTML (headings, bullet lists, paragraphs, **bold**)."""
     esc = html.escape
     bold = lambda t: re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", esc(t))           # noqa: E731
     out, in_list = [], False
@@ -463,7 +463,7 @@ def _md_page(md_text: str) -> str:
 def legal_page(doc: str) -> str:
     name, title = {"terms": ("TERMS.md", "Terms of use"), "privacy": ("PRIVACY.md", "Privacy notice")}[doc]
     body = (f'<section class="hero"><div class="wrap" style="max-width:860px">'
-            f'{_md_page((ROOT / "vanguard" / "legal" / name).read_text(encoding="utf-8"))}</div></section>')
+            f'{_md_page((ROOT / "cadetfoundry" / "legal" / name).read_text(encoding="utf-8"))}</div></section>')
     return shell(f"Cadet Foundry — {title}", doc, body)
 
 

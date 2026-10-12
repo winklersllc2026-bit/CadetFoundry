@@ -11,9 +11,9 @@ import sys
 import threading
 import webbrowser
 
-from vanguard import sample, store
-from vanguard.network import lan_addresses
-from vanguard.server import reopen, serve
+from cadetfoundry import sample, store
+from cadetfoundry.network import lan_addresses
+from cadetfoundry.server import reopen, serve
 
 
 def open_kiosk(url: str) -> None:
@@ -39,9 +39,9 @@ def open_kiosk(url: str) -> None:
 def quiet_start() -> None:
     """Started with pythonw.exe (the Windows installer's icon): there's no console, so output goes to a log file
     in the data folder."""
-    from vanguard import store
+    from cadetfoundry import store
     store.DATA.mkdir(parents=True, exist_ok=True)
-    log = store.DATA / "vanguard.log"
+    log = store.DATA / "cadetfoundry.log"
     if log.exists() and log.stat().st_size > 1_000_000:
         log.replace(log.with_suffix(".log.old"))
     sys.stdout = sys.stderr = open(log, "a", encoding="utf-8", buffering=1)
@@ -53,8 +53,8 @@ def write_pid() -> None:
     overwrite (and then delete) the running one's id, or an update can't close it."""
     import atexit
     import os
-    from vanguard import store
-    pid = store.DATA / "vanguard.pid"
+    from cadetfoundry import store
+    pid = store.DATA / "cadetfoundry.pid"
     pid.write_text(str(os.getpid()), encoding="ascii")
     mine = str(os.getpid())
     atexit.register(lambda: pid.read_text(encoding="ascii").strip() == mine and pid.unlink(missing_ok=True)
@@ -64,7 +64,7 @@ def write_pid() -> None:
 def _print_join_qr(address: str) -> None:
     """The Join address as a QR code in this window, for phones to scan (the projector's Join screen shows a bigger
     one). With exactly one class set up, its join code is built in, so a Cadet who scans lands in that class."""
-    from vanguard import instructor, qr
+    from cadetfoundry import instructor, qr
     codes = instructor.join_codes()
     target = address
     if len(codes) == 1:
@@ -111,7 +111,7 @@ def main() -> int:
             # Something already uses the port. The same Cadet Foundry (its icon clicked again, same data): just show it.
             # Another Cadet Foundry with different data (a USB drive while the computer's own copy runs) or another
             # program: never show that one -- try the next port.
-            other = _vanguard_instance(url)
+            other = _instance_data_id(url)
             if other is not None and other == store.data_id():
                 if _serves_pages(url):
                     print(f"Cadet Foundry is already running at {url}")
@@ -137,10 +137,10 @@ def main() -> int:
         print(f"Ports {args.port}–{args.port + 9} are all in use. Close another program, or choose one: "
               f"python run.py --port 8800")
         return 1
-    if sample.ACTIVE:                               # a separate copy with made-up Cadets (vanguard/sample.py)
+    if sample.ACTIVE:                               # a separate copy with made-up Cadets (cadetfoundry/sample.py)
         threading.Thread(target=sample.build, args=(args.port, httpd.RequestHandlerClass.app), daemon=True).start()
         sample.watch_idle(httpd)
-    if sys.stdout is not None and getattr(sys.stdout, "name", "").endswith("vanguard.log"):
+    if sys.stdout is not None and getattr(sys.stdout, "name", "").endswith("cadetfoundry.log"):
         write_pid()                                 # the icon's quiet Cadet Foundry: the installer closes it by this id
     stats = httpd.RequestHandlerClass.app.library.stats()
     print(f"Cadet Foundry is running at {url}")
@@ -202,10 +202,10 @@ def _start_portable_ai() -> None:
     import atexit
     import os
     import subprocess
-    exe = os.environ.get("VANGUARD_OLLAMA")
+    exe = os.environ.get("CADETFOUNDRY_OLLAMA")
     if not exe or not os.path.exists(exe):
         return
-    from vanguard import engine
+    from cadetfoundry import engine
     if engine.local_models() is not None:            # an Ollama is already running on this computer: use it
         return
     env = dict(os.environ, OLLAMA_MODELS=os.path.join(os.path.dirname(exe), "models"), OLLAMA_HOST="127.0.0.1:11434")
@@ -218,12 +218,12 @@ def _start_portable_ai() -> None:
     print("  Offline AI: starting from this drive (the first answer can take a minute while the model loads).")
 
 
-def _vanguard_instance(url: str) -> str | None:
+def _instance_data_id(url: str) -> str | None:
     """The data ID of the Cadet Foundry answering at `url` ("" if it's an older Cadet Foundry without one), or None if what
     answers isn't Cadet Foundry."""
     import json
     import urllib.request
-    if not _is_vanguard(url):
+    if not _is_cadet_foundry(url):
         return None
     try:
         with urllib.request.urlopen(url + "/api/lock", timeout=3) as r:
@@ -255,7 +255,7 @@ def _close_broken(url: str, port: int) -> bool:
         pass
     for _ in range(10):
         time.sleep(0.5)
-        if _vanguard_instance(url) is None:
+        if _instance_data_id(url) is None:
             return True
     if sys.platform != "win32":
         return False
@@ -271,20 +271,20 @@ def _close_broken(url: str, port: int) -> bool:
             subprocess.run(["taskkill", "/PID", pid, "/F"], capture_output=True, timeout=10)
     for _ in range(10):
         time.sleep(0.5)
-        if _vanguard_instance(url) is None:
+        if _instance_data_id(url) is None:
             return True
     return False
 
 
-def _is_vanguard(url: str) -> bool:
+def _is_cadet_foundry(url: str) -> bool:
     """Whatever answers at `url` identifies itself as Cadet Foundry (its Server header)."""
     import urllib.request
     try:
         with urllib.request.urlopen(url + "/api/lock", timeout=3) as r:
-            return r.headers.get("Server", "").startswith("Vanguard")
+            return r.headers.get("Server", "").startswith("CadetFoundry")
     except Exception as e:                          # an HTTP error still carries the header
         headers = getattr(e, "headers", None)
-        return bool(headers and headers.get("Server", "").startswith("Vanguard"))
+        return bool(headers and headers.get("Server", "").startswith("CadetFoundry"))
 
 
 if __name__ == "__main__":

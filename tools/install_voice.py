@@ -17,7 +17,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-from vanguard.addons import VOICE_MODEL, VOSK  # noqa: E402  (same pinned versions + fingerprint as the in-app add-on)
+from cadetfoundry.addons import VOICE_MODEL, VOSK  # noqa: E402  (same pinned versions + fingerprint as the in-app add-on)
 
 DEST = ROOT / "voice-model"
 MODEL_URL, MODEL_SHA256 = VOICE_MODEL

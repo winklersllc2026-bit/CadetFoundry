@@ -9,9 +9,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-os.environ.setdefault("VANGUARD_DATA", tempfile.mkdtemp())
+os.environ.setdefault("CADETFOUNDRY_DATA", tempfile.mkdtemp())
 
-from vanguard import addons  # noqa: E402
+from cadetfoundry import addons  # noqa: E402
 
 BUILD = (ROOT / "site" / "build.py").read_text(encoding="utf-8")
 REQS = (ROOT / "site" / "bundle-requirements.txt").read_text(encoding="utf-8")

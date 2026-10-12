@@ -15,11 +15,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-os.environ.setdefault("VANGUARD_DATA", tempfile.mkdtemp())
-os.environ["VANGUARD_NO_WARMUP"] = "1"
+os.environ.setdefault("CADETFOUNDRY_DATA", tempfile.mkdtemp())
+os.environ["CADETFOUNDRY_NO_WARMUP"] = "1"
 
-from vanguard import instructor, profiles, security, store, vault  # noqa: E402
-from vanguard.server import serve  # noqa: E402
+from cadetfoundry import instructor, profiles, security, store, vault  # noqa: E402
+from cadetfoundry.server import serve  # noqa: E402
 
 ADMIN = "905172"
 
@@ -145,7 +145,7 @@ class JoinCodeTests(unittest.TestCase):
         """Start Classroom opens the Join screen before anyone signs in: on the instructor's own computer it shows the
         join codes; another device on the network never gets them without an open instructor session."""
         from unittest import mock
-        from vanguard.server import Handler
+        from cadetfoundry.server import Handler
         st, page, _ = self.req("GET", "/join")
         self.assertEqual(st, 200)
         self.assertIn(b"/js/qr.js", page)
@@ -164,7 +164,7 @@ class JoinCodeTests(unittest.TestCase):
     def test_phones_cant_make_profiles_before_the_instructor_sets_up(self):
         """The instructor's laptop is the first device: until a Class PIN exists, other devices can't sign up."""
         from unittest import mock
-        from vanguard.server import Handler
+        from cadetfoundry.server import Handler
         with mock.patch.object(Handler, "_local", lambda self: False),                 mock.patch.object(security, "admin_set", lambda: False):
             st, r, _ = self.new_cadet()
             self.assertEqual(st, 403)

@@ -13,36 +13,36 @@ import clone_drive  # noqa: E402
 class CloneDriveTests(unittest.TestCase):
     def make_source(self) -> Path:
         src = Path(tempfile.mkdtemp())
-        (src / "Vanguard" / "tools").mkdir(parents=True)
-        (src / "Vanguard" / "run.py").write_text("print('vanguard')")
-        (src / "Vanguard" / "videos").mkdir()
-        (src / "Vanguard" / "videos" / "dvids-1.mp4").write_bytes(b"x" * 1000)
+        (src / "Cadet Foundry" / "tools").mkdir(parents=True)
+        (src / "Cadet Foundry" / "run.py").write_text("print('cadetfoundry')")
+        (src / "Cadet Foundry" / "videos").mkdir()
+        (src / "Cadet Foundry" / "videos" / "dvids-1.mp4").write_bytes(b"x" * 1000)
         (src / "Start Cadet Foundry.bat").write_text("@echo off")
         (src / "Make more flash drives").mkdir()
         (src / "Make more flash drives" / "HOW TO MAKE MORE DRIVES.txt").write_text("how")
-        (src / "VanguardData" / "profiles" / "abc123").mkdir(parents=True)      # the instructor's class: never copied
-        (src / "VanguardData" / "profiles" / "abc123" / "security.json").write_text("{}")
+        (src / "Cadet Foundry Data" / "profiles" / "abc123").mkdir(parents=True)      # the instructor's class: never copied
+        (src / "Cadet Foundry Data" / "profiles" / "abc123" / "security.json").write_text("{}")
         return src
 
-    def test_copies_the_app_but_never_vanguarddata(self):
+    def test_copies_the_app_but_never_the_data_folder(self):
         src, dest = self.make_source(), Path(tempfile.mkdtemp())
         with mock.patch("builtins.print"):
             self.assertEqual(clone_drive.main([str(src), str(dest)]), 0)
-        self.assertTrue((dest / "Vanguard" / "run.py").exists())
-        self.assertTrue((dest / "Vanguard" / "videos" / "dvids-1.mp4").exists())
+        self.assertTrue((dest / "Cadet Foundry" / "run.py").exists())
+        self.assertTrue((dest / "Cadet Foundry" / "videos" / "dvids-1.mp4").exists())
         self.assertTrue((dest / "Start Cadet Foundry.bat").exists())
         self.assertTrue((dest / "Make more flash drives" / "HOW TO MAKE MORE DRIVES.txt").exists())
-        self.assertTrue((dest / "VanguardData").is_dir())                       # there, and empty
-        self.assertEqual(list((dest / "VanguardData").iterdir()), [])
+        self.assertTrue((dest / "Cadet Foundry Data").is_dir())                       # there, and empty
+        self.assertEqual(list((dest / "Cadet Foundry Data").iterdir()), [])
 
     def test_never_overwrites_a_drive_with_profiles(self):
         src, dest = self.make_source(), Path(tempfile.mkdtemp())
-        (dest / "VanguardData" / "profiles" / "someone").mkdir(parents=True)
+        (dest / "Cadet Foundry Data" / "profiles" / "someone").mkdir(parents=True)
         with mock.patch("builtins.print"):
             self.assertEqual(clone_drive.main([str(src), str(dest)]), 1)
-        self.assertFalse((dest / "Vanguard").exists())
+        self.assertFalse((dest / "Cadet Foundry").exists())
 
-    def test_refuses_a_folder_that_isnt_a_vanguard_copy(self):
+    def test_refuses_a_folder_that_isnt_a_cadet_foundry_copy(self):
         with mock.patch("builtins.print"):
             self.assertEqual(clone_drive.main([tempfile.mkdtemp(), tempfile.mkdtemp()]), 1)
 

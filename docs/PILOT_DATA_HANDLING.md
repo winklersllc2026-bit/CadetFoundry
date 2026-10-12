@@ -6,8 +6,8 @@ export it, delete it, or remove a Cadet who leaves. Technical detail: [DATA_INVE
 
 ## What is stored, and where
 
-Everything is stored in one folder on the instructor's computer: `.vanguard` in the user's home folder, or
-`VanguardData` on the USB drive when Cadet Foundry runs from a USB. Nothing is stored on Cadets' phones or tablets, which
+Everything is stored in one folder on the instructor's computer: `.cadetfoundry` in the user's home folder, or
+`Cadet Foundry Data` on the USB drive when Cadet Foundry runs from a USB. Nothing is stored on Cadets' phones or tablets, which
 only show pages. There is no Cadet Foundry project server, cloud account or analytics.
 
 | What | Example | Protection |
@@ -59,7 +59,7 @@ letters never do. Before turning it on, the school should read that provider's t
 - **A Cadet who left and can't sign in:** there is no instructor button for this yet. With Cadet Foundry closed, the
   device owner runs `python tools/remove_profile.py` (it lists the profiles), then
   `python tools/remove_profile.py "Cadet Name"` and types DELETE. From a USB drive, use the drive's own Python:
-  `Vanguard\python\python.exe Vanguard\tools\remove_profile.py "Cadet Name" --data VanguardData`. Or keep the
+  `"Cadet Foundry\python\python.exe" "Cadet Foundry\tools\remove_profile.py" "Cadet Name" --data "Cadet Foundry Data"`. Or keep the
   profile until the school's retention period ends; decide this before the pilot (below).
 - **End of the pilot:** turn on **Pilot mode** (Instructor → Reports → Pilot) and use **End pilot**. It asks you to
   save the class report and the pilot report first, then needs the Class PIN and the word DELETE, and works only on

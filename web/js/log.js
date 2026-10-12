@@ -123,7 +123,7 @@ async function showAftPlan() {
   $('#planAsk').onclick = () => { openView('ask'); send(`How do I improve my ${p.goal.name} for the Army Fitness Test? Use FM 7-22.`); };
 }
 
-// ── ARMY FITNESS TEST SCORER ── (official score tables; scoring happens on the device, in vanguard/fitness.py)
+// ── ARMY FITNESS TEST SCORER ── (official score tables; scoring happens on the device, in cadetfoundry/fitness.py)
 async function loadAft() {
   const info = await api('/api/aft'), pane = $('#fitPane');
   pane.innerHTML = `<form class="card" id="aftForm">

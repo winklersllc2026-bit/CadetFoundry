@@ -4,7 +4,7 @@
 # Cadet Foundry — notes for anyone (or any AI session) working on this repo
 
 Learning and leadership platform for JROTC Cadets and instructors (see README.md, ROADMAP.md). Everything runs on the
-device: Python 3.10+ standard library server (`run.py`, `vanguard/`), one-page web UI (`web/`), optional
+device: Python 3.10+ standard library server (`run.py`, `cadetfoundry/`), one-page web UI (`web/`), optional
 Ollama model, optional Vosk voice. **No internet at runtime** — tools in `tools/` download things once on a
 setup machine.
 
@@ -13,13 +13,13 @@ setup machine.
   (`source:` line). Check wording against the actual text in `library/` (or an official page) before
   writing it. If no current public source exists, leave it out and add a roadmap item — never fill gaps
   from memory. CAC-only publications (`/epubs/DR_pubs/DR_c/` on armypubs) are never used.
-- **Safety first.** Crisis messages (`vanguard/safety.py`) always get the crisis lines and the Cadet's own
+- **Safety first.** Crisis messages (`cadetfoundry/safety.py`) always get the crisis lines and the Cadet's own
   people, never library text, even with no AI model. OPSEC reminders stay.
-- **Offline and private.** No network calls from `vanguard/` at runtime (except the optional online AI a
-  technical operator enables). Cadet data lives in `~/.vanguard` (or `$VANGUARD_DATA`), encrypted
-  per profile when a PIN is set. New per-profile files must be added to `vanguard/backup.py`.
+- **Offline and private.** No network calls from `cadetfoundry/` at runtime (except the optional online AI a
+  technical operator enables). Cadet data lives in `~/.cadetfoundry` (or `$CADETFOUNDRY_DATA`), encrypted
+  per profile when a PIN is set. New per-profile files must be added to `cadetfoundry/backup.py`.
 
-## Study cards (`vanguard/cards/*.md`)
+## Study cards (`cadetfoundry/cards/*.md`)
 ```
 ---
 title: …
@@ -41,7 +41,7 @@ pages, converts PDFs to text once, records editions (`manifest.json`) and SHA-25
 (`integrity.json`). Add new publications to `ARMY_PUBS` there.
 
 ## Books (`books/`, not in git)
-`python tools/fetch_books.py` downloads public-domain books (catalog in `vanguard/books.py`; each book's chapter-heading
+`python tools/fetch_books.py` downloads public-domain books (catalog in `cadetfoundry/books.py`; each book's chapter-heading
 pattern lives there). Books are for reading in Study → 📚 Books — **never** add them to `library/` or to Ask's
 search: Ask answers only from official sources. A Cadet's place in each book is `books.json` (per profile, in backups).
 
@@ -60,16 +60,16 @@ history. If both changed the same file, merge — don't overwrite.
 
 ## Releases
 **Release signing key (Ed25519): created by the owner on 2026-10-11.** The public key is
-`vanguard/data/release_key.pub` (committed); the private key is on the owner's build PC only
+`cadetfoundry/data/release_key.pub` (committed); the private key is on the owner's build PC only
 (`~/.vanguard-release/release_key.pem` — never in git, a zip, a device or chat output). `site/build.py` signs the
 release zip with it automatically. A session must never make, move, read out or replace the key on the owner's behalf;
 replacing it locks out every device with the old public key.
 
-Bump `vanguard/__init__.py` `__version__` for every release (signed updates refuse equal/older versions).
+Bump `cadetfoundry/__init__.py` `__version__` for every release (signed updates refuse equal/older versions).
 `python site/build.py` builds `site/dist/` (page + zip, signed if `~/.vanguard-release/release_key.pem`
 exists — see `tools/sign.py`); `--deploy` publishes with wrangler (needs a Cloudflare login). `--release` publishes the installer and zip as a GitHub release (needs the `gh` CLI, logged in).
 The Windows installer (`CadetFoundry-Setup-<version>.exe`, from `site/installer.iss`) is built with Inno Setup 6
 when it's installed (`winget install -e --id JRSoftware.InnoSetup`); without it only the zip is built. The installer bundles
 Python (official embeddable build, pinned SHA-256 in `site/build.py`, plus `cryptography`) and starts Cadet Foundry with
 `pythonw.exe` — no console. It must only copy files and make shortcuts: never run scripts mid-install (Defender's ML
-flagged that as Trojan:Win32/Wacatac.B!ml). Optional extras install from inside the app (`vanguard/addons.py`).
+flagged that as Trojan:Win32/Wacatac.B!ml). Optional extras install from inside the app (`cadetfoundry/addons.py`).

@@ -11,7 +11,7 @@ from unittest import mock
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tools"))
-os.environ.setdefault("VANGUARD_DATA", tempfile.mkdtemp())
+os.environ.setdefault("CADETFOUNDRY_DATA", tempfile.mkdtemp())
 
 import make_usb  # noqa: E402
 import run  # noqa: E402
@@ -20,10 +20,10 @@ import run  # noqa: E402
 class UsbTests(unittest.TestCase):
     def test_start_file_keeps_data_on_the_drive(self):
         bat = make_usb.START_BAT
-        self.assertIn('set "VANGUARD_DATA=%~dp0VanguardData"', bat)
-        self.assertIn(r'"%~dp0Vanguard\python\python.exe" run.py', bat)
+        self.assertIn('set "CADETFOUNDRY_DATA=%~dp0Cadet Foundry Data"', bat)
+        self.assertIn(r'"%~dp0Cadet Foundry\python\python.exe" run.py', bat)
         self.assertIn("%*", bat)
-        self.assertIn("VANGUARD_OLLAMA", bat)
+        self.assertIn("CADETFOUNDRY_OLLAMA", bat)
 
     def test_a_file_briefly_locked_by_antivirus_is_retried(self):
         calls = []
@@ -57,17 +57,17 @@ class UsbTests(unittest.TestCase):
     def test_portable_ai_starts_only_when_needed(self):
         with mock.patch("subprocess.Popen") as popen:
             with mock.patch.dict(os.environ, {}, clear=False):
-                os.environ.pop("VANGUARD_OLLAMA", None)
+                os.environ.pop("CADETFOUNDRY_OLLAMA", None)
                 run._start_portable_ai()                          # not a USB drive with AI
             with tempfile.NamedTemporaryFile(suffix=".exe", delete=False) as f:
                 exe = f.name
             try:
-                with mock.patch.dict(os.environ, {"VANGUARD_OLLAMA": exe}), \
-                        mock.patch("vanguard.engine.local_models", return_value=["qwen2.5:3b"]):
+                with mock.patch.dict(os.environ, {"CADETFOUNDRY_OLLAMA": exe}), \
+                        mock.patch("cadetfoundry.engine.local_models", return_value=["qwen2.5:3b"]):
                     run._start_portable_ai()                      # an Ollama is already running: use it
                 self.assertFalse(popen.called)
-                with mock.patch.dict(os.environ, {"VANGUARD_OLLAMA": exe}), \
-                        mock.patch("vanguard.engine.local_models", return_value=None), mock.patch("atexit.register"):
+                with mock.patch.dict(os.environ, {"CADETFOUNDRY_OLLAMA": exe}), \
+                        mock.patch("cadetfoundry.engine.local_models", return_value=None), mock.patch("atexit.register"):
                     run._start_portable_ai()                      # none running: start the drive's copy
                 args, kwargs = popen.call_args
                 self.assertEqual(args[0], [exe, "serve"])

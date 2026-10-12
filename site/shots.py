@@ -211,11 +211,11 @@ class Shooter:
 
 
 def main() -> int:
-    data = Path(tempfile.mkdtemp(prefix="vanguard-shots-"))
-    env = dict(os.environ, VANGUARD_DATA=str(data), VANGUARD_NO_WARMUP="1", PYTHONIOENCODING="utf-8")
+    data = Path(tempfile.mkdtemp(prefix="cadetfoundry-shots-"))
+    env = dict(os.environ, CADETFOUNDRY_DATA=str(data), CADETFOUNDRY_NO_WARMUP="1", PYTHONIOENCODING="utf-8")
     server = subprocess.Popen([sys.executable, "run.py", "--lan", "--port", str(PORT), "--no-browser"], cwd=ROOT, env=env,
                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    edge_profile = Path(tempfile.mkdtemp(prefix="vanguard-edge-"))
+    edge_profile = Path(tempfile.mkdtemp(prefix="cadetfoundry-edge-"))
     edge = None
     try:
         for _ in range(60):
@@ -248,7 +248,7 @@ def main() -> int:
             {type:'scenario', id: sc[3].id, title: sc[3].title, sub: sc[3].competency},
             ...qs.map(q => ({type:'question', id: q.id, title: q.q, sub: card.title})),
             {type:'video', id: vid.id, title: vid.title, sub: vid.length}];
-          localStorage.setItem('vanguard-classday', JSON.stringify({date: new Date().toISOString().slice(0,10), unit: ov.units[0].id, items}));
+          localStorage.setItem('cadetfoundry-classday', JSON.stringify({date: new Date().toISOString().slice(0,10), unit: ov.units[0].id, items}));
           return 'ok';""", 0.5)
         s.go("/", 4)
         s.js("window.scrollTo(0, document.getElementById('cdMain').offsetTop - 70);", 0.8)

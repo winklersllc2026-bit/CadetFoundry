@@ -22,8 +22,8 @@ Version 0.2.5. What's built and what's next: ROADMAP.md. How it fits together: A
    USB drive — below).
 2. **Just looking?** On the first screen choose **See a sample class**: a separate copy with eight made-up Cadets,
    lessons, scenarios and a pilot in progress. Leaving it changes nothing.
-3. **Set up:** tick the box to agree to the [Terms of use](vanguard/legal/TERMS.md) and
-   [Privacy notice](vanguard/legal/PRIVACY.md), choose "I'm the instructor", and make your Class PIN and your own PIN.
+3. **Set up:** tick the box to agree to the [Terms of use](cadetfoundry/legal/TERMS.md) and
+   [Privacy notice](cadetfoundry/legal/PRIVACY.md), choose "I'm the instructor", and make your Class PIN and your own PIN.
 4. **Teach:** add the **starter lessons** (one click), open class to phones, and press **▶ Start class**.
 
 Running a pilot? Read [docs/PILOT_CHECKLIST.md](docs/PILOT_CHECKLIST.md) and
@@ -89,8 +89,8 @@ clean copy, with no one else's data on it.
 
 ## Set up the instructor's laptop
 
-**Windows:** double-click `install-vanguard.bat` (needs internet once). It installs Python if needed and offers the
-optional parts (offline AI, offline voice, the library). **Linux / Raspberry Pi:** `sh install-vanguard.sh`.
+**Windows:** double-click `install-cadetfoundry.bat` (needs internet once). It installs Python if needed and offers the
+optional parts (offline AI, offline voice, the library). **Linux / Raspberry Pi:** `sh install-cadetfoundry.sh`.
 
 Run it:
 
@@ -119,7 +119,7 @@ python tools/make_usb.py E:\ --with-ai        # also the offline AI, copied from
 
 On the drive, double-click **Start Cadet Foundry.bat** (this computer only) or **Start Classroom.bat** (Cadets
 join from their phones on the same Wi-Fi — it opens a Join screen with a QR code). Keep the window open while you use it; close it or use Me → Quit Cadet Foundry
-before unplugging. Run the command again to update the drive — the `VanguardData` folder is never touched.
+before unplugging. Run the command again to update the drive — the `Cadet Foundry Data` folder is never touched.
 Linux / Mac: `sh start-cadet-foundry-usb.sh` (in the Mac and Linux folder) on the drive. `START HERE.html` on the drive explains which file does what.
 
 ## Demo box: Raspberry Pi with its own Wi-Fi
@@ -133,7 +133,7 @@ python tools/make_demo_kit.py E:\         # the USB to hand over + demo/ (Pi set
 ```
 
 Then follow `demo/README-PI.txt` on the drive: copy the Cadet Foundry and demo folders to the Pi and run
-`sudo sh ~/Vanguard/tools/pi_setup.sh`. Cadets join the "Cadet Foundry" Wi-Fi and open http://vanguard.lan. A Pi Zero 2 W
+`sudo sh ~/CadetFoundry/tools/pi_setup.sh`. Cadets join the "Cadet Foundry" Wi-Fi and open http://cadetfoundry.lan. A Pi Zero 2 W
 serves about 10 Cadets at a time, with library answers only (no AI).
 
 ## Offline AI (optional)
@@ -152,5 +152,5 @@ Public-domain books: `python tools/fetch_books.py`. Official public documents: d
 
 ## Data
 
-Stored in `~/.vanguard/` (or `$VANGUARD_DATA`). Back up a profile from 👤 Me → Download backup (sealed with a
+Stored in `~/.cadetfoundry/` (or `$CADETFOUNDRY_DATA`). Back up a profile from 👤 Me → Download backup (sealed with a
 password); restore it on another device the same way.
