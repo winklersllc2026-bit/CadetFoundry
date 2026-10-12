@@ -142,3 +142,30 @@ function driveWatch() {
     }
   }, 5000);
 }
+
+// Running from a USB drive (usb_home.py): this computer's backups of the class, if it's the instructor's own computer.
+async function usbBackupCard(box) {
+  const u = await api('/api/instructor/usb').catch(() => ({ error: 'x' }));
+  if (u.error || u.where !== 'usb') return;
+  box.hidden = false;
+  const list = u.backups || [];
+  box.innerHTML = `<h3>💾 Backups of your class</h3>
+    <p>Your class lives on the USB drive ${esc(u.drive)}. ${u.trusted === true
+      ? `This computer keeps a backup copy — the newest five. ${list.length ? `Newest: <b>${esc(list[0].when)}</b>.` : 'None yet.'}`
+      : u.trusted === false ? "You said this isn't your own computer, so no backup is kept here."
+        : "Say on 🏠 Home whether this is your own computer to keep a backup here."}</p>
+    ${u.trusted === true ? `<div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn" id="ubNow">Back up now</button>
+      <button class="btn small" id="ubOpen">Show the backups folder</button></div>
+      <p class="faint" style="margin:8px 0 0">Lost or broken drive? Make a new drive, then restore the newest backup onto it:
+      <code>python tools/make_usb.py E:\ --restore "backup file"</code> — or email support@cadetfoundry.org for help.</p>` : ''}
+    ${u.trusted === false ? '<button class="btn small" id="ubYes">This is my own computer — keep a backup</button>' : ''}
+    <p class="faint" id="ubMsg" role="status"></p>`;
+  const msg = t => { $('#ubMsg').textContent = t; };
+  if ($('#ubNow')) $('#ubNow').addEventListener('click', async () => {
+    const r = await api('/api/instructor/usb/backup', {});
+    if (r.error) return msg(r.error);
+    usbBackupCard(box);
+  });
+  if ($('#ubOpen')) $('#ubOpen').addEventListener('click', async () => { const r = await api('/api/instructor/open-folder', { path: u.folder }); if (r.error) msg(r.error); });
+  if ($('#ubYes')) $('#ubYes').addEventListener('click', async () => { await api('/api/instructor/usb/trust', { yes: true }); usbBackupCard(box); });
+}

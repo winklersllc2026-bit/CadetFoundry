@@ -3,6 +3,8 @@ Put the whole Cadet Foundry system on a USB drive: plug it into any Windows comp
 nothing is installed on that computer, and every profile and class record stays on the drive.
 
     python tools/make_usb.py E:\\                 app + its own Python + the library
+    python tools/make_usb.py E:\\ --for "SFC Rivera, Lincoln High"   who the drive is issued to (in its signed record)
+    python tools/make_usb.py E:\\ --restore "class-....zip"          a replacement drive: the class from a USB backup
     python tools/make_usb.py E:\\ --with-ai       also the offline AI (Ollama + one model, copied from this computer)
     python tools/make_usb.py E:\\ --with-ai --model qwen2.5:3b
     python tools/make_usb.py E:\\ --with-ai --all-gpu      also NVIDIA/AMD graphics libraries (about 2.7 GB more)
@@ -15,6 +17,7 @@ On the drive:
     Start Cadet Foundry.bat            starts it (Cadet phones can be turned on from the Home screen)
     start-cadet-foundry-usb.sh         Linux / Mac (uses that computer's python3)
     START HERE.html                    which file does what (opens in any browser)
+    NOTICE - READ FIRST.txt            the copyright notice (issued.py: a copied drive shows it in the app)
     Cadet Foundry\\                     the app, with python\\ (and ollama\\ with --with-ai)
     Cadet Foundry Data\\                      profiles and class records (each profile encrypted with its own PIN)
 """
@@ -25,6 +28,7 @@ import os
 import shutil
 import sys
 import tempfile
+import time
 import zipfile
 from pathlib import Path
 
@@ -67,58 +71,6 @@ fi
 exec python3 run.py "$@"
 """
 
-MAKE_BAT = r"""@echo off
-title Make a Cadet flash drive
-rem Copies Cadet Foundry from this folder's copy to a blank flash drive -- without anyone's profiles or records.
-"%~dp0..\Cadet Foundry\python\python.exe" "%~dp0..\Cadet Foundry\tools\clone_drive.py" "%~dp0.."
-echo.
-pause
-"""
-
-MAKE_HOWTO = """MAKE MORE FLASH DRIVES (one for each Cadet)
-============================================
-
-This makes a copy of Cadet Foundry on a blank flash drive. The copy has NO profiles and NO class
-records on it - every Cadet starts fresh with their own name and PIN.
-
-You need: this flash drive, a Windows computer, and blank flash drives (8 GB or bigger).
-
-
-STEP 1 - Copy this flash drive to the computer
-   a. Open this flash drive in File Explorer.
-   b. Make a new folder on the computer's Desktop, for example "Cadet Foundry drive".
-   c. Select everything on the flash drive EXCEPT the folder named Cadet Foundry Data
-      (that folder is your class's data - it stays on your drive).
-      Tip: press Ctrl+A to select all, then hold Ctrl and click Cadet Foundry Data to un-select it.
-   d. Copy it (Ctrl+C) and paste it (Ctrl+V) into the new Desktop folder. Wait for it to finish.
-
-STEP 2 - Swap the flash drives
-   a. Close Cadet Foundry if it is running.
-   b. Unplug YOUR flash drive and keep it safe.
-   c. Plug in a BLANK flash drive.
-
-STEP 3 - Make the Cadet drive
-   a. On the computer, open the Desktop folder from Step 1.
-   b. Open the folder "Make more flash drives".
-   c. Double-click "Make a Cadet drive.bat".
-      (If Windows says "Windows protected your PC", choose More info, then Run anyway.)
-   d. Type Y and press Enter when it asks. Wait until it says "Done".
-
-STEP 4 - More drives
-   Unplug the finished drive, plug in the next blank one, and double-click
-   "Make a Cadet drive.bat" again. Repeat for each Cadet.
-
-When you're finished, you can delete the Desktop folder from Step 1.
-
-
-GOOD TO KNOW
- - It will NOT overwrite a drive that already has Cadet Foundry profiles on it.
- - A Cadet's drive works on its own: plug it into any Windows computer and
-   double-click "Start Cadet Foundry.bat".
- - To bring a Cadet into your class, turn Cadet phones on from your Home screen and
-   show the QR code, or the Cadet types your class's join code in Me -> Join a class.
-"""
-
 START_HERE = """<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cadet Foundry — start here</title>
@@ -146,27 +98,21 @@ laptops on the same Wi-Fi and pick a name and a PIN.<br>
 If Windows asks whether to allow Python on networks, choose <b>Allow</b> (private networks). If Cadets can't connect, the
 school Wi-Fi may block devices from reaching each other — ask IT, or use a phone hotspot or a small travel router.</div>
 
-<div class="box"><h3>📁 <span class="file">Make more flash drives</span> — a clean drive for each Cadet</h3>
-Open <span class="file">HOW TO MAKE MORE DRIVES.txt</span> in that folder. In short: copy this drive to a computer (all but
-<span class="file">Cadet Foundry Data</span>), swap in a blank drive, and double-click <span class="file">Make a Cadet drive.bat</span>.
-The new drive has no profiles or records on it.</div>
+<div class="box"><h3>💾 Drives for your Cadets</h3>
+In Cadet Foundry: <b>👤 Me → Create a Cadet flash drive</b>. Each Cadet's drive works at home on any Windows computer, and
+their class work comes back to you when you plug it in. Please don't copy this drive — see <span class="file">NOTICE - READ FIRST.txt</span>.</div>
+
+<div class="box"><h3>🏠 One home for your class</h3>
+This drive <b>is</b> your class: profiles, records and lessons are saved on it. Start Cadet Foundry from this drive
+everywhere — at school and at home — and don't also install it on a computer, because the two wouldn't stay in step.
+On your own computer, say yes when Cadet Foundry asks to keep a backup there: the newest five copies of your class are
+kept, so losing the drive doesn't mean losing your class.</div>
 
 <div class="box"><h3>📁 <span class="file">Mac and Linux</span> — not Windows</h3>
 For a Mac or Linux computer: open a terminal in that folder and run <code>sh start-cadet-foundry-usb.sh</code>,
 then open class to phones from your Home screen as usual. That computer needs Python 3 with the
 <code>cryptography</code> package. Windows computers don't need this folder.</div>
 
-<div class="box"><h3>⬇ <span class="file">Install Cadet Foundry … on this computer.exe</span> — keep it on a computer</h3>
-Installs Cadet Foundry on this Windows computer (a Cadet Foundry icon on the desktop and in the Start menu). After that the drive
-isn't needed. If Windows says <i>"Windows protected your PC"</i>, choose <b>More info → Run anyway</b>.</div>
-
-<table>
-<tr><th></th><th>Start Cadet Foundry</th><th>Install …exe</th></tr>
-<tr><td>Who can use it</td><td>This computer — and Cadets' devices on the same Wi-Fi once you open class to phones</td><td>The same, on that computer</td></tr>
-<tr><td>Where the data lives</td><td>On this drive (<span class="file">Cadet Foundry Data</span>)</td><td>On that computer</td></tr>
-<tr><td>Installs anything?</td><td>No — runs from the drive</td><td>Yes</td></tr>
-<tr><td>Best for</td><td>Carrying your class between computers</td><td>A computer used every day</td></tr>
-</table>
 
 <h2>The first time</h2>
 <ol>
@@ -197,6 +143,9 @@ isn't needed. If Windows says <i>"Windows protected your PC"</i>, choose <b>More
 <li><span class="file">Cadet Foundry</span> — the app itself. Don't change it.</li>
 <li><span class="file">demo</span> (if present) — the printable demo card and the Raspberry Pi demo-box guide (<span class="file">README-PI.txt</span>).</li>
 </ul>
+<p class="tip"><b>© 2026 the Cadet Foundry project. All rights reserved.</b> This drive was issued for one JROTC program's use
+during the pilot. Please don't copy it or share it — copying or sharing it without permission is against the Terms of use
+and copyright law. Instructors who want their own copy: support@cadetfoundry.org.</p>
 <p class="tip">Cadet Foundry is designed to support JROTC instruction. It is not an official JROTC, Army or school product, does not
 replace your instructor or your program's curriculum, and makes no claim of endorsement. A free community project — the Cadet Foundry project.</p>
 </div></body></html>
@@ -252,7 +201,8 @@ def copy_model(name: str, dest_models: Path) -> int:
 
 
 def main(argv: list[str]) -> int:
-    args = [a for a in argv if not a.startswith("--")]
+    values = {argv[i + 1] for i, a in enumerate(argv[:-1]) if a in ("--model", "--for", "--restore")}
+    args = [a for a in argv if not a.startswith("--") and a not in values]
     if not args:
         print(__doc__)
         return 1
@@ -261,6 +211,11 @@ def main(argv: list[str]) -> int:
         print(f"{drive} doesn't exist. Plug in the USB drive and give its letter, e.g. E:\\")
         return 1
     model = argv[argv.index("--model") + 1] if "--model" in argv else "qwen2.5:3b"
+    issued_to = argv[argv.index("--for") + 1] if "--for" in argv else ""
+    restore_from = Path(argv[argv.index("--restore") + 1]) if "--restore" in argv else None
+    if restore_from and not restore_from.is_file():
+        print(f"{restore_from} isn't there. Give the path of a class backup (class-....zip). Nothing was changed.")
+        return 1
     app = drive / "Cadet Foundry"
     # A drive made before the rename (0.2.5): its folders move to the new names -- data, offline AI and videos kept
     for old, new in (("Vanguard", "Cadet Foundry"), ("VanguardData", "Cadet Foundry Data")):
@@ -326,22 +281,36 @@ def main(argv: list[str]) -> int:
             if (vids / "status.json").exists():
                 _retry(shutil.copy2, vids / "status.json", app / "videos" / "status.json")
 
-    # The installer and zip ride along: on the drive's root for whoever holds it, and in Cadet Foundry\downloads so a
-    # Cadet Foundry started from this drive (or a demo Pi set up from it) offers them on /download -- no internet needed.
-    version = build.__version__
-    setup, zipf = build.DIST / f"CadetFoundry-Setup-{version}.exe", build.DIST / f"CadetFoundry-{version}.zip"
-    downloads = app / "downloads"
-    shutil.rmtree(downloads, ignore_errors=True)
+    # No installer on a drive (owner, 2026-10-12): a drive is run from the drive, never installed from -- one home for
+    # the class -- and the installer is only given out with an access code. Older drives lose theirs.
+    shutil.rmtree(app / "downloads", ignore_errors=True)
     for old in [*drive.glob("Install Vanguard*.exe"), *drive.glob("Install Cadet Foundry*.exe")]:
         _retry(old.unlink)
-    if setup.exists() and zipf.exists():
-        downloads.mkdir(exist_ok=True)
-        for f in (setup, zipf):
-            _retry(shutil.copy2, f, downloads / f.name)
-        _retry(shutil.copy2, setup, drive / f"Install Cadet Foundry {version} on this computer.exe")
-    else:
-        print(f"Note: no installer for {version} in site/dist — run  python site/build.py  first to put it on the drive.")
+    shutil.rmtree(drive / "Make more flash drives", ignore_errors=True)   # the old copier: Cadet drives come from the app
     (drive / "Cadet Foundry Data").mkdir(exist_ok=True)
+    if restore_from:                              # a replacement drive: the class from a USB backup (usb_home.py)
+        from cadetfoundry import usb_home
+        try:
+            print(f"Restored {usb_home.restore(restore_from, drive / 'Cadet Foundry Data')} files of your class.")
+        except ValueError as e:
+            print(str(e))
+            return 1
+    (drive / "NOTICE - READ FIRST.txt").write_bytes(
+        (ROOT / "cadetfoundry" / "legal" / "NOTICE.txt").read_text(encoding="utf-8").replace("\n", "\r\n").encode("utf-8"))
+    # Issued by the project: the drive's serial number and who it's for, signed with the owner's release key (issued.py).
+    # A copy of this drive on another flash drive shows the copyright notice in the app.
+    from cadetfoundry import issued
+    key_path = Path.home() / ".vanguard-release" / "release_key.pem"
+    serial = issued.volume_serial(drive)
+    if key_path.exists() and serial:
+        sys.path.insert(0, str(ROOT / "tools"))
+        import sign
+        issued.write(app, serial, issued_to, time.strftime("%Y-%m-%d"), sign.load_key(key_path))
+        who = issued_to or '(no name given: add --for "Name, School")'
+        print(f"Issued to: {who} · drive {serial}")
+    else:
+        print("Note: the drive isn't marked as issued (no release key on this computer, or no drive serial), so the app "
+              "on it will show the copyright notice.")
     for old in ("Start Vanguard (classroom).bat", "Start Vanguard.bat"):    # older names (0.1; before the rename)
         (drive / old).unlink(missing_ok=True)
     (drive / "Start Classroom.bat").unlink(missing_ok=True)             # the classroom opens from the app now (0.2.6)
@@ -351,10 +320,6 @@ def main(argv: list[str]) -> int:
     (drive / "Mac and Linux").mkdir(exist_ok=True)
     (drive / "Mac and Linux" / "start-vanguard-usb.sh").unlink(missing_ok=True)   # the name before the rename
     (drive / "Mac and Linux" / "start-cadet-foundry-usb.sh").write_bytes(START_SH.encode("ascii"))
-    more = drive / "Make more flash drives"                             # clean Cadet copies, no one's data
-    more.mkdir(exist_ok=True)
-    (more / "Make a Cadet drive.bat").write_bytes(MAKE_BAT.replace('\r\n', '\n').replace('\n', '\r\n').encode("ascii"))
-    (more / "HOW TO MAKE MORE DRIVES.txt").write_bytes(MAKE_HOWTO.replace('\r\n', '\n').replace('\n', '\r\n').encode("utf-8"))
     (drive / "README-USB.txt").unlink(missing_ok=True)          # replaced by START HERE.html
     (drive / "START HERE.html").write_text(START_HERE.replace("{version}", build.__version__), encoding="utf-8")
 

@@ -337,8 +337,8 @@ function aboutHtml(open = false) {
         'A student information system',
         "A substitute for the instructor's judgment",
         'A crisis service — the safety check shows help numbers but notifies no one'])}</ul></div></div>
-    <p class="faint" style="margin:10px 0 0">Cadet Foundry complements what your program already does. A free community project — the Cadet Foundry project ·
-      <a href="#" data-legal="terms">Terms of use</a> · <a href="#" data-legal="privacy">Privacy notice</a> · support@cadetfoundry.org</p></details></div>`;
+    <p class="faint" style="margin:10px 0 0">Cadet Foundry complements what your program already does. © 2026 the Cadet Foundry project, all rights reserved — a free community project ·
+      <a href="#" data-legal="terms">Terms of use</a> · <a href="#" data-legal="privacy">Privacy notice</a> · <a href="#" data-legal="notice">Copyright notice</a> · support@cadetfoundry.org</p></details></div>`;
 }
 
 function instSettings(sec) {

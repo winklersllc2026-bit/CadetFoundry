@@ -79,7 +79,7 @@ async function classDayHome() {
   }
   const plan = cdLoad();
   classDayActive = !!plan;
-  body.innerHTML = `<h2>Hi${name ? ', ' + esc(name) : ''}</h2><div id="cdSetup"></div><div id="cdMain"></div>
+  body.innerHTML = `<h2>Hi${name ? ', ' + esc(name) : ''}</h2><div id="cdUsb"></div><div id="cdSetup"></div><div id="cdMain"></div>
     <div class="card"><h3>More tools</h3><div class="tiles" style="margin:0">
       <button class="tile" data-cdgo="class"><span>👥</span>Class<small>Cadets, units, ranks</small></button>
       <button class="tile" data-cdgo="lessons"><span>📋</span>Lessons<small>Write and assign</small></button>
@@ -88,6 +88,7 @@ async function classDayHome() {
       ${lock.sample ? '' : '<button class="tile" id="cdSample"><span>🧪</span>Sample class<small>See it with made-up Cadets</small></button>'}</div>
       <p class="faint" id="cdSampleMsg" role="status"></p></div>`;
   body.querySelectorAll('[data-cdgo]').forEach(b => b.addEventListener('click', () => { openView('instructor'); loaders.instructor(b.dataset.cdgo); }));
+  usbHomeCards($('#cdUsb'), lock);
   if ($('#cdSample')) $('#cdSample').addEventListener('click', () => startSample($('#cdSample'), $('#cdSampleMsg')));
   const ready = await classSetup($('#cdSetup'), ov, classDayHome, { compactWhenReady: true });
   const main = $('#cdMain');
@@ -349,4 +350,45 @@ function projectorVideo(v) {
     const vid = box.querySelector('video'); if (vid) vid.pause();
     backFromClassroom();
   });
+}
+
+// One home for the class (usb_home.py, owner 2026-10-12): the computer or a USB drive, never both -- they don't sync.
+function usbHomeCards(box, lock) {
+  if (!box) return;
+  const home = lock.home || {}, drives = lock.class_drives || [];
+  let seen = false;
+  try { seen = sessionStorage.getItem('cadetfoundry-usb-seen') === drives.join(','); } catch (e) { }
+  if (drives.length && !seen) {                    // an installed copy, and the instructor's class drive is plugged in
+    box.innerHTML = `<div class="card" style="border-color:var(--tan)"><h3>💾 Is your class on your USB drive?</h3>
+      <p>A Cadet Foundry USB drive with a class on it is plugged in (${drives.map(esc).join(', ')}). <b>If you teach from that
+        drive, open Cadet Foundry from there</b> — double-click <b>Start Cadet Foundry.bat</b> on the drive. Work you do here
+        stays on this computer and won't be on the drive.</p>
+      <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn primary" id="usbOpen">Open the drive</button>
+        <button class="btn" id="usbHere">My class lives on this computer</button></div>
+      <p class="faint" id="usbMsg" role="status"></p></div>`;
+    $('#usbOpen').addEventListener('click', async () => {
+      const r = await api('/api/instructor/open-folder', { path: drives[0] });
+      $('#usbMsg').textContent = r.error || 'Opened. Close this window, then start Cadet Foundry from the drive.';
+    });
+    $('#usbHere').addEventListener('click', () => {
+      try { sessionStorage.setItem('cadetfoundry-usb-seen', drives.join(',')); } catch (e) { }
+      box.innerHTML = '';
+    });
+    return;
+  }
+  if (home.where === 'usb' && home.trusted == null) {   // running from the drive: back it up here? asked once per computer
+    box.innerHTML = `<div class="card" style="border-color:var(--tan)"><h3>💾 Is this your own computer?</h3>
+      <p>Your class lives on this USB drive (${esc(home.drive)}). If this is <b>your own</b> computer, Cadet Foundry keeps a
+        backup copy of the class on it — so losing the drive doesn't mean losing your class. Not on a school or shared
+        computer.</p>
+      <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn primary" id="usbTrust">Yes — keep a backup here</button>
+        <button class="btn" id="usbNo">No — school or shared computer</button></div><p class="faint" id="usbMsg" role="status"></p></div>`;
+    const answer = async yes => {
+      const r = await api('/api/instructor/usb/trust', { yes });
+      box.innerHTML = r.error ? `<p class="faint">${esc(r.error)}</p>` : yes
+        ? '<div class="card"><p>✅ Backups on. The newest five are kept on this computer — see 👤 Me.</p></div>' : '';
+    };
+    $('#usbTrust').addEventListener('click', () => answer(true));
+    $('#usbNo').addEventListener('click', () => answer(false));
+  }
 }

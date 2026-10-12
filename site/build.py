@@ -3,7 +3,7 @@ Build the public page for cadetfoundry.org.
 
     python site/build.py            build site/dist (page + Windows installer + download zip)
     python site/build.py --deploy   build, then publish with wrangler
-    python site/build.py --release  build, then publish the installer + zip as a GitHub release (needs gh)
+    python site/build.py --release  build, then upload the installer + update to the R2 bucket served with access codes
 
 The zip contains the app plus the installed faith library, so a test device
 needs no internet after downloading it.
@@ -11,6 +11,7 @@ needs no internet after downloading it.
 from __future__ import annotations
 
 import hashlib
+import json
 import html
 import re
 import os
@@ -114,7 +115,12 @@ PYTHON_EMBED = ("https://www.python.org/ftp/python/3.14.8/python-3.14.8-embed-am
 PYTHON_TAG = "3.14"
 # cryptography (profile encryption in vault.py, update signatures) and its two dependencies, pinned by version + hash.
 PYTHON_REQUIREMENTS = SITE / "bundle-requirements.txt"
-WRANGLER = "4.141.0"                             # Cloudflare's deploy tool, a fixed version (not "latest")
+WRANGLER = "4.141.0"
+# Downloads need an access code (0.2.7): instructors ask by email, the owner answers with a code (tools/pilot_access.py)
+REQUEST = ("mailto:support@cadetfoundry.org?subject=Cadet%20Foundry%20pilot%20access&body="
+           "Name%3A%20%0ASchool%3A%20%0AJROTC%20program%20(Army%2C%20Navy%2C%20Air%20Force%2C%20Marine%20Corps%2C%20Space%20Force)%3A%20%0A"
+           "About%20how%20many%20Cadets%3A%20%0A")
+BUCKET = "cadetfoundry-downloads"                             # Cloudflare's deploy tool, a fixed version (not "latest")
 PYTHON_UNUSED = ("sqlite3.dll", "_sqlite3.pyd", "_elementtree.pyd", "_lzma.pyd", "_bz2.pyd", "_decimal.pyd", "python.cat")
 
 
@@ -176,6 +182,7 @@ def make_installer(zip_path: Path, dest: Path) -> bool:
     script = (SITE / "installer.iss").read_text(encoding="utf-8")
     for k, v in {"@VERSION@": __version__, "@VIVERSION@": ".".join(map(str, nums[:4])), "@OUTDIR@": str(dest.parent),
                  "@OUTNAME@": dest.stem, "@ICON@": str(ROOT / "web" / "icon.ico"),
+                 "@NOTICE@": str(ROOT / "cadetfoundry" / "legal" / "NOTICE.txt"),   # accepted before installing
                  "@STAGE@": str(stage / "CadetFoundry")}.items():
         script = script.replace(k, v)
     iss = stage / "installer.iss"
@@ -273,7 +280,7 @@ def shell(title: str, here: str, body: str, description: str = "") -> str:
 <link rel="icon" href="/icon.svg" type="image/svg+xml"><style>{STYLE}</style></head><body>
 <header class="top"><div class="wrap"><a class="brand" href="/"><span>✦</span> CADET FOUNDRY</a>
 <nav><a href="/#class-day" class="hide-sm">How it works</a><a href="/#setup" class="hide-sm">Set up</a>
-<a href="/security">Privacy</a><a class="btn small" href="/#download">Download</a></nav></div></header>
+<a href="/security">Privacy</a><a class="btn small" href="/#download">Get access</a></nav></div></header>
 {body}
 <footer><div class="wrap"><p>{html.escape(DISCLAIMER)}</p>
 <p>A free community project — the Cadet Foundry project · <a href="/security">Privacy and security</a> · <a href="/terms">Terms of use</a> · <a href="/privacy">Privacy notice</a> · <a href="/pilot">Run a pilot</a> · <a href="mailto:support@cadetfoundry.org">support@cadetfoundry.org</a> · Version {html.escape(__version__)}</p></div></footer>
@@ -282,14 +289,12 @@ def shell(title: str, here: str, body: str, description: str = "") -> str:
 
 def page(zip_name: str, size: int, commit: str, history, sha: str = "", setup=None) -> str:
     esc = html.escape
-    if setup:
-        setup_link = f"{RELEASES}/releases/latest/download/{LATEST}"
-        download = f"""<a class="btn" href="{esc(setup_link)}">⬇ Download Cadet Foundry for Windows</a>
-          <p class="fine" style="margin-top:14px">Free during the pilot · version {esc(__version__)} · {setup[1] / 2**20:.0f} MB ·
-          <a href="{esc(RELEASES)}/releases/latest">other downloads (zip for a USB drive, Linux, Raspberry Pi)</a></p>
-          <p class="fine">SHA-256 of the installer: <span class="mono">{esc(setup[2])}</span></p>"""
-    else:
-        download = f'<a class="btn" href="{esc(RELEASES)}/releases/latest">⬇ Download Cadet Foundry</a>'
+    # Downloads need an access code (0.2.7): request one by email; download with it on /download
+    download = f"""<div class="row"><a class="btn" href="{esc(REQUEST)}">✉ Request pilot access</a>
+          <a class="btn ghost" href="/download">I have an access code →</a></div>
+          <p class="fine" style="margin-top:14px">Free during the pilot · version {esc(__version__)}{f' · {setup[1] / 2**20:.0f} MB' if setup else ''} ·
+          Each instructor gets their own access code — please don't share it.</p>
+          {f'<p class="fine">SHA-256 of the installer: <span class="mono">{esc(setup[2])}</span></p>' if setup else ''}"""
     body = f"""
 <section class="hero"><div class="wrap">
   <div class="hero-grid"><div>
@@ -298,7 +303,7 @@ def page(zip_name: str, size: int, commit: str, history, sha: str = "", setup=No
   <p class="lead">Press <b>Start class</b>, tick today's plan, and click through it like a slideshow — lessons, study cards,
   official videos, leadership scenarios and check-on-learning questions, every fact with its source. No hunting for
   material, no slides to build. All you need is a laptop and a projector. No accounts. No internet. Free during the pilot.</p>
-  <div class="row"><a class="btn" href="#download">⬇ Download</a><a class="btn ghost" href="#class-day">See a class day →</a></div>
+  <div class="row"><a class="btn" href="#download">Join the pilot</a><a class="btn ghost" href="#class-day">See a class day →</a></div>
   <small>Windows laptop + projector · Cadet phones not needed · everything stays in your classroom</small></div>
   <img class="poster" src="/img/poster.jpg" width="832" height="1248"
     alt="Cadet Foundry: a glowing letter C on a blacksmith's anvil, with a young Cadet standing inside it, and the silhouettes of a soldier, a scientist and a businessperson behind"></div>
@@ -435,10 +440,40 @@ def page(zip_name: str, size: int, commit: str, history, sha: str = "", setup=No
 
 <section id="download" class="dl"><div class="wrap">
   <h2>Try it with your next class.</h2>
-  <p class="lead">Download Cadet Foundry, set your Class PIN, and press Start class. If it doesn't make your day easier, uninstall it — nothing to cancel.</p>
+  <p class="lead">Cadet Foundry is in a pilot with JROTC programs. Request access and you'll get your own access code by
+  email. Then download it, set your Class PIN, and press Start class. If it doesn't make your day easier, uninstall it — nothing to cancel.</p>
   {download}
 </div></section>"""
     return shell("Cadet Foundry — teach your JROTC class from the projector", "home", body)
+
+
+def download_page() -> str:
+    """/download: an access code, then the installer (or the signed update). The form posts to the Worker."""
+    body = f"""<section class="hero"><div class="wrap" style="max-width:640px">
+<p class="kicker">Cadet Foundry pilot</p><h1 style="font-size:clamp(32px,5vw,52px)">Download</h1>
+<p class="lead">Enter the access code you got by email.</p>
+<p id="dlMsg" role="alert" style="color:#f0b4a8"></p>
+<form method="post" action="/download" class="card" style="padding:18px">
+  <label for="code" style="display:block;font-weight:700;margin-bottom:6px">Access code</label>
+  <input id="code" name="code" required autocomplete="off" spellcheck="false" placeholder="XXXXX-XXXXX"
+    style="width:100%;font-size:24px;letter-spacing:.12em;padding:10px 12px;border-radius:10px;border:1px solid #3a4234;background:#0b0d0a;color:#e8e4d8;text-transform:uppercase">
+  <div class="row" style="margin-top:14px"><button class="btn" name="file" value="setup">⬇ Cadet Foundry for Windows</button></div>
+  <details style="margin-top:12px"><summary>Already have Cadet Foundry? The update files</summary>
+    <p class="fine">For <b>Me → Install an update</b>: download both, then choose them in Cadet Foundry.</p>
+    <div class="row"><button class="btn ghost" name="file" value="update">Update (.zip)</button>
+    <button class="btn ghost" name="file" value="sig">Its signature (.sig)</button></div></details>
+</form>
+<p class="fine">Your code is just for you and your program — please don't share it or the download. No code yet?
+<a href="{html.escape(REQUEST)}">Request pilot access</a>.</p>
+<p class="fine">When a code is used, this site records which code and when — nothing else. <a href="/privacy">Privacy notice</a>.</p>
+<script>
+  const why = {{ bad: "That code isn't right. Check it and try again.", off: "That code has been switched off. Email support@cadetfoundry.org.",
+    missing: "The download isn't ready yet. Please try again later.", closed: "Downloads are closed right now. Email support@cadetfoundry.org." }};
+  const q = new URLSearchParams(location.search);
+  for (const k in why) if (q.has(k)) document.getElementById('dlMsg').textContent = why[k];
+</script>
+</div></section>"""
+    return shell("Cadet Foundry — Download", "download", body, "Download Cadet Foundry with your pilot access code.")
 
 
 def pilot_page() -> str:
@@ -547,6 +582,7 @@ def main() -> int:
             shutil.copy(f, DIST / "shots" / f.name)
     (DIST / "index.html").write_text(page(zip_name, size, commit, history, sha, setup), encoding="utf-8")
     (DIST / "pilot.html").write_text(pilot_page(), encoding="utf-8")
+    (DIST / "download.html").write_text(download_page(), encoding="utf-8")
     (DIST / "security.html").write_text(security_page(), encoding="utf-8")
     (DIST / "terms.html").write_text(legal_page("terms"), encoding="utf-8")
     (DIST / "privacy.html").write_text(legal_page("privacy"), encoding="utf-8")
@@ -560,27 +596,29 @@ def main() -> int:
               "— copy it next to the zip on the USB stick for Me → Install an update")
     else:
         print("Not signed (no release key). Devices only install signed updates — see tools/sign.py.")
-    if "--release" in sys.argv:                 # the installer as a plain GitHub release download
-        setup_exe = DIST / f"CadetFoundry-Setup-{__version__}.exe"
-        if setup_exe.exists():                    # a fixed name, so the page's button always gets the newest one
-            shutil.copy(setup_exe, DIST / LATEST)
-            shutil.copy(setup_exe, DIST / OLD_LATEST)   # links shared before the rename keep working
-        files = [str(p) for p in sorted(DIST.glob(f"CadetFoundry*{__version__}*")) if p.suffix in (".exe", ".zip", ".sig")]
-        files += [str(DIST / n) for n in (LATEST, OLD_LATEST) if (DIST / n).exists()]
-        tag = f"v{__version__}"
-        notes = "Windows: download CadetFoundry-Setup and run it (More info -> Run anyway). Linux: the zip."
-        # to the public releases repo: anyone can download, and the code repo stays private
-        r = subprocess.run(["gh", "release", "create", tag, *files, "--repo", RELEASES_REPO,
-                            "--title", f"Cadet Foundry {__version__}", "--notes", notes], cwd=ROOT)
-        if r.returncode != 0:                     # release already there: replace its files
-            r = subprocess.run(["gh", "release", "upload", tag, *files, "--clobber", "--repo", RELEASES_REPO], cwd=ROOT)
-        if r.returncode != 0:
-            return r.returncode
-        print(f"Released {tag}: {RELEASES}/releases/tag/{tag}\nThe page's download button: {LATEST_URL}")
+    if ("--release" in sys.argv or "--deploy" in sys.argv) and "REPLACE_WITH_DATABASE_ID" in (SITE / "wrangler.toml").read_text(encoding="utf-8"):
+        print("Access codes aren't set up on Cloudflare yet. Run once:  python tools/pilot_access.py setup")
+        return 1
+    if "--release" in sys.argv:
+        # Downloads need an access code (0.2.7): the files go to the private R2 bucket the Worker serves them from --
+        # not to a public page. latest.json says which file is current.
+        names = {"setup": f"CadetFoundry-Setup-{__version__}.exe", "zip": zip_name, "sig": zip_name + ".sig"}
+        missing = [n for n in names.values() if not (DIST / n).exists()]
+        if missing:
+            print("Not released — missing from site/dist:", ", ".join(missing), "(the installer needs Inno Setup; the .sig needs the release key)")
+            return 1
+        (DIST / "latest.json").write_text(json.dumps(names), encoding="utf-8")
+        for name in [*names.values(), "latest.json"]:
+            ctype = "application/json" if name.endswith(".json") else "application/octet-stream"
+            r = subprocess.run(f'npx --yes wrangler@{WRANGLER} r2 object put "{BUCKET}/{name}" --file "{DIST / name}" '
+                               f'--content-type {ctype} --remote', cwd=SITE, shell=True)
+            if r.returncode != 0:
+                return r.returncode
+        print(f"Released {__version__}: instructors download it at https://cadetfoundry.org/download with their access code.")
     if "--deploy" in sys.argv:
-        # downloads come from the public releases repo, not the site (Cloudflare's 25 MB limit): tell wrangler to skip
-        # them -- they stay in site/dist, where tools/make_usb.py picks up the installer for the drive
-        (DIST / ".assetsignore").write_text("CadetFoundry*\nVanguard*\n*.sig\n", encoding="utf-8")
+        # downloads are served from R2 with an access code (worker.js), never as the page's own files: tell wrangler
+        # to skip them -- they stay in site/dist for --release
+        (DIST / ".assetsignore").write_text("CadetFoundry*\nVanguard*\n*.sig\nlatest.json\n", encoding="utf-8")
         return subprocess.run(f"npx --yes wrangler@{WRANGLER} deploy", cwd=SITE, shell=True).returncode
     return 0
 

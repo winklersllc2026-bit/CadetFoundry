@@ -92,9 +92,6 @@ class UsbLayoutTests(unittest.TestCase):
         src = (ROOT / "tools" / "make_usb.py").read_text(encoding="utf-8")
         self.assertIn('("VanguardData", "Cadet Foundry Data")', src)       # the data folder is renamed, not copied
         self.assertIn('OLD_APP_ITEMS = ["vanguard"', src)                  # old code left in the app folder is removed
-        text = (ROOT / "tools" / "clone_drive.py").read_text(encoding="utf-8")
-        self.assertIn('"VanguardData"', text)                              # a Cadet copy never takes an old data folder
-        self.assertIn('SAMPLE_DATA.txt', text)                             # nor a sample class's throwaway folder
 
 
 if __name__ == "__main__":

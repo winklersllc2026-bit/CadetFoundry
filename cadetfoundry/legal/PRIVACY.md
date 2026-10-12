@@ -1,6 +1,6 @@
 # Cadet Foundry — Privacy notice
 
-Version 2026-10-12 · Questions: **support@cadetfoundry.org**
+Version 2026-10-13 · Questions: **support@cadetfoundry.org**
 
 Cadet Foundry is a free community project — **the Cadet Foundry project.** This notice is for instructors, schools, Cadets and parents. The short version: **everything stays on the instructor's computer, and the Cadet Foundry project never receives any of it.**
 
@@ -42,7 +42,7 @@ instructor's own computer. Cadets' flash drives don't have it.
 When an instructor turns Cadet phones on, pages travel over that Wi-Fi network without HTTPS. Use a network only the class joins (WPA3 if possible), not open or guest Wi-Fi. Details for school IT are in SECURITY.md.
 
 ## The website
-cadetfoundry.org sets **no cookies**, runs **no analytics**, and has **no accounts**. It is hosted by Cloudflare, whose servers keep the standard technical logs any website host keeps (such as IP addresses). Downloads come from a public GitHub page, under GitHub's own terms.
+cadetfoundry.org sets **no cookies**, runs **no analytics**, and has **no accounts**. Downloads need an **access code** the project gives each instructor; when one is used, the site records **which code and when** — nothing else, no IP address. The name that goes with each code stays with the project's owner, not on the website. It is hosted by Cloudflare, whose servers keep the standard technical logs any website host keeps (such as IP addresses). 
 
 ## Email
 If you email support@cadetfoundry.org, your message is forwarded to the project's email inbox and used only to answer you. Please don't send student records or Cadets' private information by email.

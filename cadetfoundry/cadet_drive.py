@@ -552,6 +552,10 @@ def _write_launchers(root: Path, name: str, unit_name: str) -> None:
         START_BAT.replace("{args}", "").replace("\r\n", "\n").replace("\n", "\r\n").encode("ascii"))
     who = f"This drive belongs to <b>{_html(name)}</b>. " if name else (f"For a Cadet in <b>{_html(unit_name)}</b>. " if unit_name else "")
     first = "" if name else " — the first time, make your profile: your name and a PIN only you know"
+    notice = Path(__file__).resolve().parent / "legal" / "NOTICE.txt"      # the copyright notice; this copy is allowed
+    if notice.exists():
+        text = notice.read_text(encoding="utf-8").replace("\r\n", "\n").replace("\n", "\r\n")   # Notepad-friendly
+        (root / "NOTICE - READ FIRST.txt").write_bytes(text.encode("utf-8"))
     (root / "START HERE.html").write_text(CADET_START_HERE.replace("{who}", who).replace("{first}", first)
                                           .replace("{version}", __version__), encoding="utf-8")
 

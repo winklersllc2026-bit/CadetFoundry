@@ -11,9 +11,9 @@ from pathlib import Path
 
 from cadetfoundry import store
 
-VERSION = "2026-10-12"            # no online AI; Cadet flash drives
+VERSION = "2026-10-13"            # access codes, copyright and copying (2026-10-12: no online AI, Cadet drives)
 DIR = Path(__file__).resolve().parent / "legal"
-DOCS = {"terms": "TERMS.md", "privacy": "PRIVACY.md"}
+DOCS = {"terms": "TERMS.md", "privacy": "PRIVACY.md", "notice": "NOTICE.txt"}
 
 
 def text(doc: str) -> str | None:

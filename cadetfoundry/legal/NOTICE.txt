@@ -1,0 +1,18 @@
+CADET FOUNDRY - COPYRIGHT NOTICE
+================================
+
+(c) 2026 the Cadet Foundry project. All rights reserved.
+Version 2026-10-13 - Questions: support@cadetfoundry.org
+
+This copy of Cadet Foundry was issued for one JROTC program's use during the pilot.
+Please don't copy it or share it. Copying or sharing it without permission is against
+the Terms of use and copyright law.
+
+Instructors who want Cadet Foundry can request their own copy:
+support@cadetfoundry.org
+
+Cadet flash drives made from inside Cadet Foundry (Me -> Create a Cadet flash drive)
+are allowed: they are how an instructor's Cadets study at home.
+
+Official military manuals and videos included with Cadet Foundry are U.S. government
+works and are not claimed by the Cadet Foundry project.

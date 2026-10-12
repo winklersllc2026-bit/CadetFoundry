@@ -26,6 +26,8 @@ PrivilegesRequired=lowest
 OutputDir=@OUTDIR@
 OutputBaseFilename=@OUTNAME@
 SetupIconFile=@ICON@
+; The copyright notice, accepted before installing (owner, 2026-10-12)
+LicenseFile=@NOTICE@
 UninstallDisplayIcon={app}\web\icon.ico
 UninstallDisplayName={#AppName}
 Compression=lzma2

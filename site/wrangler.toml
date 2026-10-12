@@ -11,3 +11,14 @@ routes = [
 directory = "dist"
 binding = "ASSETS"
 run_worker_first = true   # the password check runs before any page or download is served
+
+# Downloads with an access code (0.2.7): the files in R2, the codes (hashed) and download dates in D1.
+# python tools/pilot_access.py setup makes both and fills in the database id below.
+[[r2_buckets]]
+binding = "DOWNLOADS"
+bucket_name = "cadetfoundry-downloads"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "cadetfoundry-pilot"
+database_id = "REPLACE_WITH_DATABASE_ID"

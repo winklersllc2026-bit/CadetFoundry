@@ -1,6 +1,6 @@
 # Cadet Foundry — Terms of use
 
-Version 2026-10-12 · Questions: **support@cadetfoundry.org**
+Version 2026-10-13 · Questions: **support@cadetfoundry.org**
 
 Cadet Foundry is a free community project — **the Cadet Foundry project** — made to support JROTC instructors and Cadets. It is not a company product. By setting up Cadet Foundry, or using it after setup, you agree to these terms. If you don't agree, don't use it.
 
@@ -14,9 +14,10 @@ Cadet Foundry is a free community project — **the Cadet Foundry project** — 
 Cadet Foundry is free to use. If that ever changes, it will be announced in advance, and nothing you already have will stop working without notice.
 
 ## 3. Who may use it
-- An instructor may install Cadet Foundry and use it **within their own JROTC program**, including making copies for their own Cadets (for example with "Make more flash drives").
-- **Please don't pass Cadet Foundry on to other instructors, programs or schools.** Ask them to email support@cadetfoundry.org instead, and they'll get their own clean copy — with no one else's data on it.
+- An instructor who received Cadet Foundry from the Cadet Foundry project (a download with their own access code, or a drive the project issued) may install it and use it **within their own JROTC program**, including making drives for their own Cadets with **Me → Create a Cadet flash drive**.
+- **Don't copy Cadet Foundry, its download or an issued drive, and don't pass it on to other instructors, programs or schools.** Ask them to email support@cadetfoundry.org instead, and they'll get their own clean copy — with no one else's data on it. Don't share your access code.
 - Don't sell Cadet Foundry, rebrand it, or present it as your own or as official.
+- **Copyright.** Cadet Foundry's software, study cards, lessons, scenarios and design are © 2026 the Cadet Foundry project, all rights reserved. Copying or sharing them without permission breaks these terms and copyright law. Official military manuals and videos included with it are U.S. government works and aren't claimed.
 
 ## 4. Your data stays with you
 Cadet Foundry stores everything on the computer (or USB drive) it runs on. **The Cadet Foundry project does not receive, see or keep any student data.** The instructor's program and school decide how long records are kept and when they are deleted (Cadet Foundry's End pilot and Delete profile tools help). See the **Privacy notice** for details.

@@ -39,9 +39,27 @@ const PIN_INPUT = (id, ph) => `<input id="${id}" type="password" inputmode="nume
 
 // Who's using Cadet Foundry: pick your name and type your PIN; a new Cadet joins in about 30 seconds (name, PIN, done);
 // the very first time on the instructor's computer, a short setup walks the instructor through it.
+// A drive copied without permission (issued.py): the copyright notice, every time Cadet Foundry starts. It only warns.
+let HOME = { where: 'computer', drive: '' };
+function copyNotice(s) {
+  if (s.home) HOME = s.home;
+  if (!s.copied || document.getElementById('copyNotice')) return;
+  const n = document.createElement('div');
+  n.id = 'copyNotice';
+  n.setAttribute('role', 'alert');
+  n.style.cssText = 'position:fixed;left:0;right:0;top:0;z-index:150;background:#5a1d1d;color:#fff;padding:10px 16px;font-size:15px;display:flex;gap:10px;align-items:center;flex-wrap:wrap';
+  n.innerHTML = `<span style="flex:1;min-width:240px">⚠️ <b>This copy of Cadet Foundry was not issued by the Cadet Foundry project.</b>
+    Copying or sharing it without permission is against the Terms of use and copyright law. To get your own copy, email
+    support@cadetfoundry.org.</span><button class="btn small" id="cnRead">Read the notice</button><button class="btn small" id="cnClose">Close</button>`;
+  document.body.appendChild(n);
+  n.querySelector('#cnRead').addEventListener('click', () => showLegal('notice'));
+  n.querySelector('#cnClose').addEventListener('click', () => n.remove());
+}
+
 async function showLock(msg) {
   if (document.getElementById('lockScreen')) return;
   const s = await (await fetch('/api/lock')).json();
+  copyNotice(s);
   const d = document.createElement('div');
   d.id = 'lockScreen';
   d.style.cssText = 'position:fixed;inset:0;z-index:100;background:var(--bg);overflow:auto;padding:16px;display:grid;place-items:center';
@@ -363,6 +381,7 @@ const unlocked = (async () => {
   // Wait until every script in web/js/ has run, so nothing here races ahead of a later file.
   if (document.readyState === 'loading') await new Promise(r => document.addEventListener('DOMContentLoaded', r));
   const s = await (await fetch('/api/lock')).json();
+  copyNotice(s);
   if (!s.unlocked) { showLock(); return null; }
   if (s.sample) sampleBanner(s.sample_back);
   return s;
@@ -469,9 +488,12 @@ async function refreshStatus() {
     if (hi) hi.textContent = "Welcome to Cadet Foundry — I'm here to help you understand JROTC and support your Cadet. Ask me anything. Your chats are saved on this device.";
   }
   const e = STATUS.engine, el = $('#engine');
-  el.innerHTML = e.model                          // only ever the AI on this computer (no online AI, 2026-10-12)
+  // ...and where this copy saves its work: one home for a class, the computer or a USB drive (usb_home.py)
+  const saved = HOME.where === 'usb' ? `USB drive ${esc(HOME.drive)}` : 'this computer';
+  el.title = `Everything is saved on ${HOME.where === 'usb' ? 'the USB drive ' + HOME.drive : 'this computer'}.`;
+  el.innerHTML = (e.model                          // only ever the AI on this computer (no online AI, 2026-10-12)
     ? `<span class="dot ok"></span><span>Offline AI: ${esc(e.model)}</span>`
-    : '<span class="dot ok"></span><span>Library search</span>';
+    : '<span class="dot ok"></span><span>Library search</span>') + `<span class="faint hideSm"> · Saved on: ${saved}</span>`;
   const p = STATUS.profile || {};
   $('#hello').textContent = p.name ? `· ${p.name}` : '';
 }

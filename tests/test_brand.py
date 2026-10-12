@@ -11,7 +11,8 @@ ROOT = Path(__file__).resolve().parent.parent
 OLD = re.compile(r"(?i:cursiv)|(?<!Seaman )Recruit(?![ _-]?[Tt]raining)")
 # Historical planning notes from the fork (docs/history/) describe the earlier product by name, on purpose.
 ALLOWED = {"docs/history/HANDOFF.md", "docs/history/REUSE_PLAN.md", "docs/history/MIGRATION_PLAN.md", "tests/test_brand.py",
-           "tests/test_rename.py"}                     # checks that old computers, drives and backups still move over
+           "tests/test_rename.py",                     # checks that old computers, drives and backups still move over
+           "tests/test_download.py"}                   # makes sure an old data folder never ships in a download
 
 
 class BrandTests(unittest.TestCase):

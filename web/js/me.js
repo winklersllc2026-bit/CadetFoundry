@@ -95,7 +95,7 @@ loaders.me = async () => {
   const gradeOpts = ['', ...(STATUS.grades || [])].map(s => `<option ${p.grade === s ? 'selected' : ''}>${esc(s)}</option>`).join('');
   const cadetTiles = !isInst && STATUS.kind !== 'guardian';
   $('#meBody').innerHTML = `<h2>Me</h2>
-    ${isInst && !(STATUS.cadet_drive) ? '<div class="card" id="drivesCard" style="border-color:var(--tan)"></div>' : ''}
+    ${isInst && !(STATUS.cadet_drive) ? '<div class="card" id="drivesCard" style="border-color:var(--tan)"></div><div class="card" id="usbBackupCard" hidden></div>' : ''}
     ${cadetTiles ? `<div class="tiles">
       <button class="tile" data-go-view="progress"><span>📈</span>My progress<small>Growth and portfolio</small></button>
       <button class="tile" data-go-view="train"><span>💪</span>Train<small>Fitness against yourself</small></button>
@@ -169,6 +169,7 @@ loaders.me = async () => {
     $('#profSaved').textContent = r.error ? r.error : 'Saved.'; refreshStatus();
   };
   if ($('#drivesCard')) cadetDrivesCard($('#drivesCard'));
+  if ($('#usbBackupCard')) usbBackupCard($('#usbBackupCard'));
   $('#meBody').querySelectorAll('[data-forget]').forEach(b => b.onclick = async () => { await api('/api/memory/forget', { id: b.dataset.forget }); loaders.me(); });
   if ($('#memAdd')) $('#memAdd').onclick = async () => { if ($('#memIn').value.trim()) { await api('/api/memory', { text: $('#memIn').value }); loaders.me(); } };
   showIntegrity().then(showAddons);

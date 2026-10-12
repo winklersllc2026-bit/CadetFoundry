@@ -28,7 +28,7 @@ from pathlib import Path
 
 from cadetfoundry import (addons, asvab, backup, videos, board, books, careers, daily, engine, exam, fitness, instructor, integrity, knowledge,
                       lessons, letters, network, live_quiz, pay, pilot, profiles, program_backup, progress, quiz_edits, reports, scenarios, security, service, store, train, voice)
-from cadetfoundry import __version__, cadet_drive, choices, sample, terms
+from cadetfoundry import __version__, cadet_drive, choices, issued, sample, terms, usb_home
 from cadetfoundry.brain import Brain
 from cadetfoundry.faith import Faith
 from cadetfoundry.knowledge import Library
@@ -352,6 +352,11 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
             self._file_joins(priv)
             if r == "/api/instructor/overview":
                 return self._json({**instructor.overview(priv), "me": self._pid})
+            if r == "/api/instructor/usb":              # running from a USB drive: this computer's backups of the class
+                if not self._local():
+                    return self._json({"error": "Only on the computer Cadet Foundry runs on."}, 403)
+                return self._json({**usb_home.home(), "trusted": usb_home.trusted(), "backups": usb_home.backups(),
+                                   "folder": str(usb_home.backup_dir())})
             if r.startswith("/api/instructor/drives"):  # Cadet flash drives: the instructor's own computer only
                 if not self._local():
                     return self._json({"error": "Cadet drives are made on the instructor's own computer."}, 403)
@@ -555,6 +560,12 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                    "sample": sample.ACTIVE, "sample_back": sample.BACK if sample.ACTIVE else "",
                    "terms_ok": terms.accepted() or sample.ACTIVE, "terms_version": terms.VERSION,
                    "downloads": bool(_download_files())}
+            out["copied"] = issued.status()["copied"]   # a drive copied without permission: the notice shows
+            out["home"] = usb_home.home()
+            if self._local():
+                out["class_drives"] = usb_home.class_drives()
+                if out["home"]["where"] == "usb":
+                    out["home"]["trusted"] = usb_home.trusted()
             drive = cadet_drive.here()
             if drive:                                    # running from a Cadet's flash drive
                 out["cadet_drive"] = {"unit_name": drive.get("unit_name", ""), "claimed": bool(drive.get("for"))}
@@ -1097,6 +1108,21 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
             if not priv:
                 return self._json({"error": "Instructor only. Open Instructor and enter the Class PIN."}, 403)
             self._file_joins(priv)
+            if r in ("/api/instructor/usb/trust", "/api/instructor/usb/backup", "/api/instructor/open-folder"):
+                if not self._local():
+                    return self._json({"error": "Only on the computer Cadet Foundry runs on."}, 403)
+                if r == "/api/instructor/usb/trust":
+                    usb_home.set_trusted(bool(b.get("yes")))
+                    return self._json({"ok": True, "backup": usb_home.backup_now(force=True) if b.get("yes") else None})
+                if r == "/api/instructor/usb/backup":
+                    return self._json({"ok": True, "backup": usb_home.backup_now(force=True)})
+                # open a USB class drive or the backups folder in File Explorer -- only those, never any other path
+                want = str(b.get("path", ""))
+                allowed = set(usb_home.class_drives()) | {str(usb_home.backup_dir())}
+                if want not in allowed or not Path(want).exists() or os.name != "nt":
+                    return self._json({"error": "That folder can't be opened from here."}, 400)
+                os.startfile(want)                       # noqa: S606 -- a path from the fixed list above
+                return self._json({"ok": True})
             if r == "/api/instructor/drives/make":
                 if not self._local():
                     return self._json({"error": "Cadet drives are made on the instructor's own computer."}, 403)
@@ -1532,6 +1558,7 @@ def serve(host: str = "127.0.0.1", port: int = 8780, lan: bool = False) -> Threa
         httpd.server_close()
         raise
     httpd.daemon_threads = True
+    usb_home.start()                             # running from a USB drive: back the class up to the instructor's own PC
     if not os.environ.get("CADETFOUNDRY_NO_WARMUP"):          # load the AI while the Soldier picks a profile
         threading.Thread(target=lambda: (addons.start_ollama(), engine.warm_up()), daemon=True).start()
     return httpd
