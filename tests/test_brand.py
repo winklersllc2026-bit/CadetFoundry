@@ -3,6 +3,10 @@ import re
 import subprocess
 import unittest
 from pathlib import Path
+import os
+import tempfile
+os.environ.setdefault("CADETFOUNDRY_DATA", tempfile.mkdtemp())   # never the real data folder
+os.environ.setdefault("CADETFOUNDRY_NO_WARMUP", "1")
 
 ROOT = Path(__file__).resolve().parent.parent
 # The old product name was "Cursiv" / "Cursiv Recruit". Lower-case "recruit" (and recruits, recruiter, recruit

@@ -20,7 +20,7 @@ async function videosHome(service = '') {
     <div class="card" style="margin-top:12px"><h3>🎬 Videos</h3>
       <p class="faint">Official military videos. Saved videos play here with no internet. YouTube videos come from each service's own channel and open YouTube (internet needed).</p>
       <div>${chip('', 'All')}${have.map(s => chip(s, `${VIDEO_ICON[s] || ''} ${esc(svcName(s))}`)).join('')}</div>
-      ${r.saved < r.dvids ? `<p class="faint" style="margin-top:8px">${r.saved} of ${r.dvids} official DVIDS videos are saved on this device. An administrator adds the rest once with <code>python tools/fetch_videos.py</code> (needs internet and a free DVIDS key).</p>` : ''}</div>
+      ${r.saved < r.dvids ? `<p class="faint" style="margin-top:8px">${r.saved} of ${r.dvids} official DVIDS videos are saved on this device. An instructor can save them once from <b>Me → Add-ons → Official videos</b> (needs internet and your access code).</p>` : ''}</div>
     ${topics.map(t => `<h3 style="margin:16px 0 4px">${esc(t)}</h3>${list.filter(v => v.topic === t).map(row).join('')}`).join('') || '<div class="empty">No videos yet.</div>'}`;
   $('#backStudy').onclick = loaders.study;
   studyBody.querySelectorAll('[data-vsvc]').forEach(b => { b.onclick = () => videosHome(b.dataset.vsvc); });
@@ -37,7 +37,7 @@ function videoPlay(v, service) {
             <a class="btn primary" href="${esc(v.url)}" target="_blank" rel="noopener noreferrer">▶ Watch on YouTube</a>`
         : `<p>This video isn't saved on this device yet.</p>
             <a class="btn" href="${esc(v.url)}" target="_blank" rel="noopener noreferrer">Watch it on DVIDS (needs internet)</a>
-            <p class="faint">Your instructor can save it for offline use with <code>python tools/fetch_videos.py</code>.</p>`}
+            <p class="faint">Your instructor can save it for offline use from <b>Me → Add-ons → Official videos</b>.</p>`}
       <p class="faint" style="margin-top:10px">${credit}${v.footage ? ' · raw footage without narration' : ''}${v.length ? ` · ${esc(v.length)}` : ''}</p>
       <p class="faint">Information only — training changes over time. Your instructor and official sources come first.</p></div>`;
   $('#backVideos').onclick = () => videosHome(service);

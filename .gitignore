@@ -31,3 +31,4 @@ videos/
 .env.*
 .dev.vars
 node_modules/
+site/dist-videos/

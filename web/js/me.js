@@ -14,20 +14,54 @@ async function showAddons() {
            <div class="faint">${esc(j.state === 'done' ? j.msg : j.step)}</div>`}</div>` : ''}</div>`;
   const html = `<h3>🧩 Add-ons</h3><p class="faint">Optional. Each needs internet once, then works offline. You can keep using Cadet Foundry while one installs.</p>
     ${row('ai', 'Offline AI', 'answers in full sentences, simpler explanations, mock board grading', st.ai)}
-    ${row('voice', 'Voice', 'talk to Cadet Foundry with the 🎤 button', st.voice)}`;
+    ${row('voice', 'Voice', 'talk to Cadet Foundry with the 🎤 button', st.voice)}
+    ${st.videos && st.videos.total ? videoRow(st.videos, j, running) : ''}`;
   let card = $('#addonsCard');
   if (!card) { $('#meBody').insertAdjacentHTML('beforeend', '<div class="card" id="addonsCard"></div>'); card = $('#addonsCard'); }
   card.innerHTML = html;
   card.querySelectorAll('[data-addon]').forEach(b => b.onclick = async () => {
+    let code = '';
+    if (b.dataset.addon === 'videos') {
+      // owner, 2026-10-12: a download inside the app always says what it costs first, and is never automatic
+      if (!confirm(`Download the official videos?\n\n• Size: ${st.videos.size} — use Wi-Fi, not a phone's data plan.\n`
+        + `• Saved with Cadet Foundry in:\n   ${st.videos.folder}\n• You can remove them any time here (Me → Add-ons).\n`
+        + '• If the download stops, it carries on where it left off next time.')) return;
+      code = prompt('Your access code (the one you downloaded Cadet Foundry with):');
+      if (!code) return;
+    }
     const admin = (await api('/api/lock')).admin_set ? prompt('Class PIN (installing changes this device):') : '';
     if (admin === null) return;
-    const r = await api('/api/addons/install', { name: b.dataset.addon, admin });
+    const r = await api('/api/addons/install', { name: b.dataset.addon, admin, code });
     if (r.error) alert(r.error);
     showAddons();
   });
+  const rm = $('#rmVideos');
+  if (rm) rm.onclick = async () => {
+    if (!confirm(`Remove the ${st.videos.saved} saved official videos from here? They'd need internet (or a new download) to play again.`)) return;
+    const admin = (await api('/api/lock')).admin_set ? prompt('Class PIN:') : '';
+    if (admin === null) return;
+    const r = await api('/api/addons/remove-videos', { admin });
+    if (r.error) alert(r.error);
+    showAddons();
+  };
   clearTimeout(addonTimer);
   if (running && document.body.contains(card)) addonTimer = setTimeout(showAddons, 1500);
   else if (j.state === 'done') refreshStatus();
+}
+
+// The official videos: saved, partly saved (a download that stopped, or new ones on the website), or none.
+function videoRow(v, j, running) {
+  const what = v.installed ? `all ${v.total} saved — they play with no internet`
+    : v.saved ? `${v.saved} of ${v.total} saved` : 'play in class with no internet';
+  return `<div style="padding:8px 0;border-bottom:1px solid var(--line)">
+    <div class="row" style="justify-content:space-between"><div><b>Official videos</b> <span class="faint">— ${what}</span></div>
+      <div class="row" style="gap:6px">${v.installed ? '<span style="color:var(--green)">✓ Installed</span>'
+        : `<button class="btn small primary" data-addon="videos" ${running ? 'disabled' : ''}>${v.saved ? 'Download the rest' : `Download (${esc(v.size)})`}</button>`}
+      ${v.saved && !running ? '<button class="btn small ghost" id="rmVideos">Remove</button>' : ''}</div></div>
+    ${j.name === 'videos' && j.state ? `<div style="margin-top:6px">${j.state === 'error' ? `<span style="color:var(--red)">${esc(j.msg)}</span>`
+      : `<div style="height:8px;background:var(--line);border-radius:4px;overflow:hidden"><div style="height:100%;width:${j.pct || 0}%;background:var(--tan)"></div></div>
+         <div class="faint">${esc(j.state === 'done' ? j.msg : j.step)}</div>`}</div>` : ''}
+    <p class="faint" style="margin:4px 0 0">Needs your access code and Wi-Fi once.</p></div>`;
 }
 
 // ── LIBRARY CHECK + SIGNED UPDATES (Me tab) ──

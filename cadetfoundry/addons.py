@@ -5,6 +5,10 @@ Optional add-ons, installed from inside Cadet Foundry (Me tab) with a progress b
                 downloaded, its Authenticode signature checked (must be valid and signed by Ollama), then run
                 silently. Then the model is pulled through Ollama's own API.
     Voice:      the Vosk speech recognizer (pip) + its small English model (about 40 MB, alphacephei.com).
+    Videos:     the official DVIDS videos (about 1.3 GB) from cadetfoundry.org, with the instructor's access code
+                (owner, 2026-10-12: a downloaded copy has none, and they play offline once saved). The list is signed
+                with the release key and every piece is checked by SHA-256; a broken download carries on next time.
+                tools/video_pack.py publishes them.
 
 Needs internet once; afterwards both run offline. One job at a time, in a background thread; the page polls
 status(). Installing changes the whole device, so it needs the device admin PIN when one is set (server.py).
@@ -22,11 +26,12 @@ import sys
 import tempfile
 import threading
 import time
+import urllib.error
 import urllib.request
 import zipfile
 from pathlib import Path
 
-from cadetfoundry import engine, voice
+from cadetfoundry import engine, integrity, videos, voice
 
 WINDOWS = platform.system() == "Windows"
 HIDDEN = getattr(subprocess, "CREATE_NO_WINDOW", 0)       # never flash a console window on Windows
@@ -39,6 +44,9 @@ VOICE_MODEL = ("https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.
                "30f26242c4eb449f948e42cb302dd7a686cb29a3423a8367f99ff41780942498")
 VOSK = "vosk==0.3.45"
 UA = {"User-Agent": "Cadet Foundry"}
+SITE = os.environ.get("CADETFOUNDRY_SITE") or "https://cadetfoundry.org"     # where the video pack comes from
+VIDEO_SIZE = "about 1.3 GB"
+_KEY = None                                               # tests: the key the video list is signed with
 
 _lock = threading.Lock()
 _job: dict = {}
@@ -69,6 +77,7 @@ def status() -> dict:
     return {"ai": {"installed": bool(tags), "ollama": bool(ollama_exe()) or tags is not None, "model": MODEL,
                    "size": "about 2 GB"},
             "voice": {"installed": voice.available(), "size": "about 50 MB"},
+            "videos": _videos_status(),
             "job": dict(_job)}
 
 
@@ -89,16 +98,37 @@ def start_ollama() -> bool:
 
 # ── jobs ────────────────────────────────────────────────────────────────────
 
-def install(name: str) -> dict:
-    if name not in ("ai", "voice"):
+def _videos_status() -> dict:
+    r = videos.listing()
+    return {"installed": r["dvids"] > 0 and r["saved"] >= r["dvids"], "saved": r["saved"], "total": r["dvids"],
+            "size": VIDEO_SIZE, "folder": str(videos.VIDEOS)}
+
+
+def install(name: str, code: str = "") -> dict:
+    if name not in ("ai", "voice", "videos"):
         raise ValueError("Unknown add-on.")
+    if name == "videos" and len(_norm(code)) < 8:
+        raise ValueError("Type your access code — the one you downloaded Cadet Foundry with.")
     with _lock:
         if _job.get("state") == "running":
             raise ValueError("Another add-on is installing — wait for it to finish.")
         _job.clear()
         _job.update({"name": name, "state": "running", "step": "Starting…", "pct": 0, "msg": ""})
-    threading.Thread(target=_run, args=(name,), daemon=True).start()
+    threading.Thread(target=_run, args=(name, code), daemon=True).start()
     return dict(_job)
+
+
+def remove_videos() -> dict:
+    """The opt-out: delete the saved official videos (they can be downloaded again)."""
+    with _lock:
+        if _job.get("state") == "running":
+            raise ValueError("An add-on is installing — wait for it to finish.")
+    freed = 0
+    for f in list(videos.VIDEOS.glob("dvids-*.mp4")):
+        freed += f.stat().st_size
+        f.unlink()
+    shutil.rmtree(videos.VIDEOS / ".download", ignore_errors=True)
+    return {"ok": True, "freed_mb": freed >> 20}
 
 
 def _set(**kw) -> None:
@@ -106,8 +136,12 @@ def _set(**kw) -> None:
         _job.update(kw)
 
 
-def _run(name: str) -> None:
+def _run(name: str, code: str = "") -> None:
     try:
+        if name == "videos":
+            n = _install_videos(code)
+            _set(state="done", pct=100, step="Done", msg=f"Saved. {n} official videos now play with no internet.")
+            return
         (_install_ai if name == "ai" else _install_voice)()
         _set(state="done", pct=100, step="Done", msg="Installed. " + ("Ask Cadet Foundry a question to try it."
                                                                       if name == "ai" else "Reload the page to see the 🎤 button."))
@@ -223,6 +257,114 @@ def _install_voice() -> None:
             _unpack(z.read_bytes(), dest)
         finally:
             shutil.rmtree(tmp, ignore_errors=True)
+
+
+# ── official videos ─────────────────────────────────────────────────────────
+
+def _norm(code: str) -> str:
+    """An access code as typed -> as stored (the site and tools/pilot_access.py read it the same way)."""
+    return "".join(c for c in str(code or "").upper() if c.isascii() and c.isalnum())[:40]
+
+
+def _pack(code: str, file: str, timeout: int = 60):
+    """POST /video-pack: the code goes in the body, never in the address."""
+    body = json.dumps({"code": _norm(code), "file": file}).encode()
+    req = urllib.request.Request(f"{SITE}/video-pack", data=body, method="POST",
+                                 headers={**UA, "Content-Type": "application/json"})
+    try:
+        return urllib.request.urlopen(req, timeout=timeout)
+    except urllib.error.HTTPError as e:
+        why = ""
+        try:
+            why = json.loads(e.read() or b"{}").get("error", "")
+        except ValueError:
+            pass
+        raise RuntimeError({"bad": "That access code isn't right. Check it and try again.",
+                            "off": "That access code has been switched off. Ask support@cadetfoundry.org for a new one.",
+                            "missing": "The videos aren't on the website yet. Try again later.",
+                            "closed": "Downloads are closed right now. Try again later."}.get(why, f"The website said no ({e.code}).")) from None
+    except OSError as e:
+        raise RuntimeError(f"Couldn't reach cadetfoundry.org — is this computer online? ({e})") from None
+
+
+def _sha(path: Path) -> str:
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        while chunk := f.read(1 << 20):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def _install_videos(code: str) -> int:
+    _set(step="Checking your access code…", pct=1)
+    with _pack(code, "manifest") as r:
+        got = json.loads(r.read())
+    data = str(got.get("manifest", "")).encode("utf-8")
+    if not integrity.signature_ok(data, str(got.get("sig", "")), _KEY):
+        raise RuntimeError("The video list isn't signed by Cadet Foundry, so nothing was downloaded.")
+    manifest = json.loads(data)
+    listed = {v["id"] for v in videos.catalog() if v.get("kind") == "dvids"}
+    folder = videos.VIDEOS
+    folder.mkdir(parents=True, exist_ok=True)
+    # DVIDS's caching terms: a video DVIDS removed is deleted here too
+    status = {k: v for k, v in (manifest.get("status") or {}).items() if k in listed and isinstance(v, dict)}
+    for vid, st in status.items():
+        if st.get("removed"):
+            (folder / f"{vid}.mp4").unlink(missing_ok=True)
+    videos.save_status({**videos.status(), **status})
+    want = []
+    for v in manifest.get("videos", []):
+        if v.get("id") not in listed or (status.get(v["id"]) or {}).get("removed"):
+            continue                                    # only videos this copy knows; never a name from outside
+        f = folder / f"{v['id']}.mp4"
+        if f.is_file() and f.stat().st_size == v["bytes"]:
+            continue                                    # already saved
+        want.append(v)
+    if not want:
+        return videos.listing()["saved"]
+    need = sum(v["bytes"] for v in want)
+    free = shutil.disk_usage(folder).free
+    if free < need * 2 + 500 * 2**20:                  # the pieces and the finished video exist together for a moment
+        raise RuntimeError(f"Not enough space: the videos need about {need * 2 / 2**30:.1f} GB free while they download, "
+                           f"and this drive has {free / 2**30:.1f} GB.")
+    parts = folder / ".download"
+    parts.mkdir(exist_ok=True)
+    done, i = 0, 0
+    for v in want:
+        i += 1
+        for p in v["pieces"]:
+            name = p["name"]
+            if name != f"{v['id']}.mp4.{v['pieces'].index(p)}":
+                raise RuntimeError("The video list has a bad entry, so nothing more was downloaded.")
+            piece = parts / name
+            if not (piece.is_file() and piece.stat().st_size == p["bytes"] and _sha(piece) == p["sha256"]):
+                tmp = piece.with_suffix(piece.suffix + ".tmp")
+                with _pack(code, name, timeout=120) as r, open(tmp, "wb") as out:
+                    got_n = 0
+                    while chunk := r.read(1 << 20):
+                        out.write(chunk)
+                        got_n += len(chunk)
+                        _set(pct=2 + 96 * (done + got_n) // need,
+                             step=f"Video {i} of {len(want)} ({(done + got_n) >> 20} of {need >> 20} MB)")
+                if _sha(tmp) != p["sha256"]:
+                    tmp.unlink(missing_ok=True)
+                    raise RuntimeError("A piece of a video didn't match its fingerprint, so it wasn't used. Try again.")
+                tmp.replace(piece)
+            done += p["bytes"]
+            _set(pct=2 + 96 * done // need, step=f"Video {i} of {len(want)} ({done >> 20} of {need >> 20} MB)")
+        whole = folder / f"{v['id']}.mp4.part"
+        with open(whole, "wb") as out:
+            for p in v["pieces"]:
+                with open(parts / p["name"], "rb") as src:
+                    shutil.copyfileobj(src, out, 1 << 20)
+        if _sha(whole) != v["sha256"]:
+            whole.unlink(missing_ok=True)
+            raise RuntimeError("A video didn't match its fingerprint after joining, so it wasn't used. Try again.")
+        whole.replace(folder / f"{v['id']}.mp4")
+        for p in v["pieces"]:
+            (parts / p["name"]).unlink(missing_ok=True)
+    shutil.rmtree(parts, ignore_errors=True)
+    return videos.listing()["saved"]
 
 
 def _unpack(data: bytes, dest: Path) -> None:

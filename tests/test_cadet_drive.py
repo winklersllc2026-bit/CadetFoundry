@@ -7,6 +7,8 @@ import subprocess
 import sys
 import tempfile
 import unittest
+os.environ.setdefault("CADETFOUNDRY_DATA", tempfile.mkdtemp())   # never the real data folder
+os.environ.setdefault("CADETFOUNDRY_NO_WARMUP", "1")
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent

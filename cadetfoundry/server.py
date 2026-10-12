@@ -1444,7 +1444,15 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
             if err:
                 return self._json({"error": err}, 403)
             try:
-                return self._json(addons.install(str(b.get("name", ""))))
+                return self._json(addons.install(str(b.get("name", "")), str(b.get("code", ""))[:60]))
+            except ValueError as e:
+                return self._json({"error": str(e)}, 400)
+        if r == "/api/addons/remove-videos":             # the opt-out for the official videos: same PIN as installing
+            err = self._device_admin(b)
+            if err:
+                return self._json({"error": err}, 403)
+            try:
+                return self._json(addons.remove_videos())
             except ValueError as e:
                 return self._json({"error": str(e)}, 400)
         if r == "/api/terms/accept":                     # the device's "I agree": on first-run setup, or an instructor

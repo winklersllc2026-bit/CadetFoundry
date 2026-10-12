@@ -8,6 +8,9 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+import os
+os.environ.setdefault("CADETFOUNDRY_DATA", tempfile.mkdtemp())   # never the real data folder
+os.environ.setdefault("CADETFOUNDRY_NO_WARMUP", "1")
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "tools"))
@@ -43,6 +46,36 @@ out.hash = await sha256hex('ABCDEFGHJK');
 console.log(JSON.stringify(out));
 """
 
+VIDEO_HARNESS = r"""
+import { videoPack } from './worker.mjs';
+const [goodHash, offHash, good, off] = process.argv.slice(2);
+const rows = { [goodHash]: { id: 'aaa111', active: 1 }, [offHash]: { id: 'bbb222', active: 0 } };
+const log = [];
+const DB = {
+  prepare(sql) { return { bind(...a) { return { sql, a, async first() { return rows[a[0]] || null; } }; } }; },
+  async batch(stmts) { for (const s of stmts) log.push([s.sql.split(' ')[0], ...s.a.filter(x => typeof x === 'string' && x.length < 40)]); },
+};
+const files = { 'videos/manifest.json': '{"videos":[]}', 'videos/manifest.json.sig': 'SIG', 'videos/dvids-5.mp4.0': 'PIECE-BYTES',
+  'latest.json': '{}' };
+const DOWNLOADS = { async get(k) { return k in files ? { body: files[k], async text() { return files[k]; } } : null; } };
+const env = { DB, DOWNLOADS };
+const post = async (code, file) => {
+  const r = await videoPack(new Request('https://cadetfoundry.org/video-pack', { method: 'POST', body: JSON.stringify({ code, file }) }), env);
+  return [r.status, await r.text()];
+};
+const out = {};
+out.manifest = await post(good, 'manifest');
+out.piece = await post(good, 'dvids-5.mp4.0');
+out.wrong = await post('WRONG-CODE1', 'manifest');
+out.off = await post(off, 'manifest');
+out.escape = await post(good, '../latest.json');
+out.other = await post(good, 'CadetFoundry-Setup-9.9.9.exe');
+out.latest = await post(good, 'latest.json');
+out.gone = await post(good, 'dvids-6.mp4.0');
+out.log = log;
+console.log(JSON.stringify(out));
+"""
+
 
 @unittest.skipUnless(shutil.which("node"), "Node isn't installed")
 class DownloadCodeTests(unittest.TestCase):
@@ -70,6 +103,27 @@ class DownloadCodeTests(unittest.TestCase):
         # the site and the owner's tool read a code the same way
         self.assertEqual(out["norm"], pilot_access.norm(" abcde-fghjk "))
         self.assertEqual(out["hash"], pilot_access.code_hash("ABCDE-FGHJK"))
+
+    def test_the_video_pack_needs_a_code_and_serves_only_its_own_files(self):
+        good, off = pilot_access.new_code(), pilot_access.new_code()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            shutil.copy(ROOT / "site" / "worker.js", tmp / "worker.mjs")
+            (tmp / "harness.mjs").write_text(VIDEO_HARNESS, encoding="utf-8")
+            r = subprocess.run(["node", "harness.mjs", pilot_access.code_hash(good), pilot_access.code_hash(off), good, off],
+                               cwd=tmp, capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        out = json.loads(r.stdout.strip().splitlines()[-1])
+        self.assertEqual(out["manifest"][0], 200)
+        self.assertEqual(json.loads(out["manifest"][1]), {"manifest": '{"videos":[]}', "sig": "SIG"})
+        self.assertEqual(out["piece"], [200, "PIECE-BYTES"])
+        self.assertEqual(out["wrong"], [403, '{"error":"bad"}'])
+        self.assertEqual(out["off"], [403, '{"error":"off"}'])
+        for k in ("escape", "other", "latest"):                       # only video pieces, never other bucket files
+            self.assertEqual(out[k][0], 400, k)
+        self.assertEqual(out["gone"], [404, '{"error":"missing"}'])
+        self.assertEqual([x[0] for x in out["log"]], ["INSERT", "UPDATE"])   # the list counts once; pieces don't
+        self.assertIn("videos", out["log"][0])
 
     def test_setup_says_plainly_when_r2_is_off_and_changes_nothing(self):
         # what the owner saw on 2026-10-12: wrangler's emoji output, and R2 not switched on for the account

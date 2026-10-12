@@ -7,6 +7,9 @@ import tempfile
 import unittest
 import zipfile
 from pathlib import Path
+import os
+os.environ.setdefault("CADETFOUNDRY_DATA", tempfile.mkdtemp())   # never the real data folder
+os.environ.setdefault("CADETFOUNDRY_NO_WARMUP", "1")
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "site"))

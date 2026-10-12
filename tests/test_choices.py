@@ -5,6 +5,10 @@ import random
 import sys
 import unittest
 from pathlib import Path
+import os
+import tempfile
+os.environ.setdefault("CADETFOUNDRY_DATA", tempfile.mkdtemp())   # never the real data folder
+os.environ.setdefault("CADETFOUNDRY_NO_WARMUP", "1")
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from cadetfoundry import choices, exam, knowledge  # noqa: E402

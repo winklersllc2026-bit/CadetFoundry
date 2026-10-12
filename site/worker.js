@@ -38,6 +38,25 @@ export async function sha256hex(text) {
 
 const back = (why) => Response.redirect(`https://cadetfoundry.org/download?${why}=1`, 303);
 
+// The code's row if it's real and switched on; null otherwise (after a short pause, so guessing is slow).
+async function codeRow(env, code) {
+  if (code.length < 8) return { bad: 'bad' };
+  const row = await env.DB.prepare('SELECT id, active FROM codes WHERE hash = ?').bind(await sha256hex(code)).first();
+  if (!row || !row.active) {
+    await new Promise(r => setTimeout(r, 400));             // a slower answer for a wrong code
+    return { bad: row ? 'off' : 'bad' };
+  }
+  return { row };
+}
+
+async function counted(env, row, name) {
+  const now = new Date().toISOString();
+  await env.DB.batch([
+    env.DB.prepare('INSERT INTO downloads (code_id, at, file) VALUES (?, ?, ?)').bind(row.id, now, name),
+    env.DB.prepare('UPDATE codes SET uses = uses + 1, last_used = ? WHERE id = ?').bind(now, row.id),
+  ]);
+}
+
 // POST /download: code + which file. The file streams straight from R2 as an attachment.
 export async function download(request, env) {
   if (!env.DB || !env.DOWNLOADS) return back('closed');
@@ -45,22 +64,15 @@ export async function download(request, env) {
   try { form = await request.formData(); } catch { return back('bad'); }
   const code = normCode(form.get('code'));
   const which = String(form.get('file') || 'setup');
-  if (!FILES[which] || code.length < 8) return back('bad');
-  const row = await env.DB.prepare('SELECT id, active FROM codes WHERE hash = ?').bind(await sha256hex(code)).first();
-  if (!row || !row.active) {
-    await new Promise(r => setTimeout(r, 400));             // a slower answer for a wrong code
-    return back(row ? 'off' : 'bad');
-  }
+  if (!FILES[which]) return back('bad');
+  const { row, bad } = await codeRow(env, code);
+  if (bad) return back(bad);
   const latest = await env.DOWNLOADS.get('latest.json');     // which file is current: written by build.py --release
   const names = latest ? await latest.json() : {};
   const name = names[FILES[which]];
   const obj = name ? await env.DOWNLOADS.get(name) : null;
   if (!obj) return back('missing');
-  const now = new Date().toISOString();
-  await env.DB.batch([
-    env.DB.prepare('INSERT INTO downloads (code_id, at, file) VALUES (?, ?, ?)').bind(row.id, now, name),
-    env.DB.prepare('UPDATE codes SET uses = uses + 1, last_used = ? WHERE id = ?').bind(now, row.id),
-  ]);
+  await counted(env, row, name);
   return new Response(obj.body, {
     headers: {
       'Content-Type': 'application/octet-stream',
@@ -70,6 +82,33 @@ export async function download(request, env) {
       'Referrer-Policy': 'no-referrer',
     },
   });
+}
+
+// POST /video-pack (0.2.7, owner 2026-10-12): the official videos for installed copies, fetched by the app itself
+// (Me -> Add-ons) with the instructor's access code in the JSON body -- never in the address. {file: "manifest"} gives
+// the signed list (and counts as one download); {file: "dvids-123.mp4.0"} gives one piece. tools/video_pack.py
+// uploads them to R2 under videos/; the app checks the list's signature and every piece's SHA-256.
+const PIECE = /^dvids-\d{1,9}\.mp4\.\d{1,3}$/;
+const json = (o, status = 200) => new Response(JSON.stringify(o), {
+  status, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
+
+export async function videoPack(request, env) {
+  if (!env.DB || !env.DOWNLOADS) return json({ error: 'closed' }, 503);
+  let b;
+  try { b = await request.json(); } catch { return json({ error: 'bad' }, 400); }
+  const file = String((b && b.file) || '');
+  if (file !== 'manifest' && !PIECE.test(file)) return json({ error: 'bad' }, 400);
+  const { row, bad } = await codeRow(env, normCode(b.code));
+  if (bad) return json({ error: bad }, 403);
+  if (file === 'manifest') {
+    const [m, sig] = await Promise.all([env.DOWNLOADS.get('videos/manifest.json'), env.DOWNLOADS.get('videos/manifest.json.sig')]);
+    if (!m || !sig) return json({ error: 'missing' }, 404);
+    await counted(env, row, 'videos');
+    return json({ manifest: await m.text(), sig: await sig.text() });
+  }
+  const obj = await env.DOWNLOADS.get('videos/' + file);
+  if (!obj) return json({ error: 'missing' }, 404);
+  return new Response(obj.body, { headers: { 'Content-Type': 'application/octet-stream', 'Cache-Control': 'no-store' } });
 }
 
 export default {
@@ -100,6 +139,7 @@ export default {
       if (!same(pass, secret)) return unauthorized('Wrong password');
     }
     if (here.pathname === '/download' && request.method === 'POST') return download(request, env);
+    if (here.pathname === '/video-pack' && request.method === 'POST') return videoPack(request, env);
     // The installer and update files are never served from the page's own files (they aren't uploaded with it).
     if (/\.(exe|zip|sig)$/i.test(here.pathname)) {
       return new Response('Downloads need an access code: https://cadetfoundry.org/download', { status: 404 });

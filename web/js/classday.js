@@ -372,7 +372,7 @@ function projectorVideo(v) {
       <span class="faint">CLASSROOM · VIDEO</span><button class="btn small" id="pvBack">← Back to today's class</button></div>
     <h1 style="font-size:clamp(24px,3.4vw,40px);margin:12px 0">${esc(v.title)}</h1>
     ${v.local ? `<video controls autoplay playsinline src="${esc(v.src)}" style="width:100%;max-height:72vh;background:#000;border-radius:10px"></video>`
-      : `<div class="card"><p style="font-size:20px">${v.kind === 'youtube' ? 'This video is on YouTube. It opens in a new tab and needs internet.' : 'This video isn\'t saved on this computer yet, so it needs internet.'}</p>
+      : `<div class="card"><p style="font-size:20px">${v.kind === 'youtube' ? 'This video is on YouTube. It opens in a new tab and needs internet.' : 'This video isn\'t saved on this computer yet, so it needs internet. Save the official videos once from Me → Add-ons.'}</p>
          <a class="btn primary" href="${esc(v.url)}" target="_blank" rel="noopener noreferrer">▶ Open the video</a></div>`}
     <p class="faint" style="margin-top:10px">${credit}</p>`;
   $('#pvBack').addEventListener('click', () => {

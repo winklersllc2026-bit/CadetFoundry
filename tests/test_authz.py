@@ -26,7 +26,7 @@ from cadetfoundry.server import Handler, serve  # noqa: E402
 ADMIN = "905172"
 SOURCE = (ROOT / "cadetfoundry" / "server.py").read_text(encoding="utf-8")
 INSTRUCTOR_ROUTES = sorted(set(re.findall(r'r == "(/api/instructor/[a-z0-9/_.-]+)"', SOURCE)) - {"/api/instructor/unlock"})
-DEVICE_ROUTES = ["/api/admin/ai-mode", "/api/update", "/api/addons/install", "/api/library/reload"]
+DEVICE_ROUTES = ["/api/admin/ai-mode", "/api/update", "/api/addons/install", "/api/addons/remove-videos", "/api/library/reload"]
 
 
 @unittest.skipUnless(vault.AVAILABLE, "cryptography not installed")
