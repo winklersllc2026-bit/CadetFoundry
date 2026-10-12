@@ -21,4 +21,4 @@ bucket_name = "cadetfoundry-downloads"
 [[d1_databases]]
 binding = "DB"
 database_name = "cadetfoundry-pilot"
-database_id = "REPLACE_WITH_DATABASE_ID"
+database_id = "49cf58a6-075b-41db-bf08-346d4e75b037"
