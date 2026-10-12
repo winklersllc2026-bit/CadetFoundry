@@ -18,11 +18,11 @@ The lyrics are published by The U.S. Army Band (usarmyband.com), as AR 600-25 di
 - **Mess Call** — mealtime. **Adjutant's Call** — the adjutant is about to form the unit. **Attention** — you're about to be called to attention.
 
 ## Quiz
-Q: What is the official Army song? | A: The Army Goes Rolling Along | ALSO: what is the name of the army song; what is the army song
-Q: What do you do when the Army song is played? | A: Stand at attention and sing the lyrics
+Q: What is the official Army song? | A: The Army Goes Rolling Along | ALSO: what is the name of the army song; what is the army song | WRONG: Anchors Aweigh; The Marines' Hymn; The U.S. Air Force song
+Q: What do you do when the Army song is played? | A: Stand at attention and sing the lyrics | WRONG: Sit quietly and listen; Salute until it ends; Stand at parade rest and stay silent
 Q: When was the Army song dedicated? | A: Veterans Day, 11 November 1956
 Q: What ceremonies does the Army song conclude? | A: All reviews, parades and honor guard ceremonies
 Q: When did "The Star-Spangled Banner" become the national anthem? | A: 3 March 1931
-Q: What bugle call is played right after Retreat? | A: To the Color
-Q: What are the five classes of bugle calls? | A: Warning, formation, alarm, service and ceremonial
+Q: What bugle call is played right after Retreat? | A: To the Color | WRONG: Taps; Reveille; Tattoo
+Q: What are the five classes of bugle calls? | A: Warning, formation, alarm, service and ceremonial | WRONG: Morning, noon, evening, night and holiday; Attention, rest, march, halt and dismiss; Infantry, armor, artillery, aviation and signal
 Q: What does Reveille signal? | A: Wake up for morning roll call; it goes with raising the national Color

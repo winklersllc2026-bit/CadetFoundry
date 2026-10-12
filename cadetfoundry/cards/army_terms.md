@@ -27,7 +27,7 @@ Q: What is AIT? | A: Advanced individual training — technical, MOS-oriented tr
 Q: What does IMT stand for? | A: Initial military training
 Q: What does FUA stand for? | A: First unit of assignment
 Q: What does AFT stand for? | A: Army Fitness Test
-Q: Which test did the AFT replace? | A: The Army Combat Fitness Test (ACFT)
+Q: Which test did the AFT replace? | A: The Army Combat Fitness Test (ACFT) | WRONG: The Navy Physical Readiness Test (PRT); The Air Force Physical Fitness Assessment (PFA); The Presidential Fitness Test
 Q: What does H2F stand for? | A: Holistic health and fitness
-Q: What does FSP stand for? | A: Future Soldier Program
-Q: What does NCO stand for? | A: Noncommissioned officer
+Q: What does FSP stand for? | A: Future Soldier Program | WRONG: Field Service Platoon; First Sergeant Program; Fitness Standards Plan
+Q: What does NCO stand for? | A: Noncommissioned officer | WRONG: Naval Commanding Officer; National Cadet Organization; Newly Commissioned Officer

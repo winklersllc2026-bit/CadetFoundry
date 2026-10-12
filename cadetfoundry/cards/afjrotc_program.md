@@ -19,8 +19,8 @@ source: U.S. Air Force fact sheet "Air Force Junior Reserve Officer Training Cor
 AFJROTC is **not a recruiting program**, and joining it creates **no military service obligation**.
 
 ## Quiz
-Q: What is the AFJROTC mission? | A: Develop citizens of character
-Q: What are the three parts of the AFJROTC curriculum? | A: Aerospace Science, Leadership Education, and Health and Wellness
+Q: What is the AFJROTC mission? | A: Develop citizens of character | WRONG: Recruit Airmen for the Air Force; Train Cadets to fly fighter jets; Prepare Cadets for basic training
+Q: What are the three parts of the AFJROTC curriculum? | A: Aerospace Science, Leadership Education, and Health and Wellness | WRONG: Drill, marksmanship, and survival; Recruiting, enlistment, and basic training; Math, science, and engineering
 Q: Does joining AFJROTC mean you have to join the military? | A: No, it creates no military service obligation
-Q: Which AFJROTC scholarship offers private pilot training? | A: The Chief of Staff of the Air Force Flight Academy
-Q: Where is AFJROTC headquarters? | A: Maxwell Air Force Base, Alabama
+Q: Which AFJROTC scholarship offers private pilot training? | A: The Chief of Staff of the Air Force Flight Academy | WRONG: The Community College of the Air Force; The Air Force Academy Prep School; The Pell Grant
+Q: Where is AFJROTC headquarters? | A: Maxwell Air Force Base, Alabama | WRONG: The Pentagon, Virginia; Lackland Air Force Base, Texas; Colorado Springs, Colorado

@@ -23,9 +23,9 @@ The **Global Positioning System (GPS)** is a U.S.-owned utility. It provides **p
 **Why it matters.** According to the Space Force, GPS timing helps run financial networks, international commerce, cell phone networks and critical infrastructure. That is why the Space Force protects it.
 
 ## Quiz
-Q: Which military service operates GPS? | A: The U.S. Space Force
-Q: What does PNT stand for? | A: Positioning, navigation, and timing
-Q: What are the three segments of GPS? | A: Space, control, and user
+Q: Which military service operates GPS? | A: The U.S. Space Force | WRONG: The U.S. Navy; The U.S. Army; The U.S. Coast Guard
+Q: What does PNT stand for? | A: Positioning, navigation, and timing | WRONG: Power, network, and transmission; Position, navigation, and tracking; Planets, nebulas, and telescopes
+Q: What are the three segments of GPS? | A: Space, control, and user | WRONG: Satellite, rocket, and launch; Air, land, and sea; Sender, receiver, and antenna
 Q: How many times a day does a GPS satellite circle the Earth? | A: Twice
 Q: The GPS constellation lets you see at least how many satellites from almost anywhere on Earth? | A: At least four
-Q: Who can use civilian GPS for free? | A: Everyone, worldwide
+Q: Who can use civilian GPS for free? | A: Everyone, worldwide | WRONG: Only the U.S. military; Only people who pay a monthly fee; Only U.S. citizens

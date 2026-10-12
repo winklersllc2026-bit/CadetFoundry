@@ -18,9 +18,9 @@ source: U.S. Navy, Navy ROTC (navy.com/careers-benefits/education/nrotc) and The
 Requirements and deadlines change — check with your instructor and the official program sites.
 
 ## Quiz
-Q: Where is the U.S. Naval Academy? | A: Annapolis, Maryland
-Q: What are Naval Academy students called? | A: Midshipmen
-Q: Naval Academy graduates are commissioned as what in the Navy? | A: Ensigns
-Q: Naval Academy graduates can also be commissioned in which other service? | A: The Marine Corps
+Q: Where is the U.S. Naval Academy? | A: Annapolis, Maryland | WRONG: West Point, New York; Newport, Rhode Island; Colorado Springs, Colorado
+Q: What are Naval Academy students called? | A: Midshipmen | WRONG: Cadets; Ensigns; Seamen
+Q: Naval Academy graduates are commissioned as what in the Navy? | A: Ensigns | WRONG: Second Lieutenants; Lieutenants; Midshipmen
+Q: Naval Academy graduates can also be commissioned in which other service? | A: The Marine Corps | WRONG: The Army; The Air Force; The Coast Guard
 Q: How many summer training cruises do NROTC scholarship students go on? | A: Three
 Q: How long must Naval Academy graduates serve? | A: At least five years

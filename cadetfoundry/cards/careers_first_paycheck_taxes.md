@@ -22,8 +22,8 @@ source: IRS Publication 505 (2026), Tax Withholding and Estimated Tax; IRS Tax T
 Q: What form do you fill out so your employer knows how much tax to withhold? | A: Form W-4
 Q: Are students automatically exempt from tax withholding? | A: No
 Q: How long is an exemption from withholding good for? | A: One year
-Q: By what date must you turn in a new W-4 to keep an exemption? | A: February 15
+Q: By what date must you turn in a new W-4 to keep an exemption? | A: February 15 | WRONG: April 15; January 1; December 31
 Q: Must minors file a tax return if they have $400 or more in net self-employment earnings? | A: Yes
 Q: How much in tips in a month must you report to your employer? | A: $20 or more
-Q: Name two kinds of self-employment a teen might have | A: Babysitting, mowing lawns, running a small business
-Q: Why might you file a tax return even if you don't have to? | A: To get withheld income tax refunded
+Q: Name two kinds of self-employment a teen might have | A: Babysitting, mowing lawns, running a small business | WRONG: A job at a fast-food restaurant, a grocery store or a movie theater; A paid internship or a part-time retail job; A school work-study job or a summer camp job
+Q: Why might you file a tax return even if you don't have to? | A: To get withheld income tax refunded | WRONG: To pay a fine for being a minor; To get a credit card; To register to vote

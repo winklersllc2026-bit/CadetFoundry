@@ -25,9 +25,9 @@ source: U.S. Department of Defense, U.S. Military Rank Insignia (defense.gov/Res
 The **Coast Guard** is part of the Department of Homeland Security in peacetime and the Navy in time of war; its insignia match the Navy's except for color.
 
 ## Quiz
-Q: What do the letters E, W and O stand for in pay grades? | A: Enlisted, warrant officer and commissioned officer
+Q: What do the letters E, W and O stand for in pay grades? | A: Enlisted, warrant officer and commissioned officer | WRONG: Entry, worker and owner; Elite, warrior and operator; Enlisted, wingman and officer cadet
 Q: What is the E-4 rank called in the Air Force? | A: Senior Airman
 Q: A Captain is which pay grade in the Navy? | A: O-6
 Q: A Captain is which pay grade in the Army, Air Force and Marine Corps? | A: O-3
-Q: What does the Navy call a Sailor's job specialty? | A: A rate
-Q: Which department is the Coast Guard part of in peacetime? | A: The Department of Homeland Security
+Q: What does the Navy call a Sailor's job specialty? | A: A rate | WRONG: An MOS; An AFSC; A billet
+Q: Which department is the Coast Guard part of in peacetime? | A: The Department of Homeland Security | WRONG: The Department of Defense; The Department of Transportation; The Department of the Navy

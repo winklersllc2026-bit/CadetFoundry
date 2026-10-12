@@ -26,14 +26,14 @@ source: TC 3-21.75, The Warrior Ethos and Soldier Combat Skills (13 August 2013)
 - **Dispersion** — a bunch of Soldiers is easier to spot than one. Spread out (5-14).
 
 ## Quiz
-Q: What are the three individual movement techniques? | A: Low crawl, high crawl, and rush
-Q: Which individual movement technique gives the lowest silhouette? | A: The low crawl
-Q: When do you use the high crawl? | A: When there's good cover and concealment but enemy fire keeps you from getting up
-Q: When do you use the low crawl? | A: Where cover and concealment are very low and enemy fire or observation keeps you from getting up
+Q: What are the three individual movement techniques? | A: Low crawl, high crawl, and rush | WRONG: Walk, jog, and sprint; Roll, jump, and dive; Patrol, ambush, and raid
+Q: Which individual movement technique gives the lowest silhouette? | A: The low crawl | WRONG: The high crawl; The rush; Walking upright
+Q: When do you use the high crawl? | A: When there's good cover and concealment but enemy fire keeps you from getting up | WRONG: When cover and concealment are very low and enemy fire keeps you down; When you need to move fast between positions; When no enemy is nearby
+Q: When do you use the low crawl? | A: Where cover and concealment are very low and enemy fire or observation keeps you from getting up | WRONG: When there's good cover and concealment but fire keeps you from getting up; When you need to move fast between positions; When no enemy is nearby
 Q: How long should each rush last? | A: 3 to 5 seconds | ALSO: how long is a rush; what is the 3 to 5 second rush
-Q: What is the fastest way to move from one position to another? | A: The rush
+Q: What is the fastest way to move from one position to another? | A: The rush | WRONG: The low crawl; The high crawl; Rolling
 Q: What is the difference between cover and concealment? | A: Cover protects you from fire; concealment only hides you from observation | ALSO: cover vs concealment
 Q: Does concealment protect you from enemy fire? | A: No — it only hides you from observation
-Q: Name things that can give away your position. | A: Movement, position, outlines and shadows, shine, shape, colors, and lack of dispersion
-Q: How do you reduce shine from your skin? | A: Cover it with clothing and face paint
-Q: Why should you roll or crawl a short distance before rushing? | A: The enemy may be aiming where they last saw you
+Q: Name things that can give away your position. | A: Movement, position, outlines and shadows, shine, shape, colors, and lack of dispersion | WRONG: Camouflage, stillness, and dispersion; Staying low, using cover, and keeping quiet; Face paint, darkness, and soft footsteps
+Q: How do you reduce shine from your skin? | A: Cover it with clothing and face paint | WRONG: Wash your face often; Use sunscreen; Wear a reflective vest
+Q: Why should you roll or crawl a short distance before rushing? | A: The enemy may be aiming where they last saw you | WRONG: To rest before running; To check your equipment; To signal your team

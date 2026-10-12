@@ -32,9 +32,9 @@ The Space Force's fitness test is the **Human Performance Assessment (HPA)**. Th
 Fitness standards change often. Check the latest official guidance before you test.
 
 ## Quiz
-Q: What is the Space Force fitness test called? | A: The Human Performance Assessment
+Q: What is the Space Force fitness test called? | A: The Human Performance Assessment | WRONG: The Physical Fitness Assessment; The Army Fitness Test; The Physical Readiness Test
 Q: How many fitness assessments does a Guardian take each year? | A: Two
 Q: What must at least one of the yearly assessments include? | A: The 2-mile run
-Q: How is body composition measured on the Space Force HPA? | A: Waist-to-height ratio
+Q: How is body composition measured on the Space Force HPA? | A: Waist-to-height ratio | WRONG: Body mass index (BMI); Skin-fold calipers; Weight alone
 Q: On the 80-point HPA scale, what score is considered physically ready? | A: 60 or higher
 Q: How many domains does Total Force Fitness have? | A: Eight

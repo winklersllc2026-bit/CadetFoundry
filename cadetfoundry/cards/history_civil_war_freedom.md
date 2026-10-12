@@ -17,11 +17,11 @@ source: National Archives, Emancipation Proclamation (1863) milestone document; 
 "Fourscore and seven" means **87** — counting back from 1863 to **1776** and the Declaration of Independence. It ends with the hope that "government of the people, by the people, and for the people, shall not perish from the earth."
 
 ## Quiz
-Q: Who issued the Emancipation Proclamation? | A: President Abraham Lincoln
+Q: Who issued the Emancipation Proclamation? | A: President Abraham Lincoln | WRONG: General Ulysses S. Grant; President Andrew Johnson; Frederick Douglass
 Q: When did the Emancipation Proclamation take effect? | A: January 1, 1863
 Q: Did the Emancipation Proclamation free enslaved people in the loyal border states? | A: No — only in the states in rebellion
 Q: About how many Black soldiers and sailors served in the Union forces by the end of the war? | A: Almost 200,000
 Q: What finally ended slavery nationwide? | A: The 13th Amendment
 Q: How many years is "fourscore and seven"? | A: 87
-Q: Complete the line: "government of the people, by the people, and..." | A: for the people
+Q: Complete the line: "government of the people, by the people, and..." | A: for the people | WRONG: for the states; for the government; for the nation
 Q: When did Lincoln give the Gettysburg Address? | A: November 19, 1863

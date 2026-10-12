@@ -27,13 +27,13 @@ source: TC 4-02.3, Field Hygiene and Sanitation (6 May 2015), paras 2-45 to 2-54
 **Sleep** (para 2-62): **7 to 8 hours** in each 24 hours keeps your performance up. Less than that, and it drops.
 
 ## Quiz
-Q: How long does it take to acclimatize to heat? | A: At least 3 to 5 days; full acclimatization can take up to two weeks
+Q: How long does it take to acclimatize to heat? | A: At least 3 to 5 days; full acclimatization can take up to two weeks | WRONG: About one hour; One day; Six months
 Q: How much water may you need per hour in the heat? | A: ½ to 1½ quarts an hour, depending on heat and activity
 Q: How much water may you need per day in hot, dry climates? | A: Up to 3 gallons (12 quarts)
-Q: Why eat all your meals in the heat? | A: Meals replace the salts you lose sweating
-Q: What does dark yellow urine mean? | A: You're not drinking enough fluids
+Q: Why eat all your meals in the heat? | A: Meals replace the salts you lose sweating | WRONG: Meals keep you cool; Skipping meals is against regulations; Meals replace the water you lose
+Q: What does dark yellow urine mean? | A: You're not drinking enough fluids | WRONG: You're well hydrated; You ate too much salt; You're getting a cold
 Q: Can you get dehydrated in the cold? | A: Yes
-Q: Why avoid alcohol in the cold? | A: It makes your body lose heat faster
+Q: Why avoid alcohol in the cold? | A: It makes your body lose heat faster | WRONG: It freezes in your canteen; It makes you too hot; It's only allowed in the summer
 Q: Should you rub frozen skin or rewarm a frozen body part yourself? | A: No — only rewarm frozen body parts under medical supervision
 Q: Below what wind chill should you not wear face camouflage? | A: −10 °F or below — it hides frostbite
 Q: Can you sleep in a vehicle with the engine running for heat? | A: No — carbon monoxide can kill you

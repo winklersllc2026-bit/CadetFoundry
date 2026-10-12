@@ -21,11 +21,11 @@ source: Federal Student Aid, U.S. Department of Education — FAFSA Application 
 The FAFSA is **free** at studentaid.gov — never pay a website to file it for you. Your school counselor can help.
 
 ## Quiz
-Q: What does FAFSA stand for? | A: Free Application for Federal Student Aid
+Q: What does FAFSA stand for? | A: Free Application for Federal Student Aid | WRONG: Federal Aid for Students in America; Free Assistance for Future Student Athletes; Federal Application for Scholarships and Awards
 Q: Does it cost money to fill out the FAFSA? | A: No — it's free at studentaid.gov
-Q: Name three kinds of financial aid the FAFSA is used for | A: Grants, scholarships, work-study funds and loans
-Q: Who should fill out the FAFSA? | A: Any student who wants financial aid, regardless of income
-Q: How often do you need to fill out the FAFSA? | A: Every year you're in school
+Q: Name three kinds of financial aid the FAFSA is used for | A: Grants, scholarships, work-study funds and loans | WRONG: Car loans, credit cards and mortgages; Tax refunds, stimulus checks and bonuses; Allowance, gifts and prize money
+Q: Who should fill out the FAFSA? | A: Any student who wants financial aid, regardless of income | WRONG: Only students from low-income families; Only students with straight A's; Only students going to community college
+Q: How often do you need to fill out the FAFSA? | A: Every year you're in school | WRONG: Once, before freshman year; Every four years; Only if your family's income changes
 Q: What is the main difference between a grant and a loan? | A: Most grants don't have to be repaid; loans do
-Q: What is the largest federal grant for undergraduates called? | A: The Federal Pell Grant
-Q: What account do you need to sign the FAFSA? | A: An FSA ID
+Q: What is the largest federal grant for undergraduates called? | A: The Federal Pell Grant | WRONG: The GI Bill; The National Merit Scholarship; The Federal Work-Study Award
+Q: What account do you need to sign the FAFSA? | A: An FSA ID | WRONG: A credit card account; A bank savings account; A school email account

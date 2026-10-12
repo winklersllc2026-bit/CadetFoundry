@@ -27,6 +27,6 @@ The platoon commander aligns each rank, then reports to the inspecting officer: 
 ## Quiz
 Q: What command does the platoon commander give to open ranks? | A: Open ranks, march
 Q: When ranks open, how many steps forward does the first rank take? | A: Two
-Q: When ranks open, what does the third rank do? | A: Stays in place
-Q: What does the inspecting officer check first? | A: The overall appearance of the Cadets
-Q: Name two things an inspector checks on a Cadet's uniform. | A: Shined shoes and insignia in the right place
+Q: When ranks open, what does the third rank do? | A: Stays in place | WRONG: Takes two steps forward; Takes one step backward; Faces about
+Q: What does the inspecting officer check first? | A: The overall appearance of the Cadets | WRONG: Each Cadet's shoes; The guidon; The Cadets' haircuts
+Q: Name two things an inspector checks on a Cadet's uniform. | A: Shined shoes and insignia in the right place | WRONG: The Cadet's grades and attendance; Cell phone and earbuds; The Cadet's school schedule and locker

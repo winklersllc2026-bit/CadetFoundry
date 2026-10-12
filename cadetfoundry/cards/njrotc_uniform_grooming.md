@@ -24,8 +24,8 @@ source: NJROTC Cadet Field Manual, 12th Edition (NAVEDTRA 37116-L, April 2024), 
 
 ## Quiz
 Q: How often must NJROTC Cadets wear the uniform? | A: At least one full school day each week
-Q: When you're outdoors in NJROTC uniform, what must you wear on your head? | A: Your cap
-Q: What do service stars on the NJROTC uniform show? | A: The number of years or courses completed in NJROTC
+Q: When you're outdoors in NJROTC uniform, what must you wear on your head? | A: Your cap | WRONG: Nothing; A hood; Sunglasses
+Q: What do service stars on the NJROTC uniform show? | A: The number of years or courses completed in NJROTC | WRONG: The number of awards won; Your rank in the unit; The number of parades marched
 Q: How many NJROTC ribbons go in each row? | A: Three
-Q: On which shoulder is the Leadership Academy aiguillette worn? | A: The right shoulder
+Q: On which shoulder is the Leadership Academy aiguillette worn? | A: The right shoulder | WRONG: The left shoulder; Both shoulders; Neither — it goes on the cap
 Q: Are sunglasses ever worn in military formation? | A: No

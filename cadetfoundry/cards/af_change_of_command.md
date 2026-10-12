@@ -34,9 +34,9 @@ Passing the flag is a visible symbol of command authority moving from one leader
 - The color guard **never does an about face or to the rear march**. It turns with a right or left about instead.
 
 ## Quiz
-Q: What is the main purpose of a change of command ceremony? | A: To let subordinates witness command passing from one officer to another
-Q: What does the outgoing commander say? | A: I relinquish command
-Q: What does the incoming commander say? | A: I assume command
-Q: Who carries the U.S. flag in an Air Force color guard? | A: The senior flagbearer
+Q: What is the main purpose of a change of command ceremony? | A: To let subordinates witness command passing from one officer to another | WRONG: To promote the outgoing commander; To retire the unit's colors; To welcome new recruits to the unit
+Q: What does the outgoing commander say? | A: I relinquish command | WRONG: I assume command; Sir, I report; Present, arms
+Q: What does the incoming commander say? | A: I assume command | WRONG: I relinquish command; Command accepted; Sir, I report
+Q: Who carries the U.S. flag in an Air Force color guard? | A: The senior flagbearer | WRONG: The left rifle guard; The organizational flag bearer; The right rifle guard
 Q: Can the Air Force flag be carried without the U.S. flag? | A: No, never
-Q: Which movements does a color guard never perform? | A: About face and to the rear march
+Q: Which movements does a color guard never perform? | A: About face and to the rear march | WRONG: Forward march and halt; Present arms and order arms; Mark time and forward march

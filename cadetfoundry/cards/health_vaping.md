@@ -23,8 +23,8 @@ source: CDC, E-Cigarette Use Among Youth (cdc.gov/tobacco/e-cigarettes/youth.htm
 A trusted adult — a parent, your instructor, a school nurse or counselor — can help too.
 
 ## Quiz
-Q: What addictive drug is in most e-cigarettes? | A: Nicotine
-Q: Name two things nicotine can harm in a teen's brain | A: Attention, learning, mood, impulse control
+Q: What addictive drug is in most e-cigarettes? | A: Nicotine | WRONG: Caffeine; Melatonin; Vitamin C
+Q: Name two things nicotine can harm in a teen's brain | A: Attention, learning, mood, impulse control | WRONG: Eyesight, hearing, taste; Height, hair color, shoe size; Nothing — nicotine is safe for teens
 Q: Do most students who vape want to quit? | A: Yes
-Q: Name a free program that helps teens quit vaping | A: SmokefreeTXT for Teens, QuitPlan, or LiveHelp
-Q: What is one tip for quitting vaping? | A: Know your triggers and have a plan for them
+Q: Name a free program that helps teens quit vaping | A: SmokefreeTXT for Teens, QuitPlan, or LiveHelp | WRONG: Instagram; A vape shop rewards card; An energy drink club
+Q: What is one tip for quitting vaping? | A: Know your triggers and have a plan for them | WRONG: Switch to a stronger vape; Keep vapes nearby just in case; Quit only on weekends

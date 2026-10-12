@@ -21,9 +21,9 @@ The Navy's **Physical Fitness Assessment (PFA)** includes **body composition** a
 The rules are in OPNAVINST 6110.1L and the Navy's Physical Readiness Program guides, and scoring tables change, so check the current guide for numbers.
 
 ## Quiz
-Q: What three events make up the Navy PRT? | A: Push-ups, the forearm plank, and a 1.5-mile run or walk
+Q: What three events make up the Navy PRT? | A: Push-ups, the forearm plank, and a 1.5-mile run or walk | WRONG: Pull-ups, sit-ups, and a 3-mile run; Deadlift, hand-release push-ups, and a 2-mile run; Sit-ups, a 100-meter sprint, and a ruck march
 Q: How long do Sailors have for push-ups on the PRT? | A: Two minutes
-Q: What does the forearm plank measure? | A: Abdominal muscle endurance
-Q: Name an alternate cardio option on the Navy PRT. | A: The stationary bike
+Q: What does the forearm plank measure? | A: Abdominal muscle endurance | WRONG: Leg strength; Heart rate; Flexibility
+Q: Name an alternate cardio option on the Navy PRT. | A: The stationary bike | WRONG: A 3-mile ruck march; Jumping rope; A 100-meter sprint
 Q: In which week of boot camp do Navy recruits take the official PFA? | A: Week 8
-Q: What does PRT stand for? | A: Physical Readiness Test
+Q: What does PRT stand for? | A: Physical Readiness Test | WRONG: Personal Running Time; Physical Recruit Training; Push-up and Run Test

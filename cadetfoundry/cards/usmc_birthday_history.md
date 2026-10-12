@@ -17,8 +17,8 @@ source: Marine Corps History Division, Marine Corps Order No. 47 (Series 1921) (
 
 ## Quiz
 Q: What is the Marine Corps birthday? | A: November 10, 1775
-Q: What body created the Marine Corps by resolution? | A: The Continental Congress
-Q: Where did Captain Samuel Nicholas set up the first Marine recruiting headquarters? | A: Tun Tavern in Philadelphia
-Q: Which Commandant issued Marine Corps Order No. 47 in 1921? | A: Major General John A. Lejeune
-Q: Where did German soldiers start calling Marines "Devil Dogs"? | A: The Battle of Belleau Wood
-Q: Where does the nickname "Leatherneck" come from? | A: The high collar Marines wore
+Q: What body created the Marine Corps by resolution? | A: The Continental Congress | WRONG: The U.S. Navy; George Washington; The state of Pennsylvania
+Q: Where did Captain Samuel Nicholas set up the first Marine recruiting headquarters? | A: Tun Tavern in Philadelphia | WRONG: Independence Hall in Philadelphia; Faneuil Hall in Boston; Fort McHenry in Baltimore
+Q: Which Commandant issued Marine Corps Order No. 47 in 1921? | A: Major General John A. Lejeune | WRONG: Major General Smedley Butler; General Lewis "Chesty" Puller; Captain Samuel Nicholas
+Q: Where did German soldiers start calling Marines "Devil Dogs"? | A: The Battle of Belleau Wood | WRONG: The Battle of Iwo Jima; The Battle of the Bulge; The Battle of Okinawa
+Q: Where does the nickname "Leatherneck" come from? | A: The high collar Marines wore | WRONG: The leather boots Marines wore; The tough training at boot camp; The leather rifle slings

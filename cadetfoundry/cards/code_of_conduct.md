@@ -22,11 +22,11 @@ The Code of Conduct (COC) is "the moral compass for all Soldiers" and applies to
 If captured: stay calm and courteous and keep your dignity — rude behavior seldom helps and often brings punishment (para 2-15). Don't volunteer classified information; resist every attempt to get it (para 2-16). Soldiers isolated with civilians or contractors should take the leadership role (para 2-13).
 
 ## Quiz
-Q: Who established the Code of Conduct, and when? | A: President Eisenhower, in 1955 | ALSO: when was the code of conduct created; who created the code of conduct
+Q: Who established the Code of Conduct, and when? | A: President Eisenhower, in 1955 | ALSO: when was the code of conduct created; who created the code of conduct | WRONG: President Truman, in 1947; President Kennedy, in 1962; President Roosevelt, in 1941
 Q: How many articles are in the Code of Conduct? | A: Six
-Q: Under Article V, what are you required to give if questioned as a prisoner of war? | A: Name, rank, service number and date of birth | ALSO: what information do you give if captured; what do you tell the enemy if you are captured
+Q: Under Article V, what are you required to give if questioned as a prisoner of war? | A: Name, rank, service number and date of birth | ALSO: what information do you give if captured; what do you tell the enemy if you are captured | WRONG: Name, rank, unit and mission; Name and home address only; Everything the enemy asks
 Q: Finish Article I: "I am an American, fighting in the forces which guard my country and our way of life..." | A: I am prepared to give my life in their defense.
-Q: Finish Article II: "I will never surrender..." | A: of my own free will. If in command, I will never surrender the members of my command while they still have the means to resist.
-Q: Under Article III, what will you accept from the enemy? | A: Neither parole nor special favors
-Q: Under Article IV, what do you do if you are the senior prisoner? | A: Take command
+Q: Finish Article II: "I will never surrender..." | A: of my own free will. If in command, I will never surrender the members of my command while they still have the means to resist. | WRONG: unless I am wounded. If in command, I will surrender when my unit is outnumbered.; except to save myself. If in command, I will let each member decide for themselves.; unless my leader is captured. If in command, I will surrender when supplies run out.
+Q: Under Article III, what will you accept from the enemy? | A: Neither parole nor special favors | WRONG: Parole, if it is offered fairly; Special favors, if they help me survive; Better food in exchange for information
+Q: Under Article IV, what do you do if you are the senior prisoner? | A: Take command | WRONG: Wait for orders from the enemy; Let the youngest prisoner lead; Give command to the enemy
 Q: What is the last sentence of the Code of Conduct? | A: I will trust in my God and in the United States of America.

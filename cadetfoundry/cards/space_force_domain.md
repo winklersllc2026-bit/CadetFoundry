@@ -25,8 +25,8 @@ source: SFDD-1, The Space Force (Space Force Doctrine Document 1, 3 April 2025),
 An attack on **any one** segment can deny, degrade or destroy a space capability. Protecting a capability means protecting all three.
 
 ## Quiz
-Q: What are the three orbital regimes? | A: Geocentric, cislunar, and heliocentric
-Q: In which orbital regime does Earth's gravity dominate? | A: Geocentric
-Q: What are the three segments of a space system? | A: Orbital, terrestrial, and link
-Q: Which segment of a space system is the signals that connect space and ground? | A: The link segment
-Q: Why must all three segments of a space system be protected? | A: An attack on any one segment can deny, degrade or destroy the capability
+Q: What are the three orbital regimes? | A: Geocentric, cislunar, and heliocentric | WRONG: Low, medium, and high; Atmospheric, lunar, and solar; Polar, equatorial, and global
+Q: In which orbital regime does Earth's gravity dominate? | A: Geocentric | WRONG: Cislunar; Heliocentric; Interstellar
+Q: What are the three segments of a space system? | A: Orbital, terrestrial, and link | WRONG: Rocket, payload, and fuel; Air, land, and sea; Launch, orbit, and reentry
+Q: Which segment of a space system is the signals that connect space and ground? | A: The link segment | WRONG: The orbital segment; The terrestrial segment; The launch segment
+Q: Why must all three segments of a space system be protected? | A: An attack on any one segment can deny, degrade or destroy the capability | WRONG: Each segment is owned by a different country; Only the ground segment can be attacked; It's required by the Constitution

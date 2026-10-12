@@ -21,9 +21,9 @@ Navy boot camp is at **Recruit Training Command (RTC), Great Lakes, Illinois** â
 Information only â€” the schedule changes. Ask a recruiter for anything official.
 
 ## Quiz
-Q: Where is Navy boot camp? | A: Recruit Training Command, Great Lakes, Illinois
-Q: Who trains Navy recruits at boot camp? | A: Recruit Division Commanders
+Q: Where is Navy boot camp? | A: Recruit Training Command, Great Lakes, Illinois | WRONG: Parris Island, South Carolina; Lackland Air Force Base, Texas; Fort Jackson, South Carolina
+Q: Who trains Navy recruits at boot camp? | A: Recruit Division Commanders | WRONG: Drill Sergeants; Military Training Instructors; Drill Instructors
 Q: What swim qualification must every Navy recruit earn? | A: The 3rd Class Swim Qualification
 Q: What is the 12-hour capstone test at Navy boot camp called? | A: Battle Stations 21
-Q: What is the Navy boot camp graduation ceremony called? | A: Pass-in-Review
-Q: What skill do recruits practice in week four, including firefighting? | A: Damage control
+Q: What is the Navy boot camp graduation ceremony called? | A: Pass-in-Review | WRONG: The Crucible; Turning Blue; The Eagle, Globe and Anchor ceremony
+Q: What skill do recruits practice in week four, including firefighting? | A: Damage control | WRONG: Marksmanship; Land navigation; Rappelling

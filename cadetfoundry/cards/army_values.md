@@ -16,8 +16,8 @@ The seven Army Values spell LDRSHIP:
 - **Personal Courage** — Face fear, danger or adversity (physical or moral).
 
 ## Quiz
-Q: What acronym helps you remember the Army Values? | A: LDRSHIP
-Q: Name all seven Army Values in order. | A: Loyalty, Duty, Respect, Selfless Service, Honor, Integrity, Personal Courage
-Q: Which Army Value means "Do what's right, legally and morally"? | A: Integrity
-Q: Which Army Value means putting the welfare of the Nation, the Army and your subordinates before your own? | A: Selfless Service
-Q: Personal Courage covers which two kinds of courage? | A: Physical and moral
+Q: What acronym helps you remember the Army Values? | A: LDRSHIP | WRONG: SHARP; BLUF; SALUTE
+Q: Name all seven Army Values in order. | A: Loyalty, Duty, Respect, Selfless Service, Honor, Integrity, Personal Courage | WRONG: Honor, Courage, Commitment, Integrity, Service, Excellence, Loyalty; Duty, Honor, Country, Loyalty, Respect, Integrity, Courage; Integrity First, Service Before Self, Excellence, Loyalty, Duty, Honor, Respect
+Q: Which Army Value means "Do what's right, legally and morally"? | A: Integrity | WRONG: Honor; Duty; Respect
+Q: Which Army Value means putting the welfare of the Nation, the Army and your subordinates before your own? | A: Selfless Service | WRONG: Loyalty; Duty; Personal Courage
+Q: Personal Courage covers which two kinds of courage? | A: Physical and moral | WRONG: Mental and emotional; Spiritual and social; Individual and team

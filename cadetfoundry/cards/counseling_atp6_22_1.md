@@ -26,10 +26,10 @@ The counseling form is **DA Form 4856** (Developmental Counseling Form).
 ## Quiz
 Q: What are the three categories of developmental counseling? | A: Performance, professional growth, and event counseling
 Q: What are the four stages of the counseling process? | A: Identify the need, prepare, conduct the session, follow up
-Q: What are the three approaches to counseling? | A: Nondirective, directive, and combined
-Q: Which counseling approach is preferred for most sessions? | A: Nondirective
-Q: Which counseling approach works best for on-the-spot corrections? | A: Directive
-Q: What is performance counseling? | A: A review of a subordinate's duty performance during a specified period
-Q: What does professional growth counseling plan for? | A: Individual and professional goals — documented in an Individual Development Plan
+Q: What are the three approaches to counseling? | A: Nondirective, directive, and combined | WRONG: Event, performance, and professional growth; Formal, informal, and written; Positive, negative, and neutral
+Q: Which counseling approach is preferred for most sessions? | A: Nondirective | WRONG: Directive; Combined; Written
+Q: Which counseling approach works best for on-the-spot corrections? | A: Directive | WRONG: Nondirective; Combined; Professional growth
+Q: What is performance counseling? | A: A review of a subordinate's duty performance during a specified period | WRONG: A talk about a Soldier's personal life; A punishment for breaking rules; Planning for retirement
+Q: What does professional growth counseling plan for? | A: Individual and professional goals — documented in an Individual Development Plan | WRONG: Only the next fitness test; Disciplinary actions; The unit's training schedule
 Q: Give two examples of event counseling. | A: Any two: superior or substandard performance, reception and integration, crisis counseling, before a promotion board or school
 Q: What form is used for developmental counseling? | A: DA Form 4856

@@ -18,6 +18,6 @@ You are never alone, and asking for help is a strength.
 ## Quiz
 Q: What number do you call for the Veterans & Military Crisis Line? | A: 988, then press 1
 Q: What number can you text for the crisis line? | A: 838255
-Q: What are the two kinds of sexual assault reports? | A: Restricted and unrestricted
-Q: What is the DoD Safe Helpline number? | A: 877-995-5247
-Q: Who can you talk to confidentially, whatever your faith? | A: A chaplain
+Q: What are the two kinds of sexual assault reports? | A: Restricted and unrestricted | WRONG: Formal and informal; Written and spoken; Public and anonymous
+Q: What is the DoD Safe Helpline number? | A: 877-995-5247 | WRONG: 800-273-8255; 911; 988
+Q: Who can you talk to confidentially, whatever your faith? | A: A chaplain | WRONG: Your squad leader; The first sergeant; Any classmate

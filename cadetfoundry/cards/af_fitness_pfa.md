@@ -20,6 +20,6 @@ Score charts and the rules (AFMAN 36-2905) are updated over time — check the o
 Q: How often do Airmen take the PFA? | A: Every six months
 Q: How many points is the Air Force PFA out of? | A: 100
 Q: Which PFA component is worth the most points? | A: Cardiorespiratory, 50 points
-Q: What are the two cardio options on the Air Force PFA? | A: A 2-mile run or the 20-meter HAMR
-Q: How is body composition measured on the Air Force PFA? | A: Waist-to-height ratio
+Q: What are the two cardio options on the Air Force PFA? | A: A 2-mile run or the 20-meter HAMR | WRONG: A 3-mile run or a 500-meter row; A 5K run or a stationary bike ride; A 1-mile run or a 2-mile ruck march
+Q: How is body composition measured on the Air Force PFA? | A: Waist-to-height ratio | WRONG: Body mass index (BMI); Skin-fold calipers; Weight alone
 Q: When did official testing under the new Air Force PFA begin? | A: July 1, 2026

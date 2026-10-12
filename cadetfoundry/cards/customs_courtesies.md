@@ -24,15 +24,15 @@ source: AR 600-25, Salutes, Honors, and Courtesies (1 May 2026), paras 2-1, B-1 
 **Addressing leaders** (TC 3-21.5, paras 4-5, 4-6): enlisted Soldiers stand at **Attention** when addressing officers and at **Parade Rest** when addressing NCOs.
 
 ## Quiz
-Q: Who do you salute? | A: Commissioned and warrant officers (of all the U.S. Armed Forces) and the President as Commander in Chief — the junior person salutes first; you do not salute NCOs | ALSO: who do i salute; who should i salute; who are you supposed to salute
+Q: Who do you salute? | A: Commissioned and warrant officers (of all the U.S. Armed Forces) and the President as Commander in Chief — the junior person salutes first; you do not salute NCOs | ALSO: who do i salute; who should i salute; who are you supposed to salute | WRONG: All NCOs and officers of the Army only; Anyone older than you in uniform; Sergeants and above, but not officers
 Q: Do you salute a Sergeant First Class? | A: No — NCOs are not saluted
 Q: Do you salute warrant officers? | A: Yes — salutes are exchanged with commissioned and warrant officers
-Q: Who salutes first? | A: The junior person
+Q: Who salutes first? | A: The junior person | WRONG: The senior person; Whoever sees the other first; The person on the left
 Q: Do you salute indoors? | A: No — except when reporting to a superior officer
-Q: Name three times a salute is not required. | A: Any three: in civilian clothes, routine work, hands full, sports or work details where it's unsafe, public places like theaters or churches, in a formation's ranks
-Q: You're in uniform outdoors, not in formation, and the national anthem plays. What do you do? | A: Face the flag (or the music if the flag isn't in view) and salute at the first note
-Q: How do you render honors to the flag in civilian clothes? | A: Place your right hand over your heart
+Q: Name three times a salute is not required. | A: Any three: in civilian clothes, routine work, hands full, sports or work details where it's unsafe, public places like theaters or churches, in a formation's ranks | WRONG: Passing an officer outdoors, during the national anthem in uniform, when reporting to an officer; When the Colors pass, at Reveille in uniform, when an officer approaches you outdoors; Any time you meet an officer outdoors in uniform
+Q: You're in uniform outdoors, not in formation, and the national anthem plays. What do you do? | A: Face the flag (or the music if the flag isn't in view) and salute at the first note | WRONG: Stand at parade rest until it ends; Keep walking and nod; Place your right hand over your heart
+Q: How do you render honors to the flag in civilian clothes? | A: Place your right hand over your heart | WRONG: Bow your head; Stand at parade rest; Raise your right hand
 Q: When uncased Colors pass outdoors, when do you salute? | A: When they are within 6 paces
 Q: What position do you take when speaking to an NCO? | A: Parade Rest
-Q: What position do you take when speaking to an officer? | A: Attention
-Q: What regulation covers salutes, honors and courtesies? | A: AR 600-25
+Q: What position do you take when speaking to an officer? | A: Attention | WRONG: Parade rest; At ease; Rest
+Q: What regulation covers salutes, honors and courtesies? | A: AR 600-25 | WRONG: AR 670-1; AR 600-20; AR 350-1

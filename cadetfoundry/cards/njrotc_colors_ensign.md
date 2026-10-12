@@ -33,10 +33,10 @@ The military birthdays used for this order are Army (14 June 1775), Marine Corps
 - Fold the ensign into a **tri-corner** shape, with the blue field outside.
 
 ## Quiz
-Q: What is the national flag called when it is carried on a staff on foot? | A: The national colors
-Q: What is the national flag called when it is mounted on a vehicle? | A: The national standard
+Q: What is the national flag called when it is carried on a staff on foot? | A: The national colors | WRONG: The national standard; The ensign; The guidon
+Q: What is the national flag called when it is mounted on a vehicle? | A: The national standard | WRONG: The national colors; The ensign; The jack
 Q: Do the national colors render a salute? | A: No
-Q: What is the order of precedence for flags? | A: National, state, military, then other flags
-Q: To fly the ensign at half-mast, what do you do first? | A: Hoist it to the peak
+Q: What is the order of precedence for flags? | A: National, state, military, then other flags | WRONG: Military, national, state, then other flags; State, national, then military flags; Other flags first, then national
+Q: To fly the ensign at half-mast, what do you do first? | A: Hoist it to the peak | WRONG: Raise it straight to half-mast; Fold it; Salute it at the base of the staff
 Q: At what time is the ensign raised for morning colors? | A: 0800
 Q: How many Cadets make up a detail to raise or lower the ensign? | A: Three or more

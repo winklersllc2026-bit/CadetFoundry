@@ -17,8 +17,8 @@ Many interviews now happen by **video or phone**. CareerOneStop's four tips:
 - No computer or quiet space? Your local **American Job Center** or **library** may be able to help.
 
 ## Quiz
-Q: What are CareerOneStop's four tips for virtual interviews? | A: Be tech-ready, do your research, set up your space, do a practice run
-Q: What should you check before a video interview? | A: That your computer, camera and microphone work
-Q: What kind of space should you use for a video interview? | A: A quiet place with good lighting and a clean, professional background
+Q: What are CareerOneStop's four tips for virtual interviews? | A: Be tech-ready, do your research, set up your space, do a practice run | WRONG: Wear pajamas, use your phone, skip research, join late; Keep the TV on, eat a meal, sit in bed, mute your video; Join from a car, use a nickname, leave the camera off, multitask
+Q: What should you check before a video interview? | A: That your computer, camera and microphone work | WRONG: That your favorite show is recorded; That your phone has the newest games; That your bedroom door is open
+Q: What kind of space should you use for a video interview? | A: A quiet place with good lighting and a clean, professional background | WRONG: A busy coffee shop with music playing; Your bed, with the lights off; A moving car
 Q: Is it easier or harder to show enthusiasm on a video or phone interview? | A: Harder — it takes more effort
-Q: Where can you go if you don't have a computer or quiet space for a video interview? | A: Your local American Job Center or library
+Q: Where can you go if you don't have a computer or quiet space for a video interview? | A: Your local American Job Center or library | WRONG: A movie theater; A shopping mall food court; Nowhere — cancel the interview

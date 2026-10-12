@@ -17,8 +17,8 @@ source: U.S. Census Bureau, Why We Conduct the Decennial Census of Population an
 
 ## Quiz
 Q: How often does the Constitution require a census? | A: Every 10 years
-Q: What is the census called because it happens every ten years? | A: The decennial census
-Q: What is apportionment? | A: Dividing the 435 House seats among the states by population
+Q: What is the census called because it happens every ten years? | A: The decennial census | WRONG: The annual census; The centennial census; The biennial census
+Q: What is apportionment? | A: Dividing the 435 House seats among the states by population | WRONG: Dividing the 100 Senate seats among the states by population; Choosing the President by popular vote; Counting votes in a state election
 Q: Name two things census results are used for | A: Apportioning House seats, redrawing districts, distributing federal funding
-Q: What did the framers choose as the basis for sharing political power? | A: Population
+Q: What did the framers choose as the basis for sharing political power? | A: Population | WRONG: Land area; Wealth; The age of each state
 Q: Which part of the Constitution requires the census? | A: Article I, Section 2

@@ -17,8 +17,8 @@ MAGTFs come in different sizes: the **Marine Expeditionary Unit (MEU)**, **Marin
 
 ## Quiz
 Q: What does MAGTF stand for? | A: Marine Air-Ground Task Force
-Q: Name the four elements of a MAGTF. | A: Command, ground combat, aviation combat, and logistics combat elements
+Q: Name the four elements of a MAGTF. | A: Command, ground combat, aviation combat, and logistics combat elements | WRONG: Infantry, armor, artillery, and engineers; Air, land, sea, and space elements; Fleet, wing, division, and brigade
 Q: What is the smallest MAGTF? | A: The Marine Expeditionary Unit
 Q: About how many Marines are in a Marine Expeditionary Unit? | A: About 2,200
 Q: How many Navy amphibious ships carry a Marine Expeditionary Unit? | A: Three
-Q: Which MAGTF element includes the infantry? | A: The Ground Combat Element
+Q: Which MAGTF element includes the infantry? | A: The Ground Combat Element | WRONG: The Aviation Combat Element; The Logistics Combat Element; The Command Element

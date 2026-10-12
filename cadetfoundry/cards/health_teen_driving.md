@@ -20,7 +20,7 @@ Driving is one of the biggest risks a teenager takes. The CDC names the main ris
 ## Quiz
 Q: In 2020, what percent of teen drivers and passengers killed in crashes weren't wearing a seat belt? | A: 56%
 Q: How much riskier is nighttime driving for teen drivers than for adults? | A: About 3 times
-Q: Name three risk factors for teen drivers | A: Inexperience, night driving, no seat belt, distraction, speeding, alcohol, drugs, teen passengers
-Q: How much alcohol is safe for a teen to drink before driving? | A: None — any amount increases crash risk
+Q: Name three risk factors for teen drivers | A: Inexperience, night driving, no seat belt, distraction, speeding, alcohol, drugs, teen passengers | WRONG: Driving in daylight, wearing a seat belt, following the speed limit; Driving with a parent, phone put away, driving slowly; Daytime driving, no passengers, no phone
+Q: How much alcohol is safe for a teen to drink before driving? | A: None — any amount increases crash risk | WRONG: One drink; Two drinks, if you wait an hour; As much as you can handle
 Q: Do teen passengers increase or decrease a teen driver's crash risk? | A: Increase
-Q: What should you do if your driver has been drinking or using drugs? | A: Don't ride with them — call a parent or trusted adult for a ride
+Q: What should you do if your driver has been drinking or using drugs? | A: Don't ride with them — call a parent or trusted adult for a ride | WRONG: Ride with them, but make them drive slowly; Ride with them if it's only a short trip; Drive yourself, even though you've been drinking too

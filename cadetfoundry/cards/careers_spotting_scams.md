@@ -19,7 +19,7 @@ source: Federal Trade Commission, How To Avoid a Scam (consumer.ftc.gov/articles
 
 ## Quiz
 Q: Name the four signs of a scam | A: They pretend to be someone you know, they say there's a problem or prize, they pressure you to act now, they tell you to pay a specific way
-Q: Name two payment methods scammers ask for | A: Gift cards, cryptocurrency, wire transfers, payment apps
-Q: If someone calls saying there's a problem with your account, what number should you call back? | A: A number you look up yourself — not the one they give you
-Q: What should you do before acting on a message that might be a scam? | A: Stop and talk to someone you trust
+Q: Name two payment methods scammers ask for | A: Gift cards, cryptocurrency, wire transfers, payment apps | WRONG: A check mailed to a company's real address; A credit card on the company's official website; Cash at the company's store counter
+Q: If someone calls saying there's a problem with your account, what number should you call back? | A: A number you look up yourself — not the one they give you | WRONG: The number they give you; The number on the caller ID; The number in the text they sent
+Q: What should you do before acting on a message that might be a scam? | A: Stop and talk to someone you trust | WRONG: Act fast before the deal ends; Send a small payment to test it; Give only part of your password
 Q: Can scammers fake the number on caller ID? | A: Yes

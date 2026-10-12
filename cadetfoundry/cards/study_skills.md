@@ -22,8 +22,8 @@ The Department of Education reviewed the research on how people learn and rememb
 
 ## Quiz
 Q: According to the research, which works better — re-reading or quizzing yourself? | A: Quizzing yourself
-Q: Which two study methods have strong evidence? | A: Quizzing yourself and asking deep explanatory questions
-Q: Is it better to cram or to space your studying out? | A: Space it out over time
-Q: What is a deep explanatory question? | A: A why or how question that makes you explain ideas in your own words
-Q: When should you judge how well you know something? | A: After a delay, not right after studying
-Q: How can quizzes help you plan your study time? | A: They show what you don't know yet, so you can focus there
+Q: Which two study methods have strong evidence? | A: Quizzing yourself and asking deep explanatory questions | WRONG: Highlighting and rereading; Cramming the night before and summarizing; Listening to music and copying notes
+Q: Is it better to cram or to space your studying out? | A: Space it out over time | WRONG: Cram the night before; It makes no difference; Study only on test day
+Q: What is a deep explanatory question? | A: A why or how question that makes you explain ideas in your own words | WRONG: A yes-or-no question; A question you copy from the book; A question with a one-word answer
+Q: When should you judge how well you know something? | A: After a delay, not right after studying | WRONG: Right after studying; Before you start studying; Never — just trust your feeling
+Q: How can quizzes help you plan your study time? | A: They show what you don't know yet, so you can focus there | WRONG: They show you what you already know, so you can study it again; They replace studying altogether; They tell you the test answers

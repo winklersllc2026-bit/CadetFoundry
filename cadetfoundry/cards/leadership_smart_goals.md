@@ -25,9 +25,9 @@ source: ATP 6-22.1, The Counseling Process (13 February 2024), paras 1-67 to 1-6
 - SMART: "Cut my mile time from 9:30 to 8:45 by the spring fitness test by running three times a week, and log every run in Cadet Foundry."
 
 ## Quiz
-Q: What does SMART stand for? | A: Specific, measurable, achievable, realistic, time-bound
+Q: What does SMART stand for? | A: Specific, measurable, achievable, realistic, time-bound | WRONG: Simple, meaningful, active, real, timely; Strong, motivated, able, ready, tough; Start, measure, adjust, repeat, track
 Q: What question checks if a goal is measurable? | A: How will I know I've reached it?
 Q: What question checks if a goal is time-bound? | A: When will I finish each step?
 Q: What should you do with a big goal? | A: Break it into smaller, short-term steps
 Q: Is "get better at running" a SMART goal? | A: No — it isn't specific, measurable or time-bound
-Q: Name a question that helps you plan for trouble | A: What parts of my plan might be difficult, and what would I do about that?
+Q: Name a question that helps you plan for trouble | A: What parts of my plan might be difficult, and what would I do about that? | WRONG: How can I make this goal as easy as possible?; Who can do this for me?; What can I skip?

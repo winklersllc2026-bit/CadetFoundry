@@ -22,11 +22,11 @@ Citizens like the Selma marchers used their First Amendment rights — to speak,
 
 ## Quiz
 Q: When did the Supreme Court decide Brown v. Board of Education? | A: May 17, 1954
-Q: What did Brown v. Board of Education rule? | A: State-sanctioned segregation of public schools violated the 14th Amendment
-Q: What earlier principle did Brown v. Board end? | A: "Separate but equal" from Plessy v. Ferguson
-Q: Who delivered the Brown v. Board ruling? | A: Chief Justice Earl Warren
-Q: Which president signed the Civil Rights Act of 1964? | A: Lyndon Johnson
-Q: Name two things the Civil Rights Act of 1964 did | A: Prohibited discrimination in public places, made employment discrimination illegal, created the EEOC
-Q: What voting practice did the Voting Rights Act outlaw? | A: Literacy tests and other discriminatory voting practices
-Q: Which amendment did the Voting Rights Act enforce? | A: The 15th Amendment
-Q: Which city's march helped lead to the Voting Rights Act? | A: Selma, Alabama
+Q: What did Brown v. Board of Education rule? | A: State-sanctioned segregation of public schools violated the 14th Amendment | WRONG: Schools could stay separate if they were equal; Only colleges had to integrate; States could choose whether to integrate
+Q: What earlier principle did Brown v. Board end? | A: "Separate but equal" from Plessy v. Ferguson | WRONG: "One person, one vote"; "Innocent until proven guilty"; "Freedom of speech"
+Q: Who delivered the Brown v. Board ruling? | A: Chief Justice Earl Warren | WRONG: Chief Justice John Marshall; Thurgood Marshall; President Eisenhower
+Q: Which president signed the Civil Rights Act of 1964? | A: Lyndon Johnson | WRONG: John F. Kennedy; Dwight D. Eisenhower; Harry S. Truman
+Q: Name two things the Civil Rights Act of 1964 did | A: Prohibited discrimination in public places, made employment discrimination illegal, created the EEOC | WRONG: Gave women the right to vote, ended the draft; Ended slavery, created the income tax; Lowered the voting age to 18, created the Air Force
+Q: What voting practice did the Voting Rights Act outlaw? | A: Literacy tests and other discriminatory voting practices | WRONG: Voting by mail; Secret ballots; Voting on weekends
+Q: Which amendment did the Voting Rights Act enforce? | A: The 15th Amendment | WRONG: The 19th Amendment; The 1st Amendment; The 26th Amendment
+Q: Which city's march helped lead to the Voting Rights Act? | A: Selma, Alabama | WRONG: Atlanta, Georgia; Birmingham, Alabama; Memphis, Tennessee

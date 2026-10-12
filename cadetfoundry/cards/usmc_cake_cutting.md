@@ -19,9 +19,9 @@ Every year around **10 November**, Marines celebrate the Corps' birthday with a 
 At bases without a general officer, and at enlisted or unit balls, the ceremony may be changed to fit local conditions.
 
 ## Quiz
-Q: Who receives the first piece of the Marine Corps birthday cake? | A: The guest of honor
-Q: Who receives the second piece of birthday cake? | A: The oldest Marine present
-Q: Who does the oldest Marine pass the cake to? | A: The youngest Marine present
-Q: What does passing the cake from oldest to youngest Marine symbolize? | A: Passing wisdom, knowledge and experience to those who will carry on the traditions
-Q: Which sword traditionally cuts the birthday cake? | A: The Mameluke sword
-Q: Whose birthday message is read at the ceremony? | A: General John A. Lejeune's
+Q: Who receives the first piece of the Marine Corps birthday cake? | A: The guest of honor | WRONG: The youngest Marine present; The oldest Marine present; The commanding officer
+Q: Who receives the second piece of birthday cake? | A: The oldest Marine present | WRONG: The youngest Marine present; The guest of honor; The sergeant major
+Q: Who does the oldest Marine pass the cake to? | A: The youngest Marine present | WRONG: The guest of honor; The commanding officer; The sergeant major
+Q: What does passing the cake from oldest to youngest Marine symbolize? | A: Passing wisdom, knowledge and experience to those who will carry on the traditions | WRONG: The youngest Marine's promotion; Sharing food with the whole unit; The end of the oldest Marine's career
+Q: Which sword traditionally cuts the birthday cake? | A: The Mameluke sword | WRONG: The NCO sword; A cavalry saber; A bayonet
+Q: Whose birthday message is read at the ceremony? | A: General John A. Lejeune's | WRONG: Captain Samuel Nicholas's; The President's; The Secretary of the Navy's

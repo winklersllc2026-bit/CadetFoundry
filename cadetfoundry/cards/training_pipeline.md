@@ -18,12 +18,12 @@ Your **battle buddy** is the Soldier you are paired with — you look out for ea
 
 ## Quiz
 Q: About how long is Basic Combat Training? | A: About 10 weeks | ALSO: how long is basic training; how many weeks is basic
-Q: What are the four phases of Basic Combat Training? | A: Yellow, Red, White, and Blue | ALSO: what are the phases of basic training; what are the phases of BCT
+Q: What are the four phases of Basic Combat Training? | A: Yellow, Red, White, and Blue | ALSO: what are the phases of basic training; what are the phases of BCT | WRONG: Foundation, Immersion, Transformation, and Transition; Red, White, Blue, and Gold; Alpha, Bravo, Charlie, and Delta
 Q: What is the final field exercise of Basic Training called? | A: The Forge
 Q: What is your first field exercise in Basic called? | A: The Hammer (Red Phase)
 Q: What field exercise comes in White Phase? | A: The Anvil — two days and two nights
 Q: In which phase of Basic do you start training with your weapon? | A: Red Phase (weeks 3–4)
-Q: What does AIT stand for? | A: Advanced Individual Training
-Q: What does MOS stand for? | A: Military Occupational Specialty
+Q: What does AIT stand for? | A: Advanced Individual Training | WRONG: Army Infantry Training; Advanced Intelligence Test; Assigned Instruction Time
+Q: What does MOS stand for? | A: Military Occupational Specialty | WRONG: Mission Operations Staff; Military Officer School; Main Operating Site
 Q: What is OSUT? | A: One Station Unit Training — BCT and AIT combined at one location
-Q: What is a battle buddy? | A: The Soldier you're paired with to look out for each other
+Q: What is a battle buddy? | A: The Soldier you're paired with to look out for each other | WRONG: The drill sergeant assigned to your platoon; A soldier from another country; Your instructor at AIT

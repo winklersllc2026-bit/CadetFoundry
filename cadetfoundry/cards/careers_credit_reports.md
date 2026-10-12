@@ -15,8 +15,8 @@ A **credit report** is a summary of your personal credit history — the loans a
 **Check it:** once you have credit, look over your report for mistakes or accounts you don't recognize.
 
 ## Quiz
-Q: What is a credit report? | A: A summary of your personal credit history
-Q: Name the three nationwide credit bureaus | A: Equifax, Experian and TransUnion
-Q: What is the only website authorized to give you your free annual credit reports? | A: AnnualCreditReport.com
+Q: What is a credit report? | A: A summary of your personal credit history | WRONG: A list of your grades in school; A record of your bank balances; Your yearly tax return
+Q: Name the three nationwide credit bureaus | A: Equifax, Experian and TransUnion | WRONG: Visa, Mastercard and Discover; The FDIC, the NCUA and the IRS; Chase, Wells Fargo and Bank of America
+Q: What is the only website authorized to give you your free annual credit reports? | A: AnnualCreditReport.com | WRONG: CreditKarma.com; FreeCreditReport.com; IRS.gov
 Q: How often does federal law let you get a free credit report from each bureau? | A: Once every 12 months
-Q: Why do businesses look at your credit report? | A: To decide whether and on what terms to lend you money
+Q: Why do businesses look at your credit report? | A: To decide whether and on what terms to lend you money | WRONG: To check your school grades; To decide the size of your tax refund; To see which websites you visit

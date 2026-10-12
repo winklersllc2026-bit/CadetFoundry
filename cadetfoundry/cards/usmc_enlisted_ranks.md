@@ -27,4 +27,4 @@ Q: At what rank does a Marine become a noncommissioned officer? | A: Corporal
 Q: What is the Marine Corps rank at E-7? | A: Gunnery Sergeant
 Q: Which is the higher rank, Sergeant Major or Master Gunnery Sergeant? | A: Sergeant Major
 Q: Who is the senior enlisted Marine? | A: The Sergeant Major of the Marine Corps
-Q: What is a Marine's job specialty called? | A: A military occupational specialty
+Q: What is a Marine's job specialty called? | A: A military occupational specialty | WRONG: A rate; An AFSC; A billet

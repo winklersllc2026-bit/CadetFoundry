@@ -25,13 +25,13 @@ source: AR 530-1, Operations Security (26 September 2014), paras 1-5, 2-22; TC 7
 **Politics** (paras 1-23, 1-24): on duty or in uniform, Soldiers may not take part in partisan political activity — including sharing or reposting posts from a political party or candidate. Off duty and out of uniform, you may follow, friend or like a party or candidate and share your own views, much like a letter to the editor.
 
 ## Quiz
-Q: What does OPSEC stand for? | A: Operations Security
-Q: Which regulation covers OPSEC? | A: AR 530-1
+Q: What does OPSEC stand for? | A: Operations Security | WRONG: Officer Personnel Security; Open Public Safety Communications; Operations Specialist
+Q: Which regulation covers OPSEC? | A: AR 530-1 | WRONG: AR 600-20; AR 670-1; AR 600-25
 Q: What four kinds of facts make up critical information? | A: Friendly capabilities, activities, limitations (including vulnerabilities), and intentions
 Q: Can unclassified information be critical information? | A: Yes — and it especially needs protecting, because classification rules don't cover it
-Q: Whose responsibility is OPSEC? | A: Everyone's
+Q: Whose responsibility is OPSEC? | A: Everyone's | WRONG: Only the commander's; Only intelligence officers'; Only the military police's
 Q: Should you repost sensitive information that has already leaked online? | A: No — reposting spreads it further and can confirm it
 Q: Under which UCMJ article can breaking a unit OPSEC order be punished? | A: Article 92
-Q: What are the three steps of "Think, Type, and Post"? | A: Think about the message and who could see it; type something consistent with Army values; post only messages showing dignity and respect
+Q: What are the three steps of "Think, Type, and Post"? | A: Think about the message and who could see it; type something consistent with Army values; post only messages showing dignity and respect | WRONG: Think about likes, type fast, post often; Take a selfie, add a caption, post your location; Think of a joke, type it in all caps, post it without reading it
 Q: Can you share a political candidate's post while in uniform? | A: No — it counts as partisan political activity
 Q: Should you post your deployment date on social media? | A: No — it reveals friendly activities and intentions | ALSO: can I tell people when I deploy online; can I post when we are leaving

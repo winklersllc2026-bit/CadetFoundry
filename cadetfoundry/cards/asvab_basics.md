@@ -18,9 +18,9 @@ The **ASVAB** (Armed Services Vocational Aptitude Battery) is the test every ser
 **How to prepare** (the official advice): take solid math, English and science classes, and use the free practice at officialasvab.com, asvabprogram.com and march2success.com. Real test questions are kept secret, and anyone claiming to sell them or guarantee a score is not legitimate.
 
 ## Quiz
-Q: What does ASVAB stand for? | A: Armed Services Vocational Aptitude Battery
-Q: Which four subtests make up the AFQT score? | A: Arithmetic Reasoning, Mathematics Knowledge, Paragraph Comprehension and Word Knowledge
+Q: What does ASVAB stand for? | A: Armed Services Vocational Aptitude Battery | WRONG: Army Service Vocational Assessment Battery; Armed Services Verbal Aptitude Baseline; American Soldier Values and Behavior
+Q: Which four subtests make up the AFQT score? | A: Arithmetic Reasoning, Mathematics Knowledge, Paragraph Comprehension and Word Knowledge | WRONG: General Science, Auto and Shop, Mechanical Comprehension and Electronics Information; Reading, Writing, Algebra and Geometry; Assembling Objects, General Science, Auto Information and Shop Information
 Q: How is the AFQT score reported? | A: As a percentile from 1 to 99
 Q: Can you use a calculator on the ASVAB? | A: No
-Q: What does an AFQT score of 50 mean? | A: You scored as well as or better than 50% of the national sample
-Q: What is the name of the ASVAB program given in high schools? | A: The ASVAB Career Exploration Program
+Q: What does an AFQT score of 50 mean? | A: You scored as well as or better than 50% of the national sample | WRONG: You answered 50% of the questions correctly; You scored 50 out of 100 points; You need 50 more points to qualify
+Q: What is the name of the ASVAB program given in high schools? | A: The ASVAB Career Exploration Program | WRONG: The Future Soldier Program; The AFQT Readiness Program; The Military Entrance Processing Program

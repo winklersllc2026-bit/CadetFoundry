@@ -24,10 +24,10 @@ About **1 in 5** students ages 12–18 reported being bullied (2022 federal surv
 **If friends want to give someone the "silent treatment":** don't take part in public or online shaming. You can say, "I disagree with them, but I don't want to bully anyone."
 
 ## Quiz
-Q: What two things make aggressive behavior bullying? | A: An imbalance of power and repetition
-Q: Name the three types of bullying | A: Verbal, social, and physical
-Q: Leaving someone out on purpose and spreading rumors are what type of bullying? | A: Social bullying
-Q: What should you do if you're being bullied? | A: Speak up and tell a trusted adult
-Q: Name two examples of verbal bullying | A: Teasing, name-calling, taunting, threats
+Q: What two things make aggressive behavior bullying? | A: An imbalance of power and repetition | WRONG: Loud voices and a crowd watching; Bad grades and jealousy; Being new and being shy
+Q: Name the three types of bullying | A: Verbal, social, and physical | WRONG: Online, offline, and in school; Mild, medium, and severe; Teasing, joking, and pranking
+Q: Leaving someone out on purpose and spreading rumors are what type of bullying? | A: Social bullying | WRONG: Physical bullying; Verbal bullying; Cyberbullying
+Q: What should you do if you're being bullied? | A: Speak up and tell a trusted adult | WRONG: Keep it to yourself; Fight back physically; Bully someone else
+Q: Name two examples of verbal bullying | A: Teasing, name-calling, taunting, threats | WRONG: Hitting, kicking, pushing; Leaving someone out, spreading rumors; Breaking someone's things, tripping them
 Q: About how many students ages 12–18 report being bullied? | A: About 1 in 5
-Q: How should you apologize if you hurt someone? | A: Privately — admit it hurt them and ask how it made them feel
+Q: How should you apologize if you hurt someone? | A: Privately — admit it hurt them and ask how it made them feel | WRONG: Publicly, as a joke; Through someone else; Say "sorry you feel that way"

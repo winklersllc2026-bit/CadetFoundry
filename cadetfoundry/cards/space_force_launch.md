@@ -23,8 +23,8 @@ The Space Force runs the nation's two main launch ranges, through its **Space La
 
 ## Quiz
 Q: Which Space Launch Delta runs the Eastern Range in Florida? | A: Space Launch Delta 45
-Q: Which base on the West Coast launches satellites into polar orbit? | A: Vandenberg Space Force Base
-Q: Why is Vandenberg good for polar launches? | A: Rockets can reach polar orbit without flying over populated areas
+Q: Which base on the West Coast launches satellites into polar orbit? | A: Vandenberg Space Force Base | WRONG: Cape Canaveral Space Force Station; Peterson Space Force Base; Edwards Air Force Base
+Q: Why is Vandenberg good for polar launches? | A: Rockets can reach polar orbit without flying over populated areas | WRONG: It's the closest base to the North Pole; It has the tallest launch towers; It never has fog
 Q: What was the world's first polar-orbiting satellite? | A: Discoverer 1
-Q: Besides the military, who launches from Space Force ranges? | A: NASA and commercial companies
+Q: Besides the military, who launches from Space Force ranges? | A: NASA and commercial companies | WRONG: Only foreign countries; Nobody else; Only universities
 Q: Which Space Force core function includes launching? | A: Space access

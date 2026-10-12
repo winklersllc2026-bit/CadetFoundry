@@ -14,9 +14,9 @@ source: Servicemembers Civil Relief Act (50 U.S.C. § 3937); Military Lending Ac
 This is general education, not financial advice. Rules and percentages can change — confirm with your finance office.
 
 ## Quiz
-Q: What is your LES? | A: Leave and Earnings Statement — your monthly pay statement
-Q: What is the TSP? | A: The Thrift Savings Plan — military retirement savings
+Q: What is your LES? | A: Leave and Earnings Statement — your monthly pay statement | WRONG: Leave Entitlement Schedule — your vacation calendar; Logistics and Equipment Sheet — your gear list; Life Event Summary — your service record
+Q: What is the TSP? | A: The Thrift Savings Plan — military retirement savings | WRONG: The Training Schedule Plan — your unit's calendar; The Tuition Support Program — college money; The Travel Savings Plan — a vacation fund
 Q: How much should you contribute to TSP to get the full match? | A: At least 5% | ALSO: how much should I put in my TSP; what percent should I put in TSP
 Q: Under the SCRA, what can interest on pre-service debt be capped at? | A: 6%
 Q: What does the Military Lending Act cap most loans at? | A: 36% (MAPR)
-Q: Where can you get free financial counseling? | A: Army Community Service or Military OneSource | ALSO: who can help me with my money; where can I get help with debt
+Q: Where can you get free financial counseling? | A: Army Community Service or Military OneSource | ALSO: who can help me with my money; where can I get help with debt | WRONG: A payday lender; A car dealership; A credit card company

@@ -26,10 +26,10 @@ The best way to develop a command voice is to **practice** (para 3-21).
 
 ## Quiz
 Q: What three qualities make a correct command? | A: Tone, cadence and snap
-Q: What is the best posture for giving commands? | A: The Position of Attention
-Q: Which muscle should you breathe from when giving commands? | A: The diaphragm
+Q: What is the best posture for giving commands? | A: The Position of Attention | WRONG: Parade Rest; At Ease; Leaning toward the formation
+Q: Which muscle should you breathe from when giving commands? | A: The diaphragm | WRONG: The throat; The neck muscles; The shoulders
 Q: What kind of inflection does the preparatory command get? | A: A rising inflection
-Q: What is a common mistake beginners make with the preparatory command? | A: Starting at too high a pitch
-Q: How is the command of execution given? | A: Sharper and slightly higher, with snap
-Q: How much time goes between the preparatory command and the command of execution when marching? | A: One step, or one count
-Q: How do you give a combined command like FALL IN? | A: Without inflection — high, uniform and loud
+Q: What is a common mistake beginners make with the preparatory command? | A: Starting at too high a pitch | WRONG: Giving it with a rising inflection; Giving it from the Position of Attention; Pausing before the command of execution
+Q: How is the command of execution given? | A: Sharper and slightly higher, with snap | WRONG: Slowly and softly; With a long, drawn-out rising inflection; In a whisper
+Q: How much time goes between the preparatory command and the command of execution when marching? | A: One step, or one count | WRONG: Three steps; Five seconds; No pause at all
+Q: How do you give a combined command like FALL IN? | A: Without inflection — high, uniform and loud | WRONG: With a rising inflection; Softly, so only the front rank hears; Slowly, with a long pause in the middle

@@ -22,11 +22,11 @@ The core message of the current Dietary Guidelines: **eat real food** — whole,
 **For teens (ages 11–18):** adolescence is a **rapid growth period** with higher needs for **energy, protein, calcium and iron**. Calcium and vitamin D build peak bone strength. Eat foods like dairy, leafy greens and iron-rich foods, **significantly limit sugary and energy drinks**, and help with shopping and cooking so you learn to make healthy choices for life.
 
 ## Quiz
-Q: What is the core message of the 2025–2030 Dietary Guidelines? | A: Eat real food — whole, nutrient-dense foods — and cut back on highly processed foods
+Q: What is the core message of the 2025–2030 Dietary Guidelines? | A: Eat real food — whole, nutrient-dense foods — and cut back on highly processed foods | WRONG: Eat as little as possible; Cut out all fats and carbohydrates; Drink protein shakes instead of meals
 Q: How many servings of vegetables and fruits per day for a 2,000-calorie diet? | A: 3 servings of vegetables and 2 of fruit
 Q: What is the most added sugar one meal should contain? | A: 10 grams
-Q: How can you spot added sugar on an ingredient label? | A: Look for words with "sugar" or "syrup" or ending in "-ose"
+Q: How can you spot added sugar on an ingredient label? | A: Look for words with "sugar" or "syrup" or ending in "-ose" | WRONG: Look for the word "natural"; Check the color of the box; Look for words ending in "-ine"
 Q: How much sodium per day for ages 14 and up? | A: Less than 2,300 mg
-Q: Name two drinks the guidelines say to avoid | A: Sodas, fruit drinks, energy drinks
-Q: During adolescence, which needs increase? | A: Energy, protein, calcium and iron
-Q: At which meals should you eat protein? | A: Every meal
+Q: Name two drinks the guidelines say to avoid | A: Sodas, fruit drinks, energy drinks | WRONG: Water, milk, unsweetened tea; Plain water, low-fat milk, water with lemon; Sparkling water, plain milk, herbal tea
+Q: During adolescence, which needs increase? | A: Energy, protein, calcium and iron | WRONG: Fat, salt, sugar and caffeine; Only water and sleep; Vitamin pills, protein shakes and energy drinks
+Q: At which meals should you eat protein? | A: Every meal | WRONG: Only at dinner; Only after workouts; Once a week

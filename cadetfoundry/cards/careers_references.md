@@ -23,9 +23,9 @@ A **reference** is someone who can tell an employer about your work history, ski
 - **Thank them** when they've given you a recommendation.
 
 ## Quiz
-Q: What is a reference? | A: Someone who can tell an employer about your work history, skills and work style
-Q: Which type of reference carries the most weight? | A: Employment references — past employers
-Q: Name the four types of references | A: Employment, professional, academic, personal
-Q: Who should you avoid using as references? | A: Family members and close friends
-Q: What must you do before giving someone's name as a reference? | A: Ask if they're willing to be your reference
+Q: What is a reference? | A: Someone who can tell an employer about your work history, skills and work style | WRONG: A form you fill out to get paid; A list of your favorite websites; A copy of your report card
+Q: Which type of reference carries the most weight? | A: Employment references — past employers | WRONG: Personal references — your friends; Family references — your parents; Online references — your followers
+Q: Name the four types of references | A: Employment, professional, academic, personal | WRONG: Family, friends, neighbors, classmates; Online, phone, email, text; Short, long, written, spoken
+Q: Who should you avoid using as references? | A: Family members and close friends | WRONG: Past employers; Teachers and coaches; Supervisors from volunteer work
+Q: What must you do before giving someone's name as a reference? | A: Ask if they're willing to be your reference | WRONG: Nothing — employers will just call them; Pay them for their time; Write their recommendation for them
 Q: Is a JROTC instructor an academic reference? | A: Yes

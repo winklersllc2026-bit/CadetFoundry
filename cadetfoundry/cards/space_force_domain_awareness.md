@@ -25,8 +25,8 @@ all to support good decisions.
 **Working with others.** The **Office of Space Commerce** handles space traffic management with the Space Force, and allies share data. The goal is a space domain that is "safe, secure, stable, and sustainable."
 
 ## Quiz
-Q: What does space domain awareness include? | A: Detecting, characterizing, attributing, and predicting activity in space
-Q: What does the Space Force track with its global network of sensors? | A: Satellites and space debris
-Q: Which Competitive Endurance tenet depends on space domain awareness? | A: Avoid operational surprise
-Q: Why must counterspace operations avoid creating debris? | A: Long-lived debris is a hazard to every satellite in orbit
-Q: Which office works with the Space Force on space traffic management? | A: The Office of Space Commerce
+Q: What does space domain awareness include? | A: Detecting, characterizing, attributing, and predicting activity in space | WRONG: Launching, refueling, repairing, and retiring satellites; Building new rockets; Training astronauts
+Q: What does the Space Force track with its global network of sensors? | A: Satellites and space debris | WRONG: Airplanes and weather balloons; Ships at sea; Stars and distant planets
+Q: Which Competitive Endurance tenet depends on space domain awareness? | A: Avoid operational surprise | WRONG: Deny first-mover advantage; Undertake responsible counterspace campaigning; Win the space race
+Q: Why must counterspace operations avoid creating debris? | A: Long-lived debris is a hazard to every satellite in orbit | WRONG: It blocks telescopes' view of the stars; It falls on cities every day; It slows down rockets
+Q: Which office works with the Space Force on space traffic management? | A: The Office of Space Commerce | WRONG: The Department of Agriculture; The Census Bureau; The Coast Guard

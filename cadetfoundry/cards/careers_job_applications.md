@@ -18,9 +18,9 @@ Employers use applications to collect your information, check your skills and co
 CareerOneStop also has a free **Practice Job Application** you can fill out to get ready.
 
 ## Quiz
-Q: What should you do before you start filling out a job application? | A: Read the whole application and all the directions first
-Q: What should you write if a question doesn't apply to you? | A: n/a — not applicable
-Q: What does "n/a" stand for? | A: Not applicable
-Q: What should you avoid writing for "desired position"? | A: "Any job"
-Q: How should you answer a salary question on an application? | A: Give a range or write "negotiable"
+Q: What should you do before you start filling out a job application? | A: Read the whole application and all the directions first | WRONG: Fill it out as fast as you can; Skip the directions and guess; Leave the hard questions for the employer
+Q: What should you write if a question doesn't apply to you? | A: n/a — not applicable | WRONG: Leave it blank; Make up an answer; Write "none of your business"
+Q: What does "n/a" stand for? | A: Not applicable | WRONG: Not available; No answer; Needs attention
+Q: What should you avoid writing for "desired position"? | A: "Any job" | WRONG: The exact job title from the posting; The position you're applying for; The job named in the ad
+Q: How should you answer a salary question on an application? | A: Give a range or write "negotiable" | WRONG: Write the highest number you can think of; Leave it blank and hope they don't notice; Write "whatever you'll pay me"
 Q: What is a personal information sheet for? | A: Keeping your school history, past jobs, dates, addresses and references in one place for applications

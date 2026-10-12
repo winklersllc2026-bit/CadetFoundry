@@ -15,8 +15,8 @@ Both measure **muscular endurance, muscular strength and cardiovascular enduranc
 **For Cadets:** the same idea works for your own fitness goals — learn the standard, practice it with correct form, and track your progress in 💪 Train.
 
 ## Quiz
-Q: What does IST stand for? | A: Initial Strength Test
-Q: What are the three events on the Marine Corps PFT? | A: Pull-ups or push-ups, a plank, and a timed 3-mile run
+Q: What does IST stand for? | A: Initial Strength Test | WRONG: Individual Speed Test; Infantry Skills Training; Intensive Swim Test
+Q: What are the three events on the Marine Corps PFT? | A: Pull-ups or push-ups, a plank, and a timed 3-mile run | WRONG: Deadlift, hand-release push-ups, and a 2-mile run; Sit-ups, a 1.5-mile run, and a swim; An 880-yard sprint, ammo can lifts, and a maneuver-under-fire course
 Q: How long is the run on the Marine Corps IST? | A: 1.5 miles
-Q: How often do Marines take the PFT after boot camp? | A: Every year
+Q: How often do Marines take the PFT after boot camp? | A: Every year | WRONG: Every five years; Only before deployments; Never again
 Q: Do you have to pass the PFT to graduate Marine Corps boot camp? | A: Yes

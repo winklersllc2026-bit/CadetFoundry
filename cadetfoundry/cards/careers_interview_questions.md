@@ -26,11 +26,11 @@ source: CareerOneStop (sponsored by the U.S. Department of Labor), Practice Inte
 **Questions employers can't legally ask** — you don't have to answer them. Most are about **health, marital status, or legal history**, such as "Have you ever been hospitalized?" or "Are you taking any prescribed drugs?" (They *can* ask your age, and no federal law stops them asking about criminal convictions.)
 
 ## Quiz
-Q: How should you answer "Tell me about yourself"? | A: One or two positive sentences about your background, showing real interest in the job
-Q: How many strengths should you prepare to talk about? | A: Two or three that match the job description, each with an example
-Q: When asked about a weakness, what should you also explain? | A: What you're doing to improve it
-Q: What is a behavioral interview question? | A: A "tell me about a time" question about your past experiences
-Q: Why do employers ask behavioral questions? | A: To predict your future performance from your past
-Q: Name one question you could ask an interviewer | A: What are the main responsibilities, what is a typical day, what qualities make someone successful here, how is performance evaluated, what is the next step
-Q: Most questions employers can't legally ask are about what topics? | A: Health, marital status, or legal history
-Q: When describing a conflict you resolved, what should you show? | A: That you were part of the solution, not the problem
+Q: How should you answer "Tell me about yourself"? | A: One or two positive sentences about your background, showing real interest in the job | WRONG: Your whole life story, starting with childhood; A list of everything you don't like about your last job; "It's all on my resume."
+Q: How many strengths should you prepare to talk about? | A: Two or three that match the job description, each with an example | WRONG: Ten, with no examples; Just one, without an example; None — let the employer decide
+Q: When asked about a weakness, what should you also explain? | A: What you're doing to improve it | WRONG: Why it's really someone else's fault; That you have no weaknesses; How it will never affect your work
+Q: What is a behavioral interview question? | A: A "tell me about a time" question about your past experiences | WRONG: A question about your favorite color or food; A trick math question; A question about your salary
+Q: Why do employers ask behavioral questions? | A: To predict your future performance from your past | WRONG: To see how fast you can talk; To fill time in the interview; To learn about your family
+Q: Name one question you could ask an interviewer | A: What are the main responsibilities, what is a typical day, what qualities make someone successful here, how is performance evaluated, what is the next step | WRONG: How soon can I take vacation, and how often can I leave early; Do I have to come to work every day, and can I skip training; What does this company do, and who are you
+Q: Most questions employers can't legally ask are about what topics? | A: Health, marital status, or legal history | WRONG: Work experience, education, or skills; Your availability and schedule; Why you want the job
+Q: When describing a conflict you resolved, what should you show? | A: That you were part of the solution, not the problem | WRONG: That the other person was completely wrong; That you avoided the person until it went away; That a manager fixed it for you

@@ -27,9 +27,9 @@ source: FM 6-22, Developing Leaders (1 November 2022, incl. C2), para 4-78 and t
 **Get better:** study people who speak well, take a communication class or **join a public speaking group** — and practice every time you brief your squad.
 
 ## Quiz
-Q: What are FM 6-22's four parts of communicating? | A: Create shared understanding, listen actively, use engaging techniques, be sensitive to cultural factors
+Q: What are FM 6-22's four parts of communicating? | A: Create shared understanding, listen actively, use engaging techniques, be sensitive to cultural factors | WRONG: Speak loudly, speak fast, speak often, never repeat; Give orders, avoid questions, assume understanding, move on; Write it down, post it, email it, forget it
 Q: Name two benefits of keeping your team informed | A: It aligns the team, relieves stress, and shows appreciation
-Q: How can you check that your team understood a briefing? | A: Invite questions and ask someone to summarize it back
+Q: How can you check that your team understood a briefing? | A: Invite questions and ask someone to summarize it back | WRONG: Ask "Any questions?" and move on right away; Assume they understood if no one complains; Repeat it louder
 Q: Name a way to organize information logically | A: In time order, step by step, or big picture first
-Q: Why shouldn't you share information only with favorites? | A: It leaves others out of the loop and breaks shared understanding
-Q: What should you do before speaking to a group? | A: Imagine how your audience will hear the message and organize it logically
+Q: Why shouldn't you share information only with favorites? | A: It leaves others out of the loop and breaks shared understanding | WRONG: It takes too much time; Favorites already know everything; It's against uniform rules
+Q: What should you do before speaking to a group? | A: Imagine how your audience will hear the message and organize it logically | WRONG: Make it up as you go; Memorize it word for word without thinking about the audience; Speak as fast as possible to save time

@@ -20,8 +20,8 @@ A **budget** is a plan for your money. Three steps:
 If your pay changes from month to month, add up last year's total income and divide by 12 to estimate a month.
 
 ## Quiz
-Q: What is income? | A: The money you make
-Q: What are the three steps of making a budget? | A: List your expenses, write down your monthly income, subtract expenses from income
+Q: What is income? | A: The money you make | WRONG: The money you spend; The money you owe; The money you save
+Q: What are the three steps of making a budget? | A: List your expenses, write down your monthly income, subtract expenses from income | WRONG: Open a credit card, spend, pay the minimum; Save everything, spend nothing, check once a year; Write down your wants, buy them, keep the receipts
 Q: After you subtract expenses from income, what should the number be? | A: More than zero
-Q: What does it mean if your budget number is less than zero? | A: You're spending more than you make
-Q: How can you make sure you save every month? | A: List savings as one of your budget expenses
+Q: What does it mean if your budget number is less than zero? | A: You're spending more than you make | WRONG: You're saving more than you need; You have no expenses; You've paid off all your debt
+Q: How can you make sure you save every month? | A: List savings as one of your budget expenses | WRONG: Save whatever is left at the end of the year; Only save when you get a bonus; Keep all your money in cash at home

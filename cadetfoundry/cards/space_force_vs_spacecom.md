@@ -24,9 +24,9 @@ source: SFDD-1, The Space Force (Space Force Doctrine Document 1, 3 April 2025),
 **Today.** The Space Force headquarters is in the **Pentagon**. Its major installations are in **California, Colorado and Florida**. In 2024 it had more than **14,000** military and civilian Guardians. It sits under the Department of the Air Force much like the Marine Corps sits under the Department of the Navy.
 
 ## Quiz
-Q: What is the difference between the Space Force and U.S. Space Command? | A: The Space Force is a service that organizes, trains and equips; Space Command is a joint combatant command that employs forces
-Q: In which operation were space capabilities first used in full in combat? | A: Desert Storm
+Q: What is the difference between the Space Force and U.S. Space Command? | A: The Space Force is a service that organizes, trains and equips; Space Command is a joint combatant command that employs forces | WRONG: There is no difference — they are two names for one organization; Space Command is a service that trains Guardians and the Space Force fights wars; The Space Force belongs to NASA and Space Command belongs to the Army
+Q: In which operation were space capabilities first used in full in combat? | A: Desert Storm | WRONG: Operation Iraqi Freedom; Operation Enduring Freedom; Operation Just Cause
 Q: When was Air Force Space Command activated? | A: September 1982
 Q: When was U.S. Space Command re-established? | A: August 29, 2019
-Q: The Space Force is under the Department of the Air Force much like which service is under the Department of the Navy? | A: The Marine Corps
-Q: In which three states are the Space Force's major installations? | A: California, Colorado and Florida
+Q: The Space Force is under the Department of the Air Force much like which service is under the Department of the Navy? | A: The Marine Corps | WRONG: The Coast Guard; The Army; The Air Force
+Q: In which three states are the Space Force's major installations? | A: California, Colorado and Florida | WRONG: Texas, Virginia and Alaska; Hawaii, Nevada and Ohio; New York, Georgia and Washington

@@ -26,10 +26,10 @@ Steps 3 through 8 can happen **in any order or at the same time** (para 2-2).
 **JROTC example — a color guard for a Friday game:** receive the request Monday; warning order Monday (who, when, uniform); tentative plan; check the field and the flagpole; complete the plan; brief it Wednesday; rehearse and inspect Thursday and Friday.
 
 ## Quiz
-Q: What are troop leading procedures? | A: Eight steps leaders use to plan and prepare for a mission
-Q: What is the first step of the troop leading procedures? | A: Receive the mission
-Q: What is the last step of the troop leading procedures? | A: Supervise and refine
-Q: What is a warning order for? | A: Giving the team early notice so they can start preparing
-Q: What is the 1/3–2/3 rule? | A: The leader uses one-third of the planning time and leaves two-thirds for the team
+Q: What are troop leading procedures? | A: Eight steps leaders use to plan and prepare for a mission | WRONG: Rules for marching in formation; The steps for filing a complaint; A checklist for uniform inspections
+Q: What is the first step of the troop leading procedures? | A: Receive the mission | WRONG: Issue the operation order; Conduct reconnaissance; Supervise and refine
+Q: What is the last step of the troop leading procedures? | A: Supervise and refine | WRONG: Receive the mission; Issue a warning order; Make a tentative plan
+Q: What is a warning order for? | A: Giving the team early notice so they can start preparing | WRONG: Punishing a Soldier who broke the rules; Telling the team the mission is cancelled; Reporting enemy activity to headquarters
+Q: What is the 1/3–2/3 rule? | A: The leader uses one-third of the planning time and leaves two-thirds for the team | WRONG: The leader uses two-thirds of the planning time and leaves one-third for the team; One-third of the team plans while two-thirds rest; Plan for one-third of the mission and improvise the rest
 Q: Which steps of the troop leading procedures can happen at the same time? | A: Steps 3 through 8
-Q: Name all eight troop leading procedures | A: Receive the mission, issue a warning order, make a tentative plan, initiate movement, conduct reconnaissance, complete the plan, issue the operation order, supervise and refine
+Q: Name all eight troop leading procedures | A: Receive the mission, issue a warning order, make a tentative plan, initiate movement, conduct reconnaissance, complete the plan, issue the operation order, supervise and refine | WRONG: Issue the operation order, receive the mission, conduct reconnaissance, make a tentative plan, supervise and refine, initiate movement, complete the plan, issue a warning order; Receive the mission, plan, rehearse, execute, report, rest, recover, repeat; Size, activity, location, unit, time, equipment, report, react

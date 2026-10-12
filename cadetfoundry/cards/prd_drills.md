@@ -36,11 +36,11 @@ Learn the movements from your cadre — demonstration videos are on the Central 
 ## Quiz
 Q: How many exercises are in the Preparation Drill? | A: 10
 Q: How many exercises are in the Recovery Drill? | A: 8
-Q: What is the first exercise of the Preparation Drill? | A: The Bend and Reach
-Q: What is the last exercise of the Preparation Drill? | A: The Push-Up
-Q: What is the first exercise of the Recovery Drill? | A: The Overhead Arm Pull
-Q: Name the 10 exercises of the Preparation Drill in order. | A: Bend and Reach, Rear Lunge, High Jumper, Rower, Squat Bender, Windmill, Forward Lunge, Prone Row, Bent-Leg Body Twist, Push-Up | ALSO: what are the prep drill exercises; what is in the PRT warm up
-Q: Name the 8 exercises of the Recovery Drill in order. | A: Overhead Arm Pull, Rear Lunge, Extend and Flex, Thigh Stretch, Single-Leg Over, Groin Stretch, Calf Stretch, Hamstring Stretch | ALSO: what are the recovery drill exercises; what is the PRT cool down
-Q: What is the purpose of the Preparation Drill? | A: To decrease the chance of a musculoskeletal injury during more rigorous training
-Q: What are the three parts of a PT session? | A: Preparation, activities, recovery
-Q: What is PMCS in physical training? | A: Preventive Maintenance Checks and Services — a self-check for musculoskeletal issues
+Q: What is the first exercise of the Preparation Drill? | A: The Bend and Reach | WRONG: The Push-Up; The Windmill; The High Jumper
+Q: What is the last exercise of the Preparation Drill? | A: The Push-Up | WRONG: The Bend and Reach; The Rower; The Forward Lunge
+Q: What is the first exercise of the Recovery Drill? | A: The Overhead Arm Pull | WRONG: The Hamstring Stretch; The Bend and Reach; The Calf Stretch
+Q: Name the 10 exercises of the Preparation Drill in order. | A: Bend and Reach, Rear Lunge, High Jumper, Rower, Squat Bender, Windmill, Forward Lunge, Prone Row, Bent-Leg Body Twist, Push-Up | ALSO: what are the prep drill exercises; what is in the PRT warm up | WRONG: Push-Up, Bent-Leg Body Twist, Prone Row, Forward Lunge, Windmill, Squat Bender, Rower, High Jumper, Rear Lunge, Bend and Reach; Bend and Reach, Windmill, High Jumper, Push-Up, Rower, Squat Bender, Rear Lunge, Forward Lunge, Prone Row, Bent-Leg Body Twist; Overhead Arm Pull, Rear Lunge, Extend and Flex, Thigh Stretch, Single-Leg Over, Groin Stretch, Calf Stretch, Hamstring Stretch, Windmill, Push-Up
+Q: Name the 8 exercises of the Recovery Drill in order. | A: Overhead Arm Pull, Rear Lunge, Extend and Flex, Thigh Stretch, Single-Leg Over, Groin Stretch, Calf Stretch, Hamstring Stretch | ALSO: what are the recovery drill exercises; what is the PRT cool down | WRONG: Hamstring Stretch, Calf Stretch, Groin Stretch, Single-Leg Over, Thigh Stretch, Extend and Flex, Rear Lunge, Overhead Arm Pull; Bend and Reach, Rear Lunge, High Jumper, Rower, Squat Bender, Windmill, Forward Lunge, Push-Up; Overhead Arm Pull, Thigh Stretch, Calf Stretch, Push-Up, Windmill, Groin Stretch, Rower, Hamstring Stretch
+Q: What is the purpose of the Preparation Drill? | A: To decrease the chance of a musculoskeletal injury during more rigorous training | WRONG: To build maximum strength; To cool down after a run; To test fitness for the record
+Q: What are the three parts of a PT session? | A: Preparation, activities, recovery | WRONG: Running, lifting, stretching; Warm-up, workout, shower; Inspection, formation, dismissal
+Q: What is PMCS in physical training? | A: Preventive Maintenance Checks and Services — a self-check for musculoskeletal issues | WRONG: Physical Muscle Conditioning System — a weightlifting plan; Personal Movement Control Standard — a drill rule; Post-Mission Combat Summary — a report

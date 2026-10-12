@@ -23,9 +23,9 @@ The Space Force describes its work in three areas: **protecting satellites**, **
 **Getting there.** After Basic Military Training, enlisted Guardians go to **technical training**, listed at about **110 days**. A counselor gives placement options based on your strengths. The Space Force says most of those options work with **ground stations**.
 
 ## Quiz
-Q: What are the Space Force's three areas of capability? | A: Protecting satellites, humanitarian and military operations, and launches
-Q: Name one thing that would stop working if GPS went dark. | A: Navigation, cell phones, TVs or weather forecasts
-Q: Which Space Force job helps with rocket launches and space flight operations? | A: Space Systems Operator
-Q: What does a Signals Intelligence Analyst do? | A: Analyzes foreign communications from electromagnetic signals
+Q: What are the Space Force's three areas of capability? | A: Protecting satellites, humanitarian and military operations, and launches | WRONG: Building rockets, mining asteroids, and space tourism; Fighter jets, bombers, and tankers; Ships, submarines, and carriers
+Q: Name one thing that would stop working if GPS went dark. | A: Navigation, cell phones, TVs or weather forecasts | WRONG: Nothing, because only the military uses GPS; Only airplanes; Only weather balloons
+Q: Which Space Force job helps with rocket launches and space flight operations? | A: Space Systems Operator | WRONG: Signals Intelligence Analyst; Cyber Warfare Operations; Intelligence Analyst
+Q: What does a Signals Intelligence Analyst do? | A: Analyzes foreign communications from electromagnetic signals | WRONG: Repairs satellites in orbit; Launches rockets; Forecasts the weather
 Q: About how long is Space Force technical training listed? | A: About 110 days
-Q: Where do most enlisted Space Force placement options work? | A: With ground stations
+Q: Where do most enlisted Space Force placement options work? | A: With ground stations | WRONG: On the International Space Station; On the Moon; Aboard Navy ships

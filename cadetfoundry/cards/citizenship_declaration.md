@@ -16,7 +16,7 @@ The Declaration of Independence was adopted **"In Congress, July 4, 1776."** It 
 
 ## Quiz
 Q: On what date was the Declaration of Independence adopted? | A: July 4, 1776 | ALSO: when was the declaration of independence signed; when was the declaration adopted
-Q: Name the three unalienable rights in the Declaration of Independence | A: Life, Liberty and the pursuit of Happiness
-Q: What does "unalienable" mean? | A: Can't be taken away or given up
-Q: Complete the line: "We hold these truths to be self-evident, that all men are…" | A: created equal
-Q: What did the Declaration of Independence announce? | A: That the colonies were independent from Great Britain
+Q: Name the three unalienable rights in the Declaration of Independence | A: Life, Liberty and the pursuit of Happiness | WRONG: Life, Liberty and Property; Speech, Religion and Assembly; Freedom, Equality and Justice
+Q: What does "unalienable" mean? | A: Can't be taken away or given up | WRONG: Belonging only to citizens; Granted by the government; Temporary until changed by law
+Q: Complete the line: "We hold these truths to be self-evident, that all men are…" | A: created equal | WRONG: free and independent; entitled to vote; born with property
+Q: What did the Declaration of Independence announce? | A: That the colonies were independent from Great Britain | WRONG: That the Constitution was ratified; That slavery was abolished; That the Revolutionary War had ended

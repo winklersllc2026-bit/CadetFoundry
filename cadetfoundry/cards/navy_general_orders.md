@@ -22,9 +22,9 @@ A sentry stands watch over a post. The Navy's eleven General Orders of a Sentry:
 **Why it matters for Cadets:** the orders are really about responsibility — stay alert, don't leave until you're relieved, pass information on accurately, and ask for help when something isn't covered.
 
 ## Quiz
-Q: What is the first general order? | A: To take charge of this post and all government property in view
+Q: What is the first general order? | A: To take charge of this post and all government property in view | WRONG: To walk my post in a military manner, keeping always on the alert; To report all violations of orders I am instructed to enforce; To quit my post only when properly relieved
 Q: Which general order says to quit your post only when properly relieved? | A: The fifth general order
-Q: In the Navy's ninth general order, whom does a sentry call in any case not covered by instructions? | A: The Officer of the Deck
+Q: In the Navy's ninth general order, whom does a sentry call in any case not covered by instructions? | A: The Officer of the Deck | WRONG: The Commanding Officer; The nearest Sailor; The Chief of the Boat
 Q: Which general order says to give the alarm in case of fire or disorder? | A: The eighth general order
-Q: How many general orders of a sentry are there? | A: Eleven
-Q: According to the tenth general order, what does a sentry salute? | A: All officers and colors and standards not cased
+Q: How many general orders of a sentry are there? | A: Eleven | WRONG: Nine; Ten; Twelve
+Q: According to the tenth general order, what does a sentry salute? | A: All officers and colors and standards not cased | WRONG: Only the commanding officer; Every Sailor who passes; Only cased colors

@@ -23,5 +23,5 @@ If you get a jury summons, **don't ignore it** — it's an official court order.
 Q: How old must you be to serve on a federal jury? | A: At least 18
 Q: Must you be a U.S. citizen to serve on a federal jury? | A: Yes
 Q: How long must you have lived in the judicial district to serve on a federal jury? | A: At least one year
-Q: Name three qualifications to serve on a federal jury | A: U.S. citizen, at least 18, lived in the district at least a year, able to read, write, understand and speak English, no felony conviction
-Q: What should you do if you get a jury summons? | A: Follow its instructions — don't ignore it; contact the court if you have a conflict
+Q: Name three qualifications to serve on a federal jury | A: U.S. citizen, at least 18, lived in the district at least a year, able to read, write, understand and speak English, no felony conviction | WRONG: Own a home, have a job, have a college degree; Be at least 16, live in any state, own a car; Be a lawyer, be over 30, speak two languages
+Q: What should you do if you get a jury summons? | A: Follow its instructions — don't ignore it; contact the court if you have a conflict | WRONG: Ignore it unless you're free that day; Throw it away; Send a friend in your place

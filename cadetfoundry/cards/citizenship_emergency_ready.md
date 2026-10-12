@@ -28,8 +28,8 @@ Pick a **family meeting place** that's familiar and easy to find. Then **write t
 
 ## Quiz
 Q: How much water should an emergency kit have per person per day? | A: One gallon
-Q: Why should an emergency kit include a whistle? | A: To signal for help
-Q: Name four things in a basic emergency kit | A: Water, non-perishable food, radio, flashlight, extra batteries, first aid kit, whistle, dust mask, can opener, local maps, phone charger
-Q: Name three questions a family emergency plan should answer | A: How you'll get alerts, your shelter plan, your evacuation route, your family communication plan
-Q: After you write down your family emergency plan, what should you do? | A: Practice it
-Q: Why does a kit need a manual can opener? | A: To open canned food without power
+Q: Why should an emergency kit include a whistle? | A: To signal for help | WRONG: To scare away animals; To call a pet; To keep time while marching
+Q: Name four things in a basic emergency kit | A: Water, non-perishable food, radio, flashlight, extra batteries, first aid kit, whistle, dust mask, can opener, local maps, phone charger | WRONG: Video games, perfume, candles and glass jars; A TV, extra shoes, a pillow and snacks only; A laptop, a gaming console, makeup and magazines
+Q: Name three questions a family emergency plan should answer | A: How you'll get alerts, your shelter plan, your evacuation route, your family communication plan | WRONG: What's for dinner, who does chores, which movie to watch; Which stores have sales, which roads have traffic, which team wins; Who gets the front seat, which song to play, where to eat
+Q: After you write down your family emergency plan, what should you do? | A: Practice it | WRONG: Put it away and forget it; Post it online; Wait for an emergency to read it
+Q: Why does a kit need a manual can opener? | A: To open canned food without power | WRONG: To fix the radio; To cut rope; To open water bottles

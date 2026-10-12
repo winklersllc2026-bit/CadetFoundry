@@ -35,7 +35,7 @@ Every step and march that begins from a halt starts with the **left foot**. The 
 Q: What is the cadence of quick time? | A: 112 to 120 steps per minute
 Q: How long is a quick time step? | A: 30 inches
 Q: What is the cadence and step length of double time? | A: 180 steps per minute, 36 inches
-Q: When is slow time used? | A: For funerals only
+Q: When is slow time used? | A: For funerals only | WRONG: For parades only; For long marches; When the formation is late
 Q: What is the distance between ranks in a formation? | A: 40 inches
 Q: How many counts is a halt from double time? | A: Three
-Q: Which foot do you step off with from a halt? | A: The left foot
+Q: Which foot do you step off with from a halt? | A: The left foot | WRONG: The right foot; Either foot; Both feet together

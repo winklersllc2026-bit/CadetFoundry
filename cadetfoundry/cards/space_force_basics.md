@@ -20,8 +20,8 @@ Space Force JROTC units are run through Air Force JROTC.
 
 ## Quiz
 Q: When was the Space Force created? | A: December 20, 2019
-Q: What are members of the Space Force called? | A: Guardians
+Q: What are members of the Space Force called? | A: Guardians | WRONG: Airmen; Sentinels; Spacers
 Q: What are the Space Force's four core values? | A: Character, Connection, Commitment, and Courage
-Q: What is the Space Force mission? | A: Secure our Nation's interests in, from, and to space
-Q: What is the Space Force rank at E-1? | A: Specialist 1
+Q: What is the Space Force mission? | A: Secure our Nation's interests in, from, and to space | WRONG: To fly, fight, and win airpower anytime, anywhere; To deploy, fight, and win our Nation's wars; To explore the solar system
+Q: What is the Space Force rank at E-1? | A: Specialist 1 | WRONG: Airman Basic; Private; Seaman Recruit
 Q: The Space Force is which numbered branch of the U.S. military? | A: The sixth

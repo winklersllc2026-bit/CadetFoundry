@@ -35,9 +35,9 @@ source: DAFPAM 34-1203, Drill and Ceremonies (13 September 2022), Chapter 4 (par
 **"Close, MARCH" / "Extend, MARCH"** switch the flight between close and normal interval.
 
 ## Quiz
-Q: How many elements are in an Air Force flight? | A: At least two, but not more than four
-Q: Who sets the direction and cadence of the march? | A: The guide
-Q: When sized in column, where do the tallest members go? | A: To the front and right
-Q: Who is always number one in an element? | A: The element leader
+Q: How many elements are in an Air Force flight? | A: At least two, but not more than four | WRONG: Exactly three; At least four, but not more than six; Only one
+Q: Who sets the direction and cadence of the march? | A: The guide | WRONG: The flight commander; The element leader; The last member of the column
+Q: When sized in column, where do the tallest members go? | A: To the front and right | WRONG: To the rear and left; To the center; To the front and left
+Q: Who is always number one in an element? | A: The element leader | WRONG: The guide; The newest member; The flight commander
 Q: At open ranks, how far apart are the ranks? | A: 64 inches
 Q: At open ranks, which rank stands fast? | A: The fourth rank

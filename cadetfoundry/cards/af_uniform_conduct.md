@@ -40,9 +40,9 @@ Every Airman and Guardian, regardless of rank, is responsible for **respectfully
 AFJROTC Cadets follow their unit's cadet uniform guide. Your instructor has the final word.
 
 ## Quiz
-Q: How does DAFI 36-2903 describe the Air Force uniform? | A: Plain, distinctive, and standardized
-Q: What are the five elements of the dress and appearance standard? | A: Neatness, cleanliness, safety, uniformity, and military image
+Q: How does DAFI 36-2903 describe the Air Force uniform? | A: Plain, distinctive, and standardized | WRONG: Bright, flexible, and individual; Optional, casual, and personal; Colorful, decorated, and unique
+Q: What are the five elements of the dress and appearance standard? | A: Neatness, cleanliness, safety, uniformity, and military image | WRONG: Speed, strength, stamina, skill, and spirit; Loyalty, duty, respect, honor, and integrity; Rank, badges, ribbons, patches, and name tapes
 Q: Can you eat while walking in Air Force uniform? | A: No, but you may drink a beverage
 Q: How many rings may an Airman wear in uniform? | A: No more than three
 Q: May a necklace be visible in uniform? | A: No, never
-Q: Whose job is it to enforce dress and appearance standards? | A: Every Airman and Guardian, regardless of rank
+Q: Whose job is it to enforce dress and appearance standards? | A: Every Airman and Guardian, regardless of rank | WRONG: Only the first sergeant; Only officers; Only Military Training Instructors

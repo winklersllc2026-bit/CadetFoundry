@@ -31,15 +31,15 @@ source: AR 621-5, Army Continuing Education System (19 March 2026), paras 4-2 to
 Your installation **education center** is where to start.
 
 ## Quiz
-Q: What does Tuition Assistance pay for? | A: Off-duty college classes, high school completion, and some certificate and language classes | ALSO: can the Army pay for college; will the Army pay for my college classes; does the Army pay for school
-Q: What does Credentialing Assistance pay for? | A: Civilian credentials — training, study materials and exam fees, MOS-related or not | ALSO: can the Army pay for a certification; will the Army pay for my license or certificate
-Q: Where is the list of credentials eligible for CA? | A: Army COOL
-Q: What must you finish before you can use TA or CA? | A: Basic Combat Training (Reserve Component Soldiers are exempt)
-Q: Where do you request TA? | A: ArmyIgnitED
+Q: What does Tuition Assistance pay for? | A: Off-duty college classes, high school completion, and some certificate and language classes | ALSO: can the Army pay for college; will the Army pay for my college classes; does the Army pay for school | WRONG: Your children's college tuition; Housing and food while you're in school; Only graduate degrees after you leave the Army
+Q: What does Credentialing Assistance pay for? | A: Civilian credentials — training, study materials and exam fees, MOS-related or not | ALSO: can the Army pay for a certification; will the Army pay for my license or certificate | WRONG: College tuition for a bachelor's degree; Your car loan; Moving expenses
+Q: Where is the list of credentials eligible for CA? | A: Army COOL | WRONG: Military OneSource; va.gov; The Occupational Outlook Handbook
+Q: What must you finish before you can use TA or CA? | A: Basic Combat Training (Reserve Component Soldiers are exempt) | WRONG: Your first deployment; Four years of service; A bachelor's degree
+Q: Where do you request TA? | A: ArmyIgnitED | WRONG: myPay; va.gov; studentaid.gov
 Q: What is the latest you can request TA for a class? | A: 7 days before the term starts
-Q: Who approves your TA request? | A: Your supervisor or the commander's representative
+Q: Who approves your TA request? | A: Your supervisor or the commander's representative | WRONG: The college's admissions office; The VA; Your battle buddy
 Q: What GPA must you keep for undergraduate TA? | A: At least 2.0 after 15 semester hours
-Q: What happens if you get a D in a TA-funded undergraduate class? | A: Recoupment — the Army takes back the TA money
-Q: What happens after two recoupments in one fiscal year? | A: TA and CA are suspended for 12 months
-Q: Where are the yearly TA dollar limits published? | A: In an annual ALARACT message — ask your education center
+Q: What happens if you get a D in a TA-funded undergraduate class? | A: Recoupment — the Army takes back the TA money | WRONG: Nothing — a D is passing; You get a bonus for finishing; The class is free
+Q: What happens after two recoupments in one fiscal year? | A: TA and CA are suspended for 12 months | WRONG: Nothing happens; You are discharged; TA is doubled to help you catch up
+Q: Where are the yearly TA dollar limits published? | A: In an annual ALARACT message — ask your education center | WRONG: On the back of your LES; In the Soldier's Creed; On the college's website
 Q: Can commissioned officers use Credentialing Assistance? | A: No — but warrant officers can

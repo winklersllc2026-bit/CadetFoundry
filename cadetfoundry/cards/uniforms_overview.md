@@ -23,15 +23,15 @@ source: AR 670-1, Wear and Appearance of Army Uniforms and Insignia (26 January 
 Uniform rules change. If a drill sergeant's guidance differs from this card, follow the drill sergeant and ask Cadet Foundry to look up the current paragraph.
 
 ## Quiz
-Q: Which regulation governs wear and appearance of Army uniforms? | A: AR 670-1
-Q: What is AR 670-1? | A: AR 670-1, Wear and Appearance of Army Uniforms and Insignia — the regulation for grooming, tattoos, jewelry and when each uniform may be worn; DA PAM 670-1 is the how-to with placements and measurements | ALSO: what does AR 670-1 cover; what is ar 670 1
-Q: Which publication has the detailed placements, measurements and figures? | A: DA PAM 670-1
-Q: What does OCP stand for? | A: Operational Camouflage Pattern
-Q: What is the ACU in OCP used for? | A: Daily work, utility, and field wear
+Q: Which regulation governs wear and appearance of Army uniforms? | A: AR 670-1 | WRONG: AR 600-20; AR 600-25; AR 530-1
+Q: What is AR 670-1? | A: AR 670-1, Wear and Appearance of Army Uniforms and Insignia — the regulation for grooming, tattoos, jewelry and when each uniform may be worn; DA PAM 670-1 is the how-to with placements and measurements | ALSO: what does AR 670-1 cover; what is ar 670 1 | WRONG: The Army's drill and ceremonies manual; The Army's fitness test standards; The regulation for leave and pay
+Q: Which publication has the detailed placements, measurements and figures? | A: DA PAM 670-1 | WRONG: AR 670-1; AR 600-25; TC 3-21.5
+Q: What does OCP stand for? | A: Operational Camouflage Pattern | WRONG: Official Combat Pattern; Operational Clothing Program; Outdoor Camouflage Print
+Q: What is the ACU in OCP used for? | A: Daily work, utility, and field wear | WRONG: Weddings and funerals; Physical training; Formal dinners
 Q: How far above the elbow may ACU sleeves be rolled? | A: No more than 3 inches above the elbow
 Q: Can you wear the ACU in an off-post bar that mainly sells alcohol? | A: No
-Q: What is the PT uniform called? | A: Army Physical Fitness Uniform (APFU)
+Q: What is the PT uniform called? | A: Army Physical Fitness Uniform (APFU) | WRONG: Army Green Service Uniform (AGSU); Army Combat Uniform (ACU); Army Service Uniform (ASU)
 Q: Can you wear the APFU for commercial travel? | A: No
 Q: Can you stop for gas in the APFU off post? | A: Yes — buying essential items is allowed
-Q: What does AGSU stand for? | A: Army Green Service Uniform
-Q: Which uniforms are appropriate for a funeral or wedding off the installation? | A: The AGSU or the ASU — not the APFU
+Q: What does AGSU stand for? | A: Army Green Service Uniform | WRONG: Army General Service Uniform; Army Garrison Standard Uniform; Army Ground Soldier Uniform
+Q: Which uniforms are appropriate for a funeral or wedding off the installation? | A: The AGSU or the ASU — not the APFU | WRONG: The APFU or the ACU; Only the APFU; Any uniform, including PT clothes

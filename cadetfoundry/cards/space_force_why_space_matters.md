@@ -24,8 +24,8 @@ source: SFDD-1, The Space Force (Space Force Doctrine Document 1, 3 April 2025),
 - protect U.S. interests in space.
 
 ## Quiz
-Q: What is space superiority? | A: Control that lets friendly forces operate without prohibitive interference while denying the same to an adversary
-Q: What are the three tenets of Competitive Endurance? | A: Avoid operational surprise, deny first-mover advantage, and conduct responsible counterspace operations
-Q: About how much of U.S. critical infrastructure depends on space, according to SFDD-1? | A: At least half
-Q: What is a counterspace threat? | A: An enemy capability that puts U.S. space systems at risk
-Q: Why must counterspace operations be "responsible"? | A: To avoid creating long-lived hazardous debris
+Q: What is space superiority? | A: Control that lets friendly forces operate without prohibitive interference while denying the same to an adversary | WRONG: Owning every satellite in orbit; Being the first country to reach Mars; Having the most astronauts
+Q: What are the three tenets of Competitive Endurance? | A: Avoid operational surprise, deny first-mover advantage, and conduct responsible counterspace operations | WRONG: Launch fast, launch often, launch cheap; Protect, defend, and repair satellites; Explore, discover, and settle space
+Q: About how much of U.S. critical infrastructure depends on space, according to SFDD-1? | A: At least half | WRONG: About 5 percent; About 10 percent; None of it
+Q: What is a counterspace threat? | A: An enemy capability that puts U.S. space systems at risk | WRONG: A meteor shower; A broken satellite; A space weather storm
+Q: Why must counterspace operations be "responsible"? | A: To avoid creating long-lived hazardous debris | WRONG: To save fuel; To keep them secret; To follow the rules of a space treaty game

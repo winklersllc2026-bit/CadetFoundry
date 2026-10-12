@@ -13,4 +13,4 @@ Q: What is 3:00 p.m. in military time? | A: 1500
 Q: What is 1945 in regular time? | A: 7:45 p.m.
 Q: What is midnight in military time? | A: 0000
 Q: What is 9:15 a.m. in military time? | A: 0915
-Q: How do you say 0600 out loud? | A: Zero six hundred
+Q: How do you say 0600 out loud? | A: Zero six hundred | WRONG: Six o'clock; Sixty hundred; Six hundred hours

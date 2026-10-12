@@ -21,9 +21,9 @@ source: TC 3-21.5, Drill and Ceremonies (3 May 2021), Appendix I, paras I-9 to I
 
 ## Quiz
 Q: What is the Army's birthday? | A: 14 June 1775 | ALSO: when was the army founded; when is the army birthday
-Q: Who founded the Army? | A: The Continental Congress
+Q: Who founded the Army? | A: The Continental Congress | WRONG: George Washington; The first President; The state of Virginia
 Q: Which is older, the Army or the Declaration of Independence? | A: The Army — 1775, the Declaration was 1776
 Q: What year appears on the Army flag? | A: 1775
-Q: What do the streamers on the Army flag represent? | A: The Army's campaigns
-Q: Who carries the Colors today? | A: NCOs — Color sergeants
-Q: Where was the Army flag first unfurled? | A: Independence Hall in Philadelphia
+Q: What do the streamers on the Army flag represent? | A: The Army's campaigns | WRONG: The Army's generals; The fifty states; The Army's branches
+Q: Who carries the Colors today? | A: NCOs — Color sergeants | WRONG: Officers; Privates; Cadets
+Q: Where was the Army flag first unfurled? | A: Independence Hall in Philadelphia | WRONG: The White House in Washington; Valley Forge, Pennsylvania; The Pentagon

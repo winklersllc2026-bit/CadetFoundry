@@ -24,8 +24,8 @@ source: NJROTC Cadet Field Manual, 12th Edition (NAVEDTRA 37116-L, April 2024), 
 
 ## Quiz
 Q: In uniform outdoors during the national anthem, how long do you hold your salute? | A: From the first note to the last
-Q: When an escorted flag passes you, when do you start and stop saluting? | A: Six paces before it reaches you until six paces after it passes
-Q: What does morning colors signal? | A: The start of the official duty day
-Q: What does retreat signal? | A: The end of the official duty day
+Q: When an escorted flag passes you, when do you start and stop saluting? | A: Six paces before it reaches you until six paces after it passes | WRONG: Only while it is directly in front of you; Twelve paces before it reaches you until twelve paces after; When it reaches you until it is out of sight
+Q: What does morning colors signal? | A: The start of the official duty day | WRONG: The end of the official duty day; The middle of the duty day; Lights out
+Q: What does retreat signal? | A: The end of the official duty day | WRONG: The start of the official duty day; The middle of the duty day; An emergency formation
 Q: Is the Pledge of Allegiance recited in military formations? | A: No
 Q: Do you salute indoors in uniform during the national anthem? | A: No, unless you are covered or under arms

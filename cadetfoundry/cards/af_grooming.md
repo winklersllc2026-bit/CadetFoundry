@@ -21,8 +21,8 @@ These are the standards for **Airmen and Guardians** in the Air Force and Space 
 Standards change through updates and policy memos. The current DAFI and your chain of command have the final word.
 
 ## Quiz
-Q: Which publication sets Air Force and Space Force dress and appearance standards? | A: DAFI 36-2903
-Q: Name two hair colors that are not authorized. | A: Purple and neon
+Q: Which publication sets Air Force and Space Force dress and appearance standards? | A: DAFI 36-2903 | WRONG: AR 670-1; MCO 5060.20; DAFPAM 34-1203
+Q: Name two hair colors that are not authorized. | A: Purple and neon | WRONG: Black and brown; Blond and red; Gray and dark brown
 Q: What is the most bulk an Airman's hair may have (men)? | A: 2.5 inches
 Q: Are Mohawks authorized? | A: No
-Q: Who follows DAFI 36-2903? | A: Airmen and Guardians
+Q: Who follows DAFI 36-2903? | A: Airmen and Guardians | WRONG: Soldiers and Marines; Sailors and Coast Guardsmen; Only Air Force officers

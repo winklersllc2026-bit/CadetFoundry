@@ -27,8 +27,8 @@ SFDD-1 calls these Airmen "essential" to the Space Force mission.
 **Commercial and academic partners.** Companies and universities bring new technology. The Space Force uses **hybrid space architectures**, mixing military and commercial systems, so that capabilities are more resilient.
 
 ## Quiz
-Q: Which department are the Space Force and Air Force both part of? | A: The Department of the Air Force
-Q: Name two kinds of support the Air Force provides to Guardians. | A: Personnel and medical support (also legal, finance, chaplain, base support)
-Q: Which office handles space traffic management with the Space Force? | A: The Office of Space Commerce
-Q: Which agency works with the Space Force on the civilian space program? | A: NASA
-Q: What is a hybrid space architecture? | A: Mixing military and commercial space systems for resilience
+Q: Which department are the Space Force and Air Force both part of? | A: The Department of the Air Force | WRONG: The Department of the Navy; The Department of the Army; The Department of Homeland Security
+Q: Name two kinds of support the Air Force provides to Guardians. | A: Personnel and medical support (also legal, finance, chaplain, base support) | WRONG: Rockets and satellites; Spacesuits and training astronauts; Ships and submarines
+Q: Which office handles space traffic management with the Space Force? | A: The Office of Space Commerce | WRONG: The Department of Agriculture; The Census Bureau; The Coast Guard
+Q: Which agency works with the Space Force on the civilian space program? | A: NASA | WRONG: The FBI; The CIA; The FDA
+Q: What is a hybrid space architecture? | A: Mixing military and commercial space systems for resilience | WRONG: A rocket powered by two kinds of fuel; A satellite built in two countries; A space station with two crews

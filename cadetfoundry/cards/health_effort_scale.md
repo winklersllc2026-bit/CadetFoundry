@@ -22,10 +22,10 @@ source: FM 7-22, Holistic Health and Fitness (1 October 2020, incl. C2), para 6-
 **Use it:** a long easy run should feel around **4–5**. If every workout feels like a 9, you're likely overdoing it. Knowing the target effort in advance helps you prepare mentally.
 
 ## Quiz
-Q: What does RPE stand for? | A: Rating of perceived exertion
+Q: What does RPE stand for? | A: Rating of perceived exertion | WRONG: Rate of physical endurance; Required physical effort; Repetitions per exercise
 Q: What scale does RPE use? | A: 1 to 10
 Q: On the RPE scale, what number means you can only speak in short sentences? | A: 7
-Q: What does RPE 10 mean? | A: Maximum effort — you can't do any more
-Q: What are repetitions in reserve? | A: How many more reps you could do before you'd have to stop
+Q: What does RPE 10 mean? | A: Maximum effort — you can't do any more | WRONG: Very light effort, like walking; About half of your effort; Ten repetitions left
+Q: What are repetitions in reserve? | A: How many more reps you could do before you'd have to stop | WRONG: Extra sets you save for the next day; The reps a coach adds as punishment; The total reps you did last week
 Q: How many repetitions in reserve does a one-rep maximum have? | A: Zero
-Q: Why use the effort scale? | A: To dose your effort and avoid overtraining and injury
+Q: Why use the effort scale? | A: To dose your effort and avoid overtraining and injury | WRONG: To make every workout as hard as possible; To count calories burned; To compare yourself with other Cadets

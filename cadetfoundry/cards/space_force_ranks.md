@@ -37,9 +37,9 @@ The Space Force has **no warrant officers** and **no wartime five-star rank**.
 **Rank vs. paygrade.** "E-5" is a **paygrade** used to keep pay the same across services. "Sergeant" is the **rank**. The DoD page reminds readers that rank is "a badge of leadership," and responsibility grows with each step.
 
 ## Quiz
-Q: What is the Space Force rank at E-1? | A: Specialist 1
-Q: What is the Space Force rank at E-4? | A: Specialist 4
-Q: What is a Space Force E-5 called? | A: Sergeant
+Q: What is the Space Force rank at E-1? | A: Specialist 1 | WRONG: Airman Basic; Private; Seaman Recruit
+Q: What is the Space Force rank at E-4? | A: Specialist 4 | WRONG: Senior Airman; Corporal; Sergeant
+Q: What is a Space Force E-5 called? | A: Sergeant | WRONG: Specialist 5; Staff Sergeant; Petty Officer Second Class
 Q: Who is the senior enlisted leader of the Space Force? | A: The Chief Master Sergeant of the Space Force
-Q: Which service uses the same officer rank titles as the Space Force? | A: The Air Force
+Q: Which service uses the same officer rank titles as the Space Force? | A: The Air Force | WRONG: The Navy; The Coast Guard; No other service
 Q: Does the Space Force have warrant officers? | A: No

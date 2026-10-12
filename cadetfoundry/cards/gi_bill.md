@@ -32,9 +32,9 @@ Q: How many days of active duty can make you eligible for the Post-9/11 GI Bill?
 Q: How many months of entitlement does the Post-9/11 GI Bill give at most? | A: 36 months | ALSO: how long does the GI Bill last; how many months of school does the GI Bill pay for
 Q: Do Post-9/11 GI Bill benefits expire if your service ended in 2026? | A: No — benefits don't expire for service ending on or after January 1, 2013 (Forever GI Bill)
 Q: Do you get the GI Bill housing allowance during school breaks? | A: No
-Q: What must you do every month to keep getting the housing allowance? | A: Verify your enrollment
+Q: What must you do every month to keep getting the housing allowance? | A: Verify your enrollment | WRONG: Pay a fee to the VA; Re-apply for benefits; Mail in your grades
 Q: Can you transfer the Post-9/11 GI Bill to family? | A: Yes — all or part to a spouse or child, with Defense Department approval | ALSO: can I give my GI Bill to my kids; can my wife or husband use my GI Bill
-Q: What program helps with private or out-of-state tuition the GI Bill doesn't cover? | A: The Yellow Ribbon Program
-Q: What did the Montgomery GI Bill Active Duty require from your pay? | A: $100 a month for the first 12 months
-Q: Where do you apply for GI Bill benefits? | A: va.gov
-Q: What's the difference between the Post-9/11 GI Bill and the Montgomery GI Bill? | A: The Post-9/11 GI Bill pays tuition and fees to the school plus a housing allowance and books money; the Montgomery GI Bill pays a set monthly amount to you and has no separate housing allowance. Each gives up to 36 months; eligible for both, up to 48 months in total | ALSO: post 9/11 vs montgomery gi bill; which gi bill is better; difference between the gi bills
+Q: What program helps with private or out-of-state tuition the GI Bill doesn't cover? | A: The Yellow Ribbon Program | WRONG: The Pell Grant; Tuition Assistance; The Montgomery GI Bill
+Q: What did the Montgomery GI Bill Active Duty require from your pay? | A: $100 a month for the first 12 months | WRONG: $50 a month for the first 6 months; $200 a month for 24 months; $1,200 a year for 4 years
+Q: Where do you apply for GI Bill benefits? | A: va.gov | WRONG: goarmy.com; studentaid.gov; irs.gov
+Q: What's the difference between the Post-9/11 GI Bill and the Montgomery GI Bill? | A: The Post-9/11 GI Bill pays tuition and fees to the school plus a housing allowance and books money; the Montgomery GI Bill pays a set monthly amount to you and has no separate housing allowance. Each gives up to 36 months; eligible for both, up to 48 months in total | ALSO: post 9/11 vs montgomery gi bill; which gi bill is better; difference between the gi bills | WRONG: There is no difference — they are the same program; The Montgomery GI Bill pays a housing allowance and the Post-9/11 GI Bill doesn't; The Post-9/11 GI Bill is only for officers and the Montgomery GI Bill is only for enlisted Soldiers

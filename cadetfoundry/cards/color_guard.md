@@ -21,10 +21,10 @@ source: TC 3-21.5, Drill and Ceremonies (3 May 2021), paras 15-12 to 15-18
 **Resting** (para 15-18): during a ceremony when units are at At Ease, the Color guard is at **Parade Rest**. Color bearers keep the staffs **vertical**.
 
 ## Quiz
-Q: Who is in an Army Color guard? | A: Two or three sergeants and two specialists or privates
-Q: Who carries the national Color and commands the Color guard? | A: The senior sergeant — the Color sergeant
-Q: How does a Color guard change direction? | A: By wheeling — Right or Left Wheel, MARCH
+Q: Who is in an Army Color guard? | A: Two or three sergeants and two specialists or privates | WRONG: Four officers; Two privates and two officers; One sergeant and four drummers
+Q: Who carries the national Color and commands the Color guard? | A: The senior sergeant — the Color sergeant | WRONG: The junior private; The rifle guard on the right flank; The platoon leader
+Q: How does a Color guard change direction? | A: By wheeling — Right or Left Wheel, MARCH | WRONG: By Column Right, MARCH; By About Face; By Rear, MARCH
 Q: Does the Color guard do About Face? | A: No
-Q: Which member of the Color guard does not do Eyes Right? | A: The guard on the right flank
+Q: Which member of the Color guard does not do Eyes Right? | A: The guard on the right flank | WRONG: The guard on the left flank; Every member of the guard; No one — all of them do
 Q: Is the U.S. flag ever dipped in salute? | A: No — only organizational Colors dip
 Q: How many steps before the person being honored does a marching organizational Color salute? | A: Six steps

@@ -18,5 +18,5 @@ Air Force JROTC is grounded in these same three values.
 ## Quiz
 Q: What are the Air Force's three core values? | A: Integrity First, Service Before Self, and Excellence In All We Do
 Q: Which Air Force core value is about doing what is right even when no one is looking? | A: Integrity First
-Q: Which Air Force core value says professional duties come before personal desires? | A: Service Before Self
-Q: Which Air Force core value is about continual improvement in yourself and your service? | A: Excellence In All We Do
+Q: Which Air Force core value says professional duties come before personal desires? | A: Service Before Self | WRONG: Integrity First; Excellence In All We Do; Selfless Service
+Q: Which Air Force core value is about continual improvement in yourself and your service? | A: Excellence In All We Do | WRONG: Integrity First; Service Before Self; Commitment

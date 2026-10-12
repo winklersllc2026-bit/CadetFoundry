@@ -24,4 +24,4 @@ Q: Which amendment protects against unreasonable searches and seizures? | A: The
 Q: Which amendment includes the right to a speedy and public trial? | A: The Sixth Amendment
 Q: Which amendment forbids cruel and unusual punishment? | A: The Eighth Amendment
 Q: What does the Tenth Amendment say? | A: Powers not given to the federal government, nor denied to the states, belong to the states or to the people
-Q: What does the Bill of Rights protect? | A: Basic rights such as freedom of religion, speech, press and assembly, protection against unreasonable searches, and fair trials | ALSO: what does the bill of rights do
+Q: What does the Bill of Rights protect? | A: Basic rights such as freedom of religion, speech, press and assembly, protection against unreasonable searches, and fair trials | ALSO: what does the bill of rights do | WRONG: The power of the President to make laws alone; The right of states to leave the Union; The rules for electing the Speaker of the House

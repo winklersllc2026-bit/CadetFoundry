@@ -18,8 +18,8 @@ source: TC 7-21.13, The Soldier's Guide (17 September 2025), chapter 1, Creating
 A positive climate means people are engaged in their duties, work together as a team, and show respect for each other. Every leader — even a team leader — shapes the climate of their team.
 
 ## Quiz
-Q: What is the difference between culture and climate? | A: Culture is the long-lasting shared values and practices of an organization; climate is how people think and feel about their team right now
+Q: What is the difference between culture and climate? | A: Culture is the long-lasting shared values and practices of an organization; climate is how people think and feel about their team right now | WRONG: Culture is the weather where a unit is, climate is its music; Culture is how people feel right now, climate is the long-lasting values; There is no difference
 Q: Which is shorter-term, culture or climate? | A: Climate
-Q: Name two things an approachable leader does | A: Encourages open, honest communication; respects others' opinions even when they disagree; stays objective when hearing bad news
-Q: Why should a leader stay calm and objective when hearing bad news? | A: So people keep being open and honest with them
-Q: What is esprit de corps? | A: Team spirit and pride in the team | ALSO: what does esprit de corps mean
+Q: Name two things an approachable leader does | A: Encourages open, honest communication; respects others' opinions even when they disagree; stays objective when hearing bad news | WRONG: Ignores bad news, only listens to favorites; Gets angry at disagreement, shares information with a few; Avoids questions, decides alone
+Q: Why should a leader stay calm and objective when hearing bad news? | A: So people keep being open and honest with them | WRONG: So they look tough; So the bad news goes away; So they can blame someone quickly
+Q: What is esprit de corps? | A: Team spirit and pride in the team | ALSO: what does esprit de corps mean | WRONG: A French drill command; A type of uniform; A punishment for low morale

@@ -29,14 +29,14 @@ Use soap and drinkable (potable) water. When you don't have soap and water, use 
 **Water in hot weather** (paras 2-81, 2-84): up to **three gallons a day** per Soldier just for drinking. Drink small amounts often, and drink before hard work. Only plain water goes in your canteen — add flavoring only in your canteen cup. Use the buddy system.
 
 ## Quiz
-Q: What is one of the most effective ways to protect yourself from disease in the field? | A: Washing or sanitizing your hands frequently
-Q: Name three times you must wash or sanitize your hands. | A: Any three: before eating, after eating, before handling food, after using the latrine, after handling anything that could carry germs
-Q: When does alcohol-based hand sanitizer not work well? | A: When your hands are caked with dirt or grease
-Q: Why shouldn't you share toiletries? | A: It can spread disease and infection
-Q: If there are no showers, how should you clean yourself? | A: Wash daily with a washcloth, especially sweaty or wet areas
+Q: What is one of the most effective ways to protect yourself from disease in the field? | A: Washing or sanitizing your hands frequently | WRONG: Wearing a hat; Drinking energy drinks; Skipping meals
+Q: Name three times you must wash or sanitize your hands. | A: Any three: before eating, after eating, before handling food, after using the latrine, after handling anything that could carry germs | WRONG: Before formation, after PT, before inspections; Once a day, on weekends, before going home; Only when your hands look dirty
+Q: When does alcohol-based hand sanitizer not work well? | A: When your hands are caked with dirt or grease | WRONG: When your hands are dry; When it's cold outside; After you eat
+Q: Why shouldn't you share toiletries? | A: It can spread disease and infection | WRONG: It wastes supplies; It's against uniform rules; It takes too much time
+Q: If there are no showers, how should you clean yourself? | A: Wash daily with a washcloth, especially sweaty or wet areas | WRONG: Wait until you get home; Use extra deodorant or cologne instead; Wash once a week in a stream
 Q: How far must a field latrine be from food operations? | A: 100 meters or more, downwind and downslope if possible
 Q: How far must a field latrine be from a water source? | A: 30 meters or more, downslope
-Q: What should you do with wet or damp socks? | A: Change them as soon as possible
+Q: What should you do with wet or damp socks? | A: Change them as soon as possible | WRONG: Wear them until they dry; Put a second pair over them; Go barefoot
 Q: How much drinking water may a Soldier need per day in hot weather? | A: Up to three gallons
 Q: Can you put flavoring in your canteen? | A: No — only plain water in the canteen; use the canteen cup for flavored water
-Q: Why avoid scented soap and cologne in the field? | A: They can attract insects
+Q: Why avoid scented soap and cologne in the field? | A: They can attract insects | WRONG: They're against uniform rules; They make you sneeze; They freeze in cold weather

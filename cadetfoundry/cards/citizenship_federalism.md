@@ -17,10 +17,10 @@ source: Constitution of the United States, Article IV, Article VI and the 10th A
 **Your state and local governments** make many of the laws and decisions closest to your daily life. USA.gov lists how to contact your state, its governor and major state agencies, and your local government.
 
 ## Quiz
-Q: What is federalism? | A: Sharing power between the national government and the state governments
+Q: What is federalism? | A: Sharing power between the national government and the state governments | WRONG: Giving all power to the national government; Letting each state act as its own country; Having Congress choose the President
 Q: What does the 10th Amendment say about powers not given to the federal government? | A: They are reserved to the states or to the people
 Q: What does the Constitution call itself in the Supremacy Clause? | A: The supreme Law of the Land
-Q: If a state law conflicts with the Constitution, which one wins? | A: The Constitution
-Q: What does Full Faith and Credit require? | A: Each state must respect the public acts, records and court decisions of other states
+Q: If a state law conflicts with the Constitution, which one wins? | A: The Constitution | WRONG: The state law; Whichever was passed last; Whichever the governor chooses
+Q: What does Full Faith and Credit require? | A: Each state must respect the public acts, records and court decisions of other states | WRONG: Each state must pay the other states' debts; Every state must pass the same laws; Citizens must vote for their governor
 Q: What kind of government does the United States guarantee every state? | A: A republican form of government
 Q: Which amendment reserves powers to the states? | A: The 10th Amendment

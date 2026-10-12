@@ -17,7 +17,7 @@ The Marine Corps shares the same three core values.
 
 ## Quiz
 Q: What are the Navy's three core values? | A: Honor, Courage and Commitment
-Q: Which Navy core value is described as the moral and mental strength to do what is right, even in the face of adversity? | A: Courage
-Q: Which Navy core value includes being honest, keeping your word and taking responsibility for your actions? | A: Honor
-Q: Which Navy core value includes respect up and down the chain of command and working together as a team? | A: Commitment
-Q: Which other service has the same three core values as the Navy? | A: The Marine Corps
+Q: Which Navy core value is described as the moral and mental strength to do what is right, even in the face of adversity? | A: Courage | WRONG: Honor; Commitment; Integrity
+Q: Which Navy core value includes being honest, keeping your word and taking responsibility for your actions? | A: Honor | WRONG: Courage; Commitment; Loyalty
+Q: Which Navy core value includes respect up and down the chain of command and working together as a team? | A: Commitment | WRONG: Honor; Courage; Excellence
+Q: Which other service has the same three core values as the Navy? | A: The Marine Corps | WRONG: The Army; The Air Force; The Space Force

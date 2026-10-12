@@ -29,13 +29,13 @@ Placement on the **Class A Army Green Service Uniform (AGSU) coat**, enlisted. C
 
 ## Quiz
 Q: Is a nameplate worn on the AGSU? | A: No — no nameplate on the Class A or Class B AGSU
-Q: Where is rank worn on the AGSU coat (enlisted)? | A: On each sleeve, centered between the shoulder seam and the elbow
-Q: Where does the unit patch (SSI) go on the AGSU coat? | A: Left sleeve, centered 1/2 inch below the top of the shoulder seam
-Q: Where does the combat patch (SSI-MOHC) go on the AGSU coat? | A: Right sleeve, centered 1/2 inch below the top of the shoulder seam
+Q: Where is rank worn on the AGSU coat (enlisted)? | A: On each sleeve, centered between the shoulder seam and the elbow | WRONG: On the collar only; On the shoulder loops only; On the left breast pocket
+Q: Where does the unit patch (SSI) go on the AGSU coat? | A: Left sleeve, centered 1/2 inch below the top of the shoulder seam | WRONG: Right sleeve, centered 1/2 inch below the top of the shoulder seam; Left breast pocket; On the cap
+Q: Where does the combat patch (SSI-MOHC) go on the AGSU coat? | A: Right sleeve, centered 1/2 inch below the top of the shoulder seam | WRONG: Left sleeve, centered 1/2 inch below the top of the shoulder seam; Right breast pocket; On the collar
 Q: Where are ribbons worn on the AGSU coat? | A: Centered 1/8 inch above the left breast pocket
 Q: Where are unit awards worn on the AGSU coat? | A: Right side, bottom edge 1/8 inch above the right breast pocket flap
-Q: Which collar gets the U.S. insignia on the AGSU (enlisted)? | A: The right collar, bottom of the disk about 1 inch above the notch
-Q: Which collar gets the branch insignia on the AGSU (enlisted)? | A: The left collar, bottom of the disk about 1 inch above the notch
-Q: Where is the DUI worn on the AGSU coat? | A: Centered on the shoulder loops
+Q: Which collar gets the U.S. insignia on the AGSU (enlisted)? | A: The right collar, bottom of the disk about 1 inch above the notch | WRONG: The left collar, bottom of the disk about 1 inch above the notch; Both collars; Neither — it goes on the cap
+Q: Which collar gets the branch insignia on the AGSU (enlisted)? | A: The left collar, bottom of the disk about 1 inch above the notch | WRONG: The right collar, bottom of the disk about 1 inch above the notch; Both collars; Neither — it goes on the sleeve
+Q: Where is the DUI worn on the AGSU coat? | A: Centered on the shoulder loops | WRONG: On the left sleeve; On the collar; On the right breast pocket
 Q: How many badges may be worn on the AGSU at one time? | A: Four, including marksmanship badges
-Q: Where are overseas service bars worn on the AGSU (enlisted)? | A: Right sleeve, outside bottom half, first bar 4 inches above the bottom of the sleeve
+Q: Where are overseas service bars worn on the AGSU (enlisted)? | A: Right sleeve, outside bottom half, first bar 4 inches above the bottom of the sleeve | WRONG: Left sleeve, outside bottom half, first bar 4 inches above the bottom of the sleeve; Above the right breast pocket; On the shoulder loops

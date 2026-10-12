@@ -23,9 +23,9 @@ source: SFDD-1, The Space Force (Space Force Doctrine Document 1, 3 April 2025),
 **One force, full- or part-time.** The Space Force does away with the separate active-duty and Reserve structure. Guardians can serve full-time or part-time within one force.
 
 ## Quiz
-Q: Who leads the Space Force? | A: The Chief of Space Operations
-Q: Which department are the Space Force and Air Force both part of? | A: The Department of the Air Force
-Q: What Space Force unit sits under a field command and runs day-to-day work? | A: A Delta
-Q: What are the three SPAFORGEN phases? | A: Prepare, Ready, and Commit
-Q: Which unit does most of the Space Force's mission work? | A: The squadron
+Q: Who leads the Space Force? | A: The Chief of Space Operations | WRONG: The Chief of Staff of the Air Force; The Chief Master Sergeant of the Space Force; The Commander of U.S. Space Command
+Q: Which department are the Space Force and Air Force both part of? | A: The Department of the Air Force | WRONG: The Department of the Navy; The Department of the Army; The Department of Homeland Security
+Q: What Space Force unit sits under a field command and runs day-to-day work? | A: A Delta | WRONG: A wing; A brigade; A fleet
+Q: What are the three SPAFORGEN phases? | A: Prepare, Ready, and Commit | WRONG: Train, Deploy, and Return; Plan, Launch, and Recover; Recruit, Train, and Retire
+Q: Which unit does most of the Space Force's mission work? | A: The squadron | WRONG: The headquarters; The field command; The Delta
 Q: Is the Chief of Space Operations a member of the Joint Chiefs of Staff? | A: Yes

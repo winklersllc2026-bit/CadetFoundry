@@ -30,9 +30,9 @@ To stay lean, the Space Force cut out **two levels of command** that the Air For
 **How they fit together:** SSC builds the systems, STARCOM trains Guardians to use them, and CFC turns trained units into combat-ready forces for the joint fight.
 
 ## Quiz
-Q: What are the four levels of the Space Force structure? | A: Headquarters, field commands, Deltas, and squadrons
-Q: Which field command acquires and delivers space systems? | A: Space Systems Command
-Q: Which field command trains Guardians and writes doctrine? | A: STARCOM
-Q: What was Combat Forces Command called before November 2025? | A: Space Operations Command
-Q: What is Combat Forces Command's vision? | A: Always Ready, Always Innovative, Always Above
+Q: What are the four levels of the Space Force structure? | A: Headquarters, field commands, Deltas, and squadrons | WRONG: Headquarters, wings, groups, and flights; Divisions, brigades, battalions, and companies; Fleets, squadrons, ships, and divisions
+Q: Which field command acquires and delivers space systems? | A: Space Systems Command | WRONG: STARCOM; Combat Forces Command; U.S. Space Command
+Q: Which field command trains Guardians and writes doctrine? | A: STARCOM | WRONG: Space Systems Command; Combat Forces Command; U.S. Space Command
+Q: What was Combat Forces Command called before November 2025? | A: Space Operations Command | WRONG: Space Systems Command; STARCOM; Air Force Space Command
+Q: What is Combat Forces Command's vision? | A: Always Ready, Always Innovative, Always Above | WRONG: Aim High, Fly-Fight-Win; Semper Fidelis; Ready to Fight Tonight
 Q: How many levels of command did the Space Force eliminate compared with the Air Force? | A: Two

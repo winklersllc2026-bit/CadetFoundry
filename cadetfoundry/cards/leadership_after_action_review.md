@@ -21,10 +21,10 @@ An **after action review (AAR)** looks back at an event to learn from it. **Unit
 **Use it after anything:** a drill competition, a service project, a test, a game, an argument with a friend. Then — **learn from mistakes, and don't repeat them.**
 
 ## Quiz
-Q: What is an after action review? | A: A look back at an event to learn from what happened
-Q: What does a personal AAR focus on? | A: How your own leadership affected the result
-Q: What is the first question of a personal AAR? | A: What happened, and what were the consequences?
-Q: What is the last question of a personal AAR? | A: What did I learn?
-Q: Name two questions from a personal AAR | A: What happened and what were the consequences, how were my actions supposed to affect it, what were the results, did my actions help or hurt, what should I change, what did I learn
-Q: Should an AAR focus on blame or on causes? | A: On causes — what happened, why, and what to do better
-Q: Why should a leader share their own AAR results with the team? | A: To show it's safe to learn from mistakes and to help others do their own
+Q: What is an after action review? | A: A look back at an event to learn from what happened | WRONG: A punishment for a failed mission; A grade for each Cadet; A plan for the next mission written beforehand
+Q: What does a personal AAR focus on? | A: How your own leadership affected the result | WRONG: What everyone else did wrong; How the weather affected the event; Who should be blamed
+Q: What is the first question of a personal AAR? | A: What happened, and what were the consequences? | WRONG: Who made the mistake?; What did I learn?; How do I avoid blame?
+Q: What is the last question of a personal AAR? | A: What did I learn? | WRONG: What happened, and what were the consequences?; Who should be punished?; When is the next event?
+Q: Name two questions from a personal AAR | A: What happened and what were the consequences, how were my actions supposed to affect it, what were the results, did my actions help or hurt, what should I change, what did I learn | WRONG: Whose fault was it, and how should they be punished; How do I look to my leaders, and who can I blame; What time did it end, and what was for lunch
+Q: Should an AAR focus on blame or on causes? | A: On causes — what happened, why, and what to do better | WRONG: On blame — who made the mistake; On blame — so it never happens again; Neither — just on the score
+Q: Why should a leader share their own AAR results with the team? | A: To show it's safe to learn from mistakes and to help others do their own | WRONG: To show they never make mistakes; To take credit for the team's success; To decide who gets punished

@@ -24,9 +24,9 @@ source: Congressional Research Service, Defense Primer: Junior Reserve Officers'
 Q: What does JROTC stand for? | A: Junior Reserve Officers' Training Corps
 Q: In what year did Congress create JROTC? | A: 1916
 Q: What law created JROTC? | A: The National Defense Act of 1916
-Q: JROTC began as a program of which service? | A: The Army
+Q: JROTC began as a program of which service? | A: The Army | WRONG: The Navy; The Air Force; The Marine Corps
 Q: According to federal law, JROTC instills what values? | A: Citizenship, service to the United States, personal responsibility and a sense of accomplishment
 Q: Does joining JROTC create a military obligation? | A: No
-Q: What is the officer instructor in a JROTC program called? | A: The Senior Military Instructor
-Q: What is the NCO instructor in a JROTC program called? | A: The Junior Military Instructor
-Q: Name three topics JROTC teaches | A: Leadership, ethics, civics, history, health and wellness
+Q: What is the officer instructor in a JROTC program called? | A: The Senior Military Instructor | WRONG: The Junior Military Instructor; The Cadet Commander; The Professor of Military Science
+Q: What is the NCO instructor in a JROTC program called? | A: The Junior Military Instructor | WRONG: The Senior Military Instructor; The Cadet First Sergeant; The Drill Sergeant
+Q: Name three topics JROTC teaches | A: Leadership, ethics, civics, history, health and wellness | WRONG: Weapons tactics, combat skills, recruiting; Basic training, enlistment, deployment; Marksmanship, demolitions, survival

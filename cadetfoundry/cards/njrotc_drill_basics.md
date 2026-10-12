@@ -22,9 +22,9 @@ source: NJROTC Drill Manual, 1st Edition (2024), Chapters 1–2
 **Hand salute** (para 2004): on "Hand, SALUTE," raise the right hand until the tip of the forefinger touches the headdress above and slightly right of the right eye, palm visible, upper arm parallel to the deck. "Ready, TWO" returns you to attention.
 
 ## Quiz
-Q: What can any Cadet call during drill if they're worried about safety? | A: A Training Time Out
+Q: What can any Cadet call during drill if they're worried about safety? | A: A Training Time Out | WRONG: A cease-fire; Parade rest; Fall out
 Q: At attention, at what angle are your feet turned out? | A: 45 degrees
 Q: At parade rest, how far does the left foot move? | A: 12 inches
-Q: Which rest position lets you move and talk but keeps your right foot in place? | A: Rest
+Q: Which rest position lets you move and talk but keeps your right foot in place? | A: Rest | WRONG: At Ease; Parade Rest; Fall Out
 Q: How many counts is a facing movement? | A: Two
-Q: Which service's drill manual does the NJROTC Drill Manual mirror? | A: The Marine Corps
+Q: Which service's drill manual does the NJROTC Drill Manual mirror? | A: The Marine Corps | WRONG: The Army; The Air Force; The Coast Guard

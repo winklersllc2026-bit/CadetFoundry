@@ -25,12 +25,12 @@ source: FM 7-22, Holistic Health and Fitness (1 October 2020), chapter 8 (paras 
 Hot weather has its own fluid and work/rest rules — follow your cadre and TB MED 507.
 
 ## Quiz
-Q: How many calories are in a gram of carbohydrate, protein, and fat? | A: Carbohydrate 4, protein 4, fat 9
-Q: What is the most fluid you should drink in one hour during exercise? | A: No more than 1.5 liters (about 6 cups) an hour | ALSO: how much water should I drink during PT; can you drink too much water
-Q: How much should you drink during exercise? | A: About 1/2 to 1 cup every 15 to 20 minutes
+Q: How many calories are in a gram of carbohydrate, protein, and fat? | A: Carbohydrate 4, protein 4, fat 9 | WRONG: Carbohydrate 9, protein 4, fat 4; Carbohydrate 4, protein 9, fat 4; Carbohydrate 7, protein 7, fat 7
+Q: What is the most fluid you should drink in one hour during exercise? | A: No more than 1.5 liters (about 6 cups) an hour | ALSO: how much water should I drink during PT; can you drink too much water | WRONG: No more than half a liter (about 2 cups) an hour; No more than 4 liters (about 16 cups) an hour; There's no limit
+Q: How much should you drink during exercise? | A: About 1/2 to 1 cup every 15 to 20 minutes | WRONG: About 3 cups every 15 minutes; About 1 cup every 2 hours; Nothing until the workout ends
 Q: Does drinking only when thirsty replace the fluid you lose? | A: No — it restores only some of the lost fluid
-Q: How much dehydration starts to slow your thinking? | A: Even under 1 percent of body weight; 2 percent seriously hurts mental function
+Q: How much dehydration starts to slow your thinking? | A: Even under 1 percent of body weight; 2 percent seriously hurts mental function | WRONG: Only after 10 percent of body weight; Only when you feel very thirsty; Dehydration doesn't affect thinking
 Q: When should you eat after exercise to recover? | A: Within 30 to 60 minutes — carbohydrate plus 15 to 25 grams of protein | ALSO: what should I eat after PT
-Q: What can you eat if there's no time for a meal before early PT? | A: About 30 grams of easy carbohydrate an hour before, like a banana or toast with peanut butter | ALSO: what should I eat before PT
-Q: What should a trainee who lacks energy in BCT focus on? | A: Fuel to perform — not losing weight
-Q: What are the daily limits for added sugar, saturated fat and sodium? | A: Added sugar and saturated fat under 10 percent of calories each; sodium under 2,300 mg
+Q: What can you eat if there's no time for a meal before early PT? | A: About 30 grams of easy carbohydrate an hour before, like a banana or toast with peanut butter | ALSO: what should I eat before PT | WRONG: Nothing — always train on an empty stomach; A large, greasy breakfast right before; An energy drink only
+Q: What should a trainee who lacks energy in BCT focus on? | A: Fuel to perform — not losing weight | WRONG: Losing as much weight as possible; Skipping meals to feel lighter; Eating only protein bars
+Q: What are the daily limits for added sugar, saturated fat and sodium? | A: Added sugar and saturated fat under 10 percent of calories each; sodium under 2,300 mg | WRONG: Added sugar and saturated fat under 50 percent of calories each, sodium under 10,000 mg; Added sugar under 1 percent of calories, saturated fat under 1 percent, sodium under 100 mg; There are no limits — just eat less

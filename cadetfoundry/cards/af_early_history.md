@@ -21,9 +21,9 @@ source: National Museum of the U.S. Air Force fact sheets "Creation of the Aeron
 The museum calls it "an early triumph for the young U.S. Air Force" and one of the defining events of the **Cold War**.
 
 ## Quiz
-Q: What organization, created August 1, 1907, does the Air Force trace its lineage to? | A: The Aeronautical Division of the Army Signal Corps
-Q: What was the Army's first airplane? | A: The Wright 1909 Military Flyer, Signal Corps Airplane No. 1
+Q: What organization, created August 1, 1907, does the Air Force trace its lineage to? | A: The Aeronautical Division of the Army Signal Corps | WRONG: The Army Air Corps; The Army Air Forces; The Naval Air Service
+Q: What was the Army's first airplane? | A: The Wright 1909 Military Flyer, Signal Corps Airplane No. 1 | WRONG: The Curtiss JN-4 Jenny; The Spirit of St. Louis; The 1903 Wright Flyer from Kitty Hawk
 Q: How much did the Army pay for its first airplane? | A: $30,000
-Q: Who taught himself to fly in Signal Corps Airplane No. 1? | A: Lt. Benjamin Foulois
-Q: Why was the Berlin Airlift needed? | A: The Soviets blocked ground travel to West Berlin
+Q: Who taught himself to fly in Signal Corps Airplane No. 1? | A: Lt. Benjamin Foulois | WRONG: Orville Wright; Lt. Thomas Selfridge; Billy Mitchell
+Q: Why was the Berlin Airlift needed? | A: The Soviets blocked ground travel to West Berlin | WRONG: A harsh winter froze the rivers and roads into the city; The Allies were evacuating every civilian from the city; East Germany had invaded West Berlin
 Q: When did the Berlin blockade end? | A: May 12, 1949

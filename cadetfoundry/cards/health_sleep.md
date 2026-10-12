@@ -19,5 +19,5 @@ If sleep problems keep up, talk with a parent or guardian, the school nurse, or 
 ## Quiz
 Q: How much sleep do teens 13 to 17 need? | A: 8–10 hours | ALSO: how much sleep do teenagers need; how many hours of sleep should a teen get
 Q: How long before bedtime should you turn off electronic devices? | A: At least 30 minutes
-Q: When should you avoid caffeine for better sleep? | A: In the afternoon or evening
-Q: Name two habits that help you sleep better | A: Going to bed and getting up at the same time every day; a quiet, cool bedroom; devices off 30 minutes before bed; no caffeine late in the day; regular exercise
+Q: When should you avoid caffeine for better sleep? | A: In the afternoon or evening | WRONG: Only in the morning; Only on weekends; Never — it helps you sleep
+Q: Name two habits that help you sleep better | A: Going to bed and getting up at the same time every day; a quiet, cool bedroom; devices off 30 minutes before bed; no caffeine late in the day; regular exercise | WRONG: Scrolling your phone in bed and changing your bedtime every night; Drinking an energy drink at night and keeping the room bright and loud; Napping all afternoon and staying up late on weekdays

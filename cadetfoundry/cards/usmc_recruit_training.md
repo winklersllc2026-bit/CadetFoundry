@@ -22,6 +22,6 @@ Information only — talk to your instructor or a recruiter for anything officia
 ## Quiz
 Q: How long is Marine Corps recruit training? | A: 13 weeks
 Q: How long is the Crucible? | A: 54 hours
-Q: Name the four phases of Marine Corps recruit training. | A: Foundation, Immersion, Transformation, and Transition
-Q: What is the Crucible designed to simulate? | A: The hardship of combat
-Q: What ceremony marks the moment a recruit becomes a Marine? | A: The Eagle, Globe, and Anchor ceremony
+Q: Name the four phases of Marine Corps recruit training. | A: Foundation, Immersion, Transformation, and Transition | WRONG: Yellow, Red, White, and Blue; Alpha, Bravo, Charlie, and Delta; Week One, Week Two, Week Three, and Week Four
+Q: What is the Crucible designed to simulate? | A: The hardship of combat | WRONG: A day at sea; A college final exam; A parade
+Q: What ceremony marks the moment a recruit becomes a Marine? | A: The Eagle, Globe, and Anchor ceremony | WRONG: Pass-in-Review; Turning Blue; The Coin Ceremony

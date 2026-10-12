@@ -26,9 +26,9 @@ During World War II the U.S. military was **segregated**. The Army Air Forces ra
 Their success helped lead to the **integration** of the armed forces, "with the U.S. Air Force leading the way."
 
 ## Quiz
-Q: Why were the 332nd Fighter Group called the "Red Tails"? | A: They painted the tails of their fighters bright red
-Q: Who led the 99th Fighter Squadron into combat? | A: Benjamin O. Davis Jr.
-Q: What did Benjamin O. Davis Jr. later become? | A: The Air Force's first African American general
+Q: Why were the 332nd Fighter Group called the "Red Tails"? | A: They painted the tails of their fighters bright red | WRONG: They flew only at sunset; Their squadron patch showed a red fox; Their planes were captured from the enemy
+Q: Who led the 99th Fighter Squadron into combat? | A: Benjamin O. Davis Jr. | WRONG: Paul W. Airey; Benjamin Foulois; Roger A. Towberman
+Q: What did Benjamin O. Davis Jr. later become? | A: The Air Force's first African American general | WRONG: The first Chief Master Sergeant of the Air Force; The first Secretary of the Air Force; The first Chief of Space Operations
 Q: What aircraft did the Red Tails fly? | A: The P-51 Mustang
 Q: About how many pilots trained at Tuskegee during the war? | A: About 990
-Q: What did the Tuskegee Airmen help lead to? | A: The integration of the U.S. armed forces
+Q: What did the Tuskegee Airmen help lead to? | A: The integration of the U.S. armed forces | WRONG: The creation of the Space Force; The end of the draft; The founding of JROTC

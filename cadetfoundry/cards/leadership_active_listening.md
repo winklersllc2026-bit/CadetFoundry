@@ -23,11 +23,11 @@ source: ATP 6-22.1, The Counseling Process (13 February 2024), paras 1-30, 1-31,
 **OARS** — the building blocks of a productive conversation: **O**pen questions, **A**ffirmations, **R**eflections, **S**ummaries.
 
 ## Quiz
-Q: What is active listening? | A: Engaging fully with the speaker — focusing on them, understanding, checking your understanding, and responding on purpose
+Q: What is active listening? | A: Engaging fully with the speaker — focusing on them, understanding, checking your understanding, and responding on purpose | WRONG: Waiting for your turn to talk; Listening while doing something else; Agreeing with everything the speaker says
 Q: Name three key elements of active listening | A: Eye contact, body posture, head nods, facial expressions, not interrupting, checking for understanding, comfort with silence
-Q: How can you check that you understood someone? | A: Paraphrase or summarize it back — "What I heard was…"
+Q: How can you check that you understood someone? | A: Paraphrase or summarize it back — "What I heard was…" | WRONG: Nod and change the subject; Tell them your own story; Assume you understood
 Q: What is the difference between an open and a closed question? | A: Open questions ask for longer answers and get people thinking; closed questions get yes/no or short answers
 Q: Is "Did you finish?" an open or closed question? | A: Closed
-Q: What does OARS stand for? | A: Open questions, affirmations, reflections, summaries
-Q: What should you do when the other person goes silent? | A: Be comfortable with it and let them restart when they're ready
-Q: What can too many questions in a row feel like? | A: An interrogation
+Q: What does OARS stand for? | A: Open questions, affirmations, reflections, summaries | WRONG: Orders, assignments, reports, standards; Observe, act, react, stop; Open questions, answers, rules, solutions
+Q: What should you do when the other person goes silent? | A: Be comfortable with it and let them restart when they're ready | WRONG: Fill the silence right away with your own ideas; End the conversation; Ask a new question immediately
+Q: What can too many questions in a row feel like? | A: An interrogation | WRONG: Friendly conversation; Good listening; A compliment

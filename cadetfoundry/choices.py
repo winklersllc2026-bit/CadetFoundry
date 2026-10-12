@@ -420,8 +420,11 @@ def wrong_answers(library, card, q: str, a: str, k: int = 3, rng=random) -> list
             return
         out.append(text.strip())
 
-    for w in getattr(card, "wrong", {}).get(q, []):          # the card author's own, checked by a person
-        add(head(w), check=False)
+    # The card author's own, checked by a person. Shown the way the right answer is: shortened only when the right
+    # answer is shortened too ("Leave Entitlement Schedule" next to "Leave and Earnings Statement").
+    short = head(a) != a.strip().rstrip(".;:, ")
+    for w in getattr(card, "wrong", {}).get(q, []):
+        add(head(w) if short else w, check=False)
     if len(out) >= k:
         return out[:k]
     if f["kind"] == "number":

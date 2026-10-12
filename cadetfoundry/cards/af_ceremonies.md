@@ -34,8 +34,8 @@ source: DAFPAM 34-1203, Drill and Ceremonies (13 September 2022), Chapter 7, sec
 - announcing the uniform.
 
 ## Quiz
-Q: What is a parade? | A: A review with honors
-Q: Name two purposes of a military ceremony. | A: To honor national symbols or people, and to show proficiency and build teamwork and pride
+Q: What is a parade? | A: A review with honors | WRONG: A formal inspection of uniforms; A change of command; A retreat ceremony at the end of the day
+Q: Name two purposes of a military ceremony. | A: To honor national symbols or people, and to show proficiency and build teamwork and pride | WRONG: To test Cadets' fitness and to award ribbons; To practice for drill competitions and to recruit new members; To inspect uniforms and to check equipment
 Q: Which service academy's cadets march first in U.S. ceremonies? | A: The U.S. Military Academy
 Q: In ceremonies, which service comes right after the Air Force? | A: The Space Force
-Q: Where do invited foreign troops march in a U.S. ceremony? | A: In the place of honor, ahead of U.S. troops
+Q: Where do invited foreign troops march in a U.S. ceremony? | A: In the place of honor, ahead of U.S. troops | WRONG: At the end, behind U.S. troops; In the center of the formation; Beside the reviewing stand, not in the march

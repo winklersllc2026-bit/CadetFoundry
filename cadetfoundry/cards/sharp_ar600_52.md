@@ -24,14 +24,14 @@ source: AR 600-52, SHARP Program (11 February 2025), paras 1-6, 2-2, 2-5 to 2-9,
 **Help 24/7**: the **DoD Safe Helpline, 1-877-995-5247**, or your unit's SARC / SHARP VA.
 
 ## Quiz
-Q: What are the two overarching responsibilities of the SHARP Program? | A: Prevention and response
-Q: Whose responsibility is preventing sexual harassment and sexual assault? | A: The commander's
-Q: What are the two reporting options for sexual assault? | A: Restricted and unrestricted
+Q: What are the two overarching responsibilities of the SHARP Program? | A: Prevention and response | WRONG: Punishment and paperwork; Training and testing; Investigation and publicity
+Q: Whose responsibility is preventing sexual harassment and sexual assault? | A: The commander's | WRONG: The victim's; Only the SARC's; Only the chaplain's
+Q: What are the two reporting options for sexual assault? | A: Restricted and unrestricted | WRONG: Formal and informal; Written and spoken; Public and anonymous
 Q: Does a restricted report trigger an investigation? | A: No
 Q: Can a restricted report be changed to unrestricted? | A: Yes, at any time
 Q: Can an unrestricted report be changed to restricted? | A: No
-Q: Who can take a restricted report of sexual assault? | A: A SARC, a SHARP Victim Advocate, or healthcare personnel
-Q: What does an unrestricted report trigger? | A: An investigation and command notification
-Q: What does a confidential report of sexual harassment get the victim? | A: Victim services and assistance from the SARC or VA — but no investigation
+Q: Who can take a restricted report of sexual assault? | A: A SARC, a SHARP Victim Advocate, or healthcare personnel | WRONG: Any NCO in the unit; The victim's squad leader; The military police
+Q: What does an unrestricted report trigger? | A: An investigation and command notification | WRONG: Nothing — it stays private; Only a medical appointment; An automatic transfer to a new unit
+Q: What does a confidential report of sexual harassment get the victim? | A: Victim services and assistance from the SARC or VA — but no investigation | WRONG: A full investigation and punishment of the offender; A public announcement to the unit; An automatic transfer to a new unit
 Q: What does Safe to Report cover? | A: Minor collateral misconduct by a Soldier who is the victim of sexual assault
 Q: What form is used for a formal sexual harassment complaint? | A: DA Form 7746

@@ -28,13 +28,13 @@ source: TC 3-21.5, Drill and Ceremonies (3 May 2021), paras 6-2 to 6-20 and 7-1
 To change a line into a column for marching: ***Right*, FACE** (para 6-20).
 
 ## Quiz
-Q: What are the two prescribed formations for a squad? | A: Line and column
-Q: In a line formation, which way are squad members numbered? | A: Right to left
-Q: Where is the squad leader's post when the squad is in line? | A: Three steps in front of and centered on the squad
-Q: On FALL IN at normal interval, how do you find your interval? | A: Raise your left arm and step until your shoulder touches the fingertips of the person on your right
-Q: Which Cadet doesn't raise an arm when falling in? | A: The left flank Cadet
-Q: What does "cover" mean? | A: Lining up directly behind the person in front of you
-Q: What does "dress" mean? | A: Lining up side to side with the person on your right
+Q: What are the two prescribed formations for a squad? | A: Line and column | WRONG: File and wedge; Circle and square; Line and wedge
+Q: In a line formation, which way are squad members numbered? | A: Right to left | WRONG: Left to right; Front to back; By height
+Q: Where is the squad leader's post when the squad is in line? | A: Three steps in front of and centered on the squad | WRONG: Three steps behind the squad; On the left flank; Six steps to the right of the squad
+Q: On FALL IN at normal interval, how do you find your interval? | A: Raise your left arm and step until your shoulder touches the fingertips of the person on your right | WRONG: Place your left hand on your hip; Hold both arms straight out in front; Count three steps from the person on your left
+Q: Which Cadet doesn't raise an arm when falling in? | A: The left flank Cadet | WRONG: The right flank Cadet; The tallest Cadet; The center Cadet
+Q: What does "cover" mean? | A: Lining up directly behind the person in front of you | WRONG: Lining up side to side with the person on your right; Saluting a passing officer; Taking cover behind a wall
+Q: What does "dress" mean? | A: Lining up side to side with the person on your right | WRONG: Lining up directly behind the person in front of you; Turning to face the rear; Stepping back one pace
 Q: What command aligns a squad in line at normal interval? | A: Dress Right, DRESS
 Q: What command brings you back to Attention after Dress Right, DRESS? | A: Ready, FRONT
-Q: How does a squad normally march over long distances? | A: In column
+Q: How does a squad normally march over long distances? | A: In column | WRONG: In line; In a wedge; In a circle

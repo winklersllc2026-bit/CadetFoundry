@@ -26,10 +26,10 @@ A **bystander** is someone who sees bullying, in person or online. An **upstande
 **All states have laws requiring schools to respond to bullying**, and many include cyberbullying.
 
 ## Quiz
-Q: What is an upstander? | A: Someone who sees bullying and intervenes, interrupts or speaks up to stop it
-Q: What is a bystander? | A: Someone who sees bullying happen
+Q: What is an upstander? | A: Someone who sees bullying and intervenes, interrupts or speaks up to stop it | WRONG: Someone who watches bullying and does nothing; Someone who joins in bullying; Someone who records bullying for social media
+Q: What is a bystander? | A: Someone who sees bullying happen | WRONG: Someone who stops bullying; Someone who bullies others; Someone who reports bullying
 Q: Name two ways to be an upstander | A: Question the behavior, change the subject, use humor, step in as a group, walk with the person, check in privately, tell a trusted adult
-Q: How do students who are defended by peers feel compared to those who aren't? | A: Less anxious and depressed
-Q: What is cyberbullying? | A: Bullying over digital devices, like texts, apps, social media and gaming
-Q: Why is cyberbullying called permanent? | A: Posts can stay online and become part of an online reputation that schools, colleges and employers may see
+Q: How do students who are defended by peers feel compared to those who aren't? | A: Less anxious and depressed | WRONG: More anxious and depressed; Exactly the same; Angrier at their friends
+Q: What is cyberbullying? | A: Bullying over digital devices, like texts, apps, social media and gaming | WRONG: Bullying in the school hallway; Teasing between friends; Hacking a computer
+Q: Why is cyberbullying called permanent? | A: Posts can stay online and become part of an online reputation that schools, colleges and employers may see | WRONG: It can never be reported; It only happens once; It's against the law forever
 Q: Can cyberbullying hurt the online reputation of the person doing it? | A: Yes

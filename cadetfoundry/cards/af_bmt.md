@@ -20,7 +20,7 @@ After BMT, Airmen keep their fitness up with fitness tests twice a year.
 
 ## Quiz
 Q: How long is Air Force Basic Military Training? | A: 7.5 weeks
-Q: Who leads Air Force trainees in BMT? | A: A Military Training Instructor
-Q: What is the most intense week of BMT called? | A: Pacer Forge
-Q: What happens in the final week of BMT? | A: The Airman's Run and graduation
+Q: Who leads Air Force trainees in BMT? | A: A Military Training Instructor | WRONG: A drill sergeant; A Recruit Division Commander; A Marine drill instructor
+Q: What is the most intense week of BMT called? | A: Pacer Forge | WRONG: The Crucible; The Forge; Hell Week
+Q: What happens in the final week of BMT? | A: The Airman's Run and graduation | WRONG: The Crucible and the Eagle, Globe and Anchor ceremony; Battle Stations and capping; The Forge and Turning Blue
 Q: In which week of BMT do trainees go through a simulated deployment? | A: Week 6

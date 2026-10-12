@@ -19,5 +19,5 @@ Q: Which amendment ended slavery? | A: The 13th Amendment
 Q: Which amendment says people born in the United States are citizens? | A: The 14th Amendment | ALSO: which amendment gives equal protection of the laws
 Q: Which amendment gave women the right to vote? | A: The 19th Amendment
 Q: Which amendment lowered the voting age to 18? | A: The 26th Amendment
-Q: Which amendment says the right to vote can't be denied because of race? | A: The 15th Amendment
+Q: Which amendment says the right to vote can't be denied because of race? | A: The 15th Amendment | WRONG: The 19th Amendment; The 13th Amendment; The 26th Amendment
 Q: How many amendments does the Constitution have? | A: 27

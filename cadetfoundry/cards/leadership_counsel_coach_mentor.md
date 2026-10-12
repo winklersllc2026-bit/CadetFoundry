@@ -15,10 +15,10 @@ Leaders help people grow in three ways (para 1-83):
 **For you:** you can coach a newer Cadet on drill, and you can *ask* someone you respect — an instructor, a senior Cadet, a coach — to be your mentor.
 
 ## Quiz
-Q: What are the three ways leaders help people develop? | A: Counseling, coaching and mentoring
-Q: What is the purpose of counseling? | A: To improve performance and develop potential, compared with the standard
-Q: What does coaching mainly rely on? | A: Asking open-ended questions
+Q: What are the three ways leaders help people develop? | A: Counseling, coaching and mentoring | WRONG: Ordering, punishing and rewarding; Training, testing and grading; Leading, following and watching
+Q: What is the purpose of counseling? | A: To improve performance and develop potential, compared with the standard | WRONG: To punish poor performance; To decide who gets promoted; To talk about the leader's own career
+Q: What does coaching mainly rely on? | A: Asking open-ended questions | WRONG: Giving orders; Showing videos; Grading tests
 Q: Does a coach have to be your boss? | A: No — a peer can coach
-Q: What is mentoring? | A: A voluntary relationship where someone with more experience advises someone with less, over time
-Q: Who usually starts a mentoring relationship? | A: The less experienced person, by seeking out a mentor
+Q: What is mentoring? | A: A voluntary relationship where someone with more experience advises someone with less, over time | WRONG: A required weekly class taught by a sergeant; A punishment for poor performance; A one-time talk with a stranger
+Q: Who usually starts a mentoring relationship? | A: The less experienced person, by seeking out a mentor | WRONG: The commander, by assigning a mentor; The more experienced person, by choosing someone; The school, by random pairing
 Q: With good counseling, should an evaluation be a surprise? | A: No

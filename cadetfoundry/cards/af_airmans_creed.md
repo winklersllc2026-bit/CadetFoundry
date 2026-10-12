@@ -32,8 +32,8 @@ The Air Force calls the Airman's Creed "our promise to country and colleagues":
 **Wingman** is a key Air Force idea: you look out for the people beside you, the way pilots flying together protect each other.
 
 ## Quiz
-Q: How does each part of the Airman's Creed begin? | A: I am an American Airman
+Q: How does each part of the Airman's Creed begin? | A: I am an American Airman | WRONG: I am an American Soldier; I am a United States Marine; I am a Guardian
 Q: According to the Airman's Creed, what is an Airman's mission? | A: To fly, fight, and win
-Q: What three words describe an Airman in the last part of the creed? | A: Wingman, leader, warrior
-Q: What does the Airman's Creed promise never to leave behind? | A: An Airman
+Q: What three words describe an Airman in the last part of the creed? | A: Wingman, leader, warrior | WRONG: Honor, courage, and commitment; Soldier, servant, and leader; Integrity, service, and excellence
+Q: What does the Airman's Creed promise never to leave behind? | A: An Airman | WRONG: My weapon; The mission; The flag
 Q: How does the Airman's Creed end? | A: I will never falter, and I will not fail

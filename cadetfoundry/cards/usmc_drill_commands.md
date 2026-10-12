@@ -26,9 +26,9 @@ source: MCO 5060.20, Marine Corps Drill and Ceremonies Manual (15 May 2019), int
 **"AS YOU WERE"** cancels a movement that has started but isn't finished.
 
 ## Quiz
-Q: What are the four types of drill commands? | A: Preparatory, command of execution, combined, and supplementary
-Q: What kind of command is "FALL IN"? | A: A combined command
-Q: What does P.C.W.C. stand for? | A: Purpose, Counts, When, Commands
-Q: What does the command "AS YOU WERE" do? | A: Cancels a movement started but not completed
-Q: What saying describes the Marine Corps' place of honor in Naval formations? | A: First on foot, and right on the line
-Q: In what position should a leader give commands? | A: The position of attention
+Q: What are the four types of drill commands? | A: Preparatory, command of execution, combined, and supplementary | WRONG: Attention, rest, march, and halt; Loud, soft, fast, and slow; Verbal, written, signaled, and drummed
+Q: What kind of command is "FALL IN"? | A: A combined command | WRONG: A preparatory command; A supplementary command; A command of execution only
+Q: What does P.C.W.C. stand for? | A: Purpose, Counts, When, Commands | WRONG: Pace, Cadence, Width, Column; Position, Command, Wait, Continue; Preparatory, Command, Warning, Cancel
+Q: What does the command "AS YOU WERE" do? | A: Cancels a movement started but not completed | WRONG: Returns you to the position of attention; Dismisses the formation; Starts the movement over at double time
+Q: What saying describes the Marine Corps' place of honor in Naval formations? | A: First on foot, and right on the line | WRONG: Last to leave, first to fight; Always faithful, always forward; Ready, aim, fire
+Q: In what position should a leader give commands? | A: The position of attention | WRONG: Parade rest; At ease; Facing away from the formation

@@ -25,11 +25,11 @@ In an emergency, the people nearby are the first help. FEMA's **five actions**:
 Learn hands-on skills in a certified first aid and CPR course.
 
 ## Quiz
-Q: What are FEMA's five actions until help arrives? | A: Call 9-1-1, stay safe, stop the bleeding, position the injured, provide comfort
+Q: What are FEMA's five actions until help arrives? | A: Call 9-1-1, stay safe, stop the bleeding, position the injured, provide comfort | WRONG: Run away, call a friend, take pictures, post online, wait; Move the injured, give water, give food, give medicine, leave; Check your phone, find a doctor, drive to the hospital, wait, pray
 Q: Should you call 9-1-1 if you think someone else already did? | A: Yes — always make the call
-Q: How do you stop bleeding? | A: Press firmly and directly on the wound with a clean cloth and keep pressing
-Q: What should you do if blood soaks through the cloth? | A: Don't remove it — add another layer on top
+Q: How do you stop bleeding? | A: Press firmly and directly on the wound with a clean cloth and keep pressing | WRONG: Pour water on the wound; Let it bleed to clean it out; Lift the person to their feet
+Q: What should you do if blood soaks through the cloth? | A: Don't remove it — add another layer on top | WRONG: Remove it and start over; Stop pressing and wait; Pour water on it
 Q: What position do you put an unconscious person who is breathing in? | A: The recovery position — on their side
-Q: Why use the recovery position? | A: To keep the airway open and prevent choking
-Q: When is a tourniquet used? | A: For life-threatening bleeding from an arm or leg when pressure isn't enough
-Q: Why stay safe before helping? | A: You can't help anyone if you get hurt yourself
+Q: Why use the recovery position? | A: To keep the airway open and prevent choking | WRONG: To help the person stand up faster; To make CPR easier; To keep the person warm
+Q: When is a tourniquet used? | A: For life-threatening bleeding from an arm or leg when pressure isn't enough | WRONG: For any small cut; For a sprained ankle; For a headache
+Q: Why stay safe before helping? | A: You can't help anyone if you get hurt yourself | WRONG: So you don't get your clothes dirty; Because helping is someone else's job; So you can take pictures first

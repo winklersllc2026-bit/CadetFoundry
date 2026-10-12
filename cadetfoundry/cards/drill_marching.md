@@ -34,11 +34,11 @@ Distance between Soldiers while marching: **one arm's length plus 6 inches (abou
 ## Quiz
 Q: How long is a normal marching step? | A: 30 inches
 Q: How long is a Half Step? | A: 15 inches
-Q: With which foot do you step off from the Halt? | A: The left foot
+Q: With which foot do you step off from the Halt? | A: The left foot | WRONG: The right foot; Either foot; Both feet together
 Q: How far do your arms swing to the front and rear while marching? | A: About 9 inches to the front and 6 inches to the rear
 Q: How many counts is the Halt? | A: Two
-Q: What does Mark Time mean? | A: March in place
-Q: Which marching rest movement lets you talk? | A: Route Step
+Q: What does Mark Time mean? | A: March in place | WRONG: March backward; Stop and stand at Attention; Change direction 90 degrees
+Q: Which marching rest movement lets you talk? | A: Route Step | WRONG: At Ease March; Quick Time; Double Time
 Q: What command turns a marching unit 180 degrees? | A: Rear, MARCH
 Q: What is the distance between Soldiers while marching? | A: One arm's length plus 6 inches — about 40 inches
-Q: When do you use Change Step? | A: When you're out of step with the rest of the formation
+Q: When do you use Change Step? | A: When you're out of step with the rest of the formation | WRONG: When turning a corner; When stopping; When marching backward

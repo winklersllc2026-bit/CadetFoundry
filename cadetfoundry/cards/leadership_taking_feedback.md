@@ -18,8 +18,8 @@ Feedback works best when the person receiving it is **open to it** — and when 
 **Why it matters:** every leader gets feedback — from instructors, coaches, bosses and teammates. Leaders who can hear it without getting defensive keep improving, and people keep being honest with them.
 
 ## Quiz
-Q: When does feedback work best? | A: When the person is open to it and it comes close to the event
-Q: Name two tips for receiving feedback | A: Stay open to it, listen without comment until they finish, take notes, ask for specific examples, take time to think it over
-Q: What should you do if a criticism isn't clear to you? | A: Ask for specific examples
+Q: When does feedback work best? | A: When the person is open to it and it comes close to the event | WRONG: When it comes weeks later; When the person is angry; In front of a crowd
+Q: Name two tips for receiving feedback | A: Stay open to it, listen without comment until they finish, take notes, ask for specific examples, take time to think it over | WRONG: Interrupt to defend yourself, argue every point; Ignore it, change the subject; Get angry, blame someone else
+Q: What should you do if a criticism isn't clear to you? | A: Ask for specific examples | WRONG: Ignore it; Argue that it's wrong; Guess what they meant
 Q: Name two signs that someone is shutting feedback out | A: Arguing, folded arms, rolling eyes, tuning out
 Q: Should you interrupt to explain yourself while getting feedback? | A: No — listen without comment until they're finished

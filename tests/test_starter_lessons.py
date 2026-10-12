@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 os.environ.setdefault("CADETFOUNDRY_DATA", tempfile.mkdtemp())
 
-from cadetfoundry import knowledge, lessons  # noqa: E402
+from cadetfoundry import choices, knowledge, lessons  # noqa: E402
 
 LIB = knowledge.Library()
 
@@ -40,14 +40,15 @@ class StarterLessonTests(unittest.TestCase):
             with self.subTest(s["key"]):
                 self.assertIsNotNone(card)
                 self.assertTrue(card.verified)                           # never from an unchecked card
-                known = {norm(a) for _q, a in card.quiz}
-                asked = {norm(q): norm(a) for q, a in card.quiz}
+                # the card's answer, or its short form as a choice shows it ("Three" for "Three -- legislative, ...")
+                known = {norm(a) for _q, a in card.quiz} | {norm(choices.head(a)) for _q, a in card.quiz}
+                asked = {norm(q): {norm(a), norm(choices.head(a))} for q, a in card.quiz}
                 body = norm(card.body)
                 for q in lessons.parse_questions(s["questions"]):
                     right = norm(q["choices"][q["answer"]])
                     self.assertTrue(right in known or right in body, f"{s['key']}: {q['q']}")
                     if norm(q["q"]) in asked:                           # the card's own question: same right answer
-                        self.assertEqual(right, asked[norm(q["q"])], f"{s['key']}: {q['q']}")
+                        self.assertIn(right, asked[norm(q["q"])], f"{s['key']}: {q['q']}")
 
     def test_the_right_choice_moves_around(self):
         positions = [q["answer"] for s in lessons.starters() for q in lessons.parse_questions(s["questions"])]

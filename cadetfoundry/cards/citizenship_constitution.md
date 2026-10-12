@@ -20,11 +20,11 @@ The first three words — **"We the People"** — mean the government's power co
 Changes to the Constitution are called **amendments**. The first ten are the **Bill of Rights**.
 
 ## Quiz
-Q: What are the first three words of the Constitution? | A: We the People
-Q: What is the opening sentence of the Constitution called? | A: The Preamble
+Q: What are the first three words of the Constitution? | A: We the People | WRONG: When in the Course; Four score and; We hold these
+Q: What is the opening sentence of the Constitution called? | A: The Preamble | WRONG: The Bill of Rights; The Declaration; Article I
 Q: Name two goals listed in the Preamble | A: Form a more perfect Union, establish Justice, insure domestic Tranquility, provide for the common defence, promote the general Welfare, secure the Blessings of Liberty
 Q: How many Articles does the Constitution have? | A: Seven
 Q: Which Article of the Constitution creates Congress? | A: Article I
 Q: Which Article creates the executive branch? | A: Article II
 Q: Which Article creates the courts? | A: Article III
-Q: What is a change to the Constitution called? | A: An amendment
+Q: What is a change to the Constitution called? | A: An amendment | WRONG: A veto; An executive order; A ruling

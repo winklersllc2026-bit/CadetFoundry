@@ -26,5 +26,5 @@ Q: What is the Air Force rank at E-1? | A: Airman Basic
 Q: What is the Air Force rank at E-4? | A: Senior Airman
 Q: At what Air Force rank does a member become a noncommissioned officer? | A: Staff Sergeant
 Q: What is the Air Force rank at E-9? | A: Chief Master Sergeant
-Q: Who is the senior enlisted member of the Air Force? | A: The Chief Master Sergeant of the Air Force
+Q: Who is the senior enlisted member of the Air Force? | A: The Chief Master Sergeant of the Air Force | WRONG: The Chief of Staff of the Air Force; The Command Chief Master Sergeant; The First Sergeant
 Q: What is the Air Force rank at E-6? | A: Technical Sergeant

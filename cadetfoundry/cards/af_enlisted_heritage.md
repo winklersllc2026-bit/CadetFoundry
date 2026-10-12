@@ -26,9 +26,9 @@ The museum calls the enlisted force "the foundation" of Air Force operations. **
 **Part-time Airmen.** Most Guard and Reserve members serve close to home, **one weekend a month plus two weeks a year**. When not federally mobilized, Air National Guard units answer to their state **governor**.
 
 ## Quiz
-Q: Who was the first Chief Master Sergeant of the Air Force? | A: Paul W. Airey
+Q: Who was the first Chief Master Sergeant of the Air Force? | A: Paul W. Airey | WRONG: Roger A. Towberman; Benjamin O. Davis Jr.; Benjamin Foulois
 Q: In what year was the title "Airman" established for Air Force enlisted members? | A: 1950
 Q: What is the nickname of a first sergeant? | A: First shirt
 Q: Is first sergeant a rank? | A: No, it is a special duty held by a senior NCO
-Q: How often do most Guard and Reserve Airmen serve? | A: One weekend a month and two weeks a year
-Q: Who was the first Chief Master Sergeant of the Space Force? | A: Roger A. Towberman
+Q: How often do most Guard and Reserve Airmen serve? | A: One weekend a month and two weeks a year | WRONG: Every weekend, all year; Two weekends a month and one week a year; One week every month
+Q: Who was the first Chief Master Sergeant of the Space Force? | A: Roger A. Towberman | WRONG: Paul W. Airey; John W. Raymond; Benjamin O. Davis Jr.

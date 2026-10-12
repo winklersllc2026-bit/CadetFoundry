@@ -23,8 +23,8 @@ Marine Corps commissioned officers, O-1 to O-10:
 The titles match the Army and Air Force, but each service writes the abbreviations its own way — for example, a Marine second lieutenant is **2ndLt**, an Army one is **2LT**, and an Air Force one is **2d Lt**.
 
 ## Quiz
-Q: What is the Marine Corps rank at O-1? | A: Second Lieutenant
+Q: What is the Marine Corps rank at O-1? | A: Second Lieutenant | WRONG: Ensign; First Lieutenant; Warrant Officer 1
 Q: What is the Marine Corps rank at O-5? | A: Lieutenant Colonel
 Q: What is the Marine Corps rank at O-7? | A: Brigadier General
-Q: What is the Marine Corps rank at W-1? | A: Warrant Officer 1
+Q: What is the Marine Corps rank at W-1? | A: Warrant Officer 1 | WRONG: Chief Warrant Officer 2; Second Lieutenant; Master Gunnery Sergeant
 Q: How does the Marine Corps abbreviate Second Lieutenant? | A: 2ndLt

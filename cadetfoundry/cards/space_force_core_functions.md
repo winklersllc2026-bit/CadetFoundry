@@ -28,8 +28,8 @@ The Space Force has **three core functions**: the broad, lasting jobs it organiz
 
 ## Quiz
 Q: What are the Space Force's three core functions? | A: Space control, global mission operations, and space access
-Q: What is the goal of space control? | A: Space superiority
-Q: Which core function includes satellite communications and missile warning? | A: Global mission operations
-Q: Which core function includes spacelift and satellite control? | A: Space access
-Q: What are the three mission areas of space control? | A: Orbital warfare, electromagnetic warfare, and cyberspace warfare
-Q: What is space domain awareness? | A: Detecting, characterizing, attributing and predicting activity in space
+Q: What is the goal of space control? | A: Space superiority | WRONG: Space access; Space exploration; Global mission operations
+Q: Which core function includes satellite communications and missile warning? | A: Global mission operations | WRONG: Space control; Space access; Space domain awareness
+Q: Which core function includes spacelift and satellite control? | A: Space access | WRONG: Space control; Global mission operations; Cyberspace warfare
+Q: What are the three mission areas of space control? | A: Orbital warfare, electromagnetic warfare, and cyberspace warfare | WRONG: Spacelift, satellite control, and launch; Missile warning, navigation, and communications; Air, land, and sea warfare
+Q: What is space domain awareness? | A: Detecting, characterizing, attributing and predicting activity in space | WRONG: Launching satellites into orbit; Building new rockets; Training astronauts

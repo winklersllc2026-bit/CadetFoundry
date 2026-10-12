@@ -38,17 +38,17 @@ This card is for study only. Learn and practice the request with your unit and f
 Q: What is line 1 of the 9-line MEDEVAC request? | A: Location of the pickup site (grid coordinates with grid zone letters)
 Q: What is line 2 of the 9-line MEDEVAC request? | A: Radio frequency, call sign and suffix at the pickup site
 Q: What is line 3 of the 9-line MEDEVAC request? | A: Number of patients by precedence
-Q: What is line 4 of the 9-line MEDEVAC request? | A: Special equipment required
+Q: What is line 4 of the 9-line MEDEVAC request? | A: Special equipment required | WRONG: Number of patients by precedence; Location of the pickup site; Method of marking the pickup site
 Q: What is line 5 of the 9-line MEDEVAC request? | A: Number of patients by type (litter or ambulatory)
 Q: What is line 6 of the 9-line MEDEVAC request in wartime? | A: Security of the pickup site
 Q: What is line 7 of the 9-line MEDEVAC request? | A: Method of marking the pickup site
-Q: What is line 8 of the 9-line MEDEVAC request? | A: Patient nationality and status
-Q: What is line 9 of the 9-line MEDEVAC request in wartime? | A: CBRN contamination (only when it exists)
+Q: What is line 8 of the 9-line MEDEVAC request? | A: Patient nationality and status | WRONG: Security of the pickup site; Number of patients by type; Radio frequency, call sign and suffix
+Q: What is line 9 of the 9-line MEDEVAC request in wartime? | A: CBRN contamination (only when it exists) | WRONG: Terrain description of the pickup site; Number of patients by precedence; Special equipment required
 Q: Which lines must always be sent on first contact? | A: Lines 1 through 5
 Q: How fast must an URGENT patient be evacuated? | A: Within a maximum of one hour
 Q: How fast must a PRIORITY patient be evacuated? | A: Within four hours
 Q: How fast must a ROUTINE patient be evacuated? | A: Within 24 hours
-Q: On line 6, what does X mean? | A: Enemy troops in area — armed escort required
-Q: On line 4, what does B mean? | A: Hoist
-Q: Why don't you send the smoke color in the request? | A: Security — the crew identifies the color on arrival and the unit confirms it
-Q: What does MIST stand for? | A: Mechanism of injury, injury type, signs, treatment
+Q: On line 6, what does X mean? | A: Enemy troops in area, armed escort required | WRONG: No enemy troops in area; Possible enemy troops in area, approach with caution; Enemy troops in area, approach with caution
+Q: On line 4, what does B mean? | A: Hoist | WRONG: None; Extraction equipment; Ventilator
+Q: Why don't you send the smoke color in the request? | A: Security — the crew identifies the color on arrival and the unit confirms it | WRONG: It wastes radio time; Smoke changes color during flight; Pilots can't see colors in daylight
+Q: What does MIST stand for? | A: Mechanism of injury, injury type, signs, treatment | WRONG: Medic, injury, stretcher, transport; Mission, intelligence, security, time; Map, identification, situation, terrain

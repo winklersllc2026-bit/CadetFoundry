@@ -21,7 +21,7 @@ Stress is normal. These are healthy ways the CDC lists to handle it.
 **If you or someone you know is struggling or in crisis:** call or text **988**, or chat at 988lifeline.org — free, confidential, 24/7. You can also talk to a parent, your instructor, or a school counselor.
 
 ## Quiz
-Q: Name two healthy ways to take care of your mind when you're stressed | A: Take breaks from news and social media, make time to unwind, practice gratitude, connect with others
-Q: Name two healthy ways to take care of your body when you're stressed | A: Get enough sleep, move more, eat well, avoid tobacco and vaping, don't misuse drugs
+Q: Name two healthy ways to take care of your mind when you're stressed | A: Take breaks from news and social media, make time to unwind, practice gratitude, connect with others | WRONG: Scroll social media all night, keep everything to yourself; Skip meals, stop seeing friends; Watch the news nonstop, avoid talking to anyone
+Q: Name two healthy ways to take care of your body when you're stressed | A: Get enough sleep, move more, eat well, avoid tobacco and vaping, don't misuse drugs | WRONG: Stay up late, drink energy drinks, skip meals; Start vaping, sit all day, eat only snacks; Sleep only on weekends, stop exercising
 Q: What number can you call or text if you or a friend is in crisis? | A: 988 | ALSO: what is the crisis line; suicide and crisis lifeline number
-Q: What does practicing gratitude look like? | A: Writing down specific things you're thankful for
+Q: What does practicing gratitude look like? | A: Writing down specific things you're thankful for | WRONG: Comparing what you have with what others have; Thanking people only when they give you gifts; Listing everything that went wrong today

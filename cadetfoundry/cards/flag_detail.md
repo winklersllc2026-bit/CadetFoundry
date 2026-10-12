@@ -27,12 +27,12 @@ Once folded, the flag is treated like a **cased Color**: with utmost dignity and
 **The flag represents the living country and is considered a living thing** (para I-6).
 
 ## Quiz
-Q: Who is in a flag detail? | A: An NCOIC, two halyard pullers, and two to eight flag handlers
-Q: What is the main job of the flag handlers? | A: To fold the flag correctly and keep it from touching the ground
+Q: Who is in a flag detail? | A: An NCOIC, two halyard pullers, and two to eight flag handlers | WRONG: One officer and one bugler; Four rifle guards and a Color sergeant; The whole platoon
+Q: What is the main job of the flag handlers? | A: To fold the flag correctly and keep it from touching the ground | WRONG: To salute the flag as it passes; To play the bugle call; To command the detail
 Q: When is the flag raised in the morning? | A: At the first note of Reveille
-Q: How do you raise a flag to half-staff? | A: Hoist it all the way to the top first, then lower it to half-staff
-Q: What do you do before lowering a flag that is at half-staff? | A: Raise it all the way to the top first
-Q: During which bugle call is the flag lowered? | A: To the Color, after Retreat
-Q: What shape is a properly folded flag? | A: A triangle — the shape of a cocked hat
+Q: How do you raise a flag to half-staff? | A: Hoist it all the way to the top first, then lower it to half-staff | WRONG: Raise it straight to half-staff and stop; Raise it halfway, then to the top; Raise it to the top and leave it there
+Q: What do you do before lowering a flag that is at half-staff? | A: Raise it all the way to the top first | WRONG: Lower it straight down; Fold it at half-staff; Salute it at half-staff for one minute
+Q: During which bugle call is the flag lowered? | A: To the Color, after Retreat | WRONG: Reveille; Taps; Tattoo
+Q: What shape is a properly folded flag? | A: A triangle — the shape of a cocked hat | WRONG: A square; A rectangle; A circle
 Q: How many flag handlers are used for a garrison flag? | A: Eight
-Q: Once the flag is folded, how is it treated? | A: Like a cased Color — with dignity and respect, but not saluted
+Q: Once the flag is folded, how is it treated? | A: Like a cased Color — with dignity and respect, but not saluted | WRONG: Saluted by everyone it passes; Unfolded again for inspection; Hung on the wall

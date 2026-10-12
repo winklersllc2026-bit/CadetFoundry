@@ -20,11 +20,11 @@ Von Steuben wrote drill movements at night and taught them the next day to a **m
 **Why drill still matters** (para 1-8): it builds **professionalism, teamwork, confidence, pride, alertness, attention to detail, esprit de corps and discipline.**
 
 ## Quiz
-Q: Who taught drill to the Continental Army at Valley Forge? | A: Baron Friedrich von Steuben | ALSO: who was von steuben
+Q: Who taught drill to the Continental Army at Valley Forge? | A: Baron Friedrich von Steuben | ALSO: who was von steuben | WRONG: George Washington; The Marquis de Lafayette; Alexander Hamilton
 Q: In what year did von Steuben arrive at Valley Forge? | A: 1778
 Q: How many men were in von Steuben's model company? | A: 120
-Q: What was von Steuben's 1779 manual commonly called? | A: The Blue Book
-Q: What is cadence? | A: The uniform rhythm of a movement — the number of steps or counts per minute
+Q: What was von Steuben's 1779 manual commonly called? | A: The Blue Book | WRONG: The Red Book; The Soldier's Handbook; The Green Manual
+Q: What is cadence? | A: The uniform rhythm of a movement — the number of steps or counts per minute | WRONG: The length of each step; The name of a drill command; The distance between ranks
 Q: How many steps per minute is Quick Time? | A: 120
 Q: How many steps per minute is Double Time? | A: 180
-Q: Name three things drill builds | A: Professionalism, teamwork, confidence, pride, alertness, attention to detail, esprit de corps, discipline
+Q: Name three things drill builds | A: Professionalism, teamwork, confidence, pride, alertness, attention to detail, esprit de corps, discipline | WRONG: Marksmanship, land navigation and first aid; Speed, strength and endurance only; Popularity, rank and pay

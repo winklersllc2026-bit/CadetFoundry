@@ -20,9 +20,9 @@ Team leaders give LACE reports to the squad leader; squad leaders give them to t
 - **After contact**, your leader needs your **status** → **LACE**.
 
 ## Quiz
-Q: What does LACE stand for? | A: Liquids, ammunition, casualties, equipment
-Q: When is a LACE report sent? | A: After contact, during consolidation and reorganization
-Q: Who does a squad leader submit the LACE report to? | A: The platoon sergeant (and platoon leader)
-Q: You see six enemy soldiers setting up a machine gun. Which report? | A: SALUTE
-Q: A Soldier is wounded and needs to be evacuated. Which report? | A: 9-line MEDEVAC request
-Q: The firefight is over and your leader wants your water, ammo, casualties and equipment. Which report? | A: LACE
+Q: What does LACE stand for? | A: Liquids, ammunition, casualties, equipment | WRONG: Location, activity, casualties, enemy; Leaders, ammunition, communications, equipment; Liquids, armor, casualties, enemy
+Q: When is a LACE report sent? | A: After contact, during consolidation and reorganization | WRONG: Before the mission starts; Only when the enemy is sighted; Once a week during training
+Q: Who does a squad leader submit the LACE report to? | A: The platoon sergeant (and platoon leader) | WRONG: The company commander directly; The other squad leaders; The battalion commander
+Q: You see six enemy soldiers setting up a machine gun. Which report? | A: SALUTE | WRONG: LACE; 9-line MEDEVAC request; After action review
+Q: A Soldier is wounded and needs to be evacuated. Which report? | A: 9-line MEDEVAC request | WRONG: SALUTE; LACE; After action review
+Q: The firefight is over and your leader wants your water, ammo, casualties and equipment. Which report? | A: LACE | WRONG: SALUTE; 9-line MEDEVAC request; SPOT report

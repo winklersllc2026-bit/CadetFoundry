@@ -27,9 +27,9 @@ The President approved the seal on **January 15, 2020**.
 **The song.** "**Semper Supra**" became the official Space Force song on **September 20, 2022**. It is named for the motto, Latin for "**Always Above**." Like "The Army Goes Rolling Along" and "The Marines' Hymn," it is part of the service's traditions.
 
 ## Quiz
-Q: What shape is the main Space Force symbol? | A: A delta
-Q: What does the North Star (Polaris) on the Space Force seal stand for? | A: Security and constant vigilance in space
-Q: What do the Roman numerals MMXIX on the seal mean? | A: 2019, the year the Space Force was created
-Q: What do the three larger stars on the seal represent? | A: Organize, train, and equip
-Q: What is the official Space Force song? | A: Semper Supra
+Q: What shape is the main Space Force symbol? | A: A delta | WRONG: A circle; A star; An eagle
+Q: What does the North Star (Polaris) on the Space Force seal stand for? | A: Security and constant vigilance in space | WRONG: The Space Force's first satellite; The direction north on a map; The President
+Q: What do the Roman numerals MMXIX on the seal mean? | A: 2019, the year the Space Force was created | WRONG: 1947, the year the Air Force was created; 2009, the year the first GPS launched; 1957, the year of the first satellite
+Q: What do the three larger stars on the seal represent? | A: Organize, train, and equip | WRONG: Character, Connection and Commitment; The Army, the Navy and the Air Force; The Moon, the Sun and the Earth
+Q: What is the official Space Force song? | A: Semper Supra | WRONG: The U.S. Air Force song; Anchors Aweigh; Guardians of the High Frontier
 Q: Since what year has the U.S. military used the delta for space missions? | A: 1961

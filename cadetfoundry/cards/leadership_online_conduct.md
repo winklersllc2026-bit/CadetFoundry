@@ -19,6 +19,6 @@ A screenshot can last forever. If you wouldn't say it in front of your instructo
 
 ## Quiz
 Q: What are the three steps of "Think, Type, and Post"? | A: Think about the message and who could see it, type something consistent with your values, post only what shows dignity and respect | ALSO: think type post
-Q: In "Think, Type, and Post," what should you think about before posting? | A: The message and who could potentially see it
-Q: Name two examples of online misconduct | A: Hazing, bullying, harassment, stalking, retaliation
-Q: What should every post show for yourself and others? | A: Dignity and respect
+Q: In "Think, Type, and Post," what should you think about before posting? | A: The message and who could potentially see it | WRONG: How many likes it will get; How fast you can post it; Which filter to use
+Q: Name two examples of online misconduct | A: Hazing, bullying, harassment, stalking, retaliation | WRONG: Posting a birthday message, sharing a news article; Liking a friend's photo, following a teammate; Sharing a school event, posting a recipe
+Q: What should every post show for yourself and others? | A: Dignity and respect | WRONG: Popularity and followers; Humor at any cost; Anger and honesty

@@ -17,5 +17,5 @@ Track your own progress in 💪 Train.
 Q: How much physical activity do people ages 6 through 17 need each day? | A: 60 minutes or more of moderate-to-vigorous activity | ALSO: how much exercise do teens need; how many minutes of exercise a day
 Q: How many days a week should include muscle-strengthening activity? | A: At least 3 days a week
 Q: How many days a week should include vigorous aerobic activity? | A: At least 3 days a week
-Q: Give an example of a bone-strengthening activity | A: Jumping or running
-Q: Give an example of a muscle-strengthening activity | A: Climbing or push-ups
+Q: Give an example of a bone-strengthening activity | A: Jumping or running | WRONG: Swimming or sitting; Reading or video games; Stretching while lying down
+Q: Give an example of a muscle-strengthening activity | A: Climbing or push-ups | WRONG: Walking slowly or stretching; Watching a workout video; Sitting at a desk

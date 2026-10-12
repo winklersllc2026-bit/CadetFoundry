@@ -16,5 +16,5 @@ There are other requirements too, such as citizenship, a security clearance and 
 
 ## Quiz
 Q: What GT score do you need for federal OCS? | A: 110 or higher | ALSO: what gt score do i need for ocs; gt score for officer candidate school
-Q: What degree do you need to apply to Army OCS? | A: At least a bachelor's degree
-Q: Who can apply to Army OCS? | A: Civilians and active-duty, Army Reserve and Army National Guard Soldiers with at least a bachelor's degree
+Q: What degree do you need to apply to Army OCS? | A: At least a bachelor's degree | WRONG: A high school diploma; An associate degree; A master's degree
+Q: Who can apply to Army OCS? | A: Civilians and active-duty, Army Reserve and Army National Guard Soldiers with at least a bachelor's degree | WRONG: Only active-duty Soldiers with a master's degree; Only civilians with no military experience; Only high school seniors

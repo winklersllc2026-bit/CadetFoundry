@@ -24,9 +24,9 @@ You don't need a rank to lead — a squad leader, team captain or older sibling 
 
 ## Quiz
 Q: What three things does a leader provide, according to the Army's definition of leadership? | A: Purpose, direction, and motivation | ALSO: what is leadership; army definition of leadership
-Q: What does "purpose" give the people you lead? | A: A reason to achieve the outcome — explaining why
-Q: What is "direction"? | A: Telling others what to do — setting priorities, assigning responsibility, supervising, and keeping to the standard
-Q: What is "motivation"? | A: The will and initiative to do what is necessary to accomplish the mission
+Q: What does "purpose" give the people you lead? | A: A reason to achieve the outcome — explaining why | WRONG: A list of tasks; A punishment for failure; A reward for finishing
+Q: What is "direction"? | A: Telling others what to do — setting priorities, assigning responsibility, supervising, and keeping to the standard | WRONG: The reason behind the mission; The will to accomplish the mission; The map route to the objective
+Q: What is "motivation"? | A: The will and initiative to do what is necessary to accomplish the mission | WRONG: Telling others what to do; The reason to achieve the outcome; The schedule for the mission
 Q: Name the three leader attributes | A: Character, Presence, Intellect
 Q: Name the three leader competencies | A: Leads, Develops, Achieves
 Q: Name the three levels of leadership | A: Direct, organizational, strategic

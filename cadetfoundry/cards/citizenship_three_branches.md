@@ -26,10 +26,10 @@ source: USA.gov, Branches of the U.S. government (usa.gov/branches-of-government
 
 ## Quiz
 Q: How many branches does the Constitution divide the federal government into? | A: Three — legislative, executive and judicial | ALSO: what are the three branches of government; name the three branches of government
-Q: Why is the government divided into three branches? | A: So that no individual or group will have too much power
-Q: Who makes up the legislative branch? | A: Congress — the Senate and the House of Representatives
-Q: Who makes up the executive branch? | A: The president, the vice president and the president's cabinet
-Q: Which branch decides if laws violate the Constitution? | A: The judicial branch (the Supreme Court and other federal courts)
-Q: Who breaks ties in Senate votes? | A: The vice president
-Q: What is the system of checks and balances? | A: The ability of each branch to respond to the actions of the other branches | ALSO: what are checks and balances
-Q: Which branch has the authority to declare war? | A: The legislative branch (Congress)
+Q: Why is the government divided into three branches? | A: So that no individual or group will have too much power | WRONG: So the government can work faster; So each state gets its own branch; So the President can control Congress
+Q: Who makes up the legislative branch? | A: Congress — the Senate and the House of Representatives | WRONG: The President and the cabinet; The Supreme Court; The state governors
+Q: Who makes up the executive branch? | A: The president, the vice president and the president's cabinet | WRONG: The Senate and the House of Representatives; The Supreme Court and the federal courts; The state governors
+Q: Which branch decides if laws violate the Constitution? | A: The judicial branch (the Supreme Court and other federal courts) | WRONG: The executive branch; The legislative branch; The states
+Q: Who breaks ties in Senate votes? | A: The vice president | WRONG: The Speaker of the House; The Chief Justice; The President
+Q: What is the system of checks and balances? | A: The ability of each branch to respond to the actions of the other branches | ALSO: what are checks and balances | WRONG: Each branch keeping its own bank account; The President approving every court ruling; Congress choosing the President
+Q: Which branch has the authority to declare war? | A: The legislative branch (Congress) | WRONG: The executive branch (the President); The judicial branch; The Department of Defense

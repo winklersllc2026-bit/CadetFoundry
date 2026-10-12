@@ -23,8 +23,8 @@ The senior enlisted Sailor in the whole Navy is the **Master Chief Petty Officer
 
 ## Quiz
 Q: What is the Navy rank at E-1? | A: Seaman Recruit
-Q: At what rank does a Sailor become a petty officer? | A: Petty Officer Third Class
+Q: At what rank does a Sailor become a petty officer? | A: Petty Officer Third Class | WRONG: Seaman; Chief Petty Officer; Petty Officer First Class
 Q: What is the Navy rank at E-7? | A: Chief Petty Officer
-Q: What is a Sailor's job specialty called in the Navy? | A: A rate
+Q: What is a Sailor's job specialty called in the Navy? | A: A rate | WRONG: An MOS; An AFSC; A billet
 Q: Who is the senior enlisted Sailor in the Navy? | A: The Master Chief Petty Officer of the Navy
 Q: What is the Navy rank at E-9? | A: Master Chief Petty Officer

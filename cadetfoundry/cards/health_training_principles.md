@@ -20,10 +20,10 @@ source: FM 7-22, Holistic Health and Fitness (1 October 2020, incl. C2), paras 6
 **Sleep matters too** (para 7-6): a 24-hour gym doesn't help much if you sleep fewer than six hours a night.
 
 ## Quiz
-Q: What are the three principles of physical readiness training? | A: Precision, progression and integration
-Q: What does the principle of precision say about form? | A: The quality of a movement is as important as the weight, reps or speed
-Q: What is progression? | A: The right dose of frequency, intensity, duration and type of exercise to improve without overtraining
-Q: What are the three parts of a training session? | A: Preparation, activities and recovery
-Q: What is the purpose of the preparation phase? | A: To warm up and gradually raise your heart rate before harder activity
-Q: What should you do right after running? | A: Walk, then stretch and check for stiffness and soreness
+Q: What are the three principles of physical readiness training? | A: Precision, progression and integration | WRONG: Speed, strength and size; Rest, recovery and repetition; Push-ups, sit-ups and running
+Q: What does the principle of precision say about form? | A: The quality of a movement is as important as the weight, reps or speed | WRONG: Form doesn't matter if you finish the reps; Speed matters more than form; Only heavy weight builds strength
+Q: What is progression? | A: The right dose of frequency, intensity, duration and type of exercise to improve without overtraining | WRONG: Doing the hardest workout possible every day; Adding as much weight as you can each week; Keeping your workout the same forever
+Q: What are the three parts of a training session? | A: Preparation, activities and recovery | WRONG: Running, lifting and stretching; Warm-up, workout and shower; Start, middle and end
+Q: What is the purpose of the preparation phase? | A: To warm up and gradually raise your heart rate before harder activity | WRONG: To get the hardest exercise out of the way first; To cool down after the workout; To rest without moving
+Q: What should you do right after running? | A: Walk, then stretch and check for stiffness and soreness | WRONG: Stop and sit down immediately; Start sprinting again; Lie down flat on the ground
 Q: In strength training, which come first — larger or smaller muscles? | A: Larger muscles

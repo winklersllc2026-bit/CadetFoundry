@@ -24,11 +24,11 @@ source: U.S. Flag Code, 4 U.S.C. § 4 (Pledge) and § 8 (respect for flag); 36 U
 - A flag too worn to display should be **destroyed in a dignified way, preferably by burning.**
 
 ## Quiz
-Q: What is the name of the national anthem? | A: The Star-Spangled Banner
-Q: Where do you put your right hand during the Pledge if you're not in uniform? | A: Over your heart
-Q: What do people in uniform do during the Pledge of Allegiance? | A: Stay silent, face the flag and salute
-Q: During the national anthem, when does a person in uniform start and stop saluting? | A: Start at the first note and hold until the last note
-Q: The anthem is playing but you can't see a flag. Which way do you face? | A: Toward the music
-Q: When may the flag be flown upside down? | A: Only as a signal of dire distress — extreme danger to life or property
-Q: How should a flag that is too worn to display be retired? | A: Destroyed in a dignified way, preferably by burning
+Q: What is the name of the national anthem? | A: The Star-Spangled Banner | WRONG: America the Beautiful; My Country, 'Tis of Thee; God Bless America
+Q: Where do you put your right hand during the Pledge if you're not in uniform? | A: Over your heart | WRONG: In a salute; At your side; Raised in the air
+Q: What do people in uniform do during the Pledge of Allegiance? | A: Stay silent, face the flag and salute | WRONG: Say the Pledge with a hand over the heart; Stand at parade rest and say it; Kneel and stay silent
+Q: During the national anthem, when does a person in uniform start and stop saluting? | A: Start at the first note and hold until the last note | WRONG: Start halfway through and hold until the last note; Salute only for the last line; Start after the first verse and hold for ten seconds
+Q: The anthem is playing but you can't see a flag. Which way do you face? | A: Toward the music | WRONG: Toward the nearest building; Toward the east; Toward the senior officer
+Q: When may the flag be flown upside down? | A: Only as a signal of dire distress — extreme danger to life or property | WRONG: On Flag Day; When the flag is old and faded; During a parade
+Q: How should a flag that is too worn to display be retired? | A: Destroyed in a dignified way, preferably by burning | WRONG: Thrown in the trash; Cut into rags for cleaning; Kept folded in a closet forever
 Q: Should the flag ever touch the ground? | A: No — it should never touch anything beneath it

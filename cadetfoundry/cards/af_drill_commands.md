@@ -26,7 +26,7 @@ source: DAFPAM 34-1203, Drill and Ceremonies (13 September 2022), Chapters 1–3
 ## Quiz
 Q: How long is the Air Force drill step? | A: 24 inches
 Q: What is the Air Force drill cadence? | A: 100 to 120 steps per minute
-Q: In "Flight, HALT," which part is the command of execution? | A: HALT
+Q: In "Flight, HALT," which part is the command of execution? | A: HALT | WRONG: Flight; Both words; Neither — it's a combined command
 Q: What command cancels a preparatory command? | A: As you were
 Q: At Air Force parade rest, how far apart are the heels? | A: 12 inches
-Q: What is it called when a movement is practiced one count at a time? | A: By the numbers
+Q: What is it called when a movement is practiced one count at a time? | A: By the numbers | WRONG: In cadence; At ease; Route step

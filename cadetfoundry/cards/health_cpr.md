@@ -20,11 +20,11 @@ source: MedlinePlus (National Library of Medicine), CPR — adult and child afte
 
 ## Quiz
 Q: What two things does CPR combine? | A: Chest compressions and rescue breaths
-Q: What is the first step of CPR? | A: Check if the person responds — tap them and shout "Are you OK?"
-Q: Where do you put your hands for chest compressions? | A: In the center of the chest, between the nipples
+Q: What is the first step of CPR? | A: Check if the person responds — tap them and shout "Are you OK?" | WRONG: Start rescue breaths right away; Give the person water; Move the person to a bed
+Q: Where do you put your hands for chest compressions? | A: In the center of the chest, between the nipples | WRONG: On the stomach; On the left side of the chest; On the neck
 Q: How deep are chest compressions for an adult? | A: About 2 inches
 Q: How fast should chest compressions be? | A: 100 to 120 per minute
 Q: How many compressions before giving rescue breaths? | A: 30
 Q: How many rescue breaths after each set of compressions? | A: 2
-Q: What is an AED? | A: An automated external defibrillator — use it as soon as possible
-Q: Where should you really learn CPR? | A: In an accredited CPR course
+Q: What is an AED? | A: An automated external defibrillator — use it as soon as possible | WRONG: An airway expansion device; An allergy emergency drug; An adult emergency dressing
+Q: Where should you really learn CPR? | A: In an accredited CPR course | WRONG: From a video game; By reading one webpage; From TV shows

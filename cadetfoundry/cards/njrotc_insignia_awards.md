@@ -27,9 +27,9 @@ source: NJROTC Cadet Field Manual, 12th Edition (NAVEDTRA 37116-L, April 2024), 
 **Drone Wings** are earned by passing the FAA **Part 107** drone pilot test. They are worn ¼ inch above the ribbons and below the service stars.
 
 ## Quiz
-Q: What three things appear on the NJROTC patch? | A: A ship, an anchor, and an eagle
-Q: On which sleeve is the NJROTC patch worn? | A: The left sleeve
-Q: Which collar holds the JROTC device? | A: The left collar
-Q: How does a Cadet show they are on the school honor roll? | A: A service star above the JROTC collar device
-Q: How are NJROTC Drone Wings earned? | A: By passing the FAA Part 107 drone pilot test
-Q: Which NJROTC medal is worn first? | A: The NJROTC academic competition medal
+Q: What three things appear on the NJROTC patch? | A: A ship, an anchor, and an eagle | WRONG: A rifle, a star, and a flag; A plane, a star, and a wing; A trident, a shield, and a helmet
+Q: On which sleeve is the NJROTC patch worn? | A: The left sleeve | WRONG: The right sleeve; Both sleeves; Neither — it goes on the chest
+Q: Which collar holds the JROTC device? | A: The left collar | WRONG: The right collar; Both collars; Neither — it goes on the cap
+Q: How does a Cadet show they are on the school honor roll? | A: A service star above the JROTC collar device | WRONG: A gold cord on the shoulder; A ribbon on the cap; A patch on the right sleeve
+Q: How are NJROTC Drone Wings earned? | A: By passing the FAA Part 107 drone pilot test | WRONG: By flying a drone for 100 hours; By building a drone in class; By winning a drill competition
+Q: Which NJROTC medal is worn first? | A: The NJROTC academic competition medal | WRONG: The drill competition medal; The marksmanship medal; The athletic medal

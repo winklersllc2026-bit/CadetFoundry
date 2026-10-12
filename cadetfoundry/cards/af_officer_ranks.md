@@ -21,8 +21,8 @@ The Air Force and the Space Force use the same officer ranks, O-1 to O-10:
 These are the same titles the Army and Marine Corps use, with slightly different abbreviations. Officers are grouped as **company grade** (O-1 to O-3), **field grade** (O-4 to O-6) and **general officers** (O-7 and up). General of the Air Force is reserved for wartime.
 
 ## Quiz
-Q: What is the first Air Force officer rank, at O-1? | A: Second Lieutenant
+Q: What is the first Air Force officer rank, at O-1? | A: Second Lieutenant | WRONG: Ensign; First Lieutenant; Airman Basic
 Q: What is the Air Force rank at O-6? | A: Colonel
 Q: Which pay grades are field grade officers? | A: O-4 to O-6
 Q: What is the Air Force rank at O-7? | A: Brigadier General
-Q: Which other service uses the same officer ranks as the Air Force? | A: The Space Force
+Q: Which other service uses the same officer ranks as the Air Force? | A: The Space Force | WRONG: The Navy; The Coast Guard; No other service

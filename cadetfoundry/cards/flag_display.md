@@ -23,10 +23,10 @@ source: TC 3-21.5, Drill and Ceremonies (3 May 2021), Appendix I, paras I-6 to I
 
 ## Quiz
 Q: What part of the flag is the honor point? | A: The union — the blue field with the stars
-Q: When the flag hangs on a wall, which side is the union on for someone looking at it? | A: The observer's left, at the top
-Q: Where does the U.S. flag go in a group of state flags? | A: In the center and at the highest point
-Q: With other flags in a line, which side is the U.S. flag on? | A: Its own right — the marching right
-Q: What is a Color? | A: A U.S. flag trimmed with golden yellow fringe, mainly for indoor display
-Q: What is a guidon? | A: The swallow-tailed flag carried by a company, battery or troop
-Q: Which U.S. flag size is flown on holidays and important occasions? | A: The garrison flag
-Q: What should you use instead of the flag to decorate a platform? | A: Bunting
+Q: When the flag hangs on a wall, which side is the union on for someone looking at it? | A: The observer's left, at the top | WRONG: The observer's right, at the top; The observer's left, at the bottom; The center
+Q: Where does the U.S. flag go in a group of state flags? | A: In the center and at the highest point | WRONG: At the far left, lower than the others; At the end of the line; Behind the state flags
+Q: With other flags in a line, which side is the U.S. flag on? | A: Its own right — the marching right | WRONG: Its own left; In the center, at the same height; At the end on the observer's right
+Q: What is a Color? | A: A U.S. flag trimmed with golden yellow fringe, mainly for indoor display | WRONG: A flag carried by a company; A small flag for cars; A flag flown only at night
+Q: What is a guidon? | A: The swallow-tailed flag carried by a company, battery or troop | WRONG: The national flag with gold fringe; A flag flown on ships; The largest flag on post
+Q: Which U.S. flag size is flown on holidays and important occasions? | A: The garrison flag | WRONG: The storm flag; The post flag; The field flag
+Q: What should you use instead of the flag to decorate a platform? | A: Bunting | WRONG: The national flag; Balloons; Paper streamers

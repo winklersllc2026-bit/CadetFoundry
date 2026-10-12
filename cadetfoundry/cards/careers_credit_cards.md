@@ -25,10 +25,10 @@ A credit card is a **loan**. Whatever you don't pay back on time costs you **int
 Paying on time, every time, also builds a good credit report.
 
 ## Quiz
-Q: What is a credit card's interest rate? | A: The price you pay for borrowing money
-Q: What does APR stand for? | A: Annual percentage rate
-Q: What is a grace period? | A: The time between the end of a billing cycle and the payment due date
-Q: How can you avoid paying interest on credit card purchases? | A: Pay the full balance by the due date every month
-Q: Why does paying only the minimum cost more? | A: You pay interest on everything you didn't pay back
-Q: How often do many card companies charge interest? | A: Daily
+Q: What is a credit card's interest rate? | A: The price you pay for borrowing money | WRONG: A reward you earn for spending; The yearly fee for having the card; The limit on how much you can spend
+Q: What does APR stand for? | A: Annual percentage rate | WRONG: Average payment required; Annual payment reward; Approved purchase rate
+Q: What is a grace period? | A: The time between the end of a billing cycle and the payment due date | WRONG: The time you have to return something you bought; The time after a missed payment before the card is closed; The first year after you open a card
+Q: How can you avoid paying interest on credit card purchases? | A: Pay the full balance by the due date every month | WRONG: Pay the minimum on time every month; Use the card only for big purchases; Open a second card to pay the first
+Q: Why does paying only the minimum cost more? | A: You pay interest on everything you didn't pay back | WRONG: The bank charges a fee for small payments; Your credit limit goes down each month; The minimum payment doubles every month
+Q: How often do many card companies charge interest? | A: Daily | WRONG: Once a year; Only when you miss a payment; Every five years
 Q: Federal law limits what you owe for unauthorized charges to how much? | A: $50

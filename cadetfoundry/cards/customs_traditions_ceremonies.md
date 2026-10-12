@@ -20,11 +20,11 @@ Following the Army's customs, courtesies and traditions **connects you to Soldie
 - **Reveille and Retreat** — honor the daily **raising** and **lowering** of the flag.
 
 ## Quiz
-Q: What is a custom? | A: An established practice — things you do and things you avoid
-Q: What is military courtesy? | A: Good manners and politeness in dealing with others
-Q: Why is military courtesy important? | A: It is vital to maintaining discipline
-Q: What is a tradition? | A: Beliefs and customs handed down from one generation to the next
-Q: What is the difference between an Army tradition and a unit tradition? | A: Army traditions are done everywhere in the Army; unit traditions belong to one unit
-Q: Name two purposes of drill | A: Move a unit in an orderly way, build precision and response to orders, give practice commanding troops
-Q: Which ceremonies honor the raising and lowering of the flag? | A: Reveille and Retreat
-Q: Whose manual first described the review ceremony? | A: Baron von Steuben's Blue Book
+Q: What is a custom? | A: An established practice — things you do and things you avoid | WRONG: A written order from a commander; A punishment under the UCMJ; A uniform regulation
+Q: What is military courtesy? | A: Good manners and politeness in dealing with others | WRONG: Strict punishment for mistakes; A ceremony for retirees; A type of drill command
+Q: Why is military courtesy important? | A: It is vital to maintaining discipline | WRONG: It makes uniforms look better; It replaces training; It's only for ceremonies
+Q: What is a tradition? | A: Beliefs and customs handed down from one generation to the next | WRONG: A new rule made each year; A one-time event; An order that expires after a mission
+Q: What is the difference between an Army tradition and a unit tradition? | A: Army traditions are done everywhere in the Army; unit traditions belong to one unit | WRONG: There's no difference; Unit traditions are for officers and Army traditions are for enlisted Soldiers; Army traditions are written laws and unit traditions are suggestions
+Q: Name two purposes of drill | A: Move a unit in an orderly way, build precision and response to orders, give practice commanding troops | WRONG: Win competitions, look good in photos, fill free time; Punish Soldiers, test fitness, replace training; Teach marksmanship, first aid and land navigation
+Q: Which ceremonies honor the raising and lowering of the flag? | A: Reveille and Retreat | WRONG: Taps and Tattoo; Pass in Review and Parade; Change of command and retirement
+Q: Whose manual first described the review ceremony? | A: Baron von Steuben's Blue Book | WRONG: George Washington's General Orders; Benjamin Franklin's Almanac; Ulysses S. Grant's Field Orders

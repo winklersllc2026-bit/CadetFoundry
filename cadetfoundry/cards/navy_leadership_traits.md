@@ -22,7 +22,7 @@ The Chief of Naval Operations also names four **core attributes**: **Integrity, 
 ## Quiz
 Q: How many leadership traits do Navy officer candidates learn? | A: 14
 Q: Which leadership trait means taking action in the absence of orders? | A: Initiative
-Q: Which leadership trait is the ability to deal with others without creating offense? | A: Tact
+Q: Which leadership trait is the ability to deal with others without creating offense? | A: Tact | WRONG: Bearing; Enthusiasm; Judgment
 Q: Which leadership trait means making decisions promptly and announcing them clearly? | A: Decisiveness
-Q: What are the Chief of Naval Operations' four core attributes? | A: Integrity, Accountability, Initiative and Toughness
+Q: What are the Chief of Naval Operations' four core attributes? | A: Integrity, Accountability, Initiative and Toughness | WRONG: Honor, Courage, Commitment and Excellence; Speed, Strength, Stamina and Skill; Loyalty, Duty, Respect and Service
 Q: Which leadership trait means the certainty of proper performance of duty? | A: Dependability

@@ -24,16 +24,16 @@ On the preparatory command for Attention, go straight to Parade Rest from any of
 **Facing movements** (paras 4-7 to 4-9) — five, all from Attention: **Left FACE**, **Right FACE**, **Half Left FACE**, **Half Right FACE**, **About FACE**. Facing to the flank and to the rear are both **two-count** movements. The **Hand Salute** (*Present*, **ARMS**) is a one-count movement (para 4-10).
 
 ## Quiz
-Q: What are the two parts of most drill commands? | A: The preparatory command and the command of execution
+Q: What are the two parts of most drill commands? | A: The preparatory command and the command of execution | WRONG: The warning and the order; The call and the response; The signal and the step
 Q: In "Forward, MARCH", which part is the command of execution? | A: MARCH
 Q: At the Position of Attention, what angle do your feet form? | A: 45 degrees
 Q: At Parade Rest, how far do you move the left foot? | A: About 10 inches to the left
-Q: How do you stand at Parade Rest? | A: From Attention, move the left foot about 10 inches to the left; hands at the small of the back centered on the belt, fingers extended and joined, thumbs interlocked, right palm out; head and eyes as at Attention; silent
-Q: At Parade Rest, how are your hands placed? | A: At the small of the back centered on the belt, fingers extended and joined, thumbs interlocked, right palm facing out
+Q: How do you stand at Parade Rest? | A: From Attention, move the left foot about 10 inches to the left; hands at the small of the back centered on the belt, fingers extended and joined, thumbs interlocked, right palm out; head and eyes as at Attention; silent | WRONG: From Attention, move the right foot about 10 inches to the right, hands at your sides with fists clenched, head turned right, talking allowed; From Attention, keep the heels together, arms crossed over the chest, head up, silent; From Attention, move the left foot about 20 inches to the left, hands on the hips, head down, silent
+Q: At Parade Rest, how are your hands placed? | A: At the small of the back centered on the belt, fingers extended and joined, thumbs interlocked, right palm facing out | WRONG: At the sides, fingers curled, thumbs along the trouser seams; Crossed over the chest, palms flat; At the small of the back, fists clenched, left palm facing out
 Q: What position do enlisted Soldiers take when addressing an NCO? | A: Parade Rest
 Q: What position do enlisted Soldiers take when addressing an officer? | A: Attention
-Q: Which rest position allows talking? | A: Rest
-Q: At At Ease, what must stay in place? | A: Your right foot — and you stay silent
+Q: Which rest position allows talking? | A: Rest | WRONG: At Ease; Parade Rest; Stand at Ease
+Q: At At Ease, what must stay in place? | A: Your right foot — and you stay silent | WRONG: Your left foot; Both hands; Your head and eyes
 Q: How many facing movements are there at the halt? | A: Five — Left, Right, Half Left, Half Right, and About Face
 Q: How many counts is About Face? | A: Two
-Q: What manual covers drill and ceremonies? | A: TC 3-21.5
+Q: What manual covers drill and ceremonies? | A: TC 3-21.5 | WRONG: AR 670-1; FM 7-22; TC 3-22.9

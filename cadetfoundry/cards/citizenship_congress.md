@@ -29,7 +29,7 @@ Q: How long is a representative's term? | A: Two years
 Q: How long is a senator's term? | A: Six years
 Q: How old must you be to serve in the House? | A: At least 25
 Q: How old must you be to serve in the Senate? | A: At least 30
-Q: What decides how many representatives a state gets? | A: Its population
-Q: Who leads the House of Representatives? | A: The Speaker of the House
+Q: What decides how many representatives a state gets? | A: Its population | WRONG: Its land area; Its number of cities; The governor's request
+Q: Who leads the House of Representatives? | A: The Speaker of the House | WRONG: The Vice President; The President pro tempore; The Chief Justice
 Q: Which amendment made senators elected directly by the people? | A: The 17th Amendment
-Q: How many senators and representatives represent you in Congress? | A: Two senators and one representative
+Q: How many senators and representatives represent you in Congress? | A: Two senators and one representative | WRONG: One senator and two representatives; Two senators and two representatives; One senator and one representative

@@ -21,7 +21,7 @@ A Marine first receives the EGA at the Eagle, Globe, and Anchor Ceremony — the
 
 ## Quiz
 Q: In what year was the Eagle, Globe, and Anchor adopted? | A: 1868
-Q: What does the anchor on the Eagle, Globe, and Anchor represent? | A: The Corps' naval heritage
-Q: What does the globe on the Eagle, Globe, and Anchor represent? | A: That Marines can be called to fight anywhere
-Q: Who wears the blood stripe on dress blue trousers? | A: Officers and NCOs
+Q: What does the anchor on the Eagle, Globe, and Anchor represent? | A: The Corps' naval heritage | WRONG: That Marines can fight anywhere in the world; The United States; The Marines' first ship
+Q: What does the globe on the Eagle, Globe, and Anchor represent? | A: That Marines can be called to fight anywhere | WRONG: The Corps' naval heritage; The United States; Peace between nations
+Q: Who wears the blood stripe on dress blue trousers? | A: Officers and NCOs | WRONG: Every Marine, including privates; Only generals; Only Marines who were wounded in combat
 Q: Was the blood stripe created to honor the Marines killed at Chapultepec? | A: No, it was on the uniform several years before that battle

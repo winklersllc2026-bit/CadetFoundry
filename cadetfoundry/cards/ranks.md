@@ -34,17 +34,17 @@ Among officers of the same grade, the one with the earlier **date of rank** is s
 
 ## Quiz
 Q: What pay grade is a Specialist? | A: E-4
-Q: What is the abbreviation for an E-1 Private? | A: PV1
+Q: What is the abbreviation for an E-1 Private? | A: PV1 | WRONG: PFC; PV2; SPC
 Q: How do you address a Private First Class? | A: "Private"
 Q: Who ranks higher, a Specialist or a Corporal? | A: A Corporal — a Specialist ranks immediately below a Corporal
-Q: What is the lowest NCO rank? | A: Corporal (E-4)
+Q: What is the lowest NCO rank? | A: Corporal (E-4) | WRONG: Specialist (E-4); Sergeant (E-5); Private First Class (E-3)
 Q: What rank is E-6? | A: Staff Sergeant (SSG)
 Q: How do you address a Sergeant First Class? | A: "Sergeant"
-Q: How do you address a First Sergeant? | A: "First Sergeant"
-Q: What are the three E-9 grades? | A: Sergeant Major, Command Sergeant Major, Sergeant Major of the Army
+Q: How do you address a First Sergeant? | A: "First Sergeant" | WRONG: "Sir" or "Ma'am"; "Sergeant Major"; "Sergeant First Class"
+Q: What are the three E-9 grades? | A: Sergeant Major, Command Sergeant Major, Sergeant Major of the Army | WRONG: Master Sergeant, First Sergeant, Sergeant Major; Staff Sergeant, Sergeant First Class, Master Sergeant; Warrant Officer, Chief Warrant Officer, Master Warrant Officer
 Q: Can you address a Sergeant as "E-5"? | A: No — pay grades are never used as a form of address
 Q: How do you address a Chief Warrant Officer Three? | A: "Chief" (or Mr./Mrs./Miss/Ms.)
 Q: How do you address a Lieutenant Colonel? | A: "Colonel"
 Q: How do you address a chaplain who is a Major? | A: "Chaplain"
 Q: What rank is O-3? | A: Captain (CPT)
-Q: What rank comes after Second Lieutenant? | A: First Lieutenant (1LT)
+Q: What rank comes after Second Lieutenant? | A: First Lieutenant (1LT) | WRONG: Captain (CPT); Major (MAJ); Chief Warrant Officer 2 (CW2)

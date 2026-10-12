@@ -23,11 +23,11 @@ source: FM 6-22, Developing Leaders (1 November 2022), paras 1-10, 1-12, 2-26 to
 Q: What are the three leader attribute categories? | A: Character, presence, and intellect | ALSO: what are the leader attributes
 Q: What are the three leader competency categories? | A: Leads, develops, and achieves | ALSO: what are the leader competencies
 Q: In "Be, Know, Do," what do attributes describe? | A: What leaders need to be and know — internal characteristics
-Q: In "Be, Know, Do," what do competencies describe? | A: What leaders need to do — skills and behaviors
+Q: In "Be, Know, Do," what do competencies describe? | A: What leaders need to do — skills and behaviors | WRONG: Who leaders are — their character; What leaders own — their equipment; Where leaders serve — their units
 Q: What does "Be, Know, Do" mean? | A: Attributes are what a leader is and knows; competencies are what a leader does
 Q: Name the parts of the character attribute. | A: Army Values, empathy, Warrior Ethos/Service Ethos, discipline, and humility
 Q: Name the parts of the presence attribute. | A: Military and professional bearing, fitness, confidence, and resilience
 Q: Name the parts of the intellect attribute. | A: Mental agility, sound judgment, innovation, interpersonal tact, and expertise
 Q: What are the five competencies under Leads? | A: Leads others, builds trust, extends influence beyond the chain of command, leads by example, and communicates
-Q: What is the competency under Achieves? | A: Gets results
+Q: What is the competency under Achieves? | A: Gets results | WRONG: Leads others; Develops others; Builds trust
 Q: What does "Leads" provide? | A: Purpose, direction, and motivation

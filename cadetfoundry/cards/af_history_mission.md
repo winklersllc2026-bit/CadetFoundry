@@ -21,7 +21,7 @@ The Air Force's work reaches across air, space and cyberspace. The Department of
 ## Quiz
 Q: What is the Air Force's birthday? | A: September 18, 1947
 Q: Which law created the Department of the Air Force? | A: The National Security Act of 1947
-Q: Which president signed the National Security Act of 1947? | A: Harry S. Truman
-Q: What is the Air Force mission? | A: To fly, fight, and win airpower anytime, anywhere
-Q: Name the five Air Force core functions. | A: Air superiority, global strike, rapid global mobility, intelligence surveillance and reconnaissance, and command and control
+Q: Which president signed the National Security Act of 1947? | A: Harry S. Truman | WRONG: Franklin D. Roosevelt; Dwight D. Eisenhower; John F. Kennedy
+Q: What is the Air Force mission? | A: To fly, fight, and win airpower anytime, anywhere | WRONG: To secure our Nation's interests in, from, and to space; To deploy, fight, and win our Nation's wars; To recruit, train, and support Marines worldwide
+Q: Name the five Air Force core functions. | A: Air superiority, global strike, rapid global mobility, intelligence surveillance and reconnaissance, and command and control | WRONG: Space control, global mission operations, space access, cyber defense, and logistics; Sea control, power projection, deterrence, maritime security, and sealift; Maneuver, fires, intelligence, sustainment, and protection
 Q: Which service was the Air Force part of before 1947? | A: The Army

@@ -32,9 +32,9 @@ source: U.S. Air Force, How to Join (airforce.com/how-to-join), Join the Active 
 **Tattoos and piercings.** The Air Force has strict rules about body modifications. Think carefully about placement, size and content before getting one.
 
 ## Quiz
-Q: What are the three ways to serve in the Air Force? | A: Active Duty, Air National Guard, and Air Force Reserve
+Q: What are the three ways to serve in the Air Force? | A: Active Duty, Air National Guard, and Air Force Reserve | WRONG: Active Duty, Navy Reserve, and Coast Guard Reserve; Active Duty, the Army National Guard, and the Space Force Reserve; Officer, enlisted, and civilian contractor
 Q: What is the age range to enlist in the Active Duty Air Force? | A: 17 up to (but not including) 42
 Q: Besides a diploma or GED, what else can qualify you to enlist? | A: 15 college semester hours
-Q: What test do most Air Force officer candidates take instead of the ASVAB? | A: The Air Force Officer Qualifying Test (AFOQT)
+Q: What test do most Air Force officer candidates take instead of the ASVAB? | A: The Air Force Officer Qualifying Test (AFOQT) | WRONG: The SAT; The Officer Aptitude Rating (OAR); The Armed Forces Qualification Test (AFQT)
 Q: How many times can you take the AFOQT? | A: Twice
 Q: What education does an Air Force officer need? | A: A four-year college degree

@@ -38,9 +38,9 @@ Marine leadership builds on the core values with **14 leadership traits**, remem
 **A tradition that shows it:** when hot chow is served in the field, junior Marines eat first, then NCOs, then staff NCOs, and **officers eat last**.
 
 ## Quiz
-Q: What memory aid helps Marines remember the 14 leadership traits? | A: JJ DID TIE BUCKLE
+Q: What memory aid helps Marines remember the 14 leadership traits? | A: JJ DID TIE BUCKLE | WRONG: LDRSHIP; BLUF; SMEAC
 Q: How many Marine Corps leadership principles are there? | A: 11
 Q: Which leadership trait means giving orders clearly, forcefully and promptly? | A: Decisiveness
 Q: Which leadership trait means taking care of your Marines first? | A: Unselfishness
-Q: When chow is served in the field, who eats last? | A: The officers
-Q: Name one Marine Corps leadership principle. | A: Set the example
+Q: When chow is served in the field, who eats last? | A: The officers | WRONG: The newest Marines; The cooks; The sergeant major only
+Q: Name one Marine Corps leadership principle. | A: Set the example | WRONG: Look out for yourself first; Never explain your orders; Let others take responsibility

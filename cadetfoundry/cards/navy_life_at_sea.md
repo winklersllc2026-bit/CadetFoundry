@@ -28,9 +28,9 @@ source: U.S. Navy, Life Aboard Ships (navy.com/navy-life/ship), Life on a Base (
 
 ## Quiz
 Q: About how many Sailors are deployed on any given day? | A: About 50,000
-Q: What is the Navy's "ultimate operational formation" of ships? | A: The Carrier Strike Group
-Q: What do Amphibious Ready Group ships carry? | A: Marine Expeditionary Unit troops and equipment
+Q: What is the Navy's "ultimate operational formation" of ships? | A: The Carrier Strike Group | WRONG: The Amphibious Ready Group; The Battle Line; The Submarine Squadron
+Q: What do Amphibious Ready Group ships carry? | A: Marine Expeditionary Unit troops and equipment | WRONG: Aircraft carriers; Only submarines; Fuel for other ships only
 Q: How long do Navy deployments usually last? | A: 6 to 9 months
-Q: What is a rack on a Navy ship? | A: A Sailor's assigned bed
+Q: What is a rack on a Navy ship? | A: A Sailor's assigned bed | WRONG: A storage shelf for weapons; The ship's kitchen; A gun mount
 Q: How many days of paid leave do Sailors earn each year? | A: 30
 Q: How long is a typical ship assignment before shore duty? | A: Three years

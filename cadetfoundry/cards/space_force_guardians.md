@@ -21,7 +21,7 @@ source: SFDD-1, The Space Force (Space Force Doctrine Document 1, 3 April 2025),
 
 ## Quiz
 Q: What is the Space Force motto? | A: Semper Supra
-Q: What does "Semper Supra" mean? | A: Always Above
-Q: Name the three parts of the Guardian Spirit. | A: Principled Public Servant, Space-minded Warfighter, and Bold and Collaborative Problem Solver
-Q: In the Space Force, officers are principally what? | A: Leaders and planners
+Q: What does "Semper Supra" mean? | A: Always Above | WRONG: Always Faithful; Always Ready; Ever Upward
+Q: Name the three parts of the Guardian Spirit. | A: Principled Public Servant, Space-minded Warfighter, and Bold and Collaborative Problem Solver | WRONG: Wingman, leader, and warrior; Honor, courage, and commitment; Operator, analyst, and engineer
+Q: In the Space Force, officers are principally what? | A: Leaders and planners | WRONG: Pilots and navigators; Recruiters and trainers; Mechanics and technicians
 Q: Under mission command, what does the commander give subordinates? | A: Clear intent — the goal, the reason, and any limits

@@ -29,9 +29,9 @@ The **commander of troops** is the senior officer taking part. They are responsi
 **Street parades** are run by civilian organizations and are less formal. A **grand marshal** organizes and directs them. The manual calls a parade a chance to bring credit on your school and unit.
 
 ## Quiz
-Q: What are the four types of ceremonies? | A: Reviews, decorations, parades, and funerals and special ceremonies
-Q: What are the four parts of a review? | A: Formation, presentation and honors, inspection, and march in review
-Q: Who is the commander of troops in a ceremony? | A: The senior officer taking part
+Q: What are the four types of ceremonies? | A: Reviews, decorations, parades, and funerals and special ceremonies | WRONG: Inspections, formations, drills and marches; Promotions, birthdays, holidays and dances; Morning, noon, evening and night
+Q: What are the four parts of a review? | A: Formation, presentation and honors, inspection, and march in review | WRONG: Fall in, roll call, inspection and dismissal; Prayer, speeches, awards and lunch; Warm-up, drill, cool-down and recovery
+Q: Who is the commander of troops in a ceremony? | A: The senior officer taking part | WRONG: The reviewing officer; The youngest Cadet; The guidon bearer
 Q: In a joint review, what is the order of the services from the head of the column? | A: Army, Marine Corps, Navy, Air Force, Coast Guard
-Q: Who organizes and directs a street parade? | A: The grand marshal
-Q: Where is an award pinned on the uniform? | A: Over the left breast pocket
+Q: Who organizes and directs a street parade? | A: The grand marshal | WRONG: The commander of troops; The reviewing officer; The Color sergeant
+Q: Where is an award pinned on the uniform? | A: Over the left breast pocket | WRONG: Over the right breast pocket; On the left sleeve; On the cap

@@ -17,10 +17,10 @@ verified: no
 **Map colors**: black = man-made features, blue = water, green = vegetation, brown = contour lines and terrain.
 
 ## Quiz
-Q: Name the five major terrain features. | A: Hill, ridge, valley, saddle, depression
-Q: Name the three minor terrain features. | A: Draw, spur, cliff
-Q: Name the two supplementary terrain features. | A: Cut and fill
-Q: How do you read a grid coordinate? | A: Right, then up
+Q: Name the five major terrain features. | A: Hill, ridge, valley, saddle, depression | WRONG: Draw, spur, cliff, cut, fill; River, road, bridge, forest, field; North, south, east, west, center
+Q: Name the three minor terrain features. | A: Draw, spur, cliff | WRONG: Hill, ridge, valley; Cut, fill, saddle; Road, river, building
+Q: Name the two supplementary terrain features. | A: Cut and fill | WRONG: Draw and spur; Hill and valley; Saddle and depression
+Q: How do you read a grid coordinate? | A: Right, then up | WRONG: Up, then right; Left, then down; Down, then left
 Q: How precise is an 8-digit grid? | A: To 10 meters
-Q: What is a pace count? | A: The number of steps it takes you to walk 100 meters
-Q: What color shows water on a military map? | A: Blue
+Q: What is a pace count? | A: The number of steps it takes you to walk 100 meters | WRONG: The number of steps in one mile; How fast you walk in minutes; The number of steps between two trees
+Q: What color shows water on a military map? | A: Blue | WRONG: Green; Brown; Black

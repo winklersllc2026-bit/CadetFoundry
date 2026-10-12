@@ -18,7 +18,7 @@ Apprenticeships exist in many fields — construction trades, IT, health care, m
 Find openings at apprenticeship.gov or ask your school counselor.
 
 ## Quiz
-Q: What is a Registered Apprenticeship? | A: A career pathway where you get paid while you learn on the job, with classroom instruction and a credential
+Q: What is a Registered Apprenticeship? | A: A career pathway where you get paid while you learn on the job, with classroom instruction and a credential | WRONG: A college degree you pay for before you can start working; An unpaid internship that ends without a credential; A short online course with a certificate of completion
 Q: Do apprentices get paid? | A: Yes — from day one, with guaranteed raises as they build skills
 Q: Name the three parts of a Registered Apprenticeship | A: Paid work experience with a mentor, classroom instruction, and a credential
-Q: What does "nationally portable" mean for an apprenticeship credential? | A: It is recognized in other states, not just where you earned it
+Q: What does "nationally portable" mean for an apprenticeship credential? | A: It is recognized in other states, not just where you earned it | WRONG: It is valid only in the state where you earned it; You can carry it as a card in your wallet; It can be transferred to a family member

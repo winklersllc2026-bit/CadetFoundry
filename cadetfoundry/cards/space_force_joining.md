@@ -24,7 +24,7 @@ source: U.S. Space Force, Training (spaceforce.com/training), Join as an Enliste
 ## Quiz
 Q: What is the age range to enlist in the Space Force? | A: 17 to 42
 Q: How long is Basic Military Training for Guardians? | A: About 7.5 weeks
-Q: Whose Basic Military Training do Guardians attend? | A: The same BMT as Air Force trainees
+Q: Whose Basic Military Training do Guardians attend? | A: The same BMT as Air Force trainees | WRONG: The Army's Basic Combat Training; Navy boot camp; Marine Corps recruit training
 Q: How many hours of Space Force-specific classes are added to BMT? | A: 21 hours
-Q: What are the three main paths to become a Space Force officer? | A: The Air Force Academy, Air Force ROTC, and Officer Training School
-Q: What college are enlisted Guardians automatically enrolled in? | A: The Community College of the Air Force
+Q: What are the three main paths to become a Space Force officer? | A: The Air Force Academy, Air Force ROTC, and Officer Training School | WRONG: West Point, Army ROTC, and Army OCS; The Naval Academy, NROTC, and Navy OCS; Direct enlistment, BMT, and promotion
+Q: What college are enlisted Guardians automatically enrolled in? | A: The Community College of the Air Force | WRONG: The Air Force Academy; The Naval Postgraduate School; The Community College of the Army

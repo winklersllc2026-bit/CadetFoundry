@@ -26,12 +26,12 @@ This card is for study only. First aid is a hands-on skill — learn it from you
 ## Quiz
 Q: What does MARCH stand for? | A: Massive bleeding, Airway, Respiration, Circulation, Hypothermia/Head injuries | ALSO: what is the MARCH acronym; what does MARCH mean in first aid
 Q: What does PAWS stand for? | A: Pain, Antibiotics, Wounds, Splints
-Q: What is the only medical priority during care under fire? | A: Massive bleeding
+Q: What is the only medical priority during care under fire? | A: Massive bleeding | WRONG: Airway; Breathing; Hypothermia
 Q: What are the three phases of Tactical Combat Casualty Care? | A: Care under fire, tactical field care, and tactical evacuation care
-Q: Where does a tourniquet go? | A: High and tight on the arm or leg, over the uniform | ALSO: where do you put a tourniquet
+Q: Where does a tourniquet go? | A: High and tight on the arm or leg, over the uniform | ALSO: where do you put a tourniquet | WRONG: Directly on the wound, under the uniform; Below the wound, near the hand or foot; On the nearest joint
 Q: What do you do if one tourniquet doesn't stop the bleeding? | A: Apply a second tourniquet above the first
-Q: What do you use when a tourniquet can't be applied because of where the wound is? | A: Combat gauze
-Q: How do you open the airway when there's no face or skull injury? | A: The chin-lift method
-Q: How do you treat an open (sucking) chest wound? | A: Cover it with a vented chest seal
+Q: What do you use when a tourniquet can't be applied because of where the wound is? | A: Combat gauze | WRONG: An ice pack; A splint; A chest seal
+Q: How do you open the airway when there's no face or skull injury? | A: The chin-lift method | WRONG: The jaw-thrust method; Tilting the head forward onto the chest; Rolling them onto their stomach
+Q: How do you treat an open (sucking) chest wound? | A: Cover it with a vented chest seal | WRONG: Leave it uncovered so it can drain; Press an ice pack on it; Wrap a tourniquet above it
 Q: What are the three main goals of TCCC? | A: Treat the casualty, prevent additional casualties, and complete the mission
 Q: Name three signs of shock. | A: Any three: clammy skin, pale skin, restlessness, nervousness, unusual thirst, rapid breathing, altered mental status

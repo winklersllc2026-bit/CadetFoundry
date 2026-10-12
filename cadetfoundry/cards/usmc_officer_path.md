@@ -16,8 +16,8 @@ source: U.S. Marine Corps, Officer Candidates School and The Basic School (marin
 **Lesson for Cadets:** in the Marine Corps, every officer — pilot, lawyer or logistics officer — first learns to lead a rifle squad.
 
 ## Quiz
-Q: Where is Marine Corps Officer Candidates School? | A: Quantico, Virginia
-Q: What does Ductus Exemplo mean? | A: Lead by example
-Q: What three areas are officer candidates tested in at OCS? | A: Academic knowledge, physical fitness and leadership ability
-Q: What rank do Marines earn when they finish OCS? | A: Second Lieutenant
-Q: Where do all new Marine officers train after commissioning? | A: The Basic School
+Q: Where is Marine Corps Officer Candidates School? | A: Quantico, Virginia | WRONG: Parris Island, South Carolina; Annapolis, Maryland; Camp Pendleton, California
+Q: What does Ductus Exemplo mean? | A: Lead by example | WRONG: Always faithful; Always above; Ever upward
+Q: What three areas are officer candidates tested in at OCS? | A: Academic knowledge, physical fitness and leadership ability | WRONG: Marksmanship, swimming and drill; Speed, strength and stamina; Reading, writing and math
+Q: What rank do Marines earn when they finish OCS? | A: Second Lieutenant | WRONG: First Lieutenant; Captain; Warrant Officer
+Q: Where do all new Marine officers train after commissioning? | A: The Basic School | WRONG: The Crucible; Recruit training; The School of Infantry

@@ -21,11 +21,11 @@ There are **no pull-ups** on the AFT.
 Each event is worth up to **100 points**. Cadet Foundry's AFT scorer (Log → AFT) uses the official tables.
 
 ## Quiz
-Q: What are the five events of the AFT? | A: 3-rep max deadlift, hand-release push-ups, sprint/drag/carry, plank, and two-mile run | ALSO: what events are on the AFT; what is on the Army Fitness Test
+Q: What are the five events of the AFT? | A: 3-rep max deadlift, hand-release push-ups, sprint/drag/carry, plank, and two-mile run | ALSO: what events are on the AFT; what is on the Army Fitness Test | WRONG: Pull-ups, sit-ups, push-ups, a plank, and a three-mile run; Push-ups, sit-ups, a 1.5-mile run, a swim, and a ruck march; Deadlift, bench press, squats, a plank, and a one-mile run
 Q: Does the AFT have sit-ups? | A: No — the AFT has no sit-up event; its five events are the deadlift, hand-release push-ups, sprint/drag/carry, plank and two-mile run | ALSO: how many sit-ups do I need for the AFT; what is the minimum number of sit-ups on the AFT; is there a sit-up event on the AFT
 Q: Does the AFT have pull-ups? | A: No — the AFT has no pull-up event; its five events are the deadlift, hand-release push-ups, sprint/drag/carry, plank and two-mile run | ALSO: how many pull-ups do I need for the AFT; how many pull ups do I need for the AFT; is there a pull-up event on the AFT; what is the minimum number of pull-ups for the AFT
 Q: What is the minimum score in each AFT event? | A: 60 points in every event
-Q: What's the minimum score to pass the AFT? | A: At least 60 points in every event, and a total of at least 350 for combat specialties or 300 for everyone else | ALSO: what do i need to pass the aft; what is a passing aft score; minimum total score on the aft
+Q: What's the minimum score to pass the AFT? | A: At least 60 points in every event, and a total of at least 350 for combat specialties or 300 for everyone else | ALSO: what do i need to pass the aft; what is a passing aft score; minimum total score on the aft | WRONG: At least 50 points in every event, and a total of at least 250; At least 70 points in every event, and a total of at least 400 for everyone; A total of at least 200, with no minimum per event
 Q: What total score passes the AFT for combat specialties? | A: At least 350 points, with at least 60 in every event
 Q: What total score passes the AFT for combat-enabling specialties? | A: At least 300 points, with at least 60 in every event
 Q: What is the most points you can score in one AFT event? | A: 100

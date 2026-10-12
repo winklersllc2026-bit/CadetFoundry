@@ -18,7 +18,7 @@ The **Occupational Outlook Handbook (OOH)** is a free career guide from the **U.
 **Try it:** pick three careers that interest you, look each one up on bls.gov/ooh, and compare the education needed, pay and outlook. Your school counselor can help you plan the classes that lead there.
 
 ## Quiz
-Q: What is the Occupational Outlook Handbook? | A: A free career guide from the U.S. Bureau of Labor Statistics describing what workers do, education needed, pay and job outlook | ALSO: what is the OOH; where can I research careers
-Q: Who publishes the Occupational Outlook Handbook? | A: The U.S. Bureau of Labor Statistics (U.S. Department of Labor)
-Q: Name three things an OOH profile tells you about a job | A: What workers do, the education and training needed, pay, job outlook, work environment
-Q: How often are the OOH's pay and job outlook data updated? | A: Every year
+Q: What is the Occupational Outlook Handbook? | A: A free career guide from the U.S. Bureau of Labor Statistics describing what workers do, education needed, pay and job outlook | ALSO: what is the OOH; where can I research careers | WRONG: A paid magazine that lists job openings in your town; A college textbook about business management; A military manual for choosing an MOS
+Q: Who publishes the Occupational Outlook Handbook? | A: The U.S. Bureau of Labor Statistics (U.S. Department of Labor) | WRONG: The U.S. Department of Education; The U.S. Census Bureau; The Department of Defense
+Q: Name three things an OOH profile tells you about a job | A: What workers do, the education and training needed, pay, job outlook, work environment | WRONG: The boss's name, the office address and the dress code; Which companies are hiring today and their phone numbers; Celebrity jobs, famous workers and job rumors
+Q: How often are the OOH's pay and job outlook data updated? | A: Every year | WRONG: Every ten years; Every month; Never — it's printed once

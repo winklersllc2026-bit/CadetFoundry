@@ -18,8 +18,8 @@ Moments every Marine learns about:
 
 ## Quiz
 Q: On what date was the flag raised on Mount Suribachi at Iwo Jima? | A: February 23, 1945
-Q: In which war did Marines fight at the Chosin Reservoir? | A: The Korean War
+Q: In which war did Marines fight at the Chosin Reservoir? | A: The Korean War | WRONG: World War II; The Vietnam War; World War I
 Q: How many days did the Marines at Chosin Reservoir fight? | A: 17
-Q: Who were the Navajo Code Talkers? | A: World War II Marines who provided an unbreakable code
+Q: Who were the Navajo Code Talkers? | A: World War II Marines who provided an unbreakable code | WRONG: Civil War scouts who carried messages; Vietnam War pilots; World War I radio operators in France
 Q: About how many Montford Point Marines served? | A: More than 20,000
-Q: In which war was the Battle of Huế? | A: The Vietnam War
+Q: In which war was the Battle of Huế? | A: The Vietnam War | WRONG: The Korean War; World War II; The Gulf War

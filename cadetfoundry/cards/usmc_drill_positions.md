@@ -32,8 +32,8 @@ From parade rest, at ease or rest, the only command you may receive is **"ATTENT
 
 ## Quiz
 Q: At attention, at what angle are the feet turned out? | A: 45 degrees
-Q: Name the four positions of rest. | A: Parade rest, at ease, rest, and fall out
-Q: What is the only command you may receive at parade rest? | A: ATTENTION
+Q: Name the four positions of rest. | A: Parade rest, at ease, rest, and fall out | WRONG: Attention, parade rest, halt, and march; Sit, kneel, lie, and stand; At ease, relax, stand by, and dismissed
+Q: What is the only command you may receive at parade rest? | A: ATTENTION | WRONG: FORWARD, MARCH; FALL OUT; RIGHT, FACE
 Q: How far does the left foot move at parade rest? | A: 12 inches
 Q: At what distance do you render a hand salute? | A: Six paces
 Q: How many counts is "Right, FACE"? | A: Two

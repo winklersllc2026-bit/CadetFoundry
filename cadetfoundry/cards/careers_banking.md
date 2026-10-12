@@ -19,9 +19,9 @@ source: FDIC, Understanding Deposit Insurance (fdic.gov); Consumer Financial Pro
 **Avoid fees:** track your balance (your budget helps), and ask your bank how its overdraft coverage works before you open an account.
 
 ## Quiz
-Q: What does FDIC deposit insurance protect? | A: Money in deposit accounts at FDIC-insured banks if the bank fails
-Q: How much does FDIC insurance cover? | A: At least $250,000 per depositor, per ownership category, at each insured bank
+Q: What does FDIC deposit insurance protect? | A: Money in deposit accounts at FDIC-insured banks if the bank fails | WRONG: Stocks and bonds if their value drops; Cash you keep at home; Money you lose to a scam
+Q: How much does FDIC insurance cover? | A: At least $250,000 per depositor, per ownership category, at each insured bank | WRONG: Up to $25,000 per account; Up to $1 million per bank; Everything, with no limit
 Q: Is crypto covered by FDIC insurance? | A: No
-Q: Name two kinds of accounts FDIC insurance covers | A: Checking, savings, certificates of deposit
-Q: What is an overdraft? | A: When your account doesn't have enough money for a purchase but the bank pays it anyway, often with a fee
-Q: What is a certificate of deposit? | A: A special type of savings account at a bank or credit union
+Q: Name two kinds of accounts FDIC insurance covers | A: Checking, savings, certificates of deposit | WRONG: Stocks, bonds, mutual funds; Cryptocurrency, gift cards, cash at home; Life insurance, annuities, stocks
+Q: What is an overdraft? | A: When your account doesn't have enough money for a purchase but the bank pays it anyway, often with a fee | WRONG: When you deposit more money than you need; When the bank pays you extra interest; When you close an account early
+Q: What is a certificate of deposit? | A: A special type of savings account at a bank or credit union | WRONG: A credit card with a low limit; A loan you take from a bank; A checking account with unlimited spending

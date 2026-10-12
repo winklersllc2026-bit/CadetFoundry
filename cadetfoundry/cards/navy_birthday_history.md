@@ -14,7 +14,7 @@ The Marine Corps was created by the same Continental Congress less than a month 
 
 ## Quiz
 Q: What is the Navy's birthday? | A: October 13, 1775
-Q: Who authorized the first ships of the Continental Navy? | A: The Continental Congress
-Q: Who was appointed commander in chief of the Continental Navy? | A: Esek Hopkins
-Q: Name a famous officer commissioned in the first group of Continental Navy officers. | A: John Paul Jones
+Q: Who authorized the first ships of the Continental Navy? | A: The Continental Congress | WRONG: George Washington; The King of England; The state of Massachusetts
+Q: Who was appointed commander in chief of the Continental Navy? | A: Esek Hopkins | WRONG: John Paul Jones; George Washington; John Barry
+Q: Name a famous officer commissioned in the first group of Continental Navy officers. | A: John Paul Jones | WRONG: Oliver Hazard Perry; David Farragut; Stephen Decatur
 Q: During which war did America's naval service begin? | A: The American Revolution

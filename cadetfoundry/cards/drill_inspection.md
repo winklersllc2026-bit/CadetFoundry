@@ -24,12 +24,12 @@ source: TC 3-21.5, Drill and Ceremonies (3 May 2021), paras 7-56 to 7-80
 **Being inspected — what you control:** a clean, correct uniform, a fresh haircut, polished shoes, and standing still at Attention with your eyes forward.
 
 ## Quiz
-Q: In what formation is a platoon inspected in ranks? | A: Line formation
+Q: In what formation is a platoon inspected in ranks? | A: Line formation | WRONG: Column formation; File formation; Wedge formation
 Q: What command opens space between the ranks for an inspection? | A: Open Ranks, MARCH
 Q: On Open Ranks, what does the first rank do? | A: Takes two steps forward
-Q: On Open Ranks, what does the third rank do? | A: Stands fast
+Q: On Open Ranks, what does the third rank do? | A: Stands fast | WRONG: Takes one step forward; Takes two steps forward; Faces about
 Q: Are salutes exchanged when squad leaders inspect their squads? | A: No
 Q: How far in front of a Cadet does the inspector stop? | A: 15 inches
-Q: After inspecting the front of the squad, where does the inspector go? | A: Around behind the squad to inspect from the rear
+Q: After inspecting the front of the squad, where does the inspector go? | A: Around behind the squad to inspect from the rear | WRONG: Directly to the next squad; Back to the front of the formation; To the platoon leader to report
 Q: What command closes the ranks after an inspection? | A: Close Ranks, MARCH
 Q: What is called as the inspector leaves after an in-quarters inspection? | A: CARRY ON

@@ -17,8 +17,8 @@ source: National Archives, Executive Order 9981: Desegregation of the Armed Forc
 **Today:** the Army Value of **Respect** — treat people as they should be treated — applies to every Soldier and every Cadet.
 
 ## Quiz
-Q: What did Executive Order 9981 do? | A: Banned segregation in the Armed Forces and called for equal treatment and opportunity
-Q: Which president signed Executive Order 9981? | A: Harry S. Truman
+Q: What did Executive Order 9981 do? | A: Banned segregation in the Armed Forces and called for equal treatment and opportunity | WRONG: Created the Air Force as a separate service; Ended the draft; Let women serve in combat
+Q: Which president signed Executive Order 9981? | A: Harry S. Truman | WRONG: Franklin D. Roosevelt; Dwight D. Eisenhower; Lyndon Johnson
 Q: In what year was Executive Order 9981 signed? | A: 1948
 Q: By the end of which war was almost all of the military integrated? | A: The Korean War
-Q: Executive Order 9981 called for equality without regard to what? | A: Race, color, religion or national origin
+Q: Executive Order 9981 called for equality without regard to what? | A: Race, color, religion or national origin | WRONG: Rank, age or years of service; Height, weight or fitness; Education, income or home state

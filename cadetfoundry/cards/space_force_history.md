@@ -17,8 +17,8 @@ The Space Force is new, but military space work is decades old:
 - **2020** — 86 Air Force Academy graduates become the Space Force's first commissioned officers from the Academy.
 
 ## Quiz
-Q: Where does the name "Guardians" come from? | A: The Air Force Space Command slogan "Guardians of the High Frontier"
+Q: Where does the name "Guardians" come from? | A: The Air Force Space Command slogan "Guardians of the High Frontier" | WRONG: A popular movie about space; A vote by the public in 2019; The Navy's nickname for its sentries
 Q: In what year did the Air Force launch the first GPS satellite? | A: 1978
-Q: Which command became the U.S. Space Force in 2019? | A: Air Force Space Command
-Q: Who was the first Chief of Space Operations? | A: General John Raymond
-Q: What was the first dedicated U.S. military space organization? | A: The Western Development Division
+Q: Which command became the U.S. Space Force in 2019? | A: Air Force Space Command | WRONG: U.S. Space Command; Strategic Air Command; Air Combat Command
+Q: Who was the first Chief of Space Operations? | A: General John Raymond | WRONG: General B. Chance Saltzman; Roger A. Towberman; General Benjamin O. Davis Jr.
+Q: What was the first dedicated U.S. military space organization? | A: The Western Development Division | WRONG: NASA; The Strategic Air Command; The Army Signal Corps

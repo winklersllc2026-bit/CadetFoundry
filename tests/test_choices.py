@@ -38,7 +38,8 @@ class ChoicesTests(unittest.TestCase):
                     self.assertEqual(sum(choices.is_right(q, a, p) for p in picks), 1)       # exactly one right
                     f = choices.features(q, a)
                     for p in picks:
-                        if p == right or choices._binary(q, a) or p in c.wrong.get(q, []):
+                        authored = {choices.norm(w) for w in c.wrong.get(q, [])} | {choices.norm(choices.head(w)) for w in c.wrong.get(q, [])}
+                        if p == right or choices._binary(q, a) or choices.norm(p) in authored:   # checked by a person
                             continue
                         g = choices.features("", p)
                         self.assertFalse(choices.YESNO.match(p), p)                          # never a stray "Yes"
@@ -48,7 +49,7 @@ class ChoicesTests(unittest.TestCase):
                             self.assertFalse(g["nums"] and not f["nums"] and g["cls"] != "command" and len(p.split()) <= 3, p)
                         if f["cls"] and f["kind"] != "list":                            # a person for a person
                             self.assertEqual(g["cls"], f["cls"], p)
-        self.assertGreater(built, 600)                 # raise as cards get hand-written WRONG: lines
+        self.assertGreater(built, 1350)                # every card has hand-written WRONG: lines (2026-10-12)
 
     def test_the_reported_questions(self):
         for question, never in (("Name three things drill builds", {"120", "180", "The Blue Book"}),

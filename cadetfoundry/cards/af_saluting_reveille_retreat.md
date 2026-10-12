@@ -21,9 +21,9 @@ source: DAFPAM 34-1203, Drill and Ceremonies (13 September 2022), paras 3.5–3.
 The flag is always raised and lowered from the **leeward (downwind) side** of the flagstaff (para 7.25.2).
 
 ## Quiz
-Q: Who salutes first? | A: The junior member
-Q: On an Air Force salute, what touches the headdress? | A: The tip of the middle finger
-Q: Name a time you do salute indoors. | A: Formal reporting
-Q: What does reveille signal? | A: The start of the official duty day
-Q: What does retreat signal? | A: The end of the official duty day
-Q: In formation, do you salute on your own? | A: No, only when commanded
+Q: Who salutes first? | A: The junior member | WRONG: The senior member; Whoever sees the other first; The member on the right
+Q: On an Air Force salute, what touches the headdress? | A: The tip of the middle finger | WRONG: The palm of the hand; The tip of the index finger; The thumb
+Q: Name a time you do salute indoors. | A: Formal reporting | WRONG: Entering the dining facility; Passing an officer in a hallway; Walking into a classroom
+Q: What does reveille signal? | A: The start of the official duty day | WRONG: The end of the official duty day; Lights out; The start of lunch
+Q: What does retreat signal? | A: The end of the official duty day | WRONG: The start of the official duty day; Lights out; An emergency formation
+Q: In formation, do you salute on your own? | A: No, only when commanded | WRONG: Yes, whenever an officer passes; Yes, if you see the officer first; Yes, but only outdoors

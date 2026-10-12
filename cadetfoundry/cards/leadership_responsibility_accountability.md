@@ -15,8 +15,8 @@ The Soldier's Guide uses fitness as the example: leaders can schedule the traini
 **Everyday responsibilities** the guide lists for Soldiers that fit any Cadet: treat others with dignity and respect, complete each task to standard, keep up your appearance and fitness, and take care of your equipment.
 
 ## Quiz
-Q: What is accountability? | A: Answering for what you do or fail to do
-Q: What is moral responsibility? | A: Treating others with dignity and respect and never taking part in or tolerating discrimination or harassment
-Q: Leaders can schedule the training, but only you can make yourself fit. What kind of responsibility is that? | A: Individual responsibility
-Q: Leaders are accountable for what they do — and what else? | A: What they fail to do
-Q: Name two everyday responsibilities from the Soldier's Guide | A: Treat others with dignity and respect, complete each task to standard, keep up your appearance and fitness, take care of your equipment
+Q: What is accountability? | A: Answering for what you do or fail to do | WRONG: Counting your equipment; Blaming others for mistakes; Doing only what you're told
+Q: What is moral responsibility? | A: Treating others with dignity and respect and never taking part in or tolerating discrimination or harassment | WRONG: Following orders without question; Keeping your uniform clean; Taking care of only yourself
+Q: Leaders can schedule the training, but only you can make yourself fit. What kind of responsibility is that? | A: Individual responsibility | WRONG: Command responsibility; Moral responsibility; Unit responsibility
+Q: Leaders are accountable for what they do — and what else? | A: What they fail to do | WRONG: What their bosses do; What they say only; Nothing else
+Q: Name two everyday responsibilities from the Soldier's Guide | A: Treat others with dignity and respect, complete each task to standard, keep up your appearance and fitness, take care of your equipment | WRONG: Win every competition, be the most popular in the unit; Do only what you're told, let leaders worry about the rest; Keep your opinions to yourself, avoid extra work

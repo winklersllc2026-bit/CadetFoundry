@@ -19,8 +19,8 @@ The **wing** is "the basic unit for generating and employing combat capability" 
 Besides active duty, the Air Force has two Reserve components: the **Air Force Reserve** and the **Air National Guard**.
 
 ## Quiz
-Q: What is the basic unit for generating and employing Air Force combat capability? | A: The wing
+Q: What is the basic unit for generating and employing Air Force combat capability? | A: The wing | WRONG: The squadron; The flight; The group
 Q: Which is larger, a squadron or a flight? | A: A squadron
-Q: Put these in order from largest to smallest: squadron, wing, group. | A: Wing, group, squadron
-Q: Name the Air Force's two Reserve components. | A: The Air Force Reserve and the Air National Guard
-Q: What is the smallest Air Force unit in the list? | A: The flight
+Q: Put these in order from largest to smallest: squadron, wing, group. | A: Wing, group, squadron | WRONG: Squadron, group, wing; Group, wing, squadron; Wing, squadron, group
+Q: Name the Air Force's two Reserve components. | A: The Air Force Reserve and the Air National Guard | WRONG: The Army Reserve and the Army National Guard; The Space Force Reserve and the Civil Air Patrol; The Navy Reserve and the Coast Guard Reserve
+Q: What is the smallest Air Force unit in the list? | A: The flight | WRONG: The squadron; The group; The wing

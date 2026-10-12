@@ -24,11 +24,11 @@ The Uniform Code of Military Justice (UCMJ) is the military's criminal law. It a
 This card is a study aid, not legal advice. If you are in trouble, ask for Trial Defense Service.
 
 ## Quiz
-Q: What is an "Article 15"? | A: Nonjudicial punishment by a commander for minor offenses | ALSO: what does an article 15 mean
+Q: What is an "Article 15"? | A: Nonjudicial punishment by a commander for minor offenses | ALSO: what does an article 15 mean | WRONG: A court-martial with a jury; A promotion board; A reward for good conduct
 Q: Which article protects you from self-incrimination? | A: Article 31
 Q: Which article covers AWOL? | A: Article 86
 Q: Which article covers failure to obey an order or regulation? | A: Article 92
 Q: Which article is known as the General Article? | A: Article 134
-Q: Who gives Soldiers free legal defense advice? | A: Trial Defense Service (TDS)
+Q: Who gives Soldiers free legal defense advice? | A: Trial Defense Service (TDS) | WRONG: The Inspector General; The military police; The chaplain
 Q: Which article covers wrongful drug use? | A: Article 112a
 Q: Does the UCMJ apply when you're off duty? | A: Yes — it applies at all times. | ALSO: can I get in trouble off duty; does the UCMJ apply on weekends

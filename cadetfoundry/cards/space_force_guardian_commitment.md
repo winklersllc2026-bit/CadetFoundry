@@ -28,8 +28,8 @@ The **Guardian Commitment** gives each value three **"I will"** statements for t
 - support their team "regardless of outcome," treating failure as a chance to learn.
 
 ## Quiz
-Q: What does the Guardian Commitment say about asking for help? | A: It is a sign of strength and confidence, not weakness
-Q: According to the handbook, mastery is measured against whom? | A: Yourself, not your teammates
-Q: Complete the statement: "I will be better tomorrow than..." | A: I am today
-Q: What kind of environment must team leaders keep? | A: One where people can express thoughts without fear
-Q: Who counts as a team member in the Guardian Commitment? | A: Every Guardian, from the newest recruit to the most senior leader
+Q: What does the Guardian Commitment say about asking for help? | A: It is a sign of strength and confidence, not weakness | WRONG: It is a sign of weakness; It should be a last resort; It's only for new Guardians
+Q: According to the handbook, mastery is measured against whom? | A: Yourself, not your teammates | WRONG: Your teammates; The best Guardian in your unit; The other services
+Q: Complete the statement: "I will be better tomorrow than..." | A: I am today | WRONG: my teammates are today; I was yesterday; the Guardian next to me
+Q: What kind of environment must team leaders keep? | A: One where people can express thoughts without fear | WRONG: One where only leaders speak; One where mistakes are punished in public; One where people compete against each other
+Q: Who counts as a team member in the Guardian Commitment? | A: Every Guardian, from the newest recruit to the most senior leader | WRONG: Only officers; Only Guardians in your squadron; Only senior leaders

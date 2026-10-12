@@ -33,10 +33,10 @@ An interview is your chance to **sell your skills** — and to find out if the j
 
 ## Quiz
 Q: How early should you arrive for a job interview? | A: 10 to 15 minutes early
-Q: What should you do with your phone during an interview? | A: Turn it off
-Q: Name two things to do before an interview | A: Research the employer, re-read the job posting, compare your qualifications to the requirements, practice answers out loud, write questions to ask
-Q: You don't have work experience. Where can your interview examples come from? | A: School, volunteering, sports, clubs, or JROTC
+Q: What should you do with your phone during an interview? | A: Turn it off | WRONG: Keep it face up on the table; Answer it if it's important; Leave it on vibrate in your hand
+Q: Name two things to do before an interview | A: Research the employer, re-read the job posting, compare your qualifications to the requirements, practice answers out loud, write questions to ask | WRONG: Memorize a script word for word, and arrive an hour late; Skip the job posting, and ask the interviewer what the company does; Bring a friend to answer for you, and wear your gym clothes
+Q: You don't have work experience. Where can your interview examples come from? | A: School, volunteering, sports, clubs, or JROTC | WRONG: Nowhere — say you have no examples; Made-up jobs that sound impressive; Video games and TV shows only
 Q: Should you bring questions to ask the interviewer? | A: Yes — having none can look like you're not interested
-Q: What should you send after the interview? | A: A thank-you email or letter
-Q: What should you do if you don't understand an interview question? | A: Ask for it to be repeated or explained
+Q: What should you send after the interview? | A: A thank-you email or letter | WRONG: A follow-up text every day until they answer; A gift to the interviewer; Nothing at all
+Q: What should you do if you don't understand an interview question? | A: Ask for it to be repeated or explained | WRONG: Guess and answer something else; Say "next question"; Stay silent until they move on
 Q: Should you shake hands at an interview? | A: Yes, firmly — if the interviewer offers a hand first

@@ -20,10 +20,10 @@ For someone who is pregnant or very large, use **chest thrusts** instead of abdo
 **If they become unconscious:** shout for help and have someone **call 911**. Lay them on a firm, flat surface and **begin CPR**, checking the mouth for the object before giving breaths.
 
 ## Quiz
-Q: What does a choking person often do with their hand? | A: Grab their throat
-Q: What should you ask someone who might be choking? | A: "Are you choking? Can you speak?"
-Q: If a choking person is coughing forcefully and can speak, what do you do? | A: Encourage them to keep coughing
+Q: What does a choking person often do with their hand? | A: Grab their throat | WRONG: Wave both arms; Cover their ears; Hold their stomach
+Q: What should you ask someone who might be choking? | A: "Are you choking? Can you speak?" | WRONG: "Do you want some water?"; "Did you eat too fast?"; "Are you allergic to anything?"
+Q: If a choking person is coughing forcefully and can speak, what do you do? | A: Encourage them to keep coughing | WRONG: Start abdominal thrusts right away; Give them water to drink; Lay them down flat
 Q: How many back blows and abdominal thrusts do you give in each round? | A: 5 back blows and 5 abdominal thrusts
-Q: Where do you place your fist for an abdominal thrust? | A: Just above the belly button
-Q: What direction is an abdominal thrust? | A: Quick, upward and inward
-Q: What do you do if a choking person becomes unconscious? | A: Call 911 and begin CPR
+Q: Where do you place your fist for an abdominal thrust? | A: Just above the belly button | WRONG: On the breastbone; On the lower ribs; Below the belly button
+Q: What direction is an abdominal thrust? | A: Quick, upward and inward | WRONG: Slow and downward; Side to side; Straight down toward the feet
+Q: What do you do if a choking person becomes unconscious? | A: Call 911 and begin CPR | WRONG: Give them water; Wait for them to wake up; Prop them up to sit

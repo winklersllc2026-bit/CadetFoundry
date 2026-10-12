@@ -28,14 +28,14 @@ If immediate action doesn't work after **two attempts**, or the trigger won't mo
 Always follow the range's own safety briefing and the commands of the tower and your lane safety.
 
 ## Quiz
-Q: Which manual covers the rifle and carbine? | A: TC 3-22.9, Rifle and Carbine (it superseded FM 3-22.9 in 2016) | ALSO: what is the rifle field manual; what is the basic rifle manual; which field manual covers the M4
-Q: What is the first rule of firearms safety? | A: Treat every weapon as if it is loaded
-Q: What are the four rules of firearms safety? | A: Treat every weapon as loaded; never point it at anything you don't intend to destroy; finger straight and off the trigger until ready to fire; positively identify the target and what is around it
-Q: Where does your trigger finger stay until you're ready to fire? | A: Straight and off the trigger
-Q: What is the most important safety feature on any weapon? | A: The Soldier
-Q: Who is responsible for every bullet fired from your weapon? | A: You — the firer
-Q: What does weapon safety status green mean? | A: Fully safe — clear, no ammunition, chamber empty, selector on SAFE
-Q: What does weapon safety status red mean? | A: Marginally safe — on SAFE, magazine in, round chambered, bolt forward
-Q: What does weapon safety status black mean? | A: Not safe — target identified, selector on FIRE, finger on the trigger, engaging
-Q: What are the steps of immediate action? | A: Tap the magazine, rack the charging handle, reassess
-Q: When do you move from immediate action to remedial action? | A: When immediate action fails twice, or the trigger won't squeeze or feels mushy
+Q: Which manual covers the rifle and carbine? | A: TC 3-22.9, Rifle and Carbine (it superseded FM 3-22.9 in 2016) | ALSO: what is the rifle field manual; what is the basic rifle manual; which field manual covers the M4 | WRONG: FM 7-22, Holistic Health and Fitness; TC 3-21.5, Drill and Ceremonies; AR 670-1, Wear and Appearance of Army Uniforms
+Q: What is the first rule of firearms safety? | A: Treat every weapon as if it is loaded | WRONG: Keep the weapon clean; Always carry extra ammunition; Keep the weapon in its case
+Q: What are the four rules of firearms safety? | A: Treat every weapon as loaded; never point it at anything you don't intend to destroy; finger straight and off the trigger until ready to fire; positively identify the target and what is around it | WRONG: Keep it clean, keep it oiled, keep it loaded, keep it close; Aim fast, fire fast, reload fast, move fast; Carry it, clean it, case it, count it
+Q: Where does your trigger finger stay until you're ready to fire? | A: Straight and off the trigger | WRONG: On the trigger; Inside the trigger guard; On the magazine release
+Q: What is the most important safety feature on any weapon? | A: The Soldier | WRONG: The selector switch; The trigger guard; The magazine
+Q: Who is responsible for every bullet fired from your weapon? | A: You — the firer | WRONG: The range safety officer; Your squad leader; The person who issued the weapon
+Q: What does weapon safety status green mean? | A: Fully safe — clear, no ammunition, chamber empty, selector on SAFE | WRONG: Not safe — engaging a target; Marginally safe — round chambered; Ready to fire
+Q: What does weapon safety status red mean? | A: Marginally safe — on SAFE, magazine in, round chambered, bolt forward | WRONG: Fully safe — clear, no ammunition; Not safe — engaging a target; Broken — turn it in
+Q: What does weapon safety status black mean? | A: Not safe — target identified, selector on FIRE, finger on the trigger, engaging | WRONG: Fully safe — clear, no ammunition; Marginally safe — on SAFE, round chambered; Stored in the arms room
+Q: What are the steps of immediate action? | A: Tap the magazine, rack the charging handle, reassess | WRONG: Remove the magazine, look down the barrel, shake the weapon; Call for help, wait, try again; Clean it, oil it, reload it
+Q: When do you move from immediate action to remedial action? | A: When immediate action fails twice, or the trigger won't squeeze or feels mushy | WRONG: Right away, before trying immediate action; Never — always keep trying immediate action; When you run out of ammunition

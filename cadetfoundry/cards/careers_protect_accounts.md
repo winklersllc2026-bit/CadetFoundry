@@ -21,9 +21,9 @@ Your phone, email and social media accounts hold your money, your messages and y
 
 ## Quiz
 Q: How long should a strong password be? | A: At least 15 characters
-Q: What is two-factor authentication? | A: An extra layer of security — a code, app or security key needed in addition to your password
-Q: Which kinds of two-factor authentication are most secure? | A: An authenticator app or a security key
-Q: What should you do with a link in an unexpected email or text? | A: Don't click it — contact the company using a number or website you know is real
-Q: Why turn on automatic updates? | A: To keep your software up to date and protected
-Q: Where do you report identity theft? | A: IdentityTheft.gov
-Q: What should a passphrase be made of? | A: Random words
+Q: What is two-factor authentication? | A: An extra layer of security — a code, app or security key needed in addition to your password | WRONG: Using the same password on two accounts; Writing your password down twice; Having two different usernames
+Q: Which kinds of two-factor authentication are most secure? | A: An authenticator app or a security key | WRONG: A text message or an email code; Security questions about your pet's name; A password you change every year
+Q: What should you do with a link in an unexpected email or text? | A: Don't click it — contact the company using a number or website you know is real | WRONG: Click it to see what it is; Forward it to your friends; Reply with your password to verify it
+Q: Why turn on automatic updates? | A: To keep your software up to date and protected | WRONG: To make your computer run games faster; To get free apps; To change your screen colors
+Q: Where do you report identity theft? | A: IdentityTheft.gov | WRONG: Your social media page; The company's comment section; A credit card advertisement
+Q: What should a passphrase be made of? | A: Random words | WRONG: Your name and birthday; The word "password" and a number; Your pet's name

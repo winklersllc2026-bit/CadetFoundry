@@ -28,9 +28,9 @@ The Space Force's four values, as the Guardian Spirit handbook puts them:
 Team leaders add **fairness** and **transparency**: they "explain 'the why'" instead of simply giving orders.
 
 ## Quiz
-Q: Which Space Force value comes first, and why? | A: Character, because it lays the foundation for trust, teamwork and good order
+Q: Which Space Force value comes first, and why? | A: Character, because it lays the foundation for trust, teamwork and good order | WRONG: Courage, because space is dangerous; Commitment, because it lasts the longest; Connection, because Guardians work in teams
 Q: Complete the phrase: Connection… | A: Toward unity
-Q: Complete the phrase: Commitment… | A: To mastery
-Q: Complete the phrase: Courage… | A: To be bold
-Q: What is the Guardian Commitment? | A: "I will" statements that put the Space Force values into action
-Q: What do team leaders explain instead of just giving orders? | A: The why
+Q: Complete the phrase: Commitment… | A: To mastery | WRONG: To be bold; To each other; To the mission above all
+Q: Complete the phrase: Courage… | A: To be bold | WRONG: To mastery; To each other; To follow orders
+Q: What is the Guardian Commitment? | A: "I will" statements that put the Space Force values into action | WRONG: The oath Guardians take when they enlist; The Space Force's official song; A list of punishments for breaking rules
+Q: What do team leaders explain instead of just giving orders? | A: The why | WRONG: The punishment; The schedule; The chain of command
