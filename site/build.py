@@ -116,10 +116,45 @@ PYTHON_TAG = "3.14"
 # cryptography (profile encryption in vault.py, update signatures) and its two dependencies, pinned by version + hash.
 PYTHON_REQUIREMENTS = SITE / "bundle-requirements.txt"
 WRANGLER = "4.141.0"
-# Downloads need an access code (0.2.7): instructors ask by email, the owner answers with a code (tools/pilot_access.py)
-REQUEST = ("mailto:support@cadetfoundry.org?subject=Cadet%20Foundry%20pilot%20access&body="
-           "Name%3A%20%0ASchool%3A%20%0AJROTC%20program%20(Army%2C%20Navy%2C%20Air%20Force%2C%20Marine%20Corps%2C%20Space%20Force)%3A%20%0A"
-           "About%20how%20many%20Cadets%3A%20%0A")
+# Downloads need an access code (0.2.7): instructors ask by email, the owner answers with a code (tools/pilot_access.py).
+# The button opens the address and what to write right on the page (owner, 2026-10-12: a mailto link assumed an email
+# program like Outlook was set up; most people use Gmail or school mail in the browser).
+EMAIL = "support@cadetfoundry.org"
+REQUEST_CSS = """
+details.req { background:none; border:0; padding:0; margin:0; }
+details.req > summary { list-style:none; cursor:pointer; }
+details.req > summary::-webkit-details-marker { display:none; }
+details.req[open] { flex-basis:100%; }
+.req-box { margin-top:12px; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px 20px; text-align:left; }
+.req-box p, .req-box li { color:var(--muted); font-size:17px; margin:0 0 6px; }
+.req-box ul { margin:6px 0 12px; padding-left:22px; }
+.req-mail { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:8px 0 12px; }
+.req-mail b { font-size:22px; color:var(--text); user-select:all; word-break:break-all; }
+"""
+
+
+def request_box(label: str = "✉ Request pilot access", button: bool = True) -> str:
+    """'Request pilot access': shows the email address and what to put in the email -- no email program needed."""
+    summary = f'<summary class="btn">{label}</summary>' if button else f'<summary><span style="color:var(--tan2);text-decoration:underline">{label}</span></summary>'
+    return f"""<details class="req">{summary}
+  <div class="req-box">
+    <p>Send a short email to:</p>
+    <div class="req-mail"><b id="reqMail">{EMAIL}</b>
+      <button type="button" class="btn ghost small" id="reqCopy" hidden>Copy address</button></div>
+    <p>Subject: <b style="color:var(--text)">Cadet Foundry pilot access</b>. Please include:</p>
+    <ul><li>Your name</li><li>Your school</li><li>Your JROTC program (Army, Navy, Air Force, Marine Corps or Space Force)</li>
+      <li>About how many Cadets</li></ul>
+    <p>You'll get your own access code by email, usually within a day or two.</p>
+  </div>
+  <script>
+    (function () {{
+      const b = document.getElementById('reqCopy');
+      if (!navigator.clipboard) return;
+      b.hidden = false;
+      b.addEventListener('click', () => navigator.clipboard.writeText('{EMAIL}').then(() => {{ b.textContent = 'Copied ✓'; }}));
+    }})();
+  </script>
+</details>"""
 BUCKET = "cadetfoundry-downloads"                             # Cloudflare's deploy tool, a fixed version (not "latest")
 PYTHON_UNUSED = ("sqlite3.dll", "_sqlite3.pyd", "_elementtree.pyd", "_lzma.pyd", "_bz2.pyd", "_decimal.pyd", "python.cat")
 
@@ -277,7 +312,7 @@ def shell(title: str, here: str, body: str, description: str = "") -> str:
     return f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{html.escape(title)}</title><meta name="description" content="{html.escape(desc)}">
-<link rel="icon" href="/icon.svg" type="image/svg+xml"><style>{STYLE}</style></head><body>
+<link rel="icon" href="/icon.svg" type="image/svg+xml"><style>{STYLE}{REQUEST_CSS}</style></head><body>
 <header class="top"><div class="wrap"><a class="brand" href="/"><span>✦</span> CADET FOUNDRY</a>
 <nav><a href="/#class-day" class="hide-sm">How it works</a><a href="/#setup" class="hide-sm">Set up</a>
 <a href="/security">Privacy</a><a class="btn small" href="/#download">Get access</a></nav></div></header>
@@ -290,7 +325,7 @@ def shell(title: str, here: str, body: str, description: str = "") -> str:
 def page(zip_name: str, size: int, commit: str, history, sha: str = "", setup=None) -> str:
     esc = html.escape
     # Downloads need an access code (0.2.7): request one by email; download with it on /download
-    download = f"""<div class="row"><a class="btn" href="{esc(REQUEST)}">✉ Request pilot access</a>
+    download = f"""<div class="row">{request_box()}
           <a class="btn ghost" href="/download">I have an access code →</a></div>
           <p class="fine" style="margin-top:14px">Free during the pilot · version {esc(__version__)}{f' · {setup[1] / 2**20:.0f} MB' if setup else ''} ·
           Each instructor gets their own access code — please don't share it.</p>
@@ -463,8 +498,8 @@ def download_page() -> str:
     <div class="row"><button class="btn ghost" name="file" value="update">Update (.zip)</button>
     <button class="btn ghost" name="file" value="sig">Its signature (.sig)</button></div></details>
 </form>
-<p class="fine">Your code is just for you and your program — please don't share it or the download. No code yet?
-<a href="{html.escape(REQUEST)}">Request pilot access</a>.</p>
+<p class="fine">Your code is just for you and your program — please don't share it or the download.</p>
+<div class="row" style="margin:8px 0 14px">{request_box("No code yet? Request pilot access", button=False)}</div>
 <p class="fine">When a code is used, this site records which code and when — nothing else. <a href="/privacy">Privacy notice</a>.</p>
 <script>
   const why = {{ bad: "That code isn't right. Check it and try again.", off: "That code has been switched off. Email support@cadetfoundry.org.",

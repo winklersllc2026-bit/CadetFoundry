@@ -100,7 +100,10 @@ def check_library(library: Path = LIBRARY, key=None) -> dict:
     want = json.loads(raw.decode("utf-8")).get("files", {})
     have = fingerprints(library)
     changed = sorted(n for n in want if n in have and have[n] != want[n])
-    missing = sorted(n for n in want if n not in have)
+    # A download ships each manual's converted text, not the source PDF (site/build.py), while the list was made on the
+    # build PC where both exist (owner, 2026-10-12: "Missing: DAFI_36-2903...pdf, ..."). A PDF whose text is here isn't missing.
+    missing = sorted(n for n in want if n not in have
+                     and not (n.lower().endswith(".pdf") and n[:-4] + ".md" in have))
     added = sorted(n for n in have if n not in want)
     ok = not (changed or missing)
     return {"status": "ok" if ok else "changed", "changed": changed, "missing": missing, "added": added,

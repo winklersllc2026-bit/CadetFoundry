@@ -250,6 +250,8 @@ class LibraryTests(unittest.TestCase):
         text = store.profile_text()
         self.assertIn("Grade: 10th grade", text)
         self.assertNotRegex(text, r"(?i)height|weight|rank|MOS|stationed")
+        # one name (owner, 2026-10-12): the AI uses the profile's own name -- the one Rename changes
+        self.assertIn(f"Name: {p['name']}", text)
 
     def test_conversations_are_separate_and_the_old_chat_becomes_the_first(self):
         p = profiles.create(f"chats-test-{uuid.uuid4().hex[:8]}")

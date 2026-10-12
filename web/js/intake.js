@@ -9,17 +9,16 @@ const SKIPPY = /^\s*(skip|pass|no|nope|why\??|prefer not.*|rather not.*|none of 
 const QUESTION_START = /^\s*(can|could|what|what's|how|why|when|where|who|which|do|does|did|is|are|am|should|will|would|may|tell me|explain)\b/i;
 const isQuestion = t => /\?\s*$/.test(t) || (QUESTION_START.test(t) && t.trim().split(/\s+/).length >= 4);
 const NUM = (lo, hi, help) => v => { const n = parseFloat(String(v).replace(/[^\d.]/g, '')); return n >= lo && n <= hi ? null : help; };
-const NAME_CHECK = v => v.trim().split(/\s+/).length > 4 || /\d/.test(v) ? 'Just your name, please.' : null;
 
+// No name question (owner, 2026-10-12: "do away with the double name"): the name typed when the profile was made is
+// the one name, changed with Me -> Rename.
 function intakeQuestions(p, kind, faith) {
   const name = p.name ? `, ${p.name.split(' ')[0]}` : '';
   if (kind === 'guardian') return [
-    { f: 'name', q: `Welcome to Cadet Foundry${name}. I'll ask a few quick questions to set things up. First — what should I call you?`, chips: p.name ? [p.name] : [], check: NAME_CHECK },
-    { f: 'goals', q: 'What would help you most? (for example: understanding JROTC, the terms your Cadet uses, how to support them)', optional: true },
+    { f: 'goals', q: `Welcome to Cadet Foundry${name}. One quick question to set things up: what would help you most? (for example: understanding JROTC, the terms your Cadet uses, how to support them)`, optional: true },
   ];
   const qs = [
-    { f: 'name', q: `Welcome to Cadet Foundry${name}. Before we start, I'll ask you about yourself so Cadet Foundry fits you — it takes about thirty seconds. What's your first and last name?`, chips: p.name ? [p.name] : [], check: NAME_CHECK },
-    { f: 'grade', q: 'What grade are you in?', chips: STATUS.grades || [], optional: true },
+    { f: 'grade', q: `Welcome to Cadet Foundry${name}. Before we start, a few quick questions so Cadet Foundry fits you — about thirty seconds. What grade are you in?`, chips: STATUS.grades || [], optional: true },
     { f: 'interests', q: 'What do you want to get better at this year? Pick one or type your own.', chips: STATUS.interests || [], optional: true },
     { f: 'goals', q: 'What is one goal you have this year? (for example: lead my squad at drill, raise my grades, run a faster mile)', optional: true },
   ];
@@ -39,7 +38,7 @@ const intake = {
       return;
     }
     this.lock = lock; this.active = true; this.i = 0;
-    this.qs = intakeQuestions({ ...(st.profile || {}), name: (st.profile || {}).name || lock.current.name }, st.kind, (cat && cat.installed) || []);
+    this.qs = intakeQuestions({ ...(st.profile || {}), name: lock.current.name }, st.kind, (cat && cat.installed) || []);
     openView('ask');
     $('#suggest').hidden = true;
     $('#msgIn').placeholder = 'Type your answer…';
@@ -117,7 +116,7 @@ const intake = {
     const p = await api('/api/profile', { intake_done: 'yes' });
     this.active = false; STATUS.profile = p;
     // md() escapes, so plain values here
-    const facts = [p.name && `**${p.name}**`, p.grade, p.interests && `working on ${p.interests}`].filter(Boolean);
+    const facts = [this.lock.current.name && `**${this.lock.current.name}**`, p.grade, p.interests && `working on ${p.interests}`].filter(Boolean);
     addMsg('ai', md(`You're set up${facts.length ? ': ' + facts.join(' · ') : ''}.\n\nYou can change any of this in **👤 Me**.${aiReady() ? '' : ' For full-sentence answers, add the **Offline AI** in **Me → Add-ons** (needs internet once).'} Now it's your turn — ask me anything in the library, or tap a suggestion below.`));
     $('#suggest').hidden = false; $('#msgIn').placeholder = 'Ask Cadet Foundry…';
     thread.appendChild($('#suggest'));

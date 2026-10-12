@@ -289,11 +289,20 @@ def save_profile(data: dict) -> dict:
     return p
 
 
+def _profile_name() -> str:
+    d = _profile_dir.get()
+    if d is None:
+        return ""
+    from cadetfoundry import profiles              # here, not at the top: profiles imports store
+    return (profiles.get(d.name) or {}).get("name", "")
+
+
 def profile_text() -> str:
     p = profile()
     bits = []
-    if p.get("name"):
-        bits.append(f"Name: {p['name']}")
+    name = _profile_name() or p.get("name")      # the profile's own name (Rename); profile.json's is from before 0.2.7
+    if name:
+        bits.append(f"Name: {name}")
     if p.get("grade"):
         bits.append(f"Grade: {p['grade']}")
     if p.get("interests"):

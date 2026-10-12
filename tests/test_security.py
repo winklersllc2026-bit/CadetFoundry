@@ -549,6 +549,21 @@ class IntegrityAndUpdateTests(unittest.TestCase):
         ig.write_manifest(lib)
         self.assertEqual(ig.check_library(lib, self.pub)["status"], "bad_signature")
 
+    def test_a_download_without_the_source_pdfs_is_not_missing_anything(self):
+        """The list is made on the build PC (PDF + its text); a download ships only the text (owner, 2026-10-12)."""
+        ig, lib = self.integrity, self.tmp / "library2"
+        lib.mkdir()
+        (lib / "DAFI_1_Test.pdf").write_bytes(b"%PDF-1.4 source")
+        (lib / "DAFI_1_Test.md").write_text("# DAFI 1\n", encoding="utf-8")
+        (lib / "AR_2_Test.pdf").write_bytes(b"%PDF-1.4 no text made")
+        ig.write_manifest(lib)
+        (lib / "DAFI_1_Test.pdf").unlink()                     # as on an installed copy
+        self.assertEqual(ig.check_library(lib, self.pub)["status"], "ok")
+        (lib / "AR_2_Test.pdf").unlink()                       # a PDF with no text beside it is really missing
+        (lib / "DAFI_1_Test.md").unlink()                      # and so is removed text
+        r = ig.check_library(lib, self.pub)
+        self.assertEqual((r["status"], r["missing"]), ("changed", ["AR_2_Test.pdf", "DAFI_1_Test.md", "DAFI_1_Test.pdf"]))
+
     def _zip(self, version="99.0.0", extra=None) -> bytes:
         import io
         import zipfile

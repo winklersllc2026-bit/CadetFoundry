@@ -140,25 +140,24 @@ loaders.me = async () => {
       <div><div class="faint">Profile on this device</div><div id="profName" style="font-size:20px;font-weight:700">${STATUS.kind === 'guardian' ? '👪' : STATUS.kind === 'instructor' ? '🎓' : '👤'} ${esc(lock.current.name)}
         <button class="btn small" id="renameProf" aria-label="Rename this profile" style="margin-left:6px">✎ Rename</button></div></div>
       <div class="row" style="gap:6px"><button class="btn small" id="switchProf">⇄ Switch profile</button><button class="btn small" id="addProf">+ Add profile</button><button class="btn small danger" id="delProf">Delete profile</button></div></div>
-      <p class="faint">Everyone on this device has their own profile, locked by their own PIN. Other Cadets can never see yours.</p></div>
+      <p class="faint">Everyone on this device has their own profile, locked by their own PIN. Other Cadets can never see yours.</p>
+      ${isInst ? '<p class="faint">Program settings — the Class PIN and the AI setting — are further down this page; classes, lessons and Cadets are in 🎓 Instructor.</p>' : ''}</div>
     ${isCadet ? `<div class="card"><h3>🎓 My class</h3>
       <p class="faint">${lock.current.joined ? `You joined <b>${esc(lock.current.joined)}</b> with a join code.` : 'Your instructor can put you in a class, or you can join one with the code they give you.'}</p>
       <div class="row" style="flex-wrap:wrap;gap:8px"><input id="joinIn" maxlength="12" placeholder="Join code" aria-label="Join code" autocomplete="off"
         style="flex:1;min-width:140px;font-family:ui-monospace,Consolas,monospace;text-transform:uppercase;letter-spacing:.15em">
         <button class="btn small primary" id="joinGo">Join</button></div><p class="faint" id="joinMsg" role="status"></p></div>` : ''}
-    <form class="card" id="profForm">
-      <div class="row" style="flex-wrap:wrap;gap:8px"><div style="flex:2;min-width:180px"><label>Name</label><input name="name" value="${esc(p.name)}"></div>
-      ${isCadet ? `<div style="flex:1;min-width:140px"><label>Grade</label><select name="grade">${gradeOpts}</select></div>` : ''}</div>
+    ${isInst && !cat.length ? '' : `<form class="card" id="profForm">
+      ${isCadet ? `<div style="max-width:220px"><label>Grade</label><select name="grade">${gradeOpts}</select></div>` : ''}
       ${isCadet ? `<label>What I want to get better at</label><input name="interests" value="${esc(p.interests)}" placeholder="e.g. public speaking, fitness, leadership">` : ''}
       ${isInst ? '' : `<label>${isCadet ? 'My goals' : 'What would help you most'}</label><textarea name="goals" rows="2" placeholder="${isCadet
         ? 'e.g. lead my squad at the next drill meet, raise my grades, run a faster mile' : 'e.g. understanding JROTC and the terms my Cadet uses'}">${esc(p.goals)}</textarea>`}
       ${isCadet && (STATUS.categories_enabled || []).includes('basic') ? `<label style="display:flex;gap:10px;align-items:flex-start;margin-top:10px;color:var(--text)">
         <input type="checkbox" id="mtBox" ${p.military_track === 'yes' ? 'checked' : ''} style="width:22px;height:22px;flex:none">
         <span>I plan to join the military <span class="faint">— adds the 🪖 Basic Training &amp; Beyond study guide to Learn</span></span></label>` : ''}
-      ${isInst ? '<p class="faint">Program settings — the Class PIN and the AI setting — are further down this page; classes, lessons and Cadets are in 🎓 Instructor.</p>' : ''}
       ${cat.length ? `<label>My faith texts (optional — used first in the Faith tab and when you ask about a passage)</label><div>${faithBoxes}</div>` : ''}
       <div class="row" style="margin-top:10px"><button class="btn primary">Save</button><span class="faint" id="profSaved"></span></div>
-    </form>
+    </form>`}
     ${isInst ? '' : `<div class="card"><h3>What Cadet Foundry remembers about you</h3>
       ${mems.length ? mems.map(m => `<div class="row" style="justify-content:space-between;border-bottom:1px solid var(--line);padding:6px 0"><span>${esc(m.text)}</span><button class="btn small danger" data-forget="${esc(m.id)}">Forget</button></div>`).join('') : '<p class="faint">Nothing yet. Cadet Foundry learns as you talk, or add something:</p>'}
       <div class="row" style="margin-top:8px"><input id="memIn" placeholder="e.g. I'm working on my plank time" style="flex:1"><button class="btn small" id="memAdd">Add</button></div></div>`}
@@ -194,7 +193,7 @@ loaders.me = async () => {
       <p class="faint" id="restoreMsg">Restoring replaces what's on this device with the backup. Without the backup password, nobody can open the file.</p></div>
     <p class="faint">Cadet Foundry is designed to support JROTC instruction. It isn't an official JROTC, military or school source — your instructor and official sources come first. What you enter is saved on this device, nothing is sent to the internet, and there is no tracking.</p>
     ${aboutHtml()}`;
-  $('#profForm').onsubmit = async ev => {
+  if ($('#profForm')) $('#profForm').onsubmit = async ev => {
     ev.preventDefault();
     const data = Object.fromEntries(new FormData(ev.target));
     if ($('#mtBox')) data.military_track = $('#mtBox').checked ? 'yes' : '';
