@@ -117,7 +117,7 @@ python tools/make_usb.py E:\                  # app + its own Python + the libra
 python tools/make_usb.py E:\ --with-ai        # also the offline AI, copied from this computer (adds about 1–2 GB)
 ```
 
-On the drive, double-click **Start Cadet Foundry.bat** (this computer only) or **Start Classroom.bat** (Cadets
+On the drive, double-click **Start Cadet Foundry.bat**; to teach, press **Open class to phones** on your Home screen (Cadets
 join from their phones on the same Wi-Fi — it opens a Join screen with a QR code). Keep the window open while you use it; close it or use Me → Quit Cadet Foundry
 before unplugging. Run the command again to update the drive — the `Cadet Foundry Data` folder is never touched.
 Linux / Mac: `sh start-cadet-foundry-usb.sh` (in the Mac and Linux folder) on the drive. `START HERE.html` on the drive explains which file does what.

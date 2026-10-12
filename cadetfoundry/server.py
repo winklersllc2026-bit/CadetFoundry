@@ -82,7 +82,25 @@ class Handler(BaseHTTPRequestHandler):
         pass
 
     # ── responses ───────────────────────────────────────────────────────────
+    def _crashed(self, route: str, err: BaseException) -> None:
+        """Something unexpected went wrong handling a request. The details go to this computer's Cadet Foundry window
+        (or its log file), and the page gets a plain message -- never a silently dropped request."""
+        import traceback
+        if isinstance(err, (ConnectionError, TimeoutError)):   # the device went away mid-answer: not a problem here
+            return
+        print(f"\nCadet Foundry hit a problem with {route}:", flush=True)
+        traceback.print_exception(err)
+        if getattr(self, "_started", False):                # part of an answer already went out: nothing more to send
+            return
+        try:
+            self._json({"ok": False, "error": f"Something went wrong on the computer running Cadet Foundry "
+                                              f"({type(err).__name__}). The details are in its window. Try again; "
+                                              f"if it keeps happening, email support@cadetfoundry.org."}, 500)
+        except OSError:
+            pass
+
     def _headers(self, status: int, ctype: str, length: int, extra: dict | None = None) -> None:
+        self._started = True
         self.send_response(status)
         self.send_header("Content-Type", ctype)
         self.send_header("Content-Length", str(length))
@@ -206,8 +224,11 @@ class Handler(BaseHTTPRequestHandler):
         r = self._route()
         if not self._checks("GET", r):
             return
+        self._started = False
         try:
             self._get(r)
+        except Exception as e:                           # never drop a request silently (see _crashed)
+            self._crashed(r, e)
         finally:
             self._done()
 
@@ -496,7 +517,7 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                 mine = [u for u in ov["units"] if u.get("owner") == self._pid]
                 out["units"] = [{"id": u["id"], "name": u["name"], "code": u["code"]} for u in (mine or ov["units"])]
             elif self._local():
-                # Start Classroom opens the Join screen before anyone signs in: on the instructor's own computer it
+                # The Join screen can open before anyone signs in: on the instructor's own computer it
                 # still shows the classes' join codes (the plain list a signed-in instructor published); never to
                 # other devices on the network.
                 out["units"] = [{"id": v["unit"], "name": v["name"], "code": code}
@@ -674,8 +695,11 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
         r = self._route()
         if not self._checks("POST", r):
             return
+        self._started = False
         try:
             self._post(r)
+        except Exception as e:                           # never drop a request silently (see _crashed)
+            self._crashed(r, e)
         finally:
             self._done()
 

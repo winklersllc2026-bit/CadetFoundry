@@ -1,6 +1,6 @@
 """
 A small QR code maker (the same one as web/js/qr.js, in Python) -- no library, works offline. run.py uses it to
-print the class Join address as a QR code in the Start Classroom window, so Cadets can scan the console too.
+print the class Join address as a QR code in the console window when class is opened with --lan, so Cadets can scan it too.
 Byte mode, error correction level M, versions 1-10. ISO/IEC 18004: Reed-Solomon over GF(256), interleaved blocks,
 all 8 masks scored, the lowest penalty kept.
 """

@@ -148,7 +148,7 @@ def main() -> int:
           f"{stats['quiz_questions']} quiz questions")
     _print_mode(args.lan, args.port)
     print("  Press Ctrl+C to stop (or Me > Quit Cadet Foundry).")
-    # Start Classroom opens the Join screen (a big QR code for the projector); the app is one click from it.
+    # Started with --lan (the classroom), it opens the Join screen (a big QR code for the projector).
     show = url + ("/join" if args.lan else "/")
     if args.kiosk:
         threading.Timer(0.8, lambda: open_kiosk(url)).start()

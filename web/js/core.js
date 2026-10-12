@@ -8,7 +8,13 @@ const api = async (path, body) => {
     showLock();                                   // session expired or locked
     throw new Error('locked');
   }
-  return r.json();
+  const copy = r.clone();
+  try {
+    return await r.json();
+  } catch (e) {                                   // not JSON (a refusal or an error page): say so, never fail silently
+    const text = (await copy.text().catch(() => '')).trim().slice(0, 160);
+    return { ok: false, error: `Cadet Foundry couldn't do that (${r.status}${text ? ': ' + text : ''}).` };
+  }
 };
 
 // ── Profiles + PIN lock screen ──
@@ -78,8 +84,17 @@ async function showLock(msg) {
     $('#forgotPin').onclick = () => recoverFor(p);
     $('#unlockForm').onsubmit = async ev => {
       ev.preventDefault();
-      const r = await api('/api/unlock', { profile: p.id, pin: $('#pinIn').value });
-      if (r.ok) go(); else { $('#unlockMsg').textContent = r.error; $('#pinIn').value = ''; }
+      const btn = $('#unlockForm button.primary');
+      btn.disabled = true;
+      $('#unlockMsg').textContent = 'Signing in…';
+      let r;
+      try {
+        r = await api('/api/unlock', { profile: p.id, pin: $('#pinIn').value });
+      } catch (e) {                               // no answer at all: Cadet Foundry stopped, or the network dropped
+        r = { ok: false, error: "Couldn't reach Cadet Foundry. Is its window still open on the instructor's computer?" };
+      }
+      btn.disabled = false;
+      if (r.ok) { $('#unlockMsg').textContent = 'Opening…'; go(); } else { $('#unlockMsg').textContent = r.error || 'That PIN didn’t work.'; $('#pinIn').value = ''; }
     };
   };
   const recoverFor = p => {

@@ -225,9 +225,12 @@ function runSheet(main, plan, ov) {
   main.innerHTML = `<div class="card" style="border-color:var(--tan)">
       <div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:8px"><h3 style="margin:0">Today's class${unit ? ' — ' + esc(unit.name) : ''}</h3>
         <span class="faint">${done} of ${plan.items.length} done</span></div>
-      ${STATUS.lan ? `<div class="row" style="gap:10px;margin:12px 0;flex-wrap:nowrap"><span style="font-size:22px">📱</span>
-        <div style="flex:1"><b>Cadets join</b><div class="faint">Put the Join screen on the projector; Cadets scan the QR code.</div></div>
-        <button class="btn" id="cdJoin">Join screen</button></div>` : ''}
+      ${STATUS.sample ? '' : `<div class="row" style="gap:10px;margin:12px 0;flex-wrap:nowrap"><span style="font-size:22px">📱</span>
+        <div style="flex:1"><b>Cadets join</b><div class="faint">${STATUS.lan
+          ? 'Put the QR code on the projector; Cadets scan it with their phone camera.'
+          : 'Class is on this computer only. Open it to phones, then put the QR code on the projector.'}</div>
+          <p class="faint" id="cdJoinMsg" role="status" style="margin:4px 0 0"></p></div>
+        <button class="btn primary" id="cdJoin" style="white-space:nowrap">${STATUS.lan ? '📱 Show the QR code' : '📱 Open class to phones'}</button></div>`}
       ${phases}
       <div style="margin-top:14px;border-top:1px solid var(--line);padding-top:8px"><div class="faint" style="letter-spacing:.12em;font-size:13px">PROGRESS · Who's done</div>
         <div class="row" style="gap:10px;margin:10px 0;flex-wrap:nowrap"><span style="font-size:22px">📈</span>
@@ -235,7 +238,11 @@ function runSheet(main, plan, ov) {
           <button class="btn" id="cdProgress" style="white-space:nowrap">Open</button></div></div>
       <div class="row" style="gap:8px;flex-wrap:wrap;margin-top:14px"><button class="btn" id="cdEdit">✎ Change the plan</button>
         <button class="btn" id="cdEnd">Finish class</button></div><p class="faint" id="cdRunMsg" role="alert"></p></div>`;
-  if ($('#cdJoin')) $('#cdJoin').addEventListener('click', () => window.open('/join', '_blank', 'noopener'));
+  if ($('#cdJoin')) $('#cdJoin').addEventListener('click', () => {
+    if (STATUS.lan) { window.open('/join', '_blank', 'noopener'); return; }
+    // Not open yet: open class to phones right here; the page comes back with "Show the QR code" on this same step.
+    switchClassroom(true, $('#cdJoin'), $('#cdJoinMsg'));
+  });
   $('#cdEdit').addEventListener('click', () => planner(main, ov, plan));
   $('#cdProgress').addEventListener('click', () => {
     openView('instructor');

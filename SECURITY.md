@@ -124,7 +124,7 @@ or call 988 or 911.
 log, fitness and service. Votes in class are anonymous (counts only). Cadet Foundry doesn't watch or read your private
 things, and no one is alerted by anything you type.
 
-## The classroom network (Open class to phones on the instructor's Home; `--lan`, the Cadet Foundry Classroom shortcut, the USB's Start Classroom file, the Pi demo box)
+## The classroom network (Open class to phones on the instructor's Home; `--lan`, the Pi demo box)
 
 In the app this is called **class is open**; the **Class PIN** is the code this document also calls the Instructor PIN.
 

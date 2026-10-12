@@ -12,8 +12,7 @@ Sizes: the app about 50 MB; with the AI about 0.1 GB for the engine plus the mod
 Run it again to update the drive: the app is replaced, the data (Cadet Foundry Data) is never touched.
 
 On the drive:
-    Start Cadet Foundry.bat                 this computer only
-    Start Classroom.bat                Cadets on the same Wi-Fi join from their phones
+    Start Cadet Foundry.bat            starts it (open class to phones from the Home screen)
     start-cadet-foundry-usb.sh         Linux / Mac (uses that computer's python3)
     START HERE.html                    which file does what (opens in any browser)
     Cadet Foundry\\                     the app, with python\\ (and ollama\\ with --with-ai)
@@ -34,9 +33,9 @@ sys.path.insert(0, str(ROOT / "site"))
 import build  # noqa: E402  (site/build.py: the same file list and bundled Python as the installer)
 
 APP_ITEMS = ["cadetfoundry", "web", "tools", "library", "books", "faith", "python", "run.py", "README.md", "LIBRARY.md",
-             "SECURITY.md", "install-cadetfoundry.bat", "install-cadetfoundry.sh", "start-cadetfoundry.bat", "start-cadetfoundry.sh",
-             "start-classroom.bat", "start-classroom.sh"]
-OLD_APP_ITEMS = ["vanguard", "install-vanguard.bat", "install-vanguard.sh", "start-vanguard.bat", "start-vanguard.sh"]
+             "SECURITY.md", "install-cadetfoundry.bat", "install-cadetfoundry.sh", "start-cadetfoundry.bat", "start-cadetfoundry.sh"]
+OLD_APP_ITEMS = ["vanguard", "install-vanguard.bat", "install-vanguard.sh", "start-vanguard.bat", "start-vanguard.sh",
+                 "start-classroom.bat", "start-classroom.sh"]                # the classroom is opened from the app now
 
 START_BAT = r"""@echo off
 title Cadet Foundry
@@ -114,8 +113,8 @@ GOOD TO KNOW
  - It will NOT overwrite a drive that already has Cadet Foundry profiles on it.
  - A Cadet's drive works on its own: plug it into any Windows computer and
    double-click "Start Cadet Foundry.bat".
- - To bring a Cadet into your class, they join it from Start Classroom on your
-   computer, or type your class's join code in Me -> Join a class.
+ - To bring a Cadet into your class, open class to phones on your Home screen and
+   show the QR code, or the Cadet types your class's join code in Me -> Join a class.
 """
 
 START_HERE = """<!DOCTYPE html>
@@ -136,16 +135,14 @@ th { background: #efe8d6; } .tip { color: #444; font-size: 15px; } code { font-f
 
 <h2>Which one do I open?</h2>
 
-<div class="box"><h3>▶ <span class="file">Start Cadet Foundry.bat</span> — just this computer</h3>
-Cadet Foundry runs from this drive and opens in this computer's browser. <b>Only this computer can use it.</b><br>
-Use it to look around, prepare lessons, check records, or for one person studying.</div>
-
-<div class="box"><h3>▶ <span class="file">Start Classroom.bat</span> — the whole class</h3>
-This computer becomes the classroom's Cadet Foundry. <b>Cadets use it from their own phones, tablets or laptops</b> on the
-same Wi-Fi: it opens a <b>Join screen</b> with a big QR code to put on the projector — Cadets scan it and pick a name and a PIN.<br>
-A profile without a PIN can only be opened on this computer while class is open. If Windows asks whether to allow Python on networks, choose
-<b>Allow</b> (private networks). If Cadets can't connect, the school Wi-Fi may block devices from reaching each other —
-ask IT, or use a phone hotspot or the Cadet Foundry demo box.</div>
+<div class="box"><h3>▶ <span class="file">Start Cadet Foundry.bat</span> — start here</h3>
+Cadet Foundry runs from this drive and opens in this computer's browser. At first <b>only this computer can use it</b> —
+good for looking around, preparing lessons, checking records, or one person studying.<br>
+<b>Teaching a class?</b> On your Home screen press <b>📱 Open class to phones</b>, or press <b>▶ Start class</b> — its first
+step opens class to phones and shows the <b>QR code</b> to put on the projector. Cadets scan it with their phones, tablets or
+laptops on the same Wi-Fi and pick a name and a PIN.<br>
+If Windows asks whether to allow Python on networks, choose <b>Allow</b> (private networks). If Cadets can't connect, the
+school Wi-Fi may block devices from reaching each other — ask IT, or use a phone hotspot or a small travel router.</div>
 
 <div class="box"><h3>📁 <span class="file">Make more flash drives</span> — a clean drive for each Cadet</h3>
 Open <span class="file">HOW TO MAKE MORE DRIVES.txt</span> in that folder. In short: copy this drive to a computer (all but
@@ -153,8 +150,8 @@ Open <span class="file">HOW TO MAKE MORE DRIVES.txt</span> in that folder. In sh
 The new drive has no profiles or records on it.</div>
 
 <div class="box"><h3>📁 <span class="file">Mac and Linux</span> — not Windows</h3>
-For a Mac or Linux computer: open a terminal in that folder and run <code>sh start-cadet-foundry-usb.sh</code> —
-or <code>sh start-cadet-foundry-usb.sh --lan</code> for the whole class. That computer needs Python 3 with the
+For a Mac or Linux computer: open a terminal in that folder and run <code>sh start-cadet-foundry-usb.sh</code>,
+then open class to phones from your Home screen as usual. That computer needs Python 3 with the
 <code>cryptography</code> package. Windows computers don't need this folder.</div>
 
 <div class="box"><h3>⬇ <span class="file">Install Cadet Foundry … on this computer.exe</span> — keep it on a computer</h3>
@@ -162,16 +159,16 @@ Installs Cadet Foundry on this Windows computer (a Cadet Foundry icon on the des
 isn't needed. If Windows says <i>"Windows protected your PC"</i>, choose <b>More info → Run anyway</b>.</div>
 
 <table>
-<tr><th></th><th>Start Cadet Foundry</th><th>Start Classroom</th><th>Install …exe</th></tr>
-<tr><td>Who can use it</td><td>This computer only</td><td>This computer + Cadets' devices on the same Wi-Fi</td><td>That computer (Cadet Foundry Classroom in its Start menu)</td></tr>
-<tr><td>Where the data lives</td><td colspan="2">On this drive (<span class="file">Cadet Foundry Data</span>)</td><td>On that computer</td></tr>
-<tr><td>Installs anything?</td><td colspan="2">No — runs from the drive</td><td>Yes</td></tr>
-<tr><td>Best for</td><td>Preparing, one person</td><td>Teaching a class</td><td>A computer used every day</td></tr>
+<tr><th></th><th>Start Cadet Foundry</th><th>Install …exe</th></tr>
+<tr><td>Who can use it</td><td>This computer — and Cadets' devices on the same Wi-Fi once you open class to phones</td><td>The same, on that computer</td></tr>
+<tr><td>Where the data lives</td><td>On this drive (<span class="file">Cadet Foundry Data</span>)</td><td>On that computer</td></tr>
+<tr><td>Installs anything?</td><td>No — runs from the drive</td><td>Yes</td></tr>
+<tr><td>Best for</td><td>Carrying your class between computers</td><td>A computer used every day</td></tr>
 </table>
 
 <h2>The first time</h2>
 <ol>
-<li>Open <span class="file">Start Cadet Foundry.bat</span> (or <span class="file">Start Classroom.bat</span>).</li>
+<li>Open <span class="file">Start Cadet Foundry.bat</span>.</li>
 <li>Instructor: choose <b>I'm the instructor — set up this class</b>. Pick a <b>Class PIN</b> (it opens your class — don't share it with Cadets), then your name and your own PIN.</li>
 <li>Your <b>Home</b> screen walks you through the rest: make your class, put Cadets in it, open class to phones. Then press <b>▶ Start class</b> and tick today's lesson, scenarios, live questions and videos.</li>
 <li>Write down each <b>backup code</b> Cadet Foundry shows — it's the way back if a PIN is forgotten.</li>
@@ -180,7 +177,7 @@ isn't needed. If Windows says <i>"Windows protected your PC"</i>, choose <b>More
 <h2>While it runs and when you're done</h2>
 <ul>
 <li>A black window stays open while Cadet Foundry runs — <b>leave it open</b>.</li>
-<li>To stop: <b>End class</b> on the Join screen, <b>Me → Quit Cadet Foundry</b>, or close the black window. Wait a moment, then unplug the drive.</li>
+<li>To stop: <b>Close to phones</b> on your Home screen when class ends, then <b>Me → Quit Cadet Foundry</b> or close the black window. Wait a moment, then unplug the drive.</li>
 <li>The offline AI (if this drive has it) starts and stops with Cadet Foundry. Its first answer can take a minute.</li>
 </ul>
 
@@ -268,6 +265,9 @@ def main(argv: list[str]) -> int:
         if (drive / old).is_dir() and not (drive / new).exists():
             _retry((drive / old).rename, drive / new)
             print(f"Renamed {old} -> {new}")
+    for leftover in drive.glob("*-sample"):               # a sample class's throwaway folder (rebuilt each time anyway)
+        if (leftover / "SAMPLE_DATA.txt").exists():
+            _retry(shutil.rmtree, leftover)
 
     print("Building the app …")
     with tempfile.TemporaryDirectory() as tmp:
@@ -333,7 +333,8 @@ def main(argv: list[str]) -> int:
     (drive / "Cadet Foundry Data").mkdir(exist_ok=True)
     for old in ("Start Vanguard (classroom).bat", "Start Vanguard.bat"):    # older names (0.1; before the rename)
         (drive / old).unlink(missing_ok=True)
-    for name, args_ in (("Start Cadet Foundry.bat", ""), ("Start Classroom.bat", "--lan")):
+    (drive / "Start Classroom.bat").unlink(missing_ok=True)             # the classroom opens from the app now (0.2.6)
+    for name, args_ in (("Start Cadet Foundry.bat", ""),):
         (drive / name).write_bytes(START_BAT.replace("{args}", args_).replace("\r\n", "\n").replace("\n", "\r\n").encode("ascii"))
     (drive / "start-vanguard-usb.sh").unlink(missing_ok=True)          # moved into "Mac and Linux" (0.2.2)
     (drive / "Mac and Linux").mkdir(exist_ok=True)

@@ -656,7 +656,7 @@ class IntegrityAndUpdateTests(unittest.TestCase):
         (root / "cadetfoundry" / "__init__.py").write_text('__version__ = "0.0.1"\n')
         r = self.integrity.install_update(data, self.sign(data), root, self.pub)
         self.assertEqual(r["version"], self.integrity.current_version(ROOT))
-        self.assertTrue((root / "run.py").exists() and (root / "start-classroom.bat").exists())
+        self.assertTrue((root / "run.py").exists() and (root / "start-cadetfoundry.bat").exists())
         self.assertGreater(r["files"], 100)
         # and the same zip with one byte changed is refused
         bad = data[:-10] + bytes([data[-10] ^ 1]) + data[-9:]

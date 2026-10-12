@@ -10,7 +10,8 @@ ROOT = Path(__file__).resolve().parent.parent
 # "Seaman Recruit", the Navy's E-1 rank (defense.gov), and "Recruit Training".
 OLD = re.compile(r"(?i:cursiv)|(?<!Seaman )Recruit(?![ _-]?[Tt]raining)")
 # Historical planning notes from the fork (docs/history/) describe the earlier product by name, on purpose.
-ALLOWED = {"docs/history/HANDOFF.md", "docs/history/REUSE_PLAN.md", "docs/history/MIGRATION_PLAN.md", "tests/test_brand.py"}
+ALLOWED = {"docs/history/HANDOFF.md", "docs/history/REUSE_PLAN.md", "docs/history/MIGRATION_PLAN.md", "tests/test_brand.py",
+           "tests/test_rename.py"}                     # checks that old computers, drives and backups still move over
 
 
 class BrandTests(unittest.TestCase):
@@ -38,7 +39,7 @@ class BrandTests(unittest.TestCase):
         (which forwards)."""
         moving_over = re.compile(
             r"\.vanguard-release|vanguard-site|vanguard\.winklers-llc\.com|Vanguard-releases|winklersllc2026-bit/Vanguard\b|"
-            r"OLD_LATEST = \"Vanguard-Setup-latest\.exe\"|OLD_LATEST|Vanguard\*\\n|OLD_DATA_FOLDER = \"\.vanguard\"|OLD_DATA_FOLDER|OLD_APP_ITEMS = \[[^\]]*\]|OLD = \"vanguard\"|data\.vanguard_backup_sealed|"
+            r"OLD_LATEST = \"Vanguard-Setup-latest\.exe\"|OLD_LATEST|Vanguard\*\\n|OLD_DATA_FOLDER = \"\.vanguard\"|OLD_DATA_FOLDER|OLD_APP_ITEMS = .*|OLD = \"vanguard\"|data\.vanguard_backup_sealed|"
             r"\"VanguardData\"|\(\"Vanguard\", \"Cadet Foundry\"\)|Install Vanguard\*|\"Start Vanguard|start-vanguard-usb\.sh|"
             r"\\\.vanguard\\vanguard\.pid|\{app\}\\vanguard|\{app\}\\(start|install)-vanguard|Vanguard( Classroom)?\.lnk|"
             r"Name = 'Vanguard'|exactly \"Vanguard\"|Vanguard 0\.1\.0|before the rename|formerly Vanguard|renamed from Vanguard",

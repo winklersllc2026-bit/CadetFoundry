@@ -56,6 +56,10 @@ Type: files; Name: "{app}\install-vanguard.sh"
 Type: files; Name: "{autoprograms}\Vanguard.lnk"
 Type: files; Name: "{autoprograms}\Vanguard Classroom.lnk"
 Type: files; Name: "{autodesktop}\Vanguard.lnk"
+; The classroom opens from the app now (Home -> Open class to phones), so the separate Classroom shortcut and start files go.
+Type: files; Name: "{autoprograms}\{#AppName} Classroom.lnk"
+Type: files; Name: "{app}\start-classroom.bat"
+Type: files; Name: "{app}\start-classroom.sh"
 
 [Files]
 Source: "@STAGE@\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
@@ -66,8 +70,6 @@ Type: filesandordirs; Name: "{app}"
 
 [Icons]
 Name: "{autoprograms}\{#AppName}"; Filename: "{app}\python\pythonw.exe"; Parameters: """{app}\run.py"""; WorkingDir: "{app}"; IconFilename: "{app}\web\icon.ico"
-; The whole class: opens the Join screen (a QR code Cadets scan on the same Wi-Fi). End class there to stop.
-Name: "{autoprograms}\{#AppName} Classroom"; Filename: "{app}\python\pythonw.exe"; Parameters: """{app}\run.py"" --lan"; WorkingDir: "{app}"; IconFilename: "{app}\web\icon.ico"
 Name: "{autodesktop}\{#AppName}"; Filename: "{app}\python\pythonw.exe"; Parameters: """{app}\run.py"""; WorkingDir: "{app}"; IconFilename: "{app}\web\icon.ico"; Tasks: desktopicon
 
 [Run]

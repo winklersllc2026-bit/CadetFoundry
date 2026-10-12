@@ -1,6 +1,5 @@
 """The rename (0.2.6): a computer, USB drive or backup made before it keeps working. Data folders move to their new
 names (nothing copied, nothing lost), and backups made before the rename still restore."""
-import importlib
 import json
 import os
 import shutil
@@ -93,10 +92,9 @@ class UsbLayoutTests(unittest.TestCase):
         src = (ROOT / "tools" / "make_usb.py").read_text(encoding="utf-8")
         self.assertIn('("VanguardData", "Cadet Foundry Data")', src)       # the data folder is renamed, not copied
         self.assertIn('OLD_APP_ITEMS = ["vanguard"', src)                  # old code left in the app folder is removed
-        clone = importlib.import_module("tools.clone_drive") if (ROOT / "tools" / "__init__.py").exists() else None
         text = (ROOT / "tools" / "clone_drive.py").read_text(encoding="utf-8")
         self.assertIn('"VanguardData"', text)                              # a Cadet copy never takes an old data folder
-        del clone
+        self.assertIn('SAMPLE_DATA.txt', text)                             # nor a sample class's throwaway folder
 
 
 if __name__ == "__main__":

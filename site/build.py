@@ -35,7 +35,7 @@ OLD_LATEST = "Vanguard-Setup-latest.exe"        # the same file under the name u
 LATEST_URL = f"{RELEASES}/releases/latest/download/{LATEST}"
 
 INCLUDE_DIRS = ["cadetfoundry", "web", "tools", "tests", "faith", "library", "books"]
-INCLUDE_FILES = ["run.py", "start-cadetfoundry.bat", "start-cadetfoundry.sh", "start-classroom.bat", "start-classroom.sh", "install-cadetfoundry.bat", "install-cadetfoundry.sh", "README.md", "LIBRARY.md", "SECURITY.md"]
+INCLUDE_FILES = ["run.py", "start-cadetfoundry.bat", "start-cadetfoundry.sh", "install-cadetfoundry.bat", "install-cadetfoundry.sh", "README.md", "LIBRARY.md", "SECURITY.md"]
 
 ROADMAP = [
     (True, "0.2: every branch — Army, Navy, Air Force, Marine Corps and Space Force sections in Learn; your program's labels"),

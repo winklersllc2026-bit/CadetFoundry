@@ -142,7 +142,7 @@ class JoinCodeTests(unittest.TestCase):
         self.assertEqual(self.req("POST", "/api/join", {"code": unit["code"]}, t1)[0], 400)        # not for instructors
 
     def test_join_screen_is_public_and_shows_codes_only_on_the_instructors_computer(self):
-        """Start Classroom opens the Join screen before anyone signs in: on the instructor's own computer it shows the
+        """The Join screen opens before anyone signs in: on the instructor's own computer it shows the
         join codes; another device on the network never gets them without an open instructor session."""
         from unittest import mock
         from cadetfoundry.server import Handler

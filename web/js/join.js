@@ -1,5 +1,5 @@
 'use strict';
-// The class Join screen (/join): what Start Classroom opens on the projector. A big QR code and the address Cadets
+// The class Join screen (/join): what Start class's "Show the QR code" opens on the projector. A big QR code and the address Cadets
 // type, plus -- for an instructor with class records open -- a unit's join code, built into the QR code so a Cadet
 // who scans it lands in the right class. Listeners in JS (the page's security policy blocks inline handlers).
 (() => {

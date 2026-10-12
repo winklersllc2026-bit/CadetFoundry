@@ -44,7 +44,8 @@ def has_people(drive: Path) -> bool:
 
 
 def items_to_copy(src: Path) -> list[Path]:
-    return [p for p in sorted(src.iterdir()) if p.name not in SKIP]
+    # never a data folder, and never a sample class's throwaway folder (it holds made-up people only, but it's not the app)
+    return [p for p in sorted(src.iterdir()) if p.name not in SKIP and not (p / "SAMPLE_DATA.txt").exists()]
 
 
 def copy_all(src: Path, dest: Path, say=print) -> int:
