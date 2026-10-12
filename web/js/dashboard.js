@@ -193,7 +193,7 @@ async function liveQuizMode() {
         <button class="btn small" id="lqEnd">End</button></span></div>
       <h1 style="font-size:clamp(26px,4vw,48px);margin:18px 0">${esc(lq.q)}</h1>
       ${lq.mode === 'mc' ? lq.choices.map((c, i) => `<div style="margin:14px 0;font-size:clamp(18px,2.4vw,30px)">
-        <b>${L[i]}.</b> ${esc(c)}${lq.revealed && c === lq.a ? ' ✅' : ''}
+        <b>${L[i]}.</b> ${esc(c)}${lq.revealed && c === (lq.right || lq.a) ? ' ✅' : ''}
         ${lq.revealed ? `<div style="display:flex;align-items:center;gap:10px;margin-top:6px"><div style="height:14px;border-radius:7px;background:var(--tan);width:${Math.round(lq.counts[i] / max * 70)}%;min-width:4px"></div>
         <span class="faint">${lq.counts[i]}</span></div>` : ''}</div>`).join('') : '<p class="faint" style="font-size:20px">Typed answers — graded by Cadet Foundry.</p>'}
       ${lq.revealed ? `<div class="card" style="font-size:clamp(18px,2.2vw,28px)"><b>Answer:</b> ${esc(lq.a)}

@@ -31,6 +31,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "site"))
 import build  # noqa: E402  (site/build.py: the same file list and bundled Python as the installer)
+sys.path.insert(0, str(ROOT))
+from cadetfoundry import integrity  # noqa: E402
 
 APP_ITEMS = ["cadetfoundry", "web", "tools", "library", "books", "faith", "python", "run.py", "README.md", "LIBRARY.md",
              "SECURITY.md", "install-cadetfoundry.bat", "install-cadetfoundry.sh", "start-cadetfoundry.bat", "start-cadetfoundry.sh"]
@@ -268,6 +270,15 @@ def main(argv: list[str]) -> int:
     for leftover in drive.glob("*-sample"):               # a sample class's throwaway folder (rebuilt each time anyway)
         if (leftover / "SAMPLE_DATA.txt").exists():
             _retry(shutil.rmtree, leftover)
+
+    # The manuals aren't in git (library/ is ignored), so a fresh copy of the code can be missing them. A drive built
+    # from it said "Missing: ...pdf" in the app (found 2026-10-11). Stop here instead.
+    lib = integrity.check_library()
+    if lib.get("missing"):
+        print(f"This computer's library is missing {len(lib['missing'])} file(s): {', '.join(lib['missing'][:5])}"
+              f"{' …' if len(lib['missing']) > 5 else ''}\nCopy them into {integrity.LIBRARY} (or run tools/fetch_library.py),"
+              " then make the drive again. Nothing was changed on the drive.")
+        return 1
 
     print("Building the app …")
     with tempfile.TemporaryDirectory() as tmp:

@@ -3,6 +3,10 @@
 
 // ── STUDY ──
 const studyBody = $('#studyBody');
+// Learn's page loads its sections from the server, so it finishes a moment after it starts. Home's Daily 10 opens
+// Learn and the quiz straight away; without this the late section list painted over the quiz (owner's report,
+// 2026-10-11: "opens learn but does not generate 10 questions"). Anything newer that draws here bumps the turn.
+let studyTurn = 0;
 // Learn (0.2): one drop-down picks a section, so the page never turns into a long scroll. Every branch of service a
 // Cadet can explore gets its own section once it has checked cards (a Cadet in one program may join another branch);
 // the shared sections hold what's true for all services. Basic Training & Beyond stays opt-in (the server decides).
@@ -23,7 +27,9 @@ const learnGet = () => { try { return localStorage.getItem(LEARN_KEY) || ''; } c
 const learnSet = v => { try { localStorage.setItem(LEARN_KEY, v); } catch { /* private window: just don't remember */ } };
 
 loaders.study = async (pick) => {
+  const turn = ++studyTurn;
   const topics = await api('/api/topics');
+  if (turn !== studyTurn) return;                                  // a quiz opened while this was loading
   const cats = STATUS.categories || {}, svcs = STATUS.services || {};
   const all = [];
   topics.forEach(t => t.cards.forEach(c => all.push(c)));
@@ -282,6 +288,7 @@ const VERDICT = { right: '✅ Right!', close: '🟡 Close.', wrong: '❌ Not qui
 
 // Two ways in (owner's design): Practice = multiple choice, to learn it; Challenge = type the answer, to prove it.
 function chooseQuiz(topic, daily = false) {
+  studyTurn++;
   studyBody.innerHTML = `<h2>${daily ? '🔥 Daily 10' : 'Quiz'}</h2>
     <div class="card"><p>${esc(QUIZ_NOTE)}</p>
       <button class="btn primary" id="qPractice" style="display:block;width:100%;text-align:left;margin:8px 0">📝 <b>Practice</b> — multiple choice<br><span class="faint">Pick from four answers. A good way to learn it.</span></button>
@@ -301,8 +308,16 @@ function chooseQuiz(topic, daily = false) {
 }
 
 async function startQuiz(topic, preset, onDone, daily = false, mode = 'typed') {
+  const turn = ++studyTurn;
   const qs = preset || await api('/api/quiz?n=10&mode=' + mode + '&topic=' + encodeURIComponent(topic || ''));
+  if (turn !== studyTurn) return;
   let i = 0, right = 0;
+  if (!Array.isArray(qs) || !qs.length) {
+    studyBody.innerHTML = `<div class="card"><p>${esc((qs && qs.error) || "There aren't any questions here yet.")}</p>
+      <button class="btn" id="backStudy">← Back to Learn</button></div>`;
+    $('#backStudy').onclick = () => loaders.study();
+    return;
+  }
   studyBody.innerHTML = `<div class="row" style="justify-content:space-between;align-items:center">
       <h2 style="margin:0">${daily ? '🔥 Daily 10' : 'Quiz'}</h2><button class="btn small" id="quit">End quiz</button></div>
     <div id="qFeed" class="thread" aria-live="polite" style="margin-top:10px"></div>
@@ -331,6 +346,7 @@ async function startQuiz(topic, preset, onDone, daily = false, mode = 'typed') {
         answer({ choice: q.choices[+b.dataset.mc] }, `${'ABCD'[+b.dataset.mc]}. ${q.choices[+b.dataset.mc]}`);
       }));
     } else {
+      if (mode === 'mc') say('ai', '<p class="faint">✍️ No fair set of choices for this one, so type the answer.</p>');
       form.hidden = false; input.value = ''; input.disabled = false; input.focus();
     }
   };
@@ -339,7 +355,7 @@ async function startQuiz(topic, preset, onDone, daily = false, mode = 'typed') {
     const extra = onDone ? await onDone(right) : '';
     say('ai', `<p><b>${right} of ${qs.length} right.</b>${extra ? ' ' + esc(extra) : ''}</p><p class="faint">${esc(QUIZ_NOTE)}</p>
       <div class="row"><button class="btn primary" id="again">Again</button><button class="btn" id="backStudy">Back to Learn</button></div>`);
-    $('#again').onclick = () => chooseQuiz(daily ? '' : topic);
+    $('#again').onclick = () => chooseQuiz(daily ? '' : topic, daily);
     $('#backStudy').onclick = loaders.study;
   };
   const answer = async (body, shown) => {

@@ -28,7 +28,7 @@ from pathlib import Path
 
 from cadetfoundry import (addons, asvab, backup, videos, board, books, careers, daily, engine, exam, fitness, instructor, integrity, knowledge,
                       lessons, letters, network, live_quiz, pay, pilot, profiles, program_backup, progress, quiz_edits, reports, scenarios, security, service, store, train, voice)
-from cadetfoundry import __version__, sample, terms
+from cadetfoundry import __version__, choices, sample, terms
 from cadetfoundry.brain import Brain
 from cadetfoundry.faith import Faith
 from cadetfoundry.knowledge import Library
@@ -847,7 +847,7 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
             if not item:
                 return self._json({"error": "No such question."}, 404)
             if isinstance(b.get("choice"), str):        # practice: a multiple-choice pick, checked here
-                ok = exam._norm(b["choice"]) == exam._norm(item["a"])
+                ok = choices.is_right(item["q"], item["a"], b["choice"])
                 g = {"verdict": "right" if ok else "wrong", "correct": ok, "how": "choice", "why": ""}
             else:                                        # challenge: a typed answer
                 g = board.quiz_grade(item["q"], item["a"], str(b.get("answer", "")), use_ai=store.ai_mode() != "off")

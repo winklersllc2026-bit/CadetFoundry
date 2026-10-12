@@ -119,6 +119,7 @@ class Card:
     body: str
     quiz: list[tuple[str, str]] = field(default_factory=list)   # (question, answer)
     also: dict[str, list[str]] = field(default_factory=dict)     # question -> other ways Soldiers ask it
+    wrong: dict[str, list[str]] = field(default_factory=dict)    # question -> the author's wrong choices (choices.py)
     verified: bool = True        # "verified: no" in the header: couldn't be checked against a current public source
     category: str = "military"   # one of CATEGORIES (Learn's sections)
     service: str = "joint"       # one of SERVICES: which branch the card is about ("joint" = every service / general)
@@ -195,18 +196,22 @@ def parse_card(path: Path) -> Card | None:
         return None
     meta = dict(re.findall(r"^(\w+):\s*(.*)$", m.group(1), re.M))
     body = m.group(2).strip()
-    quiz, also = [], {}
+    quiz, also, wrong = [], {}, {}
     if "## Quiz" in body:
         body, qpart = body.split("## Quiz", 1)
         for q, a in re.findall(r"^Q:\s*(.+?)\s*\|\s*A:\s*(.+)$", qpart, re.M):
-            a, _, alts = a.partition("| ALSO:")            # "Q: ... | A: ... | ALSO: one way; another way"
+            # "Q: ... | A: ... | ALSO: one way; another way | WRONG: a wrong choice; another" (in either order)
+            a, *extra = re.split(r"\|\s*(?=(?:ALSO|WRONG):)", a)
             quiz.append((q.strip(), a.strip()))
-            if alts.strip():
-                also[q.strip()] = [x.strip() for x in alts.split(";") if x.strip()]
+            for part in extra:
+                label, _, items = part.partition(":")
+                items = [x.strip() for x in items.split(";") if x.strip()]
+                if items:
+                    (also if label.strip() == "ALSO" else wrong)[q.strip()] = items
     cat = meta.get("category", "military").strip().lower()
     svc = meta.get("service", "joint").strip().lower().replace(" ", "_").replace("-", "_")
     return Card(id=path.stem, title=meta.get("title", path.stem), topic=meta.get("topic", "General"),
-                source=meta.get("source", "Cadet Foundry study card"), body=body.strip(), quiz=quiz, also=also,
+                source=meta.get("source", "Cadet Foundry study card"), body=body.strip(), quiz=quiz, also=also, wrong=wrong,
                 verified=meta.get("verified", "yes").strip().lower() not in ("no", "false"),
                 category=cat if cat in CATEGORIES else "military", service=svc if svc in SERVICES else "joint")
 

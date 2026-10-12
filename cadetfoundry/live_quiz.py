@@ -25,6 +25,7 @@ import uuid
 from pathlib import Path
 
 from cadetfoundry import board, exam, store
+from cadetfoundry import choices as choice_maker
 
 _lock = threading.Lock()
 
@@ -73,6 +74,8 @@ def start(brain, qid: str = "", q: str = "", a: str = "", choices: list | None =
         q, a, qid = item["q"], item["a"], item["id"]
         if mode == "mc":
             choices = brain.for_screen([item], "mc")[0].get("choices") or []
+            if not choices:
+                raise ValueError("That question doesn't have fair multiple-choice answers. Ask it as a typed answer.")
     else:
         q, a = _clean(q, 300), _clean(a, 300)
         if not q or not a:
@@ -85,7 +88,9 @@ def start(brain, qid: str = "", q: str = "", a: str = "", choices: list | None =
             choices = wrong + [a]
             random.shuffle(choices)
         qid = "live-" + uuid.uuid4().hex[:8]
-    state = {"id": qid, "q": q, "a": a, "mode": mode, "choices": choices if mode == "mc" else [],
+    # the choice that's right: a card question shows the short part of its answer (choices.py)
+    right = choice_maker.right_choice(q, a) if not qid.startswith("live-") else a
+    state = {"id": qid, "q": q, "a": a, "right": right, "mode": mode, "choices": choices if mode == "mc" else [],
              "started": time.time(), "revealed": False, "answers": {}}
     with _lock:
         _write(state)
@@ -119,7 +124,7 @@ def answer(pid: str, text: str = "", choice: str | None = None, use_ai: bool = F
         if state["mode"] == "mc":
             if choice not in state["choices"]:
                 raise ValueError("Pick one of the choices.")
-            ok = exam._norm(choice) == exam._norm(state["a"])
+            ok = exam._norm(choice) == exam._norm(state.get("right") or state["a"])
             g = {"verdict": "right" if ok else "wrong", "correct": ok, "choice": state["choices"].index(choice)}
         else:
             text = _clean(text, 500)
@@ -154,7 +159,8 @@ def for_instructor() -> dict:
     if not state:
         return {}
     marks = list(state["answers"].values())
-    out = {"id": state["id"], "q": state["q"], "a": state["a"], "mode": state["mode"], "choices": state["choices"],
+    out = {"id": state["id"], "q": state["q"], "a": state["a"], "right": state.get("right") or state["a"],
+           "mode": state["mode"], "choices": state["choices"],
            "revealed": state["revealed"], "answered": len(marks),
            "right": sum(m["verdict"] == "right" for m in marks), "close": sum(m["verdict"] == "close" for m in marks)}
     if state["mode"] == "mc":

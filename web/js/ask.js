@@ -11,6 +11,26 @@ function addMsg(role, html) {
   return d;
 }
 let busy = false;
+// While an answer streams in, the page follows it only until the answer's first line reaches the top -- then it holds
+// still so the Cadet can read from the top while the rest arrives below. Scrolling up stops the following at once;
+// scrolling back to the bottom turns it back on (owner's report, 2026-10-11: couldn't scroll up during an answer).
+// Only the Cadet's own hand stops it (wheel, touch, keys, the scroll bar) -- the page shrinking for a moment doesn't.
+let follow = true;
+const nearBottom = () => logEl.scrollHeight - logEl.scrollTop - logEl.clientHeight < 40;
+const stopFollowing = () => { follow = false; };
+logEl.addEventListener('wheel', e => { if (e.deltaY < 0) stopFollowing(); }, { passive: true });
+logEl.addEventListener('touchmove', stopFollowing, { passive: true });
+logEl.addEventListener('pointerdown', e => { if (e.offsetX > logEl.clientWidth) stopFollowing(); });   // the scroll bar
+document.addEventListener('keydown', e => {
+  if (['ArrowUp', 'PageUp', 'Home'].includes(e.key) && $('#ask').classList.contains('on') && e.target.id !== 'msgIn') stopFollowing();
+});
+logEl.addEventListener('scroll', () => { if (nearBottom()) follow = true; });
+function keepInView(box) {
+  if (!follow) return;
+  const top = box.getBoundingClientRect().top - logEl.getBoundingClientRect().top + logEl.scrollTop - 8;
+  const want = Math.min(logEl.scrollHeight - logEl.clientHeight, top);
+  if (want > logEl.scrollTop + 1) logEl.scrollTop = want;
+}
 // A publication 5+ years old gets a warning wherever it's cited (search, answer sources).
 const oldEd = ed => !!ed && +ed.slice(0, 4) <= new Date().getFullYear() - 5;
 const aiReady = () => { const e = (STATUS || {}).engine || {}; return !!(e.model || (e.online_enabled && (e.online_keys || []).length)); };
@@ -34,12 +54,13 @@ async function send(text) {
   busy = true; $('#sendBtn').disabled = true; $('#msgIn').value = '';
   if (speech.ok) speech.stop();                            // a new question stops reading the last answer
   addMsg('user', text); $('#suggest').hidden = true;
+  follow = true;
   const box = addMsg('ai', '<p class="faint">Thinking…</p>'), body = box.querySelector('.body');
   let full = '', care = false;
   try {
     await streamEvents('/api/chat', { message: text }, ev => {
       if (ev.banner) care = true;
-      if (ev.t) { full += ev.t; body.innerHTML = md(full); logEl.scrollTop = logEl.scrollHeight; }
+      if (ev.t) { full += ev.t; body.innerHTML = md(full); keepInView(box); }
       if (ev.done && ev.cites && ev.cites.length) {
         // one chip per passage used; tap it to read the exact text the answer came from
         const s = document.createElement('div'); s.className = 'sources';
@@ -77,7 +98,7 @@ async function send(text) {
     b.onclick = () => speech.toggle(full, b); box.appendChild(b);
     if (speech.auto) speech.say(full, b);                  // auto-read uses the same button, so ⏹ stops it
   }
-  busy = false; $('#sendBtn').disabled = false; logEl.scrollTop = logEl.scrollHeight;
+  busy = false; $('#sendBtn').disabled = false; keepInView(box);
   loadChats();                                 // a new chat takes its name from the first question
 }
 $('#composer').addEventListener('submit', e => { e.preventDefault(); send($('#msgIn').value); });

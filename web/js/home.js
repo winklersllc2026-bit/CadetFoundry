@@ -38,8 +38,16 @@ loaders.home = async () => {
   const due = (ls.assignments || []).filter(a => a.state !== 'complete');
   const ac = pg.academics, stat = (n, label) => `<div><div style="font-size:24px;font-weight:700">${n}</div><div class="faint">${label}</div></div>`;
   const title = STATUS.cadet_title || {};
+  // Class is open in the room and this Cadet isn't in a class yet: joining comes first, right at the top.
+  const needsClass = cadet && STATUS.lan && !(lock.current && lock.current.joined) && !(ls.assignments || []).length;
   body.innerHTML = `<h2 style="margin-bottom:2px">Hi${first ? ', ' + esc(first) : ''}</h2>
     ${title.rank || title.billet ? `<p class="faint" style="margin:0 0 12px">${[title.rank, title.billet].filter(Boolean).map(esc).join(' · ')}</p>` : ''}
+    ${needsClass ? `<div class="card" id="homeJoin" style="border-color:var(--tan)"><h3>📱 Join your class</h3>
+      <p class="faint" style="margin-top:0">Type the join code from the projector (or the one your instructor gave you).</p>
+      <div class="row" style="gap:8px;flex-wrap:wrap"><input id="homeJoinIn" maxlength="12" autocomplete="off" placeholder="e.g. K7M2QD"
+          aria-label="Join code" style="flex:1;min-width:160px;font-size:22px;letter-spacing:.15em;text-transform:uppercase;font-family:ui-monospace,Consolas,monospace">
+        <button class="btn primary" id="homeJoinGo" style="min-height:52px;font-size:18px">Join</button></div>
+      <p class="faint" id="homeJoinMsg" role="status" style="margin:6px 0 0"></p></div>` : ''}
     <div id="homeLive"></div>
     ${cadet ? `<div class="card"><h3>📋 Due</h3>
       ${due.length ? due.slice(0, 4).map(a => `<div class="row" style="justify-content:space-between;gap:10px;margin:8px 0">
@@ -55,6 +63,29 @@ loaders.home = async () => {
       <div class="row" style="flex-wrap:wrap;gap:22px;margin-top:10px">${stat(ac.lessons_completed, 'lessons')}${stat(pg.leadership.scenarios_completed, 'scenarios')}
         ${stat(pg.service.verified_hours, 'service hours')}${stat(ac.cards_mastered, 'cards mastered')}</div></div>` : ''}
     <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn" id="homeLearn">📘 Keep learning</button><button class="btn" id="homeAsk">💬 Ask a question</button></div>`;
+  if ($('#homeJoin')) {
+    const msg = t => { $('#homeJoinMsg').textContent = t; };
+    let lookT = null;
+    $('#homeJoinIn').addEventListener('input', () => {             // show the class name as soon as the code is right
+      clearTimeout(lookT);
+      lookT = setTimeout(async () => {
+        const c = $('#homeJoinIn').value.trim();
+        if (!c) return msg('');
+        const r = await api('/api/join-code?c=' + encodeURIComponent(c));
+        msg(r.name ? `✓ You'll join: ${r.name}` : (c.replace(/[^A-Za-z0-9]/g, '').length >= 6 ? "That code isn't right — check the projector." : ''));
+      }, 300);
+    });
+    const join = async () => {
+      if (!$('#homeJoinIn').value.trim()) return msg('Type the code from the projector first.');
+      $('#homeJoinGo').disabled = true;
+      const r = await api('/api/join', { code: $('#homeJoinIn').value });
+      if (r.error) { msg(r.error); $('#homeJoinGo').disabled = false; return; }
+      $('#homeJoin').innerHTML = `<h3>✅ You're in ${esc(r.joined)}</h3><p class="faint" style="margin:0">Your class work shows up here on Home.</p>`;
+      setTimeout(() => loaders.home(), 1500);                    // the class's lessons appear under Due
+    };
+    $('#homeJoinGo').addEventListener('click', join);
+    $('#homeJoinIn').addEventListener('keydown', e => { if (e.key === 'Enter') join(); });
+  }
   body.querySelectorAll('[data-home-lesson]').forEach(b => b.addEventListener('click', () => { openView('lesson'); openLesson(b.dataset.homeLesson); }));
   $('#homeDaily').addEventListener('click', () => { openView('study'); chooseQuiz('', true); });
   if ($('#homeProgress')) $('#homeProgress').addEventListener('click', () => openView('progress'));

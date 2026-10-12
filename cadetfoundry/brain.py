@@ -544,17 +544,18 @@ class Brain:
         return {"id": f"{c.id}#{idx}", "q": q, "a": a, "card": c.title, "topic": c.topic, "source": c.source}
 
     def for_screen(self, items: list[dict], mode: str = "") -> list[dict]:
-        """Quiz questions as the screen gets them: never the answer. Practice mode adds four choices (the right one
-        and three from other questions), shuffled; challenge mode (typed answers) has none."""
-        from cadetfoundry import exam
+        """Quiz questions as the screen gets them: never the answer. Practice mode adds choices (choices.py: the right
+        one and up to three wrong ones of the same kind), shuffled; a question with no fair set of choices -- and
+        challenge mode (typed answers) -- has none, and the Cadet types the answer."""
+        from cadetfoundry import choices
         out = []
         for x in items:
             q = {k: v for k, v in x.items() if k != "a"}
             if mode == "mc":
                 card = self.library.card(x["id"].partition("#")[0])
-                choices = (exam._choices(self.library, card, x["a"]) if card else []) + [x["a"]]
-                random.shuffle(choices)
-                q["choices"] = choices
+                picks = choices.build(self.library, card, x["q"], x["a"]) if card else None
+                if picks:
+                    q["choices"] = picks
             out.append(q)
         return out
 
