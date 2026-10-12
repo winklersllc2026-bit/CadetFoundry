@@ -1,8 +1,8 @@
 ---
 service: marine_corps
-category: careers
+category: explore
 title: Becoming a Marine Officer — OCS and The Basic School
-topic: Careers
+topic: Explore Military Service
 source: U.S. Marine Corps, Officer Candidates School and The Basic School (marines.com/become/marine-officer), checked 2026-10-10
 ---
 **Officer Candidates School (OCS)** — a **10- to 12-week** program at **Quantico, Virginia**, often compared to "an officer's boot camp." Candidates are tested in three areas: **academic knowledge, physical fitness and leadership ability**.

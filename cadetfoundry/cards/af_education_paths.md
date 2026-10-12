@@ -1,8 +1,8 @@
 ---
 service: air_force
-category: careers
+category: explore
 title: Air Force and Space Force — Paths to College and Officer
-topic: Careers
+topic: Explore Military Service
 source: U.S. Air Force, College (airforce.com/education/college), checked 2026-10-10
 ---
 Ways the Air Force describes to combine college and service:

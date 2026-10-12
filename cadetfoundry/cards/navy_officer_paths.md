@@ -1,8 +1,8 @@
 ---
 service: navy
-category: careers
+category: explore
 title: Navy — Paths to College and Officer (NROTC and the Naval Academy)
-topic: Careers
+topic: Explore Military Service
 source: U.S. Navy, Navy ROTC (navy.com/careers-benefits/education/nrotc) and The U.S. Naval Academy (navy.com/careers-benefits/education/naval-academy), checked 2026-10-10
 ---
 **Navy ROTC (NROTC)** — a scholarship program for college students:
