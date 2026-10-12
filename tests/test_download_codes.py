@@ -71,6 +71,18 @@ class DownloadCodeTests(unittest.TestCase):
         self.assertEqual(out["norm"], pilot_access.norm(" abcde-fghjk "))
         self.assertEqual(out["hash"], pilot_access.code_hash("ABCDE-FGHJK"))
 
+    def test_setup_says_plainly_when_r2_is_off_and_changes_nothing(self):
+        # what the owner saw on 2026-10-12: wrangler's emoji output, and R2 not switched on for the account
+        from unittest import mock
+        out = subprocess.CompletedProcess("x", 1, " ⛅️ wrangler\n", "✘ [ERROR] Please enable R2 through the Cloudflare Dashboard. [code: 10042]")
+        toml = (ROOT / "site" / "wrangler.toml").read_text(encoding="utf-8")
+        with mock.patch.object(pilot_access.subprocess, "run", return_value=out) as run, \
+                mock.patch("builtins.print") as said:
+            self.assertEqual(pilot_access.setup(), 1)
+        self.assertEqual(run.call_count, 1)                                  # stopped at the bucket: no database made
+        self.assertTrue(any("R2 isn't switched on" in str(c) for c in said.call_args_list))
+        self.assertEqual((ROOT / "site" / "wrangler.toml").read_text(encoding="utf-8"), toml)
+
     def test_codes_are_hard_to_guess_and_easy_to_read(self):
         codes = {pilot_access.new_code() for _ in range(200)}
         self.assertEqual(len(codes), 200)

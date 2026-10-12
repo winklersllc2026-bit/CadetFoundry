@@ -50,7 +50,21 @@ def new_code() -> str:
 
 def wrangler(*args: str, capture: bool = False) -> subprocess.CompletedProcess:
     cmd = f"npx --yes wrangler@{build.WRANGLER} " + " ".join(args)
-    return subprocess.run(cmd, cwd=SITE, shell=True, capture_output=capture, text=True)
+    # wrangler prints UTF-8 (with emoji); Windows' default code page can't read that, so say so explicitly
+    r = subprocess.run(cmd, cwd=SITE, shell=True, capture_output=capture, text=True, encoding="utf-8", errors="replace")
+    if capture:
+        r.stdout, r.stderr = r.stdout or "", r.stderr or ""
+    return r
+
+
+def database_id() -> str | None:
+    """The code list's id on Cloudflare, if it's already been made (a setup that stopped part-way)."""
+    r = wrangler("d1", "list", "--json", capture=True)
+    try:
+        rows = json.loads(r.stdout[r.stdout.index("["):])
+    except ValueError:
+        return None
+    return next((x.get("uuid") for x in rows if x.get("name") == DB), None)
 
 
 def sql(command: str) -> list[dict]:
@@ -74,19 +88,33 @@ def _save_local(data: dict) -> None:
 
 
 def setup() -> int:
-    r = wrangler("r2", "bucket", "create", BUCKET)
-    print("R2 bucket:", "made" if r.returncode == 0 else "already there (or see the message above)")
+    """Safe to run again: anything already made is found and kept."""
+    r = wrangler("r2", "bucket", "create", BUCKET, capture=True)
+    said = r.stdout + r.stderr
+    if r.returncode == 0:
+        print("R2 bucket: made")
+    elif "already exists" in said or "already own" in said:
+        print("R2 bucket: already there")
+    else:
+        print(said)
+        if "enable R2" in said:
+            print("R2 isn't switched on for this Cloudflare account yet. In the Cloudflare dashboard: R2 Object Storage ->"
+                  " enable it (the free tier covers this). Then run this again.")
+        else:
+            print("The R2 bucket wasn't made (see Cloudflare's message above). Nothing else was changed.")
+        return 1
     toml = SITE / "wrangler.toml"
     text = toml.read_text(encoding="utf-8")
     if "REPLACE_WITH_DATABASE_ID" in text:
         r = wrangler("d1", "create", DB, capture=True)
         m = re.search(r'"?database_id"?\s*[=:]\s*"([0-9a-f-]{36})"', r.stdout + r.stderr)
-        if not m:
+        uuid = m.group(1) if m else database_id()          # made by an earlier run that stopped part-way
+        if not uuid:
             print(r.stdout, r.stderr)
-            print(f"Couldn't read the new database's id. Put it in {toml} in place of REPLACE_WITH_DATABASE_ID.")
+            print(f"Couldn't make or find the database {DB}. Nothing was written to {toml}.")
             return 1
-        toml.write_text(text.replace("REPLACE_WITH_DATABASE_ID", m.group(1)), encoding="utf-8")
-        print(f"D1 database {DB}: made ({m.group(1)}), saved in site/wrangler.toml — commit that file.")
+        toml.write_text(text.replace("REPLACE_WITH_DATABASE_ID", uuid), encoding="utf-8")
+        print(f"D1 database {DB}: {uuid}, saved in site/wrangler.toml — commit that file.")
     r = wrangler("d1", "execute", DB, "--remote", "--file", "pilot_schema.sql")
     if r.returncode != 0:
         return r.returncode
