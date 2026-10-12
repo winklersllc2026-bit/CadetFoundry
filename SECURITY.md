@@ -81,21 +81,14 @@ Anyone who has the private key can sign updates — treat it like a password.
 signed. A full end-to-end check (build → sign → install on a clean device from the signed zip) is on the pilot
 checklist and hasn't been run yet.
 
-## Online AI (off by default)
-**Cadet Foundry is offline-first: no student data leaves the instructor's device unless an instructor or IT operator explicitly enables an online AI provider.** There is no switch for it in the app's screens. An operator enables it only by editing `config.json` in the data folder (`"online": true` plus a Groq or Gemini key; the key is stored there in plain text). Leave it off on devices meant to stay fully offline, and read the provider's terms (data retention, use of minors' data) before turning it on.
+## No online AI
+**Nothing is sent to the internet.** The only AI is the optional offline one (Ollama) on the instructor's own computer;
+`cadetfoundry/engine.py` talks to nothing but `127.0.0.1`. Cadet drives never carry it.
 
-**Pilot mode** (Instructor → Reports → Pilot) overrides that file: while it's on, nothing goes online, whatever `config.json` says (`engine.online_ready`; tested in `tests/test_sample_and_pilot.py`).
-
-When it is on, exactly this goes to the provider (security review, 2026-10-11 — tested in `tests/test_outbound_ai.py`):
-- **Ask, ordinary questions only:** the question, Cadet Foundry's rules, and the public library passages that matched.
-  **Not** the Cadet's name, profile, remembered facts, logbook or earlier chat.
-- **Never:** a message that shows signs of crisis or harm (answered on this device only), grading of typed quiz answers
-  (it carries answer keys), memory learning from chats, letter drafts, "say it simpler", lessons, class records,
-  instructor notes, PINs or anything about other Cadets.
-
-**Corrected 2026-10-11:** before this, every AI task tried the online provider first, with the full personal context
-(profile, remembered facts, logbook, the last 8 chat messages) — including crisis messages, grading and letters —
-even though this section said grading never used it.
+**Removed 2026-10-12 (owner's decision):** earlier versions let an operator switch on an online provider (Groq or Gemini)
+by editing `config.json`. Cadets are minors, so that option is gone. A `config.json` that still holds an old key or
+`"online": true` changes nothing, and the keys are deleted the next time settings are saved (tested in
+`tests/test_outbound_ai.py`, which fails if Cadet Foundry tries to reach any other address).
 
 ## Safety check on Ask (what it does and doesn't do)
 

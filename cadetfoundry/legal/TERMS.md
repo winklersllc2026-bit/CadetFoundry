@@ -1,6 +1,6 @@
 # Cadet Foundry — Terms of use
 
-Version 2026-10-11 · Questions: **support@cadetfoundry.org**
+Version 2026-10-12 · Questions: **support@cadetfoundry.org**
 
 Cadet Foundry is a free community project — **the Cadet Foundry project** — made to support JROTC instructors and Cadets. It is not a company product. By setting up Cadet Foundry, or using it after setup, you agree to these terms. If you don't agree, don't use it.
 
@@ -21,8 +21,9 @@ Cadet Foundry is free to use. If that ever changes, it will be announced in adva
 ## 4. Your data stays with you
 Cadet Foundry stores everything on the computer (or USB drive) it runs on. **The Cadet Foundry project does not receive, see or keep any student data.** The instructor's program and school decide how long records are kept and when they are deleted (Cadet Foundry's End pilot and Delete profile tools help). See the **Privacy notice** for details.
 
-## 5. Optional online AI
-Online AI is **off** unless the person who manages the device turns it on with their own key from an outside AI provider. If they do, ordinary Ask questions go to that provider under **its** terms — read them first, especially about minors' data. Leave it off if you're unsure.
+## 5. No online AI
+Cadet Foundry has no online AI and sends nothing to the internet. An optional AI can run on the instructor's own
+computer; its answers can be wrong, so the checked answers and official sources come first.
 
 ## 6. Use it responsibly
 - Keep PINs private, keep the Class PIN to instructors, and keep the computer's own security on (screen lock, updates, disk encryption such as BitLocker).

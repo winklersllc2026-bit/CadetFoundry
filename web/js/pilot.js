@@ -131,19 +131,19 @@ async function cadetSurvey(container) {
   });
 }
 
-// ── Pilot mode: online AI stays off, what's stored on this device, and End pilot ──
+// ── Pilot mode: what's stored on this device, and End pilot ──
 function plModeHtml(st) {
   const n = (v, one, many) => `${v} ${v === 1 ? one : many}`;
   return `<div style="border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:10px 0">
     <label style="display:flex;gap:10px;align-items:center;min-height:44px"><input type="checkbox" id="plMode" ${st.pilot_mode ? 'checked' : ''} style="width:24px;height:24px">
       <span><b>Pilot mode</b> <span class="faint">— recommended while you run a pilot</span></span></label>
-    <p class="faint" style="margin:4px 0">Every question stays on this device (online AI is off, whatever the settings say), you can see what's stored, and you can delete the pilot's data in one step when it ends.</p>
+    <p class="faint" style="margin:4px 0">Every question stays on this device, you can see what's stored, and you can delete the pilot's data in one step when it ends.</p>
     ${st.pilot_mode ? `<div style="margin-top:8px"><b>What's stored on this device now</b>
       <ul style="margin:6px 0 6px 18px;padding:0">
         <li>${n(st.cadets, 'Cadet profile', 'Cadet profiles')}${st.guardians ? `, ${n(st.guardians, 'guardian profile', 'guardian profiles')}` : ''}, ${n(st.instructors, 'instructor profile', 'instructor profiles')}</li>
         <li>${n(st.units, 'class or squad', 'classes and squads')}, ${n(st.lessons, 'lesson', 'lessons')}, ${n(st.assignments, 'assignment', 'assignments')}</li>
         <li>Pilot: ${n(st.snapshots, 'snapshot', 'snapshots')}, ${n(st.survey_answers, 'survey answer', 'survey answers')} (no names), ${n(st.instructor_feedback, 'feedback entry', 'feedback entries')} from you</li>
-        <li>Online AI: <b>${st.online_ai ? 'on' : 'off'}</b> · Folder: <code>${esc(st.folder)}</code> (${st.size_mb} MB)</li></ul>
+        <li>Folder: <code>${esc(st.folder)}</code> (${st.size_mb} MB)</li></ul>
       <p class="faint" style="margin:4px 0">Cadets' chats, notes and check-ins: only that Cadet can open them. Class records: you, with the Class PIN. Nothing is sent anywhere.</p>
       <button class="btn small danger" id="plEnd">End pilot…</button><div id="plEndBox"></div></div>` : ''}</div>`;
 }

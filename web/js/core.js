@@ -117,10 +117,12 @@ async function showLock(msg) {
   // A new profile: name, PIN, (join code) -- everything else is optional, under "More options" or later in 👤 Me.
   const newProfile = (kind = 'cadet') => {
     d.innerHTML = `<form class="card" id="newForm" style="width:100%;max-width:400px">
-        <h2>${s.profiles.length ? 'Join Cadet Foundry' : 'Welcome to Cadet Foundry'}</h2>
-        <p class="faint">Your work stays in your own profile on this device. It takes about 30 seconds.</p>
+        <h2>${s.cadet_drive ? 'Your Cadet Foundry drive' : s.profiles.length ? 'Join Cadet Foundry' : 'Welcome to Cadet Foundry'}</h2>
+        <p class="faint">${s.cadet_drive
+          ? `For ${s.cadet_drive.unit_name ? esc(s.cadet_drive.unit_name) : 'your class'}. Make your profile once: your name and a PIN only you know. Your work saves on this drive; bring it to class and your instructor's computer picks up your class work. Your private notes stay on the drive.`
+          : 'Your work stays in your own profile on this device. It takes about 30 seconds.'}</p>
         <label for="npName">What's your name?</label><input id="npName" maxlength="40" autocomplete="off" placeholder="First and last name">
-        <label for="npPin">Choose a PIN (6–12 digits)${pinRule === 'recommended' ? ' — recommended' : ''}</label>${PIN_INPUT('npPin', '')}
+        <label for="npPin">Choose a PIN (6–12 digits)${s.cadet_drive ? '' : pinRule === 'recommended' ? ' — recommended' : ''}</label>${PIN_INPUT('npPin', '')}
         <label for="npPin2">Type it again</label>${PIN_INPUT('npPin2', '')}
         <p class="faint">Only you will know it. You'll use it to sign in.</p>
         <div id="npJoinBox"><label for="npJoin">Join code from your instructor <span class="faint">(if you have one)</span></label>
@@ -143,6 +145,7 @@ async function showLock(msg) {
       $('#npJoinBox').hidden = k !== 'cadet';
     };
     $('#npKind').addEventListener('change', kindChanged); kindChanged();
+    if (s.cadet_drive) { $('#npJoinBox').hidden = true; $('#npMore').hidden = true; }   // one Cadet, already in the class
     let lookT = null;
     const lookUp = async () => {
       const c = $('#npJoin').value.trim();
@@ -279,7 +282,7 @@ async function showLock(msg) {
   };
   if (s.sample) { sampleArrive(d, s); return; }
   if (!s.on_this_computer && !s.admin_set && !s.demo) notYet();
-  else if (!s.profiles.length) (s.on_this_computer ? setup() : newProfile());
+  else if (!s.profiles.length) (s.on_this_computer && !s.cadet_drive ? setup() : newProfile());
   else if (joinCode || want.has('new')) newProfile();
   else if (want.has('pick')) pick();
   else if (s.profiles.length === 1 && !s.profiles[0].has_pin && s.on_this_computer) {
@@ -459,23 +462,16 @@ async function refreshStatus() {
     openView(toTools ? 'instructor' : 'home');     // everyone starts on Home; for an instructor that's Class day
   }
   landed = true;
+  if (STATUS.kind === 'instructor' && typeof driveWatch === 'function') driveWatch();   // plug in a Cadet drive = sync
   if ((document.body.dataset.kind = STATUS.kind || 'cadet') === 'guardian') {          // family member's profile
     $('#suggest').innerHTML = FAMILY_SUGGEST.map(q => `<button>${esc(q)}</button>`).join('');
     const hi = document.querySelector('#thread .msg.ai p');
     if (hi) hi.textContent = "Welcome to Cadet Foundry — I'm here to help you understand JROTC and support your Cadet. Ask me anything. Your chats are saved on this device.";
   }
   const e = STATUS.engine, el = $('#engine');
-  const online = e.online_enabled && e.online_keys.length;
-  const hi = document.querySelector('#thread .msg.ai p');
-  if (online && hi && !hi.dataset.online) {        // say plainly what leaves the device (SECURITY.md, Online AI)
-    hi.dataset.online = '1';
-    hi.insertAdjacentHTML('afterend', '<p class="faint">This device uses an online AI service for ordinary questions: '
-      + 'your question goes to it, but not your name, notes or earlier chats. Anything about feeling unsafe stays on this device.</p>');
-  }
-  el.innerHTML = e.model
-    ? `<span class="dot ok"></span><span>Offline AI: ${esc(e.model)}${online ? ' + online' : ''}</span>`
-    : online ? '<span class="dot ok"></span><span>Online AI</span>'
-             : '<span class="dot warn"></span><span>Library only (no AI model)</span>';
+  el.innerHTML = e.model                          // only ever the AI on this computer (no online AI, 2026-10-12)
+    ? `<span class="dot ok"></span><span>Offline AI: ${esc(e.model)}</span>`
+    : '<span class="dot ok"></span><span>Library search</span>';
   const p = STATUS.profile || {};
   $('#hello').textContent = p.name ? `· ${p.name}` : '';
 }

@@ -28,7 +28,7 @@ from pathlib import Path
 
 from cadetfoundry import (addons, asvab, backup, videos, board, books, careers, daily, engine, exam, fitness, instructor, integrity, knowledge,
                       lessons, letters, network, live_quiz, pay, pilot, profiles, program_backup, progress, quiz_edits, reports, scenarios, security, service, store, train, voice)
-from cadetfoundry import __version__, choices, sample, terms
+from cadetfoundry import __version__, cadet_drive, choices, sample, terms
 from cadetfoundry.brain import Brain
 from cadetfoundry.faith import Faith
 from cadetfoundry.knowledge import Library
@@ -352,6 +352,22 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
             self._file_joins(priv)
             if r == "/api/instructor/overview":
                 return self._json({**instructor.overview(priv), "me": self._pid})
+            if r.startswith("/api/instructor/drives"):  # Cadet flash drives: the instructor's own computer only
+                if not self._local():
+                    return self._json({"error": "Cadet drives are made on the instructor's own computer."}, 403)
+                if r == "/api/instructor/drives":
+                    ov = instructor.overview(priv)
+                    return self._json({"drives": cadet_drive.drives(), "units": [{"id": u["id"], "name": u["name"]} for u in ov["units"]],
+                                       "cadets": [{"id": c["id"], "name": c["name"], "unit": c.get("unit") or "",
+                                                   "has_pin": security.has_pin(c["id"])} for c in ov["cadets"]],
+                                       "sizes": {"basic": cadet_drive.app_bytes(False), "videos": cadet_drive.app_bytes(True)},
+                                       "made": cadet_drive.made(), "job": cadet_drive.job()})
+                if r == "/api/instructor/drives/job":
+                    return self._json(cadet_drive.job())
+                if r == "/api/instructor/drives/sync":   # polled while the instructor is signed in: plug in = sync
+                    if cadet_drive.job().get("running"):
+                        return self._json({"notices": []})
+                    return self._json({"notices": cadet_drive.scan(priv)})
             if r == "/api/instructor/scenarios":
                 cadets = [p for p in profiles.all_profiles() if p["kind"] == "cadet"]
                 logs = {p["id"]: instructor.read_class_file(priv, p["id"], "scenarios.jsonl", []) for p in cadets}
@@ -539,6 +555,9 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                    "sample": sample.ACTIVE, "sample_back": sample.BACK if sample.ACTIVE else "",
                    "terms_ok": terms.accepted() or sample.ACTIVE, "terms_version": terms.VERSION,
                    "downloads": bool(_download_files())}
+            drive = cadet_drive.here()
+            if drive:                                    # running from a Cadet's flash drive
+                out["cadet_drive"] = {"unit_name": drive.get("unit_name", ""), "claimed": bool(drive.get("for"))}
             if self._pid:
                 cur = profiles.get(self._pid)
                 out.update({"current": {"id": cur["id"], "name": cur["name"], "joined": cur.get("joined", "")}, "pin_set": security.pin_set(),
@@ -731,6 +750,19 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
             try:
                 kind = profiles.role_of(str(b.get("kind", "cadet")))
                 join = None
+                drive = cadet_drive.here()
+                if drive:                                # a Cadet's flash drive: one Cadet, with a PIN, in one class
+                    if kind != "cadet":
+                        return self._json({"ok": False, "error": "This is a Cadet's drive. Instructors set up Cadet "
+                                                                 "Foundry on their own computer."}, 403)
+                    if drive.get("for") and profiles.get(drive["for"]):
+                        return self._json({"ok": False, "error": "This drive already belongs to "
+                                                                 f"{profiles.get(drive['for'])['name']}."}, 403)
+                    err = security.valid_new_pin(str(b.get("pin", "")))
+                    if err:
+                        return self._json({"ok": False, "error": "Your drive goes home with you, so it needs a PIN. "
+                                                                 + err}, 400)
+                    b = {**b, "join": ""}
                 if kind == "cadet" and instructor.clean_code(b.get("join")):
                     join = instructor.unit_for_code(b.get("join"))
                     if not join:
@@ -778,6 +810,13 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                 instructor.request_join(p["id"], join["unit"])
                 lessons.sync_unit(p["id"], join["unit"])
                 profiles.set_joined(p["id"], join["name"])
+            drive = cadet_drive.here()
+            if drive and kind == "cadet":                # the drive is theirs; the class's lessons are on it already
+                cadet_drive.claim(p["id"])
+                lessons.sync_unit(p["id"], drive.get("unit", ""))
+                if drive.get("unit_name"):
+                    profiles.set_joined(p["id"], drive["unit_name"])
+                    join = {"name": drive["unit_name"]}
             token, _ = security.unlock(p["id"], pin)
             if kind == "instructor":                     # they just typed the Class PIN: their class opens now
                 security.unlock_program(token, str(b.get("admin", ""))[:32])
@@ -1058,6 +1097,15 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
             if not priv:
                 return self._json({"error": "Instructor only. Open Instructor and enter the Class PIN."}, 403)
             self._file_joins(priv)
+            if r == "/api/instructor/drives/make":
+                if not self._local():
+                    return self._json({"error": "Cadet drives are made on the instructor's own computer."}, 403)
+                try:
+                    return self._json(cadet_drive.start_make(priv, str(b.get("path", "")), str(b.get("cadet", ""))[:12],
+                                                             str(b.get("unit", ""))[:40], bool(b.get("videos", True)),
+                                                             bool(b.get("erase"))))
+                except ValueError as e:
+                    return self._json({"error": str(e)}, 400)
             try:
                 if r == "/api/instructor/unit":
                     act = str(b.get("action", ""))
@@ -1081,7 +1129,7 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
                 if r == "/api/instructor/pilot/daily":   # after class: how useful was Cadet Foundry today (no Cadet data)
                     return self._json(pilot.add_class_feedback(priv, b.get("useful"), str(b.get("again", "")),
                                                                **{k: b.get(k) for k in pilot.DAILY_QUESTIONS}))
-                if r == "/api/instructor/pilot/mode":    # Pilot mode: online AI stays off, "what's stored", End pilot
+                if r == "/api/instructor/pilot/mode":    # Pilot mode: "what's stored", End pilot
                     store.save_config({"pilot_mode": bool(b.get("on"))})
                     return self._json(pilot.stored(priv))
                 if r == "/api/instructor/pilot/end":     # permanently remove the pilot's Cadets and class data
@@ -1378,6 +1426,8 @@ a{{color:#cdb57c}} span{{color:#a7a08c;font-size:14px}} li{{margin:10px 0}}</sty
             if not (first_run or (profiles.get(self._pid or "") or {}).get("kind") == "instructor"):
                 return self._json({"error": "The instructor accepts the terms for this computer."}, 403)
             return self._json({"ok": True, **terms.accept()})
+        if r == "/api/sample/start" and cadet_drive.here():
+            return self._json({"error": "The sample class is on the instructor's computer, not on a Cadet's drive."}, 403)
         if r == "/api/sample/start":                     # "See a sample class": a separate copy with made-up Cadets
             if sample.ACTIVE:
                 return self._json({"error": "This is already the sample class."}, 400)

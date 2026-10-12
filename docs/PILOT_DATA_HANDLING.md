@@ -36,12 +36,11 @@ put other people's private information in notes or letters.
 message sounds like someone is unsafe. It **notifies no one**, so a Cadet in danger must still tell a trusted adult.
 Instructors should say this to the class in plain words.
 
-**Pilot mode** (Instructor → Reports → Pilot) keeps online AI off whatever the configuration says, lists what is
+**Pilot mode** (Instructor → Reports → Pilot) lists what is
 stored on the device in counts, and offers End pilot (below). Recommended for every pilot.
 
-**Online AI** is off unless the device owner turns it on in the configuration. When it is on, ordinary Ask questions
-go to that service without the Cadet's name, notes or earlier chats; anything about feeling unsafe, grading and
-letters never do. Before turning it on, the school should read that provider's terms for minors' data.
+**There is no online AI.** Nothing is sent to the internet; the only AI is the optional offline one on the
+instructor's computer.
 
 ## Exporting
 
@@ -76,7 +75,7 @@ letters never do. Before turning it on, the school should read that provider's t
 
 1. **Retention:** how long class records are kept after the pilot, and who deletes them.
 2. **Who is the device owner** (the instructor, or school IT) and where the laptop is kept.
-3. **Online AI:** leave it off (recommended for the pilot), or approve a provider after reading its terms.
+3. **Offline AI on the instructor's computer:** optional; decide whether Cadets may use Ask with it in class.
 4. **Parent notice:** what is stored, who sees it, that Ask isn't monitored, and how to ask for deletion.
 5. **Use fictional profiles** ("Cadet Alpha", "Cadet Bravo") for demos, screenshots and the dry run, never real
    Cadets.

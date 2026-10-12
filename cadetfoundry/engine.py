@@ -3,10 +3,11 @@ The AI engine: offline first.
 
   1. Local model through Ollama (default) -- works with no internet at all.
      Picks the best installed small model (qwen2.5 3B is the target for a handheld).
-  2. Optional free online keys (Groq, Gemini) when the device has internet and
-     the Soldier/admin turned "online" on -- much faster, same library and rules.
-  3. If nothing is available, a clear message plus the library passages, so the
-     Soldier still gets the official text.
+  2. If it isn't there, a clear message plus the library passages, so the Cadet still gets the official text.
+
+Nothing online, ever (owner, 2026-10-12): the online providers (Groq, Gemini) that an operator could once switch on in
+config.json are gone. Cadets are minors; the only AI is the one on this computer, and the only address this file
+talks to is Ollama on 127.0.0.1.
 """
 from __future__ import annotations
 
@@ -19,10 +20,6 @@ from cadetfoundry import store
 
 OLLAMA = "http://127.0.0.1:11434"
 PREFERRED = ("qwen2.5:3b", "llama3.2:3b", "qwen2.5:1.5b", "llama3.2:1b", "llama3.1:8b", "llama3.1")
-GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
-GROQ_MODELS = ("qwen/qwen3.8-27b", "openai/gpt-oss-120b", "openai/gpt-oss-20b")
-GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent"
-GEMINI_MODELS = ("gemini-3.5-flash", "gemini-flash-latest", "gemini-3.1-flash-lite")
 
 
 def _get(url: str, timeout: float = 3):
@@ -60,14 +57,11 @@ def pick_model() -> str | None:
 
 
 def status() -> dict:
-    c = store.config()
     tags = local_models()
     return {
         "ollama": tags is not None,
         "model": pick_model() if tags else None,
         "models": tags or [],
-        "online_enabled": bool(c.get("online")) and not c.get("pilot_mode"),
-        "online_keys": [k for k in ("groq_key", "gemini_key") if c.get(k)],
     }
 
 
@@ -92,45 +86,6 @@ def _ollama(messages: list[dict], max_tokens: int) -> Generator[str, None, None]
                 break
 
 
-def _groq(messages: list[dict], key: str, max_tokens: int) -> str:
-    last = ""
-    for model in GROQ_MODELS:
-        try:
-            with _post(GROQ_URL, {"model": model, "messages": messages, "max_tokens": max_tokens, "temperature": 0.4},
-                       {"Authorization": f"Bearer {key}"}, 60) as r:
-                text = json.loads(r.read().decode())["choices"][0]["message"].get("content") or ""
-            if text.strip():
-                return text
-        except urllib.error.HTTPError as e:
-            last = f"{e.code}"
-            if e.code in (401, 403):
-                break
-        except Exception as e:
-            last = str(e)
-    raise RuntimeError(f"Groq: {last}")
-
-
-def _gemini(messages: list[dict], key: str, max_tokens: int) -> str:
-    system = "\n\n".join(m["content"] for m in messages if m["role"] == "system")
-    contents = [{"role": "model" if m["role"] == "assistant" else "user", "parts": [{"text": m["content"]}]}
-                for m in messages if m["role"] != "system"]
-    body = {"contents": contents, "systemInstruction": {"parts": [{"text": system}]},
-            "generationConfig": {"maxOutputTokens": max_tokens, "temperature": 0.4}}
-    last = ""
-    for model in GEMINI_MODELS:
-        try:
-            with _post(GEMINI_URL.format(m=model), body, {"x-goog-api-key": key}, 25) as r:
-                d = json.loads(r.read().decode())
-            text = "".join(p.get("text", "") for p in d["candidates"][0]["content"].get("parts", []))
-            if text.strip():
-                return text
-        except urllib.error.HTTPError as e:
-            last = f"{e.code}"
-            if e.code in (401, 403):
-                break
-        except Exception as e:
-            last = str(e)
-    raise RuntimeError(f"Gemini: {last}")
 
 
 def warm_up() -> bool:
@@ -149,27 +104,8 @@ def warm_up() -> bool:
         return False
 
 
-def online_ready() -> bool:
-    """An instructor/IT operator turned online AI on and gave a provider key (config.json)."""
-    c = store.config()
-    if c.get("pilot_mode"):                       # Pilot mode keeps every question on this device
-        return False
-    return bool(c.get("online")) and any(c.get(k) for k in ("groq_key", "gemini_key"))
-
-
-def stream(messages: list[dict], max_tokens: int = 1200, online: bool = False) -> Generator[str, None, None]:
-    """Answer with the first engine that works. On this device (Ollama) unless the CALLER passes online=True and
-    online AI is enabled in settings (security review, 2026-10-11): only Ask's ordinary answers opt in, with no
-    personal context. Crisis replies, grading (which carries answer keys), memories and letters never go online."""
-    c = store.config()
-    if online and c.get("online"):
-        for key_name, fn in (("groq_key", _groq), ("gemini_key", _gemini)):
-            if c.get(key_name):
-                try:
-                    yield fn(messages, c[key_name], max_tokens)
-                    return
-                except Exception:
-                    continue
+def stream(messages: list[dict], max_tokens: int = 1200) -> Generator[str, None, None]:
+    """Answer with the AI on this computer (Ollama). There is no other engine."""
     try:
         yielded = False
         for chunk in _ollama(messages, max_tokens):
@@ -183,9 +119,8 @@ def stream(messages: list[dict], max_tokens: int = 1200, online: bool = False) -
 
 
 def quick(messages: list[dict], max_tokens: int = 300) -> str:
-    """Small jobs (learning memories, grading). On this device only -- never online. Empty string if nothing is
-    available."""
+    """Small jobs (learning memories, grading). Empty string if no AI is available."""
     try:
-        return "".join(stream(messages, max_tokens, online=False)).strip()
+        return "".join(stream(messages, max_tokens)).strip()
     except Exception:
         return ""

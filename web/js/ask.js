@@ -33,7 +33,7 @@ function keepInView(box) {
 }
 // A publication 5+ years old gets a warning wherever it's cited (search, answer sources).
 const oldEd = ed => !!ed && +ed.slice(0, 4) <= new Date().getFullYear() - 5;
-const aiReady = () => { const e = (STATUS || {}).engine || {}; return !!(e.model || (e.online_enabled && (e.online_keys || []).length)); };
+const aiReady = () => !!((STATUS || {}).engine || {}).model;      // the offline AI on this computer
 // Read a server-sent event stream (chat, simplify) and hand each event to onEvent.
 async function streamEvents(url, payload, onEvent) {
   const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });

@@ -18,8 +18,8 @@ Cadet / instructor browser  ──HTTP (classroom network)──▶  run.py  →
 
 * **No runtime dependencies beyond Python 3.10+ and `cryptography`.** The Windows installer and USB drive carry
   their own Python (official embeddable build, pinned by SHA-256 in `site/build.py`).
-* **Offline-first.** Nothing leaves the device unless an operator explicitly configures an online AI provider
-  (`online` + a key in `config.json`; see SECURITY.md). Study content, quizzes and grading never need a network.
+* **Offline.** Nothing leaves the device; there is no online AI (removed 2026-10-12). Study content, quizzes and
+  grading never need a network.
 
 ## The server (`cadetfoundry/server.py`, `cadetfoundry/security.py`)
 
@@ -53,7 +53,7 @@ Cadet / instructor browser  ──HTTP (classroom network)──▶  run.py  →
 | Serve: service hours, instructor verification; Explore Military Service (opt-in) | `service.py`, `pay.py`, `facts.py`, `careers.py`, `fitness.py`, `letters.py` | `service.js`, `log.js`, `shell.js` |
 | Progress, portfolio, recognition | `progress.py` | `progress.js` |
 | Instructor: roster and units, dashboard, CSV report, program backup, pilot tools | `instructor.py`, `reports.py`, `program_backup.py`, `pilot.py` | `shell.js`, `dashboard.js`, `pilot.js` |
-| AI (optional): Ollama locally; online providers only if an operator enables them | `engine.py`, `addons.py` | — |
+| AI (optional): Ollama on this computer only | `engine.py`, `addons.py` | — |
 | Safety: crisis lines, OPSEC reminders on every message | `safety.py` | — |
 
 Visibility: Learn categories (`leadership, citizenship, military, health, careers, explore, basic`) are filtered

@@ -95,6 +95,7 @@ loaders.me = async () => {
   const gradeOpts = ['', ...(STATUS.grades || [])].map(s => `<option ${p.grade === s ? 'selected' : ''}>${esc(s)}</option>`).join('');
   const cadetTiles = !isInst && STATUS.kind !== 'guardian';
   $('#meBody').innerHTML = `<h2>Me</h2>
+    ${isInst && !(STATUS.cadet_drive) ? '<div class="card" id="drivesCard" style="border-color:var(--tan)"></div>' : ''}
     ${cadetTiles ? `<div class="tiles">
       <button class="tile" data-go-view="progress"><span>📈</span>My progress<small>Growth and portfolio</small></button>
       <button class="tile" data-go-view="train"><span>💪</span>Train<small>Fitness against yourself</small></button>
@@ -157,7 +158,7 @@ loaders.me = async () => {
       <div class="row" style="margin-top:8px"><button class="btn small" id="bkSave">⬇ Download encrypted backup</button>
         <label class="btn small" style="margin:0;color:var(--text)">⬆ Restore from backup<input type="file" id="restoreFile" accept=".json,application/json" hidden></label></div>
       <p class="faint" id="restoreMsg">Restoring replaces what's on this device with the backup. Without the backup password, nobody can open the file.</p></div>
-    <p class="faint">Cadet Foundry is designed to support JROTC instruction. It isn't an official JROTC, military or school source — your instructor and official sources come first. What you enter is saved on this device and there is no tracking. If this device uses an online AI service, ordinary Ask questions go to it — without your name, notes or earlier chats.</p>
+    <p class="faint">Cadet Foundry is designed to support JROTC instruction. It isn't an official JROTC, military or school source — your instructor and official sources come first. What you enter is saved on this device, nothing is sent to the internet, and there is no tracking.</p>
     ${aboutHtml()}`;
   $('#profForm').onsubmit = async ev => {
     ev.preventDefault();
@@ -167,6 +168,7 @@ loaders.me = async () => {
     const r = await api('/api/profile', data);
     $('#profSaved').textContent = r.error ? r.error : 'Saved.'; refreshStatus();
   };
+  if ($('#drivesCard')) cadetDrivesCard($('#drivesCard'));
   $('#meBody').querySelectorAll('[data-forget]').forEach(b => b.onclick = async () => { await api('/api/memory/forget', { id: b.dataset.forget }); loaders.me(); });
   if ($('#memAdd')) $('#memAdd').onclick = async () => { if ($('#memIn').value.trim()) { await api('/api/memory', { text: $('#memIn').value }); loaders.me(); } };
   showIntegrity().then(showAddons);

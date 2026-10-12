@@ -327,7 +327,7 @@ def stored(priv: bytes) -> dict:
             "assignments": len(lessons.all_assignments()), "snapshots": len(snapshots(priv)),
             "survey_answers": len(_survey_rows_raw()["sealed"]) + len(_survey_rows_raw()["plain"]),
             "instructor_feedback": len(_read(priv, "feedback_instructor.json", [])) + len(_read(priv, "feedback_daily.json", [])),
-            "online_ai": engine.online_ready(), "pilot_mode": bool(store.config().get("pilot_mode"))}
+            "pilot_mode": bool(store.config().get("pilot_mode"))}
 
 
 def end(priv: bytes) -> dict:

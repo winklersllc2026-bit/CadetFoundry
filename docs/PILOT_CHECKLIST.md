@@ -6,8 +6,7 @@ One page to go through before, during and after a classroom pilot. Data rules: [
 
 - [ ] Install **0.2.4 or newer** from the website (it has the sample class, Pilot mode and End pilot). 0.2.2 can't take updates, so reinstall it; 0.2.3 updates itself.
 - [ ] Laptop: BitLocker on, Windows updated, a standard (non-admin) account for daily use, a screen lock.
-- [ ] Retention, device owner, parent notice and online AI decided (PILOT_DATA_HANDLING.md → "Decide before the pilot").
-      Recommended: **online AI off** for the pilot.
+- [ ] Retention, device owner, parent notice and the offline AI decided (PILOT_DATA_HANDLING.md → "Decide before the pilot").
 - [ ] A security contact published, so a school or parent can report a problem privately.
 - [ ] Classroom network: a **dedicated hotspot or travel router** that only the class joins (not open or guest Wi-Fi).
       Traffic between phones and the laptop is plain HTTP on that network; see SECURITY.md → "The classroom network".

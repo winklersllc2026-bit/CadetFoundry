@@ -85,13 +85,8 @@ class SampleLifetimeTests(unittest.TestCase):
 
 class PilotModeTests(unittest.TestCase):
     def test_pilot_mode_keeps_every_question_on_this_device(self):
-        online = {"online": True, "groq_key": "test-not-a-real-key"}
-        with mock.patch.object(store, "config", lambda: dict(online)):
-            self.assertTrue(engine.online_ready())
-        with mock.patch.object(store, "config", lambda: {**online, "pilot_mode": True}):
-            self.assertFalse(engine.online_ready())
-            with mock.patch.object(engine, "local_models", lambda: None):
-                self.assertFalse(engine.status()["online_enabled"])    # the Ask notice doesn't claim it's online
+        # there is no online AI any more (2026-10-12; tests/test_outbound_ai.py): nothing to switch off
+        self.assertFalse(hasattr(engine, "online_ready"))
 
     def test_pilot_mode_is_a_true_false_setting(self):
         with mock.patch.object(store, "config", lambda: {}), mock.patch.object(store, "write_json") as w:
@@ -237,7 +232,7 @@ class SampleClassTests(unittest.TestCase):
         ck = self.enter()
         st = self.call("POST", "/api/instructor/pilot/mode", {"on": True}, ck)[1]
         self.assertTrue(st["pilot_mode"])
-        self.assertFalse(st["online_ai"])
+        self.assertNotIn("online_ai", st)
         self.assertEqual((st["cadets"], st["instructors"], st["lessons"]), (len(sample.CADETS), 1, 2 + 12))
         self.assertGreater(st["assignments"], 0)
         self.assertTrue(self.get("/api/instructor/pilot", ck)[1]["stored"]["pilot_mode"])

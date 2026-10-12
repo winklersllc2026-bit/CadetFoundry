@@ -1,6 +1,6 @@
 # Cadet Foundry — Privacy notice
 
-Version 2026-10-11 · Questions: **support@cadetfoundry.org**
+Version 2026-10-12 · Questions: **support@cadetfoundry.org**
 
 Cadet Foundry is a free community project — **the Cadet Foundry project.** This notice is for instructors, schools, Cadets and parents. The short version: **everything stays on the instructor's computer, and the Cadet Foundry project never receives any of it.**
 
@@ -26,11 +26,20 @@ The instructor's program and school decide how Cadet Foundry is used, how long r
 ## Ask is private — and not monitored
 Nobody reads Cadets' Ask chats, including the instructor. Ask has a safety check that shows help numbers when a message sounds unsafe, but it **notifies no one.** A Cadet who is in danger should tell a trusted adult, or call or text **988** — in an emergency, **911**.
 
-## Optional online AI
-Online AI is **off** unless the person who manages the device turns it on with their own key from an outside provider. If they do, **ordinary Ask questions** go to that provider — without the Cadet's name, notes or earlier chats. Anything about feeling unsafe, grading, and letters never go online. **Pilot mode** keeps online AI off whatever the settings say. Before turning it on, read the provider's own privacy terms, especially for minors.
+## Cadet flash drives
+An instructor can give a Cadet Cadet Foundry on a flash drive to study at home. The drive holds **that Cadet's profile
+only**, encrypted with their own PIN, plus the lessons they were given — never the Class PIN, the program's keys or
+anyone else's data. When the drive is plugged into the instructor's computer, **class records** (the same ones the
+instructor can already see) are brought in and new lessons go out. **Private files stay on the drive** and are never
+copied. If a drive is lost, its files stay locked behind the Cadet's PIN; the instructor can make a new drive with the
+class work last brought to class.
+
+## No online AI
+Cadet Foundry has **no online AI** and sends nothing to the internet. The only AI is an optional one that runs on the
+instructor's own computer. Cadets' flash drives don't have it.
 
 ## The classroom network
-When an instructor opens class to phones, pages travel over that Wi-Fi network without HTTPS. Use a network only the class joins (WPA3 if possible), not open or guest Wi-Fi. Details for school IT are in SECURITY.md.
+When an instructor turns Cadet phones on, pages travel over that Wi-Fi network without HTTPS. Use a network only the class joins (WPA3 if possible), not open or guest Wi-Fi. Details for school IT are in SECURITY.md.
 
 ## The website
 cadetfoundry.org sets **no cookies**, runs **no analytics**, and has **no accounts**. It is hosted by Cloudflare, whose servers keep the standard technical logs any website host keeps (such as IP addresses). Downloads come from a public GitHub page, under GitHub's own terms.

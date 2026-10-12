@@ -15,8 +15,8 @@ setup machine.
   from memory. CAC-only publications (`/epubs/DR_pubs/DR_c/` on armypubs) are never used.
 - **Safety first.** Crisis messages (`cadetfoundry/safety.py`) always get the crisis lines and the Cadet's own
   people, never library text, even with no AI model. OPSEC reminders stay.
-- **Offline and private.** No network calls from `cadetfoundry/` at runtime (except the optional online AI a
-  technical operator enables). Cadet data lives in `~/.cadetfoundry` (or `$CADETFOUNDRY_DATA`), encrypted
+- **Offline and private.** No network calls from `cadetfoundry/` at runtime except Ollama on 127.0.0.1 (online AI was
+  removed 2026-10-12; tests/test_outbound_ai.py guards it). Cadet data lives in `~/.cadetfoundry` (or `$CADETFOUNDRY_DATA`), encrypted
   per profile when a PIN is set. New per-profile files must be added to `cadetfoundry/backup.py`.
 
 ## Study cards (`cadetfoundry/cards/*.md`)

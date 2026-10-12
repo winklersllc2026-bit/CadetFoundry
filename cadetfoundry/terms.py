@@ -11,7 +11,7 @@ from pathlib import Path
 
 from cadetfoundry import store
 
-VERSION = "2026-10-11"
+VERSION = "2026-10-12"            # no online AI; Cadet flash drives
 DIR = Path(__file__).resolve().parent / "legal"
 DOCS = {"terms": "TERMS.md", "privacy": "PRIVACY.md"}
 

@@ -5,7 +5,7 @@ sensitive it is, how it's protected at rest, and who can read it. It also states
 rest and access control are separate things; both are listed for each file.
 
 All data lives in one folder: `%USERPROFILE%\.cadetfoundry` on an installed computer, or `Cadet Foundry Data\` on a USB drive.
-Nothing is sent anywhere unless the instructor turns on online AI with their own key (see "Leaving the device").
+Nothing is sent to the internet (see "Leaving the device").
 
 ## Keys
 
@@ -78,8 +78,6 @@ computer.
 
 Cadet Foundry never connects to the internet on its own. It does so only when someone chooses to:
 
-- **Online AI**: only if the instructor turns it on and enters their own provider key. Then a Cadet's Ask question
-  (and the library passages used to answer it) go to that provider. See SECURITY.md.
 - **Add-on installs** (offline AI, voice): a download from the provider, started by the instructor.
 - **Links** (YouTube, DVIDS pages) open in the browser like any link.
 - **The classroom network**: in classroom mode, Cadets' devices on the same Wi-Fi talk to the instructor's computer.

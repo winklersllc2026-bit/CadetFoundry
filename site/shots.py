@@ -254,7 +254,26 @@ def main() -> int:
         s.js("window.scrollTo(0, document.getElementById('cdMain').offsetTop - 70);", 0.8)
         s.shot("run-sheet")
 
-        # the Join screen on the projector
+        # presentation mode: a study card as a slide, and a check-on-learning question after the reveal
+        s.size(1280, 800)
+        s.js("""const card = (await api('/api/instructor/quiz')).cards.find(c => /Customs, Courtesies/.test(c.title));
+          const plan = JSON.parse(localStorage.getItem('cadetfoundry-classday'));
+          plan.items.unshift({type: 'card', id: card.id, title: card.title, sub: 'Study card · slides on the projector'});
+          localStorage.setItem('cadetfoundry-classday', JSON.stringify(plan));
+          const slides = await buildDeck(plan);
+          presentDeck(plan, slides.findIndex(x => x.item.type === 'card' && / 1 of /.test(x.label)));
+          return 1;""", 3)
+        s.shot("projector-slide")
+        s.js("""const plan = cdLoad(); const slides = await buildDeck(plan);
+          await endDeck(false);
+          presentDeck(plan, slides.findIndex(x => x.item.type === 'lesson' && /Check on learning/.test(x.label)));
+          await new Promise(r => setTimeout(r, 2500));
+          document.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowRight', bubbles: true}));
+          return 1;""", 2)
+        s.shot("projector-check")
+        s.js("await endDeck(false); return 1;", 1)
+
+        # the Join screen on the projector (Cadet phones, optional)
         s.size(1280, 760)
         s.go("/join", 3)
         s.js("""const code = (document.querySelector('.code') || {}).textContent || '';

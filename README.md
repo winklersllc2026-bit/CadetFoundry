@@ -7,9 +7,9 @@ Cadet Foundry runs on the instructor's laptop (or a USB drive, or a Raspberry Pi
 school computers, tablets or phones on the classroom network. The instructor stays in control; Cadet Foundry supplies the
 tools.
 
-**Cadet Foundry is offline-first.** No student data leaves the instructor's device unless an instructor or IT operator
-explicitly enables an online AI provider (it is off by default and has no switch in the app's screens — see
-SECURITY.md). No accounts on outside services, no advertising, no tracking.
+**Cadet Foundry is offline.** No student data leaves the instructor's computer (or the Cadet's flash drive). There is
+no online AI — the only AI is an optional one that runs on the instructor's own computer. No accounts on outside
+services, no advertising, no tracking.
 
 Version 0.2.5. What's built and what's next: ROADMAP.md. How it fits together: ARCHITECTURE.md.
 
@@ -71,7 +71,7 @@ clean copy, with no one else's data on it.
   got it right — never who.
 - **Sample class:** see Cadet Foundry with eight made-up Cadets before setting anything up (welcome screen, or 🧪 on
   Home). It's a separate copy with its own throwaway folder; your data is never touched.
-- **Pilot mode and End pilot:** online AI stays off, the Pilot screen shows what's stored on the device, and End
+- **Pilot mode and End pilot:** the Pilot screen shows what's stored on the device, and End
   pilot permanently removes the pilot's Cadets and class data (after you save the reports) while keeping your
   lessons and classes.
 - **AI setting** for the whole device: **Off**, **Library only** (default — the AI may only explain what the library
@@ -80,8 +80,7 @@ clean copy, with no one else's data on it.
 ## Privacy, in plain words
 
 - Everything is stored on the instructor's laptop (or the USB drive Cadet Foundry runs from). Each profile has its own PIN,
-  and its files are encrypted. If an operator turns on an online AI service, ordinary Ask questions go to it — without
-  names, notes or earlier chats; anything about feeling unsafe never does (SECURITY.md).
+  and its files are encrypted. Nothing is sent to the internet.
 - **The instructor sees class records only** — lessons, quizzes, exams, leadership scenarios, fitness and service.
   A Cadet's private check-ins, chats, notes and letters are encrypted with that Cadet's own key, and the instructor
   can't open them.

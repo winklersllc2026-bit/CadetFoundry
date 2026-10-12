@@ -565,7 +565,9 @@ def ai_mode() -> str:
 
 def save_config(data: dict) -> dict:
     c = config()
-    for k in ("model", "groq_key", "gemini_key", "online", "ai_mode", "categories", "portfolio_sections", "modules_off", "demo",
+    for k in ("groq_key", "gemini_key", "online"):     # online AI was removed (2026-10-12): old keys go
+        c.pop(k, None)
+    for k in ("model", "ai_mode", "categories", "portfolio_sections", "modules_off", "demo",
               "program", "pilot_mode", "terms"):
         if k in data:
             c[k] = data[k]

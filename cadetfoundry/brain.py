@@ -270,8 +270,8 @@ class Brain:
 
     def _messages(self, text: str, care: bool, family: bool = False,
                   checked: dict | None = None, personal: bool = True) -> tuple[list[dict], list[dict]]:
-        """personal=False (an answer that may go to an online provider): no profile, memories, logbook or earlier
-        chat -- only the question, the public library passages and Cadet Foundry's rules."""
+        """personal=False: no profile, memories, logbook or earlier chat -- only the question, the public library
+        passages and Cadet Foundry's rules."""
         if care:
             system = safety.CARE_PROMPT
             sources: list[dict] = []
@@ -348,10 +348,7 @@ class Brain:
             store.add_history("assistant", gap)
             yield {"done": True, "sources": [], "cites": [], "ai": False}
             return
-        # Online AI (only if an operator enabled it) answers ordinary questions only, and without personal context;
-        # anything in care mode stays on this device.
-        go_online = engine.online_ready() and not check["care"]
-        msgs, sources = self._messages(text, check["care"], family, checked, personal=not go_online)
+        msgs, sources = self._messages(text, check["care"], family, checked)       # the AI on this computer only
         reply, fell_back = [], False
         if checked:
             first = f"✅ **Checked answer:** {checked['answer']} — *{checked['source']}*\n\n"
@@ -394,8 +391,7 @@ class Brain:
                 raise RuntimeError("library-only mode")
             clean = MarkerFilter()                       # the AI can never write the ✅ badge or a ⚠️ notice
             gate = SentenceGate(keep if not check["care"] else (lambda s: True))
-            for chunk in engine.stream(msgs, max_tokens=500 if check["care"] else 250 if checked else 1200,
-                                       **({"online": True} if go_online else {})):   # default: this device only
+            for chunk in engine.stream(msgs, max_tokens=500 if check["care"] else 250 if checked else 1200):
                 chunk = gate.feed(clean.feed(chunk))
                 if chunk:
                     reply.append(chunk)
